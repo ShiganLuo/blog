@@ -23,6 +23,10 @@
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
+    <select id="countAllArticles" resultType="Long">
+        SELECT COUNT(*) FROM articles
+    </select>
+
     <select id="getArticleById" resultMap="ArticleResultMap">
         SELECT * FROM articles WHERE id = #{id}
     </select>

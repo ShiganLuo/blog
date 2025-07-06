@@ -66,5 +66,11 @@ public class BlogSettingServiceImpl implements BlogSettingService {
             return false;
         }
     }
+
+    @Override
+    public BlogSetting getSettingById(Long id) {
+        BlogSetting blogSetting = blogSettingMapper.getSettingById(id);
+        return blogSetting;
+    }
     
 } 

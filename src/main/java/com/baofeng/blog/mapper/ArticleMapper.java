@@ -21,4 +21,5 @@ public interface ArticleMapper {
     int updateArticleSelective(Article article);
     Long getAuthorIdById(Long articleId);
     boolean isTitleExist(String title);
+    Long countAllArticles();
 }

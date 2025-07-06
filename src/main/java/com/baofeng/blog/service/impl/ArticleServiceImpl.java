@@ -294,4 +294,10 @@ public class ArticleServiceImpl implements ArticleService {
             return false;
         }
     }
+
+    @Override
+    public Long countAllArticles(){
+        Long articleCount = articleMapper.countAllArticles();
+        return articleCount;
+    }
 }

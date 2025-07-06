@@ -25,6 +25,7 @@
         SELECT * FROM blog_settings
     </select>
 
+
     <insert id="insertSetting" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO blog_settings (site_title, site_description, site_logo, qq_group, wechat_group, ali_pay, wechat_pay, enable_comments, visit_count, created_at, updated_at)
         VALUES (#{siteTitle}, #{siteDescription}, #{siteLogo}, #{qqGroup}, #{wechatGroup}, #{aliPay}, #{wechatPay}, #{enableComments}, #{visitCount}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
@@ -54,7 +55,7 @@
         </set>
         WHERE id = #{id}
     </update>
-    
+
     <delete id="deleteSettingById" >
         DELETE FROM blog_settings WHERE id = #{id}
     </delete>

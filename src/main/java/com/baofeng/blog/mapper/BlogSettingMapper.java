@@ -48,5 +48,11 @@ public interface BlogSettingMapper {
      */
     int insertSetting(BlogSetting setting);
 
+    /**
+     * 根据id获取网站信息
+     * @return BlogSetting
+     */
+    BlogSetting getSettingById(Long id);
+     
 
 }
