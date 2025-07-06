@@ -1,8 +1,9 @@
 package com.baofeng.blog.controller.front;
 
+import com.baofeng.blog.service.FrontTagService;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.front.FrontTagVO;
-import com.baofeng.blog.service.front.FrontTagService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

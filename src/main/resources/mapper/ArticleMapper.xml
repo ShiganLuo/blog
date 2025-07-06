@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.baofeng.blog.mapper.ArticleMapper">
+
+    <resultMap id="ArticleResultMap" type="com.baofeng.blog.entity.Article">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="summary" column="summary"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="authorId" column="author_id"/>
+        <result property="status" column="status"
+            typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="commentsCount" column="comments_count"/>
+        <result property="isFeatured" column="is_featured"/>
+        <result property="publishedAt" column="published_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="getArticleById" resultMap="ArticleResultMap">
+        SELECT * FROM articles WHERE id = #{id}
+    </select>
+
+    <select id="getAuthorIdById" resultType="java.lang.Long">
+        SELECT author_id FROM articles WHERE id = #{id}
+    </select>
+    
+
+    <insert id="insertArticle" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO articles(title, content, summary, cover_image, author_id, status, views, likes, comments_count, is_featured, published_at, created_at, updated_at)
+        VALUES(#{title}, #{content}, #{summary}, #{coverImage}, #{authorId}, #{status}, #{views}, #{likes}, #{commentsCount}, #{isFeatured}, #{publishedAt}, NOW(), NOW())
+    </insert>
+
+    <update id="updateArticle">
+        UPDATE articles
+        SET title=#{title}, content=#{content}, summary=#{summary}, cover_image=#{coverImage}, author_id=#{authorId}, status=#{status}, views=#{views}, likes=#{likes}, comments_count=#{commentsCount}, is_featured=#{isFeatured}, published_at=#{publishedAt}, created_at=#{createdAt}, updated_at=#{updatedAt}
+        WHERE id=#{id}
+    </update>
+    <update id="updateArticleSelective">
+          UPDATE articles
+    <set>
+        <if test="title != null">title=#{title},</if>
+        <if test="content != null">content=#{content},</if>
+        <if test="summary != null">summary=#{summary},</if>
+        <if test="coverImage != null">cover_image=#{coverImage},</if>
+        <if test="authorId != null">author_id=#{authorId},</if>
+        <if test="status != null">status=#{status},</if>
+        <if test="views != null">views=#{views},</if>
+        <if test="likes != null">likes=#{likes},</if>
+        <if test="commentsCount != null">comments_count=#{commentsCount},</if>
+        <if test="isFeatured != null">is_featured=#{isFeatured},</if>
+        <if test="publishedAt != null">published_at=#{publishedAt},</if>
+        <if test="createdAt != null">created_at=#{createdAt},</if>
+        <if test="updatedAt != null">updated_at=#{updatedAt},</if>
+        updated_at = NOW()
+    </set>
+    WHERE id=#{id}
+    </update>
+    <delete id="deleteArticle">
+        DELETE FROM articles WHERE id = #{id}
+    </delete>
+
+    <!--文章标题是否重复-->
+    <select id="isTitleExist" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM articles WHERE title = #{title}
+        )
+    </select>
+
+    <!-- 文章分页查询的结果映射 -->
+    <resultMap id="ArticlePageResultMap" type="com.baofeng.blog.vo.admin.AdminArticleCRUDVO$ArticleVO">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="viewCount" column="views"/>
+        <result property="commentCount" column="comments_count"/>
+        <result property="likeCount" column="likes"/>
+        <result property="createTime" column="created_at"/>
+        <result property="updateTime" column="updated_at"/>
+        <result property="status" column="status"
+            typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="coverImage" column="cover_image"/>
+        <!-- 作者信息映射 -->
+        <association property="author" javaType="com.baofeng.blog.vo.admin.AdminArticleCRUDVO$AuthorVO">
+            <id property="authorId" column="author_id"/>
+            <result property="authorNickname" column="author_nickname"/>
+            <result property="authorAvatar" column="author_avatar"/>
+        </association>
+        <!-- 分类名称集合 -->
+        <collection property="categoryNames" ofType="string">
+            <result column="category_name"/>
+        </collection>
+    </resultMap>
+
+    <!-- 分页查询文章列表 -->
+    <select id="getArticlePage" resultMap="ArticlePageResultMap">
+        SELECT 
+            a.id, a.title, a.summary, a.views, a.comments_count, 
+            a.likes, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.author_id,
+            u.nick_name as author_nickname, u.avatar_url as author_avatar,
+            c.name as category_name
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        LEFT JOIN article_categories ac ON a.id = ac.article_id
+        LEFT JOIN categories c ON ac.category_id = c.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
+                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="categoryId != null">
+                AND EXISTS (
+                    SELECT 1 FROM article_categories 
+                    WHERE article_id = a.id AND category_id = #{categoryId}
+                )
+            </if>
+        </where>
+        <if test="sortBy != null and sortOrder != null">
+            ORDER BY 
+            <choose>
+                <when test="sortBy == 'createTime'">a.created_at</when>
+                <when test="sortBy == 'updateTime'">a.updated_at</when>
+                <when test="sortBy == 'viewCount'">a.views</when>
+                <when test="sortBy == 'likeCount'">a.likes</when>
+                <when test="sortBy == 'commentCount'">a.comments_count</when>
+                <otherwise>a.created_at</otherwise>
+            </choose>
+            <choose>
+                <when test="sortOrder.toLowerCase() == 'desc'">DESC</when>
+                <otherwise>ASC</otherwise>
+            </choose>
+        </if>
+    </select>
+</mapper>
