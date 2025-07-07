@@ -74,4 +74,10 @@ public interface TagMapper {
      * @return 0不存在/1已存在
      */
     boolean checkExactName(String name);
+
+    /**
+     * 计算标签总数
+     * @return Long
+     */
+    Long countAllTags();
 }

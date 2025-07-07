@@ -57,6 +57,11 @@
         SELECT COUNT(*) FROM article_tags WHERE tag_id = #{id}
     </select>
 
+    <!--获取标签总数-->
+    <select id="countAllTags" resultType="Long">
+        SELECT COUNT(*) FROM tags
+    </select>
+
     <!--获取所有tag name-->
     <select id="getAllTagName">
         SELECT name FROM tags

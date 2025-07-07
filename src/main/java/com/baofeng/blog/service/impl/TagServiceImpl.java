@@ -80,4 +80,10 @@ public class TagServiceImpl implements TagService {
         List<TagDictionaryResponse> tagDictionaryResponse = tagMapper.getAllTags();
         return tagDictionaryResponse;
     }
+
+    @Override
+    public Long countAllTags(){
+        Long tagCount = tagMapper.countAllTags();
+        return tagCount;
+    }
 } 

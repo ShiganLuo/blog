@@ -51,6 +51,11 @@
         SELECT name FROM categories
     </select>
 
+    <!--获取分类总数-->
+    <select id="countAllCategories" resultType="Long">
+        SELECT COUNT(*) FROM categories
+    </select>
+
     <!--判断name是否在表中有记录,区分大小写-->
     <select id="checkExactName">
         SELECT EXISTS(

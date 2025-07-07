@@ -33,4 +33,10 @@ public interface CategoryService {
      * @return
      */
     List<CategoryDictionaryResponse> getCategoryDictionary();
+
+    /**
+     * 计算分类总数
+     * @return 分类总数
+     */
+    Long countAllCategories();
 }

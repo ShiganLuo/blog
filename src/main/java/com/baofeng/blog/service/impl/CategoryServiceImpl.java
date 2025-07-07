@@ -81,4 +81,10 @@ public class CategoryServiceImpl implements CategoryService {
         List<CategoryDictionaryResponse> categoryDictionaryList = categoryMapper.getAllCategories();
         return categoryDictionaryList;
     }
+
+    @Override
+    public Long countAllCategories(){
+        Long categoryCount = categoryMapper.countAllCategories();
+        return categoryCount;
+    }
 }

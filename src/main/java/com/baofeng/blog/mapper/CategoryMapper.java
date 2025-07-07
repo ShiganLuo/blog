@@ -73,4 +73,9 @@ public interface CategoryMapper {
      * @return 0不存在/1已存在
      */
    boolean checkExactName(String name);
+
+   /**
+    * 计算分类总数
+    */
+  Long countAllCategories();
 } 

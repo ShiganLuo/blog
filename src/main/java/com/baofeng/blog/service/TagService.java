@@ -36,4 +36,10 @@ public interface TagService {
      * @return 标签字典
      */
     List<TagDictionaryResponse> getTagDictionary();
+
+    /**
+     * 计算标签总数
+     * @return 标签总数
+     */
+    Long countAllTags();
 } 

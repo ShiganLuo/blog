@@ -43,4 +43,18 @@ public class AdminBlogSettingController {
         }
     }
 
+    @PostMapping("/changeSetting")
+    public ApiResponse<String> changeSetting(@RequestBody AdminBlogSettingVO.initSettingRequest request){
+        try {
+            boolean success = blogSettingService.updateSettingById(request);
+            if ( success ){
+                return ApiResponse.success("网站设置更新成功");
+            } else {
+                return ApiResponse.error(400, "网站设置更新失败");
+            }
+        } catch(Exception e){
+            return ApiResponse.error(400, "网站设置更新失败" + e.getMessage());
+        }
+    }
+
 } 
