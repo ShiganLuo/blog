@@ -3,6 +3,7 @@ package com.baofeng.blog.service.impl;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagVO;
+import com.baofeng.blog.vo.front.FrontTagVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagDictionaryResponse;
 import com.baofeng.blog.entity.Tag;
@@ -76,14 +77,26 @@ public class TagServiceImpl implements TagService {
         return tagMapper.deleteTag(id) > 0;
     }
     @Override
-    public List<TagDictionaryResponse> getTagDictionary(){
-        List<TagDictionaryResponse> tagDictionaryResponse = tagMapper.getAllTags();
-        return tagDictionaryResponse;
+    public List<Tag> getTagDictionary(){
+        List<Tag> tags = tagMapper.getAllTags();
+        return tags;
     }
 
     @Override
     public Long countAllTags(){
         Long tagCount = tagMapper.countAllTags();
         return tagCount;
+    }
+
+    @Override
+    public List<FrontTagVO> getHotTags(int limit) {
+        // 限制最大返回数量为20
+        int maxLimit = Math.min(limit, 20);
+        return tagMapper.getHotTags(maxLimit);
+    }
+
+    @Override
+    public Tag getTagDetail(Long id) {
+        return tagMapper.getTagById(id);
     }
 } 

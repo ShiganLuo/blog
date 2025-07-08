@@ -1,7 +1,7 @@
 package com.baofeng.blog.mapper;
 
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagVO;
-import com.baofeng.blog.vo.admin.AdminTagPageVO.TagDictionaryResponse;
+import com.baofeng.blog.vo.front.FrontTagVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.entity.ArticleTag;
 import com.baofeng.blog.entity.Tag;
@@ -56,7 +56,7 @@ public interface TagMapper {
      * 获取所有标签id和name
      * @return 所有标签id和name
      */
-    List<TagDictionaryResponse> getAllTags();
+    List<Tag> getAllTags();
     /**
      * 插入 article_tags映射表记录
      * @param ArticleTag
@@ -80,4 +80,12 @@ public interface TagMapper {
      * @return Long
      */
     Long countAllTags();
+
+    /**
+     * 获取热门标签（按文章数量排序）
+     * @param limit 限制数量
+     * @return 标签列表
+     */
+    List<FrontTagVO> getHotTags(int limit);
+
 }

@@ -6,11 +6,14 @@ import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagDictionaryResponse;
+import com.baofeng.blog.entity.Tag;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.validation.annotation.Validated;
 
@@ -103,7 +106,16 @@ public class AdminTagController {
     @GetMapping("/getTagDictionary")
     public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(){
         try {
-            List<TagDictionaryResponse> tagDictionaryResponse = tagService.getTagDictionary();
+            List<Tag> tags = tagService.getTagDictionary();
+            List<TagDictionaryResponse> tagDictionaryResponse = tags.stream()
+            .map(tag -> {
+                TagDictionaryResponse resp = new TagDictionaryResponse();
+                resp.setId(tag.getId());
+                resp.setName(tag.getName());
+                return resp;
+            })
+            .collect(Collectors.toList());
+
             return ApiResponse.success(tagDictionaryResponse);
         } catch (Exception e) {
             return ApiResponse.error(400,"获取失败"+e.getMessage());

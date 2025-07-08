@@ -10,7 +10,7 @@ public class AdminTagPageVO {
      */
     @Data
     public static class TagDictionaryResponse{
-        long id;
+        Long id;
         String name;
     }
     /**

@@ -101,13 +101,9 @@
         ORDER BY t.created_at DESC
     </select>
 
-    <resultMap id="TagResultMap" type="com.baofeng.blog.vo.admin.AdminTagPageVO$TagDictionaryResponse">
-        <id property="id" column="id"/>
-        <result property="name" column="name"/>
-    </resultMap>
 
-    <select id="getAllTags" resultMap="TagResultMap">
-        SELECT id, name FROM tags
+    <select id="getAllTags" resultMap="BaseResultMap">
+        SELECT * FROM tags
     </select>
 
 

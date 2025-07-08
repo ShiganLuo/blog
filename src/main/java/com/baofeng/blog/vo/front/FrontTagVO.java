@@ -1,23 +1,16 @@
 package com.baofeng.blog.vo.front;
 
 import lombok.Data;
-import java.time.LocalDateTime;
 
 @Data
 public class FrontTagVO {
-    private Long id;
-    private String name;
-    private Integer articleCount;  // 标签下的文章数量
-
     /**
-     * 标签详细信息
+     * 创建响应标签字典
      */
     @Data
-    public static class TagDetailVO {
-        private Long id;
-        private String name;
-        private Integer articleCount;
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
+    public static class TagDictionaryResponse{
+        Long id;
+        String tag_name;
     }
+
 } 

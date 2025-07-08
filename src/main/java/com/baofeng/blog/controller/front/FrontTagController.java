@@ -1,27 +1,43 @@
 package com.baofeng.blog.controller.front;
 
-import com.baofeng.blog.service.FrontTagService;
+import com.baofeng.blog.service.TagService;
 import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.front.FrontTagVO;
+import com.baofeng.blog.vo.front.FrontTagVO.TagDictionaryResponse;
+import com.baofeng.blog.entity.Tag;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/front/tags")
 @RequiredArgsConstructor
 public class FrontTagController {
     
-    private final FrontTagService frontTagService;
+    private final TagService tagService;
 
     /**
      * 获取所有标签
      * @return 标签列表
      */
-    @GetMapping
-    public ApiResponse<Object> getAllTags() {
+    @GetMapping("/getAllTags")
+    public ApiResponse<List<TagDictionaryResponse>> getAllTags() {
         try {
-            return ApiResponse.success(frontTagService.getAllTags());
+
+            List<Tag> tags = tagService.getTagDictionary();
+            List<TagDictionaryResponse> tagDictionaryResponse = tags.stream()
+            .map(tag -> {
+                TagDictionaryResponse resp = new TagDictionaryResponse();
+                resp.setId(tag.getId());
+                resp.setTag_name(tag.getName());
+                return resp;
+            })
+            .collect(Collectors.toList());
+
+            return ApiResponse.success(tagDictionaryResponse);
         } catch (Exception e) {
             return ApiResponse.error(500, "获取标签列表失败：" + e.getMessage());
         }
@@ -35,7 +51,7 @@ public class FrontTagController {
     @GetMapping("/hot")
     public ApiResponse<Object> getHotTags(@RequestParam(defaultValue = "10") int limit) {
         try {
-            return ApiResponse.success(frontTagService.getHotTags(limit));
+            return ApiResponse.success(tagService.getHotTags(limit));
         } catch (Exception e) {
             return ApiResponse.error(500, "获取热门标签失败：" + e.getMessage());
         }
@@ -47,9 +63,9 @@ public class FrontTagController {
      * @return 标签详细信息
      */
     @GetMapping("/{id}")
-    public ApiResponse<Object> getTagDetail(@PathVariable Long id) {
+    public ApiResponse<Tag> getTagDetail(@PathVariable Long id) {
         try {
-            FrontTagVO.TagDetailVO tag = frontTagService.getTagDetail(id);
+            Tag tag = tagService.getTagDetail(id);
             if (tag == null) {
                 return ApiResponse.error(404, "标签不存在");
             }

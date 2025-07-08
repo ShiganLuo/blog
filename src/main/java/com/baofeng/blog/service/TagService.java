@@ -2,7 +2,8 @@ package com.baofeng.blog.service;
 
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
-
+import com.baofeng.blog.vo.front.FrontTagVO;
+import com.baofeng.blog.entity.Tag;
 import java.util.List;
 
 import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
@@ -35,11 +36,25 @@ public interface TagService {
      * 获取标签字典
      * @return 标签字典
      */
-    List<TagDictionaryResponse> getTagDictionary();
+    List<Tag> getTagDictionary();
 
     /**
      * 计算标签总数
      * @return 标签总数
      */
     Long countAllTags();
+
+    /**
+     * 获取热门标签
+     * @param limit 限制数量
+     * @return 标签列表
+     */
+    List<FrontTagVO> getHotTags(int limit);
+
+    /**
+     * 获取标签详情
+     * @param id 标签ID
+     * @return 标签详细信息
+     */
+    Tag getTagDetail(Long id);
 } 
