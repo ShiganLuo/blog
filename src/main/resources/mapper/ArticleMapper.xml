@@ -77,69 +77,65 @@
         )
     </select>
 
-    <!-- 文章分页查询的结果映射 -->
-    <resultMap id="ArticlePageResultMap" type="com.baofeng.blog.vo.admin.AdminArticleCRUDVO$ArticleVO">
+    <!--文章分页查询-->
+    <resultMap id="ArticlePageResultMap" type="com.baofeng.blog.vo.common.Article$ArticleVO">
         <id property="id" column="id"/>
-        <result property="title" column="title"/>
-        <result property="summary" column="summary"/>
-        <result property="viewCount" column="views"/>
+        <result property="article_title" column="title"/>
+        <result property="article_description" column="summary"/>
+        <result property="view_times" column="views"/>
         <result property="commentCount" column="comments_count"/>
-        <result property="likeCount" column="likes"/>
-        <result property="createTime" column="created_at"/>
-        <result property="updateTime" column="updated_at"/>
+        <result property="thumbs_up_times" column="likes"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
         <result property="status" column="status"
             typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
-        <result property="coverImage" column="cover_image"/>
-        <!-- 作者信息映射 -->
-        <association property="author" javaType="com.baofeng.blog.vo.admin.AdminArticleCRUDVO$AuthorVO">
+        <result property="article_cover" column="cover_image"/>
+        <result property="is_top" column="is_featured"/>
+
+        <!-- 作者信息映射；一对多关系，不需要分步查询 -->
+        <association property="author" javaType="com.baofeng.blog.vo.common.Article$AuthorVO">
             <id property="authorId" column="author_id"/>
             <result property="authorNickname" column="author_nickname"/>
             <result property="authorAvatar" column="author_avatar"/>
         </association>
-        <!-- 分类名称集合 -->
-        <collection property="categoryNames" ofType="string">
-            <result column="category_name"/>
-        </collection>
-    </resultMap>
 
-    <!-- 分页查询文章列表 -->
+        <!-- 分类名称子查询 -->
+        <collection property="categoryNameList" ofType="string"
+                    column="id" select="getCategoryNameListByArticleId"/>
+        
+        <!-- 标签名称子查询 -->
+        <collection property="tagNameList" ofType="string"
+                    column="id" select="getTagNameListByArticleId"/>
+    </resultMap>
     <select id="getArticlePage" resultMap="ArticlePageResultMap">
         SELECT 
             a.id, a.title, a.summary, a.views, a.comments_count, 
             a.likes, a.created_at, a.updated_at, a.status, 
             a.cover_image, a.author_id,
-            u.nick_name as author_nickname, u.avatar_url as author_avatar,
-            c.name as category_name
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
         FROM articles a
         LEFT JOIN users u ON a.author_id = u.id
-        LEFT JOIN article_categories ac ON a.id = ac.article_id
-        LEFT JOIN categories c ON ac.category_id = c.id
         <where>
             <if test="keyword != null and keyword != ''">
                 AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
                 OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
             </if>
-            <if test="categoryId != null">
-                AND EXISTS (
-                    SELECT 1 FROM article_categories 
-                    WHERE article_id = a.id AND category_id = #{categoryId}
-                )
-            </if>
         </where>
-        <if test="sortBy != null and sortOrder != null">
-            ORDER BY 
-            <choose>
-                <when test="sortBy == 'createTime'">a.created_at</when>
-                <when test="sortBy == 'updateTime'">a.updated_at</when>
-                <when test="sortBy == 'viewCount'">a.views</when>
-                <when test="sortBy == 'likeCount'">a.likes</when>
-                <when test="sortBy == 'commentCount'">a.comments_count</when>
-                <otherwise>a.created_at</otherwise>
-            </choose>
-            <choose>
-                <when test="sortOrder.toLowerCase() == 'desc'">DESC</when>
-                <otherwise>ASC</otherwise>
-            </choose>
-        </if>
+        ORDER BY a.created_at DESC
     </select>
+    <select id="getCategoryNameListByArticleId" resultType="string">
+        SELECT c.name
+        FROM categories c
+        INNER JOIN article_categories ac ON c.id = ac.category_id
+        WHERE ac.article_id = #{id}
+    </select>
+    <select id="getTagNameListByArticleId" resultType="string">
+        SELECT t.name
+        FROM tags t
+        INNER JOIN article_tags at ON t.id = at.tag_id
+        WHERE at.article_id = #{id}
+    </select>
+
+
 </mapper>

@@ -3,8 +3,8 @@ package com.baofeng.blog.controller.front;
 import org.springframework.web.bind.annotation.*;
 
 import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminArticleCRUDVO.ArticlePageRequestVO;
-import com.baofeng.blog.vo.admin.AdminArticleCRUDVO.ArticlePageResponseVO;
+import com.baofeng.blog.vo.admin.AdminArticleVO.ArticlePageRequestVO;
+import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
 import org.springframework.validation.annotation.Validated;
 import lombok.RequiredArgsConstructor;
 

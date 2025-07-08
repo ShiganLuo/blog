@@ -1,10 +1,11 @@
 package com.baofeng.blog.mapper;
 import com.baofeng.blog.entity.Article;
-import com.baofeng.blog.vo.admin.AdminArticleCRUDVO.*;
+import com.baofeng.blog.vo.admin.AdminArticleVO.*;
+import com.baofeng.blog.vo.common.Article.*;
 import org.apache.ibatis.annotations.Mapper;
 // import org.apache.ibatis.annotations.Param;
 import java.util.List;
-import java.util.Locale.Category;
+
 @Mapper
 public interface ArticleMapper {
     /**

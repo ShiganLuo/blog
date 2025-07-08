@@ -1,7 +1,8 @@
 package com.baofeng.blog.service;
 
 import com.baofeng.blog.entity.Article;
-import com.baofeng.blog.vo.admin.AdminArticleCRUDVO.*;
+import com.baofeng.blog.vo.admin.AdminArticleVO.*;
+import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
 
 import java.io.IOException;
 
@@ -13,7 +14,14 @@ public interface ArticleService {
     Article getArticleById(Long id);
     boolean updateArticleSelective(Article article);
     boolean updatePinStaus(Long id,boolean isPinned);
+
+    /**
+     * 查询文章列表
+     * @param ArticlePageRequestVO
+     * @return ArticlePageResponseVO
+     */
     ArticlePageResponseVO getArticlePage(ArticlePageRequestVO request);
+
     boolean publishArticle(Long articleId,Long authorId);
     boolean isTitleExist(String title);
     String storeImage(MultipartFile imageFile,Long articleId) throws IOException;

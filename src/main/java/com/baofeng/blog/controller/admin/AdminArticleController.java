@@ -1,6 +1,7 @@
 package com.baofeng.blog.controller.admin;
 import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminArticleCRUDVO.*;
+import com.baofeng.blog.vo.admin.AdminArticleVO.*;
+import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
 import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.service.ArticleService;
 
