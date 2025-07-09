@@ -23,25 +23,25 @@ public class FrontBlogSettinVO {
 
     @Data
     public static class configDetail {
-        String blog_name;
-        String avatar_bg;
-        String personal_say;
-        String blog_notice;
-        String blog_avatar;
-        String qq_group;
-        String we_chat_group;
-        String ali_pay;
-        String we_chat_pay;
-        Long view_time;
-        Long articleCount;
-        Long categoryCount;
-        Long tagCount;
-        String git_ee_link;
-        String bilibili_link;
-        String github_link;
-        String we_chat_link;
-        String qq_link;
-        LocalDateTime createdAt;
+        private String blog_name;
+        private String avatar_bg;
+        private String personal_say;
+        private String blog_notice;
+        private String blog_avatar;
+        private String qq_group;
+        private String we_chat_group;
+        private String ali_pay;
+        private String we_chat_pay;
+        private Long view_time;
+        private Long articleCount;
+        private Long categoryCount;
+        private Long tagCount;
+        private String git_ee_link;
+        private String bilibili_link;
+        private String github_link;
+        private String we_chat_link;
+        private String qq_link;
+        private LocalDateTime createdAt;
         
     }
 }

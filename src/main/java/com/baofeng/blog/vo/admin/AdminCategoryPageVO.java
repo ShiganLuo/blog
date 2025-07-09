@@ -10,8 +10,8 @@ public class AdminCategoryPageVO {
      */
     @Data
     public static class CategoryDictionaryResponse{
-        long id;
-        String name;
+        private long id;
+        private String name;
     }
     /**
      * 创建分类请求参数

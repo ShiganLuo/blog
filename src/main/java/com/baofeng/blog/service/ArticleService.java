@@ -4,6 +4,7 @@ import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
 import com.baofeng.blog.vo.common.Article.ArticleVO;
+import com.baofeng.blog.vo.front.FrontArticleVO.ArticleDetailResponsePair;
 
 import java.io.IOException;
 
@@ -54,4 +55,8 @@ public interface ArticleService {
      */
     Long countAllArticles();
 
+    /**
+     * 根据文章发布时间计算上一篇文章和下一篇文章
+     */
+    ArticleDetailResponsePair getPNArticleById(Long id);
 }

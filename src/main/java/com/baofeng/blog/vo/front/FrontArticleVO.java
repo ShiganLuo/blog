@@ -17,20 +17,36 @@ public class FrontArticleVO {
      */
     @Data
     public static class ArticleDetailResponse {
-        Long id;
-        String authorName;
-        Integer type;
-        String origin_url;
-        Integer thumbs_up_times;
-        Long author_id;
-        String article_content;
-        String article_cover;
-        String article_title;
-        Integer view_times;
-        List<String> categoryNameList;
-        List<String> tagNameList;
-        LocalDateTime createdAt;
-        LocalDateTime updatedAt;
+        private Long id;
+        private String authorName;
+        private Integer type;
+        private String origin_url;
+        private Integer thumbs_up_times;
+        private Long author_id;
+        private String article_content;
+        private String article_cover;
+        private String article_title;
+        private Integer view_times;
+        private List<String> categoryNameList;
+        private List<String> tagNameList;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+    }
+
+    /**
+     * 推荐文章以及前后发布文章返回对象
+     */
+    @Data
+    public static class ArticleRecommendResponse {
+        private ArticleDetailResponse previous;
+        private ArticleDetailResponse next;
+        private List<ArticleDetailResponse> recommend;
+    }
+
+    @Data
+    public static class ArticleDetailResponsePair {
+        private ArticleDetailResponse previous;
+        private ArticleDetailResponse next;
     }
 
 

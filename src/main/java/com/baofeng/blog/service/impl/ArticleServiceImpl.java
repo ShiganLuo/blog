@@ -2,6 +2,8 @@ package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.*;
+import com.baofeng.blog.vo.front.FrontArticleVO.*;
+import com.baofeng.blog.util.ArticleConvert;
 import com.baofeng.blog.entity.*;
 import com.baofeng.blog.mapper.*;
 import com.baofeng.blog.service.ArticleService;
@@ -296,5 +298,29 @@ public class ArticleServiceImpl implements ArticleService {
     public Long countAllArticles(){
         Long articleCount = articleMapper.countAllArticles();
         return articleCount;
+    }
+
+    @Override
+    public ArticleDetailResponsePair getPNArticleById(Long id) {
+        ArticleVO prev = articleMapper.getPrevArticle(id);
+        ArticleVO next = articleMapper.getNextArticle(id);
+        // convertToDetailResponse 已经做了null 判空保护
+        ArticleDetailResponse prevCt = ArticleConvert.convertToDetailResponse(prev); 
+        ArticleDetailResponse nextCt = ArticleConvert.convertToDetailResponse(next);
+        // prev 和 next 为 null的情况下该怎么处理
+        ArticleVO articleVO = articleMapper.getArticlePageFormById(id);
+        ArticleDetailResponse articleVOCt = ArticleConvert.convertToDetailResponse(articleVO);
+        if (prevCt == null) {
+            prevCt = articleVOCt;
+        }
+        if (nextCt == null) {
+            nextCt = articleVOCt;
+        }
+
+        ArticleDetailResponsePair articleDetailResponsePair = new ArticleDetailResponsePair();
+        articleDetailResponsePair.setPrevious(prevCt);
+        articleDetailResponsePair.setNext(nextCt);
+        return articleDetailResponsePair;
+
     }
 }

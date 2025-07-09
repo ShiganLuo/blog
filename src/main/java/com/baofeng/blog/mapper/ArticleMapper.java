@@ -21,6 +21,19 @@ public interface ArticleMapper {
      * @return
      */
     ArticleVO getArticlePageFormById(Long id);
+    /**
+     * 查询某篇文章的上一篇文章
+     * @param id
+     * @return ArticleVO
+     */
+    ArticleVO getPrevArticle(Long id);
+
+    /**
+     * 
+     * @param id
+     * @return ArticleVO
+     */
+    ArticleVO getNextArticle(Long id);
     
     Article getArticleById(Long id);
     int insertArticle(Article article);

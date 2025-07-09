@@ -174,6 +174,57 @@
     LEFT JOIN users u ON a.author_id = u.id
     WHERE a.id = #{id}
     </select>
+    <!--获取前一篇文章-->
+    <select id="getPrevArticle" resultMap="ArticlePageResultMap">
+        SELECT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        <where>
+            <!-- 关键词搜索 -->
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
+                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+
+            <!-- 创建时间要小于当前文章的时间 -->
+            <if test="createdAt != null">
+                AND a.created_at &lt; #{createdAt}
+            </if>
+        </where>
+        ORDER BY a.created_at DESC
+        LIMIT 1
+    </select>
+
+    <select id="getNextArticle" resultMap="ArticlePageResultMap">
+        SELECT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
+                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="createdAt != null">
+                AND a.created_at &gt; #{createdAt}
+            </if>
+        </where>
+        ORDER BY a.created_at ASC
+        LIMIT 1
+    </select>
+
+
 
 
 </mapper>

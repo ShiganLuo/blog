@@ -9,8 +9,8 @@ public class FrontTagVO {
      */
     @Data
     public static class TagDictionaryResponse{
-        Long id;
-        String tag_name;
+        private Long id;
+        private String tag_name;
     }
 
 } 
