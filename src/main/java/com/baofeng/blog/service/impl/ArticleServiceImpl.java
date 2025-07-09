@@ -124,6 +124,11 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public ArticleVO getArticlePageFormById(Long id) {
+        ArticleVO articleVO = articleMapper.getArticlePageFormById(id);
+        return articleVO;
+    }
+    @Override
     public boolean publishArticle(Long articleId,Long authorId) {
         Long articleAuthorId = articleMapper.getAuthorIdById(articleId);
         if ( articleAuthorId == authorId ) {

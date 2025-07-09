@@ -35,9 +35,7 @@
             #{emailVerified}, #{active}, #{nickName}
         )
     </insert>
-    <select id="getIdByUsername">
-        select id FROM users WHERE username = #{username}
-    </select>
+
     <update id="updateUser">
         UPDATE users SET
             username = #{username},
@@ -59,7 +57,12 @@
         DELETE FROM users WHERE id = #{id}
     </delete>
 
-    <select id="selectById" resultMap="userResultMap">
+    <!--根据用户名获取用户id-->
+    <select id="getIdByUsername">
+        select id FROM users WHERE username = #{username}
+    </select>
+
+    <select id="selectUserById" resultMap="userResultMap">
         SELECT * FROM users WHERE id = #{id}
     </select>
 

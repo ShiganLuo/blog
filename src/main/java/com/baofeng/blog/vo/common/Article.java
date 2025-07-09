@@ -24,9 +24,12 @@ public class Article {
         private Long id;
         private String article_title;
         private String article_description;
+        private String article_content;
         private Integer view_times;
         private Integer commentCount;
         private Integer thumbs_up_times;
+        private Integer type;
+        private String originUrl;
         private LocalDateTime  createdAt;
         private LocalDateTime updatedAt;
         private ArticleStatus status;
@@ -46,6 +49,7 @@ public class Article {
     @Data
     public static class AuthorVO {
         private Long authorId;
+        private String authorName;
         private String authorNickname;
         private String authorAvatar;
     }

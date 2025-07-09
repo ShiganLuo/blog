@@ -75,12 +75,12 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public User getUserInfoById(Long id){
-        return userMapper.selectById(id);
+        return userMapper.selectUserById(id);
     }
 
     @Override
     public boolean updateUserRole(Long id, String role) {
-        User user = userMapper.selectById(id);
+        User user = userMapper.selectUserById(id);
         if (user != null) {
             user.setRole(User.Role.valueOf(role.toUpperCase()));
             userMapper.updateUserSelective(user);

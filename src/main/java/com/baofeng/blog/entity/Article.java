@@ -12,10 +12,12 @@ public class Article {
     private String coverImage;
     private Long authorId;
     private ArticleStatus status;
-    private Integer views;
-    private Integer likes;
-    private Integer commentsCount;
+    private Long views;
+    private Long likes;
+    private Long commentsCount;
     private Boolean isFeatured;
+    private Integer type;
+    private String origin_url;
     private LocalDateTime publishedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

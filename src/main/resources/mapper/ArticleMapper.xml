@@ -18,6 +18,8 @@
         <result property="likes" column="likes"/>
         <result property="commentsCount" column="comments_count"/>
         <result property="isFeatured" column="is_featured"/>
+        <result property="type" column="type"/>
+        <result property="originUrl" column="origin_url"/>
         <result property="publishedAt" column="published_at"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
@@ -37,15 +39,21 @@
     
 
     <insert id="insertArticle" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO articles(title, content, summary, cover_image, author_id, status, views, likes, comments_count, is_featured, published_at, created_at, updated_at)
-        VALUES(#{title}, #{content}, #{summary}, #{coverImage}, #{authorId}, #{status}, #{views}, #{likes}, #{commentsCount}, #{isFeatured}, #{publishedAt}, NOW(), NOW())
+        INSERT INTO articles(title, content, summary, cover_image, author_id, status, 
+        views, likes, comments_count, is_featured, type, origin_url, published_at, created_at, updated_at)
+        VALUES(#{title}, #{content}, #{summary}, #{coverImage}, #{authorId}, #{status}, #{views}, 
+        #{likes}, #{commentsCount}, #{isFeatured}, #{type}, #{originUrl}, #{publishedAt}, NOW(), NOW())
     </insert>
 
     <update id="updateArticle">
         UPDATE articles
-        SET title=#{title}, content=#{content}, summary=#{summary}, cover_image=#{coverImage}, author_id=#{authorId}, status=#{status}, views=#{views}, likes=#{likes}, comments_count=#{commentsCount}, is_featured=#{isFeatured}, published_at=#{publishedAt}, created_at=#{createdAt}, updated_at=#{updatedAt}
+        SET title=#{title}, content=#{content}, summary=#{summary}, cover_image=#{coverImage}, 
+        author_id=#{authorId}, status=#{status}, views=#{views}, likes=#{likes}, comments_count=#{commentsCount}, 
+        is_featured=#{isFeatured}, type=#{type}, origin_url=#{orginUrl}, published_at=#{publishedAt}, 
+        created_at=#{createdAt}, updated_at=#{updatedAt}
         WHERE id=#{id}
     </update>
+
     <update id="updateArticleSelective">
           UPDATE articles
     <set>
@@ -59,6 +67,8 @@
         <if test="likes != null">likes=#{likes},</if>
         <if test="commentsCount != null">comments_count=#{commentsCount},</if>
         <if test="isFeatured != null">is_featured=#{isFeatured},</if>
+        <if test="type !=null"> type=#{type},</if>
+        <if test="orginUrl !=null"> origin_url=#{originUrl},</if>
         <if test="publishedAt != null">published_at=#{publishedAt},</if>
         <if test="createdAt != null">created_at=#{createdAt},</if>
         <if test="updatedAt != null">updated_at=#{updatedAt},</if>
@@ -66,6 +76,14 @@
     </set>
     WHERE id=#{id}
     </update>
+
+    <!--减去likes数-->
+    <update id="decrementLikesById">
+        UPDATE articles
+        SET likes = likes - 1
+        WHERE id = #{id}
+    </update>
+
     <delete id="deleteArticle">
         DELETE FROM articles WHERE id = #{id}
     </delete>
@@ -82,9 +100,12 @@
         <id property="id" column="id"/>
         <result property="article_title" column="title"/>
         <result property="article_description" column="summary"/>
+        <result property="article_content" column="content"/>
         <result property="view_times" column="views"/>
         <result property="commentCount" column="comments_count"/>
         <result property="thumbs_up_times" column="likes"/>
+        <result property="type" column="type"/>
+        <result property="originUrl" column="origin_url"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
         <result property="status" column="status"
@@ -95,6 +116,7 @@
         <!-- 作者信息映射；一对多关系，不需要分步查询 -->
         <association property="author" javaType="com.baofeng.blog.vo.common.Article$AuthorVO">
             <id property="authorId" column="author_id"/>
+            <result property="authorName" column="author_name"/>
             <result property="authorNickname" column="author_nickname"/>
             <result property="authorAvatar" column="author_avatar"/>
         </association>
@@ -109,9 +131,10 @@
     </resultMap>
     <select id="getArticlePage" resultMap="ArticlePageResultMap">
         SELECT 
-            a.id, a.title, a.summary, a.views, a.comments_count, 
-            a.likes, a.created_at, a.updated_at, a.status, 
-            a.cover_image, a.author_id,
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
             u.nick_name AS author_nickname,
             u.avatar_url AS author_avatar
         FROM articles a
@@ -135,6 +158,21 @@
         FROM tags t
         INNER JOIN article_tags at ON t.id = at.tag_id
         WHERE at.article_id = #{id}
+    </select>
+
+    <!--文章查询联表查询-->
+    <select id="getArticlePageFormById" resultMap="ArticlePageResultMap">
+    SELECT 
+        a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+        a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+        a.cover_image, a.is_featured,
+        a.author_id,
+        u.username AS author_name,
+        u.nick_name AS author_nickname,
+        u.avatar_url AS author_avatar
+    FROM articles a
+    LEFT JOIN users u ON a.author_id = u.id
+    WHERE a.id = #{id}
     </select>
 
 

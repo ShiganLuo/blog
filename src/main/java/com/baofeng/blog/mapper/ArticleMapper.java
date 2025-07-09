@@ -3,17 +3,24 @@ import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.*;
 import org.apache.ibatis.annotations.Mapper;
-// import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 @Mapper
 public interface ArticleMapper {
     /**
-     * 分页查询文章列表
+     * 分页查询文章列表，包括作者，标签和分类
      * @param request 分页查询参数
      * @return 文章列表
      */
     List<ArticleVO> getArticlePage(ArticlePageRequestVO request);
+    
+    /**
+     * 根据id查询文章信息，包括作者，标签和分类
+     * @param id
+     * @return
+     */
+    ArticleVO getArticlePageFormById(Long id);
     
     Article getArticleById(Long id);
     int insertArticle(Article article);
@@ -23,4 +30,9 @@ public interface ArticleMapper {
     Long getAuthorIdById(Long articleId);
     boolean isTitleExist(String title);
     Long countAllArticles();
+
+    /**
+     * 取消文章点赞
+     */
+    int decrementLikesById(Long id);
 }

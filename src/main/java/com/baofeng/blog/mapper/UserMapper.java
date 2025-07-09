@@ -12,7 +12,7 @@ public interface UserMapper {
     int insertUser(User user);
     int updateUser(User user);
     int deleteUser(Long id);
-    User selectById(Long id);
+    User selectUserById(Long id);
     
     List<User> selectByCondition(@Param("username") String username, 
                                @Param("email") String email,
