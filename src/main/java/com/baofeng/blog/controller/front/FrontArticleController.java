@@ -1,19 +1,17 @@
 package com.baofeng.blog.controller.front;
 
-import org.springframework.web.bind.annotation.*;
-
-
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminArticleVO.ArticlePageRequestVO;
 import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
 import com.baofeng.blog.vo.common.Article.ArticleVO;
 import com.baofeng.blog.vo.front.FrontArticleVO.*;
 import com.baofeng.blog.util.ArticleConvert;
-import org.springframework.validation.annotation.Validated;
-import lombok.RequiredArgsConstructor;
-
-
 import com.baofeng.blog.service.ArticleService;
+
+import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import java.util.List;
 
 
 @RestController
@@ -80,6 +78,17 @@ public class FrontArticleController {
     //         return ApiResponse.error(400, "取消失败");
     //     }
     // }
+    @GetMapping("/getLikesById/{id}")
+    public ApiResponse<Long> getLikesById(@PathVariable Long id) {
+
+        try {
+            Long likes = articleService.getLikesById(id);
+            return ApiResponse.success(likes);
+        } catch (Exception e) {
+            return ApiResponse.error(400, "获取失败");
+        }
+
+    }
 
     /**
      * 根据id获取文章
@@ -103,10 +112,15 @@ public class FrontArticleController {
      * 根据ID获取文章的上一篇、下一篇以及推荐文章（以创建时间为准）。推荐文章功能待完善
      */
     @GetMapping("/getRecommendArticleById/{id}")
-    public ApiResponse<ArticleDetailResponsePair> getRecommendArticleById(@PathVariable Long id){
+    public ApiResponse<ArticleRecommendResponse> getRecommendArticleById(@PathVariable Long id){
         try {
             ArticleDetailResponsePair articleDetailResponsePair = articleService.getPNArticleById(id);
-            return ApiResponse.success(articleDetailResponsePair);
+            List<ArticleDetailResponse> recommend = articleService.getRecommendedArticles(id);
+            ArticleRecommendResponse articleRecommendResponse = new ArticleRecommendResponse();
+            articleRecommendResponse.setPrevious(articleDetailResponsePair.getPrevious());
+            articleRecommendResponse.setNext(articleDetailResponsePair.getNext());
+            articleRecommendResponse.setRecommend(recommend);
+            return ApiResponse.success(articleRecommendResponse);
         } catch (Exception e) {
             return ApiResponse.error(400, null);
         }

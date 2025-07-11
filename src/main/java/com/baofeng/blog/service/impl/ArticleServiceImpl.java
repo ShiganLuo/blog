@@ -323,4 +323,17 @@ public class ArticleServiceImpl implements ArticleService {
         return articleDetailResponsePair;
 
     }
+
+    @Override
+    public List<ArticleDetailResponse> getRecommendedArticles(Long id) {
+        List<ArticleVO> articleVOs = articleMapper.getRecommendedArticles(id);
+        List<ArticleDetailResponse> recommend = ArticleConvert.convertToDetailResponseList(articleVOs);
+        return recommend;
+    }
+
+    @Override
+    public Long getLikesById(Long id) {
+        Long likes = articleMapper.getLikesById(id);
+        return likes;
+    }
 }

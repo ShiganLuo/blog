@@ -33,13 +33,17 @@
         SELECT * FROM articles WHERE id = #{id}
     </select>
 
+    <!--获取文章like数-->
+    <select id="getLikesById" resultType="java.lang.Long">
+        SELECT likes FROM articles WHERE id = #{id}
+    </select>
     <select id="getAuthorIdById" resultType="java.lang.Long">
         SELECT author_id FROM articles WHERE id = #{id}
     </select>
     
 
     <insert id="insertArticle" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO articles(title, content, summary, cover_image, author_id, status, 
+        INSERT INTO articles (title, content, summary, cover_image, author_id, status, 
         views, likes, comments_count, is_featured, type, origin_url, published_at, created_at, updated_at)
         VALUES(#{title}, #{content}, #{summary}, #{coverImage}, #{authorId}, #{status}, #{views}, 
         #{likes}, #{commentsCount}, #{isFeatured}, #{type}, #{originUrl}, #{publishedAt}, NOW(), NOW())
@@ -49,7 +53,7 @@
         UPDATE articles
         SET title=#{title}, content=#{content}, summary=#{summary}, cover_image=#{coverImage}, 
         author_id=#{authorId}, status=#{status}, views=#{views}, likes=#{likes}, comments_count=#{commentsCount}, 
-        is_featured=#{isFeatured}, type=#{type}, origin_url=#{orginUrl}, published_at=#{publishedAt}, 
+        is_featured=#{isFeatured}, type=#{type}, origin_url=#{originUrl}, published_at=#{publishedAt}, 
         created_at=#{createdAt}, updated_at=#{updatedAt}
         WHERE id=#{id}
     </update>
@@ -68,7 +72,7 @@
         <if test="commentsCount != null">comments_count=#{commentsCount},</if>
         <if test="isFeatured != null">is_featured=#{isFeatured},</if>
         <if test="type !=null"> type=#{type},</if>
-        <if test="orginUrl !=null"> origin_url=#{originUrl},</if>
+        <if test="originUrl !=null"> origin_url=#{originUrl},</if>
         <if test="publishedAt != null">published_at=#{publishedAt},</if>
         <if test="createdAt != null">created_at=#{createdAt},</if>
         <if test="updatedAt != null">updated_at=#{updatedAt},</if>
@@ -222,6 +226,27 @@
         </where>
         ORDER BY a.created_at ASC
         LIMIT 1
+    </select>
+
+    <select id="getRecommendedArticles" resultMap="ArticlePageResultMap">
+        SELECT DISTINCT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        WHERE a.id != #{articleId}
+        AND a.id IN (
+            SELECT at2.article_id
+            FROM article_tags at1
+            JOIN article_tags at2 ON at1.tag_id = at2.tag_id
+            WHERE at1.article_id = #{articleId}
+        )
+        ORDER BY a.created_at DESC
+        LIMIT #{limit}
     </select>
 
 

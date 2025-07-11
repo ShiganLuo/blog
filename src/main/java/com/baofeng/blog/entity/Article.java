@@ -17,7 +17,7 @@ public class Article {
     private Long commentsCount;
     private Boolean isFeatured;
     private Integer type;
-    private String origin_url;
+    private String originUrl;
     private LocalDateTime publishedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -4,9 +4,11 @@ import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
 import com.baofeng.blog.vo.common.Article.ArticleVO;
+import com.baofeng.blog.vo.front.FrontArticleVO.ArticleDetailResponse;
 import com.baofeng.blog.vo.front.FrontArticleVO.ArticleDetailResponsePair;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,9 +32,24 @@ public interface ArticleService {
      * @return
      */
     ArticleVO getArticlePageFormById(Long id);
+
+    /**
+     * 获取文章喜欢数
+     * @param id
+     * @return
+     */
+    Long getLikesById(Long id);
     
     boolean publishArticle(Long articleId,Long authorId);
     boolean isTitleExist(String title);
+
+    /**
+     * 上传文章封面
+     * @param imageFile
+     * @param articleId
+     * @return
+     * @throws IOException
+     */
     String storeImage(MultipartFile imageFile,Long articleId) throws IOException;
 
     /**
@@ -57,6 +74,15 @@ public interface ArticleService {
 
     /**
      * 根据文章发布时间计算上一篇文章和下一篇文章
+     * @param id
+     * @return ArticleDetailResponsePair
      */
     ArticleDetailResponsePair getPNArticleById(Long id);
+
+    /**
+     * 获取推荐文章
+     * @param id
+     * @return List<>
+     */
+    List<ArticleDetailResponse> getRecommendedArticles(Long id);
 }

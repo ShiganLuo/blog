@@ -2,8 +2,8 @@ package com.baofeng.blog.mapper;
 import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.*;
-import org.apache.ibatis.annotations.Mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
@@ -35,6 +35,20 @@ public interface ArticleMapper {
      */
     ArticleVO getNextArticle(Long id);
     
+    /**
+     * 获得推荐文章
+     * @param id
+     * @return
+     */
+    List<ArticleVO> getRecommendedArticles(Long id);
+
+    /**
+     * 获取文章like数
+     * @param id
+     * @return
+     */
+    Long getLikesById(Long id);
+
     Article getArticleById(Long id);
     int insertArticle(Article article);
     int updateArticle(Article article);
