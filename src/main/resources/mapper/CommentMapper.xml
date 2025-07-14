@@ -12,12 +12,33 @@
         <result property="forId" column="for_id"/>
         <result property="type" column="type"/>
         <result property="authorId" column="author_id"/>
-        <result property="parentId" column="parent_id"/>
         <result property="likes" column="likes"/>
         <result property="isDeleted" column="is_deleted"/>
         <result property="status" column="status"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
+
+    <!--创建评论-->
+    <insert id="insertComment" parameterType="com.baofeng.blog.entity.Comment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comments (
+            from_id,
+            content,
+            for_id,
+            type,
+            author_id,
+            created_at,
+            updated_at
+        )
+        VALUES (
+            #{fromId},
+            #{content},
+            #{forId},
+            #{type},
+            #{authorId},
+            NOW(),
+            NOW()
+        )
+    </insert>
 
 </mapper> 

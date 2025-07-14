@@ -2,10 +2,8 @@ package com.baofeng.blog.vo.front;
 
 public class FrontCommentVO {
 
-    public record CommentRequest(
+    public record CreateCommentRequest(
         Long from_id,
-        String from_avatar,
-        String from_name,
         String content,
         Long for_id,
         Integer type,

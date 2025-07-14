@@ -2,6 +2,7 @@ package com.baofeng.blog.controller.front;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
 import com.baofeng.blog.service.BlogSettingService;
 import com.baofeng.blog.service.ArticleService;
@@ -12,7 +13,7 @@ import com.baofeng.blog.vo.front.FrontBlogSettinVO.configDetail;
 // import com.baofeng.blog.vo.front.FrontBlogSettinVO.updateSettingRequest;
 import com.baofeng.blog.entity.BlogSetting;
 
-import org.springframework.validation.annotation.Validated;
+
 
 @RestController
 @RequestMapping("/api/front/settings")

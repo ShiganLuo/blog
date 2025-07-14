@@ -9,7 +9,8 @@ public class Comment {
     private Long fromId; // 评论人用户ID
     private String content; // 评论文本内容
     private Long forId; // 被评论对象ID（文章ID或评论ID）
-    private Long parentId; // 父评论ID（二级评论用）
+    private Integer type; // 评论对象类型（0=文章评论，1=回复评论）
+    private Long authorId; // 作者ID
     private Long likes; // 点赞数
     private Boolean isDelated; // 逻辑删除标志
     private Boolean status; // 评论审核状态
