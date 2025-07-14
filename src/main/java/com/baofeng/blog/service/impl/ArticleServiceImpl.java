@@ -45,6 +45,8 @@ public class ArticleServiceImpl implements ArticleService {
         article.setTitle(articleRequest.title());
         article.setContent(articleRequest.content());
         article.setSummary(articleRequest.summary());
+        article.setLikes((long) 0 );
+        article.setViews((long) 0 );
         Long authorId = userMapper.getIdByUsername(articleRequest.author());
         if ( authorId == null) {
             throw new Exception("没有此用户");
