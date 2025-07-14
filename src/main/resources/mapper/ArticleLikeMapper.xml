@@ -22,4 +22,5 @@
         INSERT INTO article_likes (article_id, user_id, created_at)
         VALUES (#{articleId}, #{userId}, NOW())
     </insert>
+    
 </mapper>

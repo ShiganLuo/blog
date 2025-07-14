@@ -49,6 +49,20 @@ public interface ArticleMapper {
      */
     Long getLikesById(Long id);
 
+    /**
+     * 增加文章点赞数
+     * @param id
+     * @return
+     */
+    Long incrementLikeById(Long id);
+
+    /**
+     * 减少文章点赞数
+     * @param id
+     * @return
+     */
+    Long decreaseLikeById(Long id);
+
     Article getArticleById(Long id);
     int insertArticle(Article article);
     int updateArticle(Article article);

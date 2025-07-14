@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.baofeng.blog.service.ArticleLikeService;
 import com.baofeng.blog.mapper.ArticleLikeMapper;
+import com.baofeng.blog.mapper.ArticleMapper;
 import com.baofeng.blog.entity.ArticleLike;
 
 @Service
@@ -13,6 +14,7 @@ import com.baofeng.blog.entity.ArticleLike;
 public class ArticleLikeServiceImpl implements ArticleLikeService{
 
     private final ArticleLikeMapper articleLikeMapper;
+    private final ArticleMapper articleMapper;
 
     @Override
     public Boolean getIsLikeByArticleAndUserId(Long articleId,Long userId) {
@@ -26,27 +28,32 @@ public class ArticleLikeServiceImpl implements ArticleLikeService{
 
     @Override
     public Boolean deleteLike(Long articleId,Long userId) {
-        Long rowUpdated = articleLikeMapper.deleteLikeByArticleAndUserId(articleId, userId);
-        if ( rowUpdated > 0) {
-            return true;
+        Long rowUpdated = (long) 0;
+        if (userId == null) {
+            rowUpdated = articleMapper.decreaseLikeById(articleId);
         } else {
-            return false;
+            rowUpdated = articleLikeMapper.deleteLikeByArticleAndUserId(articleId, userId);
         }
+        return rowUpdated > 0;
 
     }
 
     @Override 
     public Boolean addLike(Long articleId,Long userId) {
-        ArticleLike articleLike = new ArticleLike();
-        articleLike.setArticleId(articleId);
-        articleLike.setUserId(userId);
-        Long rowUpdated = articleLikeMapper.addLike(articleLike);
-
-        if ( rowUpdated > 0) {
-            return true;
+        Long rowUpdated = (long) 0;
+        if (userId == null) {
+            // 游客点赞
+            rowUpdated = articleMapper.incrementLikeById(articleId);
         } else {
-            return false;
+            // 用户点赞
+            ArticleLike articleLike = new ArticleLike();
+            articleLike.setArticleId(articleId);
+            articleLike.setUserId(userId);
+            rowUpdated = articleLikeMapper.addLike(articleLike);
         }
+
+        return rowUpdated > 0;
+
     }
     
 }

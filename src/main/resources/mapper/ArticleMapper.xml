@@ -58,6 +58,19 @@
         WHERE id=#{id}
     </update>
 
+    <!--用户点赞-->
+    <update id="incrementLikeById">
+        UPDATE articles
+        SET likes = likes + 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="decreaseLikeById">
+        UPDATE articles
+        SET likes = likes - 1
+        WHERE id = #{id}
+    </update>
+
     <update id="updateArticleSelective">
           UPDATE articles
     <set>
