@@ -4,18 +4,22 @@ package com.baofeng.blog.service.impl;
 import com.baofeng.blog.mapper.CommentMapper;
 import com.baofeng.blog.service.CommentService;
 import com.baofeng.blog.entity.Comment;
-import com.baofeng.blog.vo.front.FrontCommentVO.CreateCommentRequest;
+import com.baofeng.blog.vo.front.FrontCommentVO.*;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
-    private final CommentMapper commentMapper;
+  private final CommentMapper commentMapper;
 
-   @Override
-   public Boolean CreateComment(CreateCommentRequest createCommentRequest) {
+  @Override
+  public Boolean CreateComment(CreateCommentRequest createCommentRequest) {
         Integer type = createCommentRequest.type();
         Comment comment = new Comment();
         comment.setFromId(createCommentRequest.from_id());
@@ -27,5 +31,59 @@ public class CommentServiceImpl implements CommentService {
 
         return rowUpdated > 0;
 
-   }
+  }
+
+  @Override
+  public Integer getCommentTotal(CommentTotalRequest commentTotalRequest) {
+    Long forId = commentTotalRequest.for_id();
+    Integer type = commentTotalRequest.type();
+    Integer counts = commentMapper.getCommentTotal(forId, type);
+    return counts;
+  }
+
+  @Override
+  public NotifyPageResponse getNotifyPage(NotifyPageRequest request) {
+    // 参数校验
+    int pageNum = request.current() != null ? request.current() : 1;
+    int pageSize = request.size() != null ? request.size() : 10;
+    // 开启分页
+    PageHelper.startPage(pageNum, pageSize);
+    List<NotifyResponse> list = commentMapper.getNotifyPage(request);
+    // 获取分页信息
+    PageInfo<NotifyResponse> pageInfo = new PageInfo<>(list);
+    // 封装返回结果
+    NotifyPageResponse response = new NotifyPageResponse();
+    response.setTotal(pageInfo.getTotal());    // 总记录数
+    response.setList(pageInfo.getList());      // 当前页数据
+
+    return response;
+  }
+
+  @Override
+  public CommentPageResponse getCommentPage(CommentPageRequest request) {
+    // 参数校验
+    int pageNum = request.current() != null ? request.current() : 1;
+    int pageSize = request.size() != null ? request.size() : 10;
+    // 开启分页
+    PageHelper.startPage(pageNum, pageSize);
+    List<CommentResponse> list = commentMapper.getCommentPage(request);
+    // 获取分页信息
+    PageInfo<CommentResponse> pageInfo = new PageInfo<>(list);
+    // 封装返回结果
+    CommentPageResponse response = new CommentPageResponse();
+    response.setTotal(pageInfo.getTotal());    // 总记录数
+    response.setList(pageInfo.getList());      // 当前页数据
+
+    return response;
+  }
+
+  @Override
+  public Boolean deleteCommentById(Long id) {
+    int rowUpdated = commentMapper.deleteCommentById(id);
+    if ( rowUpdated > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 } 

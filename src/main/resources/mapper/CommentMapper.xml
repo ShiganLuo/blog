@@ -41,4 +41,48 @@
         )
     </insert>
 
+    <!--获取评论总数-->
+    <select id="getCommentTotal">
+        SELECT COUNT(*) FROM comments 
+        WHERE for_id = #{forId}
+            AND type = #{type}
+            AND is_deleted = 0
+    </select>
+    <!--获取用户通知-->
+    <resultMap id="NotifyPageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$NotifyResponse">
+        <id property="id" column="id"/>
+        <result property="isView" column="status"/>
+        <result property="message" column="content"/>
+        <result property="type" column="type"/>
+        <result property="to_id" column="for_id"/>
+    </resultMap>
+    <select id="getNotifyPage" resultMap="NotifyPageResultMap">
+    SELECT 
+        c.id, c.status, c.content, c.type, c.for_id
+    FROM comments c
+    WHERE c.author_id = #{userId}
+    </select>
+
+    <!--分页获取评论-->
+    <resultMap id="CommentPageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$CommentResponse">
+        <id property="id" column="id"/>
+        <result property="from_id" column="from_id"/>
+        <result property="from_name" column="from_name"/>
+        <result property="from_avatar" column="from_avatar"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="thumbs_up" column="likes"/>
+    </resultMap>
+    <select id="getCommentPage" resultMap="CommentPageResultMap">
+        SELECT 
+            c.id, c.from_id, u.username AS from_name, u.avatar_url AS from_avatar, 
+            c.content, c.created_at, c.likes
+        FROM comments c
+        LEFT JOIN users u ON c.author_id = u.id
+    </select>
+
+    <!--删除评论-->
+    <delete id="deleteCommentById">
+        DELETE FROM comments WHERE id = #{id}
+    </delete>
 </mapper> 

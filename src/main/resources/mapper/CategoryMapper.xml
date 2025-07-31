@@ -22,6 +22,7 @@
         <result property="createTime" column="created_at"/>
         <result property="updateTime" column="updated_at"/>
     </resultMap>
+    
     <!-- article_categories结果映射-->
     <resultMap id="articleCategoriesResultMap" type="com.baofeng.blog.entity.ArticleCategory">
         <id property="id" column="id"/>

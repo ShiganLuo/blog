@@ -6,6 +6,7 @@ import com.baofeng.blog.util.JwtTokenProvider;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
 import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
+import com.baofeng.blog.vo.common.User.LoginRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -85,9 +86,8 @@ public class AdminUserController {
         }
 
     }
-    @PostMapping("/getUserInfoById")
-    public ApiResponse<User> getUserInfoById(@RequestBody JsonNode idRequest){
-        Long id = idRequest.get("id").asLong(); 
+    @GetMapping("/getUserInfoById/{id}")
+    public ApiResponse<User> getUserInfoById(@PathVariable Long id){
         User user = userService.getUserInfoById(id);
         if (user != null){
             return ApiResponse.success(user);

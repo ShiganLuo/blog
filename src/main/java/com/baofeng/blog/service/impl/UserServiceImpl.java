@@ -6,7 +6,7 @@ import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.exception.AuthException;
 import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
-
+import com.baofeng.blog.vo.common.User.LoginRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

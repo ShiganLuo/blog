@@ -76,4 +76,6 @@ public interface ArticleMapper {
      * 取消文章点赞
      */
     int decrementLikesById(Long id);
+
+
 }

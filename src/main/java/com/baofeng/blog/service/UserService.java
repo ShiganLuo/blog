@@ -2,6 +2,7 @@ package com.baofeng.blog.service;
 
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
+import com.baofeng.blog.vo.common.User.LoginRequest;
 
 
 
