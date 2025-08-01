@@ -1,6 +1,6 @@
 package com.baofeng.blog.service;
 
-public interface ArticleLikeService {
+public interface LikeService {
 
     /**
      * 判断是否点赞
@@ -24,6 +24,6 @@ public interface ArticleLikeService {
      * @param userId
      * @return
      */
-    Boolean addLike(Long articleId,Long userId);
+    Boolean  addArticleLike(Long articleId,Long userId);
 }
 

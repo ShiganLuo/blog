@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.service.ArticleLikeService;
+import com.baofeng.blog.service.LikeService;
 import com.baofeng.blog.vo.front.FrontArticleLikeVO.*;
 
 @RestController
@@ -15,21 +15,22 @@ import com.baofeng.blog.vo.front.FrontArticleLikeVO.*;
 @Validated
 public class FrontArticleLikeController {
 
-    private final ArticleLikeService articleLikeService;
+    private final LikeService articleLikeService;
 
     @PostMapping("/addLike")
     public ApiResponse<String> addLike(@RequestBody LikeRequest request) {
         try {
             Long article_id = request.article_id();
             Long user_id = request.user_id();
-            Boolean success = articleLikeService.addLike(article_id, user_id);
+            Boolean success = articleLikeService.addArticleLike(article_id, user_id);
             if ( success ) {
                 return ApiResponse.success("点赞成功");
             } else {
                 return ApiResponse.error(400, "点赞失败，用户不存在或文章不存在");
             }
         } catch (Exception e) {
-            return ApiResponse.error(400, "点赞失败"+e.getMessage());
+            System.out.println(e.getMessage());
+            return ApiResponse.error(400, "点赞失败,代码出现错误");
         }
     }
 
