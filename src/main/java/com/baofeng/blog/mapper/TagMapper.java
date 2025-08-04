@@ -86,6 +86,6 @@ public interface TagMapper {
      * @param limit 限制数量
      * @return 标签列表
      */
-    List<FrontTagVO> getHotTags(int limit);
+    List<String> getHotTags(int limit);
 
 }

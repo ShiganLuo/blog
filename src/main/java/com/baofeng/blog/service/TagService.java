@@ -4,10 +4,12 @@ import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
 import com.baofeng.blog.vo.front.FrontTagVO;
 import com.baofeng.blog.entity.Tag;
+import com.baofeng.blog.vo.ApiResponse;
+import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
+import com.baofeng.blog.vo.common.Tag.TagDictionaryResponse;
+
 import java.util.List;
 
-import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
-import com.baofeng.blog.vo.admin.AdminTagPageVO.TagDictionaryResponse;
 
 public interface TagService {
     /**
@@ -36,7 +38,7 @@ public interface TagService {
      * 获取标签字典
      * @return 标签字典
      */
-    List<Tag> getTagDictionary();
+    public ApiResponse<List<TagDictionaryResponse>> getTagDictionary();
 
     /**
      * 计算标签总数
@@ -49,12 +51,12 @@ public interface TagService {
      * @param limit 限制数量
      * @return 标签列表
      */
-    List<FrontTagVO> getHotTags(int limit);
+    public ApiResponse<List<String>> getHotTags(int limit);
 
     /**
      * 获取标签详情
      * @param id 标签ID
      * @return 标签详细信息
      */
-    Tag getTagDetail(Long id);
+    public ApiResponse<Tag> getTagDetail(Long id);
 } 

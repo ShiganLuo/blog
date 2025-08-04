@@ -5,7 +5,7 @@ import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
-import com.baofeng.blog.vo.admin.AdminTagPageVO.TagDictionaryResponse;
+import com.baofeng.blog.vo.common.Tag.TagDictionaryResponse;
 import com.baofeng.blog.entity.Tag;
 
 import lombok.RequiredArgsConstructor;
@@ -105,20 +105,6 @@ public class AdminTagController {
      */
     @GetMapping("/getTagDictionary")
     public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(){
-        try {
-            List<Tag> tags = tagService.getTagDictionary();
-            List<TagDictionaryResponse> tagDictionaryResponse = tags.stream()
-            .map(tag -> {
-                TagDictionaryResponse resp = new TagDictionaryResponse();
-                resp.setId(tag.getId());
-                resp.setName(tag.getName());
-                return resp;
-            })
-            .collect(Collectors.toList());
-
-            return ApiResponse.success(tagDictionaryResponse);
-        } catch (Exception e) {
-            return ApiResponse.error(400,"获取失败"+e.getMessage());
-        }
+        return tagService.getTagDictionary(); // 注意返回修改了，记得修改前端
     }
 } 

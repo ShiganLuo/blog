@@ -85,4 +85,24 @@
     <delete id="deleteCommentById">
         DELETE FROM comments WHERE id = #{id}
     </delete>
+
+    <!--用户点赞-->
+    <update id="incrementLikeById">
+        UPDATE comments
+        SET likes = likes + 1
+        WHERE id = #{id}
+    </update>
+
+    <!--用户取消点赞-->
+    <update id="decreaseLikeById">
+        UPDATE comments
+        SET likes = likes - 1
+        WHERE id = #{id}
+    </update>
+
+    <!--检查评论是否存在-->
+    <select id="selectCountById" parameterType="int" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM likes WHERE id = #{id}
+    </select>
+
 </mapper> 

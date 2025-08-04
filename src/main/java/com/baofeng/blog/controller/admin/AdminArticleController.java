@@ -124,27 +124,13 @@ public class AdminArticleController {
     @PostMapping("/getArticleList")
     public ApiResponse<ArticlePageResponseVO> getArticlePage(@RequestBody ArticlePageRequestVO request) {
         // 参数校验
-        if (request == null) {
-            return ApiResponse.error(400, "请求参数不能为空");
-        }
-        if (request.pageNum() != null && request.pageNum() < 1) {
-            return ApiResponse.error(400, "页码必须大于0");
-        }
-        if (request.pageSize() != null && request.pageSize() < 1) {
-            return ApiResponse.error(400, "每页显示条数必须大于0");
-        }
         if (request.sortBy() != null && !isValidSortField(request.sortBy())) {
             return ApiResponse.error(400, "无效的排序字段");
         }
         if (request.sortOrder() != null && !isValidSortOrder(request.sortOrder())) {
             return ApiResponse.error(400, "无效的排序方向");
         }
-        
-        try {
-            return ApiResponse.success(articleService.getArticlePage(request));
-        } catch (Exception e) {
-            return ApiResponse.error(500, "查询失败：" + e.getMessage());
-        }
+        return articleService.getArticlePage(request);
     }
 
     /**

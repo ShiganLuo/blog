@@ -11,15 +11,8 @@ public interface LikeMapper {
      * @param userId
      * @return
      */
-    Long getLikeByArticleAndUserId(Long targetId, Long userId);
+    Long selectIdByLikeRequestAndStatus(Long targetId, String type, Long userId, Boolean status);
     
-    /**
-     * 判断status为0点赞记录是否存在
-     * @param targetId
-     * @param userId
-     * @return
-     */
-    Long getLikeStatusByArticleAndUserId(Long targetId, Long userId);
     
     /**
      * 取消点赞
@@ -27,16 +20,7 @@ public interface LikeMapper {
      * @param userId
      * @return
      */
-    Long deleteLikeByArticleAndUserId(Long targetId, Long userId);
-
-
-    /**
-     * 恢复点赞
-     * @param targetId
-     * @param userId
-     * @return
-     */
-    Long resumeLikeByArticleAndUserId(Long targetId, Long userId);
+    int updateLikesByLikeRequestAndStatus(Long targetId, String type, Long userId, Boolean status);
 
     /**
      * 点赞
@@ -45,7 +29,6 @@ public interface LikeMapper {
      * @return
      * 使用了回填；useGeneratedKeys="true" keyProperty="id"
      */
-    Long addLike(Like like);
-
+    int insertLikeByLike(Like like);
 
 }

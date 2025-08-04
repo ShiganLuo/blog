@@ -14,7 +14,7 @@ public class FrontCommentVO {
         Long from_id,
         String content,
         Long for_id,
-        Integer type,
+        String type,
         Long author_id
     ) {}
 
@@ -23,7 +23,7 @@ public class FrontCommentVO {
      */
     public record CommentTotalRequest(
         Long for_id,
-        Integer type
+        String type
     ){}
 
     /*

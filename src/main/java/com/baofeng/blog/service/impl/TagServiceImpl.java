@@ -4,8 +4,9 @@ import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagVO;
 import com.baofeng.blog.vo.front.FrontTagVO;
+import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
-import com.baofeng.blog.vo.admin.AdminTagPageVO.TagDictionaryResponse;
+import com.baofeng.blog.vo.common.Tag.TagDictionaryResponse;
 import com.baofeng.blog.entity.Tag;
 import com.baofeng.blog.mapper.TagMapper;
 import com.baofeng.blog.service.TagService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -77,9 +79,17 @@ public class TagServiceImpl implements TagService {
         return tagMapper.deleteTag(id) > 0;
     }
     @Override
-    public List<Tag> getTagDictionary(){
+    public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(){
         List<Tag> tags = tagMapper.getAllTags();
-        return tags;
+        List<TagDictionaryResponse> tagDictionaryResponse = tags.stream()
+            .map(tag -> {
+                TagDictionaryResponse resp = new TagDictionaryResponse();
+                resp.setId(tag.getId());
+                resp.setTag_name(tag.getName());
+                return resp;
+            })
+            .collect(Collectors.toList());
+        return ApiResponse.success(tagDictionaryResponse);
     }
 
     @Override
@@ -89,14 +99,16 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<FrontTagVO> getHotTags(int limit) {
+    public ApiResponse<List<String>> getHotTags(int limit) {
         // 限制最大返回数量为20
         int maxLimit = Math.min(limit, 20);
-        return tagMapper.getHotTags(maxLimit);
+        List<String> hotTags = tagMapper.getHotTags(maxLimit);
+        return ApiResponse.success(hotTags);
     }
 
     @Override
-    public Tag getTagDetail(Long id) {
-        return tagMapper.getTagById(id);
+    public ApiResponse<Tag> getTagDetail(Long id) {
+        Tag tag = tagMapper.getTagById(id);
+        return ApiResponse.success(tag);
     }
 } 

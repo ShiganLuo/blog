@@ -6,14 +6,6 @@ import java.util.List;
 
 public class AdminTagPageVO {
     /**
-     * 创建响应标签字典
-     */
-    @Data
-    public static class TagDictionaryResponse{
-        Long id;
-        String name;
-    }
-    /**
      * 创建标签请求参数
      */
     public record CreateTagRequest(

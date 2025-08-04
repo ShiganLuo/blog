@@ -23,7 +23,7 @@ public interface CommentMapper {
      * @param type
      * @return
      */
-    int getCommentTotal(Long forId, Integer type);
+    int getCommentTotal(Long forId, String type);
 
     /**
      * 获取用户相关消息
@@ -46,4 +46,24 @@ public interface CommentMapper {
      */
     int deleteCommentById(Long id);
 
+    /**
+     * 根据id增加likes
+     * @param id
+     * @return
+     */
+    int incrementLikeById(Long id);
+
+    /**
+     * 根据id减少likes
+     * @param id
+     * @return
+     */
+    int decreaseLikeById(Long id);
+
+    /**
+     * 检查评论是否存在
+     * @param id
+     * @return
+     */
+    Boolean selectCountById(Long id);
 } 

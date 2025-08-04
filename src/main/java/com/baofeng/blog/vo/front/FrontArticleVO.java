@@ -1,7 +1,7 @@
 package com.baofeng.blog.vo.front;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 public class FrontArticleVO {
     /**

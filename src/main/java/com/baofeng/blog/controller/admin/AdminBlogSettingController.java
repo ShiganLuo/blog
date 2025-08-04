@@ -31,16 +31,7 @@ public class AdminBlogSettingController {
     }
     @PutMapping("/addView")
     public ApiResponse<String> addView(){
-        try {
-            boolean success = blogSettingService.addViews();
-            if ( success ){
-                return ApiResponse.success("访问量增加成功");
-            } else {
-                return ApiResponse.error(400, "访问量增加失败");
-            }
-        } catch (Exception e){
-            return ApiResponse.error(400, "增加失败" + e.getMessage());
-        }
+        return blogSettingService.addViews();
     }
 
     @PostMapping("/changeSetting")

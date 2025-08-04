@@ -3,15 +3,12 @@ package com.baofeng.blog.controller.front;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminArticleVO.ArticlePageRequestVO;
 import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
-import com.baofeng.blog.vo.common.Article.ArticleVO;
 import com.baofeng.blog.vo.front.FrontArticleVO.*;
-import com.baofeng.blog.util.ArticleConvert;
 import com.baofeng.blog.service.ArticleService;
 
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import java.util.List;
 
 
 @RestController
@@ -28,29 +25,16 @@ public class FrontArticleController {
      * @return 分页结果
      */
     @PostMapping("/getArticleList")
-    public ApiResponse<ArticlePageResponseVO> getArticlePage(@RequestBody ArticlePageRequestVO request) {
+    public ApiResponse<ArticlePageResponseVO> getArticlePage(@Validated @RequestBody ArticlePageRequestVO request) {
         // 参数校验
-        if (request == null) {
-            return ApiResponse.error(400, "请求参数不能为空");
-        }
-        if (request.pageNum() != null && request.pageNum() < 1) {
-            return ApiResponse.error(400, "页码必须大于0");
-        }
-        if (request.pageSize() != null && request.pageSize() < 1) {
-            return ApiResponse.error(400, "每页显示条数必须大于0");
-        }
+
         if (request.sortBy() != null && !isValidSortField(request.sortBy())) {
             return ApiResponse.error(400, "无效的排序字段");
         }
         if (request.sortOrder() != null && !isValidSortOrder(request.sortOrder())) {
             return ApiResponse.error(400, "无效的排序方向");
         }
-        
-        try {
-            return ApiResponse.success(articleService.getArticlePage(request));
-        } catch (Exception e) {
-            return ApiResponse.error(500, "查询失败：" + e.getMessage());
-        }
+        return articleService.getArticlePage(request);
     }
     
     /**
@@ -67,26 +51,9 @@ public class FrontArticleController {
         return sortOrder == null || sortOrder.equalsIgnoreCase("asc") || sortOrder.equalsIgnoreCase("desc");
     }
 
-    /**
-     * 取消文章喜欢
-     */
-    // @PostMapping("/cancelLike")
-    // public ApiResponse<String> cancelLike(@RequestBody likeRequest request){
-    //     try {
-
-    //     } catch (Exception e) {
-    //         return ApiResponse.error(400, "取消失败");
-    //     }
-    // }
     @GetMapping("/getLikesById/{id}")
     public ApiResponse<Long> getLikesById(@PathVariable Long id) {
-
-        try {
-            Long likes = articleService.getLikesById(id);
-            return ApiResponse.success(likes);
-        } catch (Exception e) {
-            return ApiResponse.error(400, "获取失败");
-        }
+        return articleService.getLikesById(id);
 
     }
 
@@ -97,15 +64,7 @@ public class FrontArticleController {
      */
     @GetMapping("/getArticleById/{id}")
     public ApiResponse<ArticleDetailResponse> getArticleById(@PathVariable Long id){
-
-        try {
-            ArticleVO articleVO = articleService.getArticlePageFormById(id);
-            ArticleDetailResponse articleDetailResponse = ArticleConvert.convertToDetailResponse(articleVO);
-            return ApiResponse.success(articleDetailResponse);
-        } catch (Exception e) {
-            return ApiResponse.error(404, "文章不存在" + e.getMessage());
-        }
-
+        return articleService.getArticlePageFormById(id);
     }
 
     /**
@@ -113,16 +72,6 @@ public class FrontArticleController {
      */
     @GetMapping("/getRecommendArticleById/{id}")
     public ApiResponse<ArticleRecommendResponse> getRecommendArticleById(@PathVariable Long id){
-        try {
-            ArticleDetailResponsePair articleDetailResponsePair = articleService.getPNArticleById(id);
-            List<ArticleDetailResponse> recommend = articleService.getRecommendedArticles(id);
-            ArticleRecommendResponse articleRecommendResponse = new ArticleRecommendResponse();
-            articleRecommendResponse.setPrevious(articleDetailResponsePair.getPrevious());
-            articleRecommendResponse.setNext(articleDetailResponsePair.getNext());
-            articleRecommendResponse.setRecommend(recommend);
-            return ApiResponse.success(articleRecommendResponse);
-        } catch (Exception e) {
-            return ApiResponse.error(400, null);
-        }
+        return articleService.getRecommendArticleById(id);
     }
 }

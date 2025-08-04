@@ -40,28 +40,7 @@ public class AdminUserController {
 
     @PostMapping("/login")
     public ApiResponse<AdminLoginResponseVO> login(@RequestBody @Valid LoginRequest loginDTO) {
-        User user = userService.loginUser(loginDTO);
-        if (user != null) {
-            // 生成 token
-            //  accessTokenExpiration: 3600000    # 1 小时（60 分钟 = 60 * 60 * 1000 ms）
-            //   refreshTokenExpiration: 1209600000  # 14 天（14 * 24 * 60 * 60 * 1000 ms
-            String accessToken = jwtTokenProvider.generateToken(user,3600000,false);
-            String refreshToken = jwtTokenProvider.generateToken(user, 1209600000,true);
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime expires = now.plus(1, ChronoUnit.HOURS);
-            // 构造 Token 和 User 信息（内部类）
-            AdminLoginResponseVO.User userInfo = new AdminLoginResponseVO.User(
-                    user.getAvatarUrl(),
-                    user.getUsername(),
-                    user.getNickName(),
-                    user.getRole().name()
-            );
-            // 封装并返回
-            AdminLoginResponseVO response = new AdminLoginResponseVO(accessToken,refreshToken,expires,userInfo);
-            return ApiResponse.success(response);
-        } else {
-            return ApiResponse.error(401, "登录失败");
-        }
+        return userService.loginUserAdmin(loginDTO);
     }
     //刷新token
     @PostMapping("/refreshToken")
@@ -88,12 +67,7 @@ public class AdminUserController {
     }
     @GetMapping("/getUserInfoById/{id}")
     public ApiResponse<User> getUserInfoById(@PathVariable Long id){
-        User user = userService.getUserInfoById(id);
-        if (user != null){
-            return ApiResponse.success(user);
-        }else {
-            return ApiResponse.error(401, "用户不存在");
-        }
+        return userService.getUserInfoById(id);
     }
 
 

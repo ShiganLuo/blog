@@ -30,6 +30,21 @@
         <result property="updatedAt" column="updatedAt"/>
     </resultMap>
 
+    <!--获取热门标签-->
+    <select id="getHotTags">
+        SELECT
+            t.name
+        FROM
+            article_tags at
+        JOIN
+            tags t ON at.tag_id = t.id
+        GROUP BY
+            t.name
+        ORDER BY
+            COUNT(at.tag_id) DESC
+        LIMIT #{limit}
+    </select>
+
     <!-- 创建标签 -->
     <insert id="createTag" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tags (

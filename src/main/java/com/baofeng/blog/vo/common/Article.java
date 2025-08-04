@@ -2,15 +2,16 @@ package com.baofeng.blog.vo.common;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import lombok.Data;
 
 public class Article {
-        /**
+    
+    /**
      * 文章分页响应数据
      */
     @Data
     public static class ArticlePageResponseVO {
+
         private long total;          // 总记录数
         private int pages;           // 总页数
         private List<ArticleVO> list; // 文章列表

@@ -1,29 +1,29 @@
 package com.baofeng.blog.service;
+import com.baofeng.blog.vo.front.FrontLikeVO.LikeRequest;
+import com.baofeng.blog.vo.ApiResponse;
 
 public interface LikeService {
 
     /**
      * 判断是否点赞
-     * @param articleId
-     * @param userId
+     * @param LikeRequest
      * @return 
      */
-    Boolean getIsLikeByArticleAndUserId(Long articleId,Long userId);
+    public ApiResponse<Boolean> getIsLikeByLikeRequest(LikeRequest request);
 
     /**
      * 取消点赞
-     * @param articleId
-     * @param userId
-     * @return
+     * @param LikeRequest
+     * @return 
      */
-    Boolean deleteLike(Long articleId,Long userId);
+    public ApiResponse<String> deleteLikeByLikeRequest(LikeRequest request);
     
     /**
      * 点赞
-     * @param articleId
-     * @param userId
-     * @return
+     * @param LikeRequest
+     * @return 
      */
-    Boolean  addArticleLike(Long articleId,Long userId);
+
+    public ApiResponse<String> addLikeByLikeRequest(LikeRequest request);
 }
 

@@ -3,15 +3,23 @@ package com.baofeng.blog.service.impl;
 import com.baofeng.blog.exception.DuplicateUserException;
 import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.service.UserService;
+import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.entity.User;
-import com.baofeng.blog.exception.AuthException;
+import com.baofeng.blog.vo.ApiResponse;
+import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
 import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
 import com.baofeng.blog.vo.common.User.LoginRequest;
+import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
+import com.baofeng.blog.util.JwtTokenProvider;
+import com.baofeng.blog.util.LoginType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,9 +29,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public UserServiceImpl(BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(BCryptPasswordEncoder passwordEncoder,JwtTokenProvider jwtTokenProvider) {
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -47,25 +57,56 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateUserException("用户名已存在");
         }
     }
+
     @Override
-    public User loginUser(LoginRequest loginDTO) {
+    public ApiResponse<FrontLoginResponseVO> loginUserFront(LoginRequest loginDTO) {
+        return login(loginDTO, LoginType.FRONT);
+    }
+
+    public ApiResponse<AdminLoginResponseVO> loginUserAdmin(LoginRequest loginDTO) {
+        return login(loginDTO, LoginType.ADMIN);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> ApiResponse<T> login(LoginRequest loginDTO, LoginType type) {
         User user = userMapper.selectByUsernameOrEmail(loginDTO.username());
+
         if (user == null) {
-            throw new AuthException(400,"用户不存在");
-        }
-        else if (!passwordEncoder.matches(loginDTO.password(), user.getPassword())) {
+            return (ApiResponse<T>) ApiResponse.error(ResultCode.NOT_FOUND, "用户不存在");
+        } else if (!passwordEncoder.matches(loginDTO.password(), user.getPassword())) {
             userMapper.incrementLoginAttempts(user.getId());
-            throw new AuthException(400,"密码错误");
-        }
-        else if (user.getStatus() == User.Status.BANNED) {
-            throw new AuthException(403,"账户已被锁定");
-        }
-        else {
-            //什么都不做
+            return (ApiResponse<T>) ApiResponse.error(ResultCode.PARAM_ERROR, "密码错误");
+        } else if (user.getStatus() == User.Status.BANNED) {
+            return (ApiResponse<T>) ApiResponse.error(ResultCode.UNAUTHORIZED, "账户被锁定");
         }
 
         userMapper.updateLoginInfo(user.getId());
-        return user;
+
+        String accessToken = jwtTokenProvider.generateToken(user, 3600000, false);
+        String refreshToken = jwtTokenProvider.generateToken(user, 1209600000, true);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expires = now.plus(1, ChronoUnit.HOURS);
+
+        if (type == LoginType.FRONT) {
+            FrontLoginResponseVO.User userInfo = new FrontLoginResponseVO.User(
+                user.getId(),
+                user.getAvatarUrl(),
+                user.getUsername(),
+                user.getNickName(),
+                user.getRole().name()
+            );
+            FrontLoginResponseVO response = new FrontLoginResponseVO(accessToken, refreshToken, expires, userInfo);
+            return (ApiResponse<T>) ApiResponse.success(response);
+        } else {
+            AdminLoginResponseVO.User userInfo = new AdminLoginResponseVO.User(
+                user.getAvatarUrl(),
+                user.getUsername(),
+                user.getNickName(),
+                user.getRole().name()
+            );
+            AdminLoginResponseVO response = new AdminLoginResponseVO(accessToken, refreshToken, expires, userInfo);
+            return (ApiResponse<T>) ApiResponse.success(response);
+        }
     }
     
     @Override
@@ -74,8 +115,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectByUsernameOrEmail(username);
     }
     @Override
-    public User getUserInfoById(Long id){
-        return userMapper.selectUserById(id);
+    public ApiResponse<User> getUserInfoById(Long id){
+        User user = userMapper.selectUserById(id);
+        return ApiResponse.success(user);
     }
 
     @Override

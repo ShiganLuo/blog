@@ -4,6 +4,7 @@ package com.baofeng.blog.service.impl;
 import com.baofeng.blog.mapper.CommentMapper;
 import com.baofeng.blog.service.CommentService;
 import com.baofeng.blog.entity.Comment;
+import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.front.FrontCommentVO.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -19,8 +20,8 @@ public class CommentServiceImpl implements CommentService {
   private final CommentMapper commentMapper;
 
   @Override
-  public Boolean CreateComment(CreateCommentRequest createCommentRequest) {
-        Integer type = createCommentRequest.type();
+  public ApiResponse<String> CreateComment(CreateCommentRequest createCommentRequest) {
+        String type = createCommentRequest.type();
         Comment comment = new Comment();
         comment.setFromId(createCommentRequest.from_id());
         comment.setContent(createCommentRequest.content());
@@ -29,20 +30,23 @@ public class CommentServiceImpl implements CommentService {
         comment.setAuthorId(createCommentRequest.author_id());
         Integer rowUpdated = commentMapper.insertComment(comment);
 
-        return rowUpdated > 0;
+        return rowUpdated > 0
+          ? ApiResponse.success("创建成功")
+          : ApiResponse.error(400, "创建失败");
 
   }
 
   @Override
-  public Integer getCommentTotal(CommentTotalRequest commentTotalRequest) {
+  public ApiResponse<Integer> getCommentTotal(CommentTotalRequest commentTotalRequest) {
     Long forId = commentTotalRequest.for_id();
-    Integer type = commentTotalRequest.type();
+    String type = commentTotalRequest.type();
     Integer counts = commentMapper.getCommentTotal(forId, type);
-    return counts;
+
+    return ApiResponse.success(counts);
   }
 
   @Override
-  public NotifyPageResponse getNotifyPage(NotifyPageRequest request) {
+  public ApiResponse<NotifyPageResponse> getNotifyPage(NotifyPageRequest request) {
     // 参数校验
     int pageNum = request.current() != null ? request.current() : 1;
     int pageSize = request.size() != null ? request.size() : 10;
@@ -56,11 +60,11 @@ public class CommentServiceImpl implements CommentService {
     response.setTotal(pageInfo.getTotal());    // 总记录数
     response.setList(pageInfo.getList());      // 当前页数据
 
-    return response;
+    return ApiResponse.success(response);
   }
 
   @Override
-  public CommentPageResponse getCommentPage(CommentPageRequest request) {
+  public ApiResponse<CommentPageResponse> getCommentPage(CommentPageRequest request) {
     // 参数校验
     int pageNum = request.current() != null ? request.current() : 1;
     int pageSize = request.size() != null ? request.size() : 10;
@@ -74,16 +78,15 @@ public class CommentServiceImpl implements CommentService {
     response.setTotal(pageInfo.getTotal());    // 总记录数
     response.setList(pageInfo.getList());      // 当前页数据
 
-    return response;
+    return ApiResponse.success(response);
   }
 
   @Override
-  public Boolean deleteCommentById(Long id) {
+  public ApiResponse<String> deleteCommentById(Long id) {
     int rowUpdated = commentMapper.deleteCommentById(id);
-    if ( rowUpdated > 0) {
-      return true;
-    } else {
-      return false;
-    }
+
+    return rowUpdated > 0
+      ? ApiResponse.success("评论删除成功")
+      : ApiResponse.error(400, "评论删除失败");
   }
 } 

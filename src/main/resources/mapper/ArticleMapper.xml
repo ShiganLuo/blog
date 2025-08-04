@@ -32,11 +32,17 @@
     <select id="getArticleById" resultMap="ArticleResultMap">
         SELECT * FROM articles WHERE id = #{id}
     </select>
+    
+    <!--检查文章是否存在-->
+    <select id="selectCountById" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM articles WHERE id = #{id}
+    </select>
 
     <!--获取文章like数-->
     <select id="getLikesById" resultType="java.lang.Long">
         SELECT likes FROM articles WHERE id = #{id}
     </select>
+
     <select id="getAuthorIdById" resultType="java.lang.Long">
         SELECT author_id FROM articles WHERE id = #{id}
     </select>

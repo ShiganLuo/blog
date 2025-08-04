@@ -12,46 +12,29 @@
         <result property="createdAt" column="created_at"/>
     </resultMap>
     
-    <!-- 查询用户是否对文章点赞 -->
-    <select id="getLikeByArticleAndUserId" resultType="java.lang.Long">
+    <!--查询用户点赞记录是否存在-->
+    <select id="selectIdByLikeRequestAndStatus" resultType="java.lang.Long">
         SELECT id FROM likes 
-        WHERE target_type = 'post'
-          AND target_id = #{targetId}
+        WHERE target_id = #{targetId} 
+          AND target_type = #{type}
           AND user_id = #{userId}
-          AND status = 1
-        LIMIT 1
-    </select>
-
-    <!--查询用户对文章点赞记录是否存在-->
-    <select id="getLikeStatusByArticleAndUserId" resultType="java.lang.Long">
-        SELECT id FROM likes 
-        WHERE target_type = 'post'
-          AND target_id = #{targetId}
-          AND user_id = #{userId}
-          AND status = 0
+          AND status = #{status}
         LIMIT 1
     </select>
 
     <!-- 删除（取消）文章点赞，改为逻辑删除 -->
-    <update id="deleteLikeByArticleAndUserId">
-        UPDATE likes SET status = 0
-        WHERE target_type = 'post'
-          AND target_id = #{targetId}
+    <update id="updateLikesByLikeRequestAndStatus">
+        UPDATE likes SET status = #{status}
+        WHERE target_id = #{targetId} 
+          AND target_type = #{type}
           AND user_id = #{userId}
     </update>
 
     <!-- 添加点赞 -->
-    <insert id="addLike" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertLikeByLike" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO likes (user_id, target_type, target_id, status, created_at)
         VALUES (#{userId}, #{targetType}, #{targetId}, #{status}, #{createdAt})
     </insert>
 
-    <!--恢复文章点赞，改为逻辑恢复-->
-    <update id="resumeLikeByArticleAndUserId">
-        UPDATE likes SET status = 1
-        WHERE target_type = 'post'
-          AND target_id = #{targetId}
-          AND user_id = #{userId}
-    </update>
 
 </mapper>

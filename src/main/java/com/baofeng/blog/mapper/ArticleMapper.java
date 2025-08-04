@@ -54,14 +54,14 @@ public interface ArticleMapper {
      * @param id
      * @return
      */
-    Long incrementLikeById(Long id);
+    int incrementLikeById(Long id);
 
     /**
      * 减少文章点赞数
      * @param id
      * @return
      */
-    Long decreaseLikeById(Long id);
+    int decreaseLikeById(Long id);
 
     Article getArticleById(Long id);
     int insertArticle(Article article);
@@ -77,5 +77,11 @@ public interface ArticleMapper {
      */
     int decrementLikesById(Long id);
 
+    /**
+     * 检查文章是否存在
+     * @param id
+     * @return
+     */
+    Boolean selectCountById(Long id);
 
 }

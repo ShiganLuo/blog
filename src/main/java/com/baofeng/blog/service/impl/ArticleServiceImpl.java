@@ -1,5 +1,6 @@
 package com.baofeng.blog.service.impl;
 
+import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.*;
 import com.baofeng.blog.vo.front.FrontArticleVO.*;
@@ -107,7 +108,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticlePageResponseVO getArticlePage(ArticlePageRequestVO request) {
+    public ApiResponse<ArticlePageResponseVO> getArticlePage(ArticlePageRequestVO request) {
         // 参数校验
         int pageNum = request.pageNum() != null ? request.pageNum() : 1;
         int pageSize = request.pageSize() != null ? request.pageSize() : 10;
@@ -124,13 +125,14 @@ public class ArticleServiceImpl implements ArticleService {
         response.setTotal(pageInfo.getTotal());    // 总记录数
         response.setPages(pageInfo.getPages());    // 总页数
         response.setList(pageInfo.getList());      // 当前页数据
-        return response;
+        return ApiResponse.success(response);
     }
 
     @Override
-    public ArticleVO getArticlePageFormById(Long id) {
+    public ApiResponse<ArticleDetailResponse> getArticlePageFormById(Long id) {
         ArticleVO articleVO = articleMapper.getArticlePageFormById(id);
-        return articleVO;
+        ArticleDetailResponse articleDetailResponse = ArticleConvert.convertToDetailResponse(articleVO);
+        return ApiResponse.success(articleDetailResponse);
     }
     @Override
     public boolean publishArticle(Long articleId,Long authorId) {
@@ -302,8 +304,13 @@ public class ArticleServiceImpl implements ArticleService {
         return articleCount;
     }
 
+
     @Override
-    public ArticleDetailResponsePair getPNArticleById(Long id) {
+    public ApiResponse<ArticleRecommendResponse> getRecommendArticleById(Long id) {
+        List<ArticleVO> articleVOs = articleMapper.getRecommendedArticles(id);
+        List<ArticleDetailResponse> recommend = ArticleConvert.convertToDetailResponseList(articleVOs);
+
+        
         ArticleVO prev = articleMapper.getPrevArticle(id);
         ArticleVO next = articleMapper.getNextArticle(id);
         // convertToDetailResponse 已经做了null 判空保护
@@ -322,20 +329,18 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleDetailResponsePair articleDetailResponsePair = new ArticleDetailResponsePair();
         articleDetailResponsePair.setPrevious(prevCt);
         articleDetailResponsePair.setNext(nextCt);
-        return articleDetailResponsePair;
 
+        ArticleRecommendResponse articleRecommendResponse = new ArticleRecommendResponse();
+        articleRecommendResponse.setPrevious(articleDetailResponsePair.getPrevious());
+        articleRecommendResponse.setNext(articleDetailResponsePair.getNext());
+        articleRecommendResponse.setRecommend(recommend);
+
+        return ApiResponse.success(articleRecommendResponse);
     }
 
     @Override
-    public List<ArticleDetailResponse> getRecommendedArticles(Long id) {
-        List<ArticleVO> articleVOs = articleMapper.getRecommendedArticles(id);
-        List<ArticleDetailResponse> recommend = ArticleConvert.convertToDetailResponseList(articleVOs);
-        return recommend;
-    }
-
-    @Override
-    public Long getLikesById(Long id) {
+    public ApiResponse<Long> getLikesById(Long id) {
         Long likes = articleMapper.getLikesById(id);
-        return likes;
+        return ApiResponse.success(likes);
     }
 }
