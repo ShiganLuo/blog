@@ -117,22 +117,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse<User> getUserInfoById(Long id){
         User user = userMapper.selectUserById(id);
-        return ApiResponse.success(user);
+        return user != null
+            ? ApiResponse.success(user)
+            : ApiResponse.error(ResultCode.PARAM_ERROR,"用户不存在");
     }
 
     @Override
-    public boolean updateUserRole(Long id, String role) {
+    public ApiResponse<String> updateUserRole(Long id, String role) {
         User user = userMapper.selectUserById(id);
         if (user != null) {
             user.setRole(User.Role.valueOf(role.toUpperCase()));
             userMapper.updateUserSelective(user);
-            return true;
+            return ApiResponse.success();
         }
-        return false;
+        return ApiResponse.error(ResultCode.SERVER_ERROR,"角色更新失败");
     }
 
     @Override
-    public userPageResponse getUserList(userPageRequest param) {
+    public ApiResponse<userPageResponse> getUserList(userPageRequest param) {
         int offset = (param.getCurrent() - 1) * param.getSize();
         int pageSize = param.getSize();
         // 先查询 User 列表
@@ -154,12 +156,49 @@ public class UserServiceImpl implements UserService {
         userPageResponse result = new userPageResponse();
         result.setList(voList);
         result.setTotal(total);
-        return result;
+        return ApiResponse.success(result);
     }
     @Override
-    public boolean updatePassword(String username,String newPassword){
+    public ApiResponse<String> updatePassword(String username,String newPassword){
 
         int result = userMapper.updatePassword(username, passwordEncoder.encode(newPassword));
-        return result > 0;
+        return result > 0
+            ? ApiResponse.success()
+            : ApiResponse.error(ResultCode.SERVER_ERROR,"密码更新失败");
+    }
+
+    @Override
+    public ApiResponse<refreshTokenResponse> refreshToken(String rawToken) {
+        String refreshToken = rawToken.replaceAll("^\"|\"$", "");
+        boolean success = jwtTokenProvider.isTokenExpired(refreshToken);
+        if ( success ){
+            String username = jwtTokenProvider.getUserNameFromToken(refreshToken);
+            User user = userMapper.selectByUsernameOrEmail(username);
+            String accessToken = jwtTokenProvider.generateToken(user, 3600000,false);
+            refreshTokenResponse response = new refreshTokenResponse();
+            response.setAccessToken(accessToken);
+            response.setRefreshToken(refreshToken);
+            response.setExpires(LocalDateTime.now().plus(1, ChronoUnit.HOURS));
+            return ApiResponse.success(response);
+        } else {
+            return ApiResponse.error(ResultCode.PARAM_ERROR,"refreshToken验证失败");
+        }
+    }
+
+    @Override
+    public ApiResponse<User> getUserInfoByToken(String BearerToken) {
+        String token = BearerToken.substring(7); // 去除 "Bearer " 前缀获取真正的 token
+        // 验证 token 并获取用户名
+        String username = jwtTokenProvider.getUserNameFromToken(token);
+
+        if (username == null) {
+            return ApiResponse.error(ResultCode.PARAM_ERROR, "无效的 token");
+        }
+        // 根据用户名查询数据库返回用户信息
+        User user = userMapper.selectByUsernameOrEmail(username);
+        if (user == null) {
+            return ApiResponse.error(ResultCode.PARAM_ERROR, "未找到用户信息");
+        }
+        return ApiResponse.success(user);
     }
 } 

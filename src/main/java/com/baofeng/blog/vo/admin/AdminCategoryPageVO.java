@@ -4,6 +4,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 public class AdminCategoryPageVO {
     /**
      * 创建响应目录字典
@@ -17,6 +20,7 @@ public class AdminCategoryPageVO {
      * 创建分类请求参数
      */
     public record CreateCategoryRequest(
+        @NotNull(message = "分类名称不能为空")
         String name,         // 分类名称
         String description   // 分类描述
     ) {}
@@ -25,7 +29,12 @@ public class AdminCategoryPageVO {
      * 分类分页请求参数
      */
     public record CategoryPageRequestVO(
+        @NotNull(message = "页码不能为空")
+        @Min(value = 1, message = "页码必须大于等于1")
         Integer pageNum,     // 当前页码
+        
+        @NotNull(message = "每页显示条数不能为空")
+        @Min(value = 1, message = "每页显示条数必须大于等于1")
         Integer pageSize,    // 每页显示条数
         String keyword      // 可选，搜索关键词
     ) {}

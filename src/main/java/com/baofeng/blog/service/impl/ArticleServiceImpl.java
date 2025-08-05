@@ -5,6 +5,7 @@ import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.*;
 import com.baofeng.blog.vo.front.FrontArticleVO.*;
 import com.baofeng.blog.util.ArticleConvert;
+import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.entity.*;
 import com.baofeng.blog.mapper.*;
 import com.baofeng.blog.service.ArticleService;
@@ -40,8 +41,9 @@ public class ArticleServiceImpl implements ArticleService {
     private final TagMapper tagMapper;
     @Value("${app.upload.dir}")
     private String uploadDir;
+
     @Override
-    public Long createArticle(CreateArticleRequest articleRequest) throws Exception {
+    public ApiResponse<Long> createArticle(CreateArticleRequest articleRequest){
         Article article = new Article();
         article.setTitle(articleRequest.title());
         article.setContent(articleRequest.content());
@@ -50,7 +52,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setViews((long) 0 );
         Long authorId = userMapper.getIdByUsername(articleRequest.author());
         if ( authorId == null) {
-            throw new Exception("没有此用户");
+            return ApiResponse.error(ResultCode.PARAM_ERROR,"用户不存在");
         }
         article.setAuthorId(authorId);
         article.setStatus(Article.ArticleStatus.DRAFT);
@@ -61,50 +63,46 @@ public class ArticleServiceImpl implements ArticleService {
         if(rowsInserted > 0){
             //插入后自动回填文章id
             Long articleId = article.getId();
-            return articleId;
+            return ApiResponse.success(articleId);
         }else{
-            return null;
+            return ApiResponse.error(ResultCode.SERVER_ERROR);
         }
     }
 
     @Override
-    public boolean deleteArticle(Long id){
+    public ApiResponse<String> deleteArticle(Long id){
         int rowsDeleted = articleMapper.deleteArticle(id);
-
-        if (rowsDeleted > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return rowsDeleted > 0 
+            ? ApiResponse.success()
+            : ApiResponse.error(ResultCode.NOT_FOUND,"文章未找到");
     }
 
     @Override
-    public Article getArticleById(Long id){
+    public ApiResponse<Article> getArticleById(Long id){
         Article article = articleMapper.getArticleById(id);
-        return article;
+        return article != null 
+            ? ApiResponse.success(article)
+            : ApiResponse.error(ResultCode.NOT_FOUND);
     }
 
     @Override
-    public boolean updateArticleSelective(Article article){
+    public ApiResponse<String> updateArticleSelective(Article article){
         int rowsUpdated = articleMapper.updateArticleSelective(article);
-        if ( rowsUpdated > 0 ){
-            return true;
-        } else {
-            return false;
-        }
+        return rowsUpdated > 0 
+            ? ApiResponse.success()
+            : ApiResponse.error(ResultCode.PARAM_ERROR);
     }
 
     @Override
-    public boolean updatePinStaus(Long id,boolean isPinned){
+    public ApiResponse<String> updatePinStaus(Long id,boolean isPinned){
         Article article = new Article();
         article.setId(id);
         article.setIsFeatured(isPinned);
         int rowsUpdated = articleMapper.updateArticleSelective(article);
-        if ( rowsUpdated > 0 ){
-            return true;
-        } else {
-            return false;
-        }
+
+        return rowsUpdated > 0
+            ? ApiResponse.success()
+            : ApiResponse.error(ResultCode.PARAM_ERROR);
     }
 
     @Override
@@ -135,22 +133,27 @@ public class ArticleServiceImpl implements ArticleService {
         return ApiResponse.success(articleDetailResponse);
     }
     @Override
-    public boolean publishArticle(Long articleId,Long authorId) {
+    public ApiResponse<String> publishArticle(Long articleId,Long authorId) {
         Long articleAuthorId = articleMapper.getAuthorIdById(articleId);
         if ( articleAuthorId == authorId ) {
             Article article = new Article();
             article.setId(articleId);
             article.setStatus(Article.ArticleStatus.PUBLISHED);
             article.setPublishedAt(LocalDateTime.now());
-            return updateArticleSelective(article);
+            int rowsUpdated = articleMapper.updateArticleSelective(article);
+            return rowsUpdated > 0
+                ? ApiResponse.success()
+                : ApiResponse.error(ResultCode.SERVER_ERROR);
         } else {
-            return false;
+            return ApiResponse.error(ResultCode.PARAM_ERROR, "作者ID与文章实际作者ID不一致");
         }
     }
     @Override
-    public boolean isTitleExist(String title){
+    public ApiResponse<String> isTitleExist(String title){
         boolean isDuplicated = articleMapper.isTitleExist(title);
-        return isDuplicated;
+        return isDuplicated
+            ? ApiResponse.error(ResultCode.PARAM_ERROR,"标题已存在")
+            : ApiResponse.success("可以使用该标题");
     }
     /**
      * 存储图片到服务器并返回相对路径
@@ -165,29 +168,37 @@ public class ArticleServiceImpl implements ArticleService {
      * @return 图片的相对路径
      * @throws IOException 如果存储失败
      */
-    public String storeImage(MultipartFile imageFile,Long articleId) throws IOException {
-        System.out.println(articleId);
+    public ApiResponse<String> storeImage(MultipartFile imageFile,Long articleId) {
+        Article article1 = articleMapper.getArticleById(articleId);
+        if ( article1 == null ) {
+            return ApiResponse.error(ResultCode.PARAM_ERROR,"文章不存在");
+        }
         // 检查文件是否为空
         if (imageFile == null || imageFile.isEmpty()) {
-            throw new IllegalArgumentException("Image file cannot be null or empty");
+            return ApiResponse.error(ResultCode.PARAM_ERROR, "文件不能为空");
         }
 
         // 获取文件名并检查
         String originalFilename = imageFile.getOriginalFilename();
         if (originalFilename == null || originalFilename.isBlank()) {
-            throw new IllegalArgumentException("Original filename cannot be null or blank");
+            return ApiResponse.error(ResultCode.PARAM_ERROR, "文件名不能为空");
         }
 
         // 检查文件扩展名
         int lastDotIndex = originalFilename.lastIndexOf('.');
         if (lastDotIndex == -1) {
-            throw new IllegalArgumentException("File has no extension");
+            return ApiResponse.error(ResultCode.PARAM_ERROR, "文件没有扩展名");
         }
 
         // 确保上传目录存在
         Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+        try {
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); 
+            return ApiResponse.error(ResultCode.SERVER_ERROR,"创建目录失败");
         }
         
         // 生成唯一文件名
@@ -196,7 +207,13 @@ public class ArticleServiceImpl implements ArticleService {
         
         // 存储文件
         Path filePath = uploadPath.resolve(uniqueFilename);
-        Files.copy(imageFile.getInputStream(), filePath);
+        try {
+            Files.copy(imageFile.getInputStream(), filePath);
+        } catch (IOException e) {
+            e.printStackTrace(); 
+            return ApiResponse.error(ResultCode.SERVER_ERROR,"文件存储失败");
+        }
+        
         
         //前端实际访问图片地址
         String lastDir = uploadPath.getFileName().toString();
@@ -237,19 +254,22 @@ public class ArticleServiceImpl implements ArticleService {
         articleImage.setArticleId(articleId);
         articleImage.setImageId(imageId);
         int rowsUpdated2 = imageMapper.insertArticleImage(articleImage);
-        if (rowsUpdated > 0 && rowsUpdated1 > 0 && rowsUpdated2 > 0) {
-            return imagePath;
-        } else {
-            throw new IOException("Failed to update article with image path");
-        }
+
+        return rowsUpdated > 0 && rowsUpdated1 > 0 && rowsUpdated2 > 0 
+            ? ApiResponse.success(imagePath)
+            : ApiResponse.error(ResultCode.SERVER_ERROR);
     }
+
     @Override
-    public boolean addCategory(CategoryRequest request) {
+    public ApiResponse<String> addCategory(CategoryRequest request) {
         String categoryName = request.getCategoryName();
         Long articleId = request.getArticleId();
         Category newCategory = new Category();
         newCategory.setName(categoryName);
-       
+        Article article = articleMapper.getArticleById(articleId);
+        if ( article == null ) {
+            return ApiResponse.error(ResultCode.PARAM_ERROR,"文章不存在");
+        }
         boolean flag = categoryMapper.checkExactName(categoryName);
         if ( !flag ) {
             int rowsInserted = categoryMapper.createCategory(newCategory);
@@ -258,20 +278,21 @@ public class ArticleServiceImpl implements ArticleService {
             articleCategory.setArticleId(articleId);
             articleCategory.setCategoryId(newCategoryId);
             int rowsInserted1 = categoryMapper.insertCategoryReflect(articleCategory);
-            if ( rowsInserted1 > 0  && rowsInserted > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return rowsInserted1 > 0  && rowsInserted > 0
+                ? ApiResponse.success()
+                : ApiResponse.error(ResultCode.SERVER_ERROR,"文章分类设置失败");
         }
-        return true;
-        
+        return ApiResponse.error(ResultCode.PARAM_ERROR,"文章分类已存在");
     }
 
     @Override
-    public boolean addTag(TagRequest request) {
+    public ApiResponse<String> addTag(TagRequest request) {
         List<String> tagNames = request.getTagNames();
         Long articleId = request.getArticleId();
+        Article article = articleMapper.getArticleById(articleId);
+        if ( article == null ) {
+            return ApiResponse.error(ResultCode.PARAM_ERROR,"文章不存在");
+        }
         int tagNamesLen = 0;
         int rowsInserted = 0;
         int rowsInserted1 = 0;
@@ -291,11 +312,9 @@ public class ArticleServiceImpl implements ArticleService {
                 rowsInserted1 += tagMapper.insertArticleTag(articleTag);
             }
         }
-        if ( rowsInserted >= tagNamesLen && rowsInserted1 >= tagNamesLen) {
-            return true;
-        } else {
-            return false;
-        }
+        return rowsInserted >= tagNamesLen && rowsInserted1 >= tagNamesLen
+            ? ApiResponse.success()
+            : ApiResponse.error(ResultCode.SERVER_ERROR,"文章标签设置失败");
     }
 
     @Override

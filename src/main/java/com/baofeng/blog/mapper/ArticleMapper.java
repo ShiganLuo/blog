@@ -64,6 +64,7 @@ public interface ArticleMapper {
     int decreaseLikeById(Long id);
 
     Article getArticleById(Long id);
+    
     int insertArticle(Article article);
     int updateArticle(Article article);
     int deleteArticle(Long id);

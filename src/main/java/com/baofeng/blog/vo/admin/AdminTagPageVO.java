@@ -4,11 +4,15 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 public class AdminTagPageVO {
     /**
      * 创建标签请求参数
      */
     public record CreateTagRequest(
+        @NotNull(message = "标签名称不能为空")
         String name         // 标签名称
     ) {}
 
@@ -16,7 +20,12 @@ public class AdminTagPageVO {
      * 标签分页请求参数
      */
     public record TagPageRequestVO(
+        @NotNull(message = "页码不能为空")
+        @Min(value = 1, message = "页码必须大于等于1")
         Integer pageNum,     // 当前页码
+        
+        @NotNull(message = "每页显示条数不能为空")
+        @Min(value = 1, message = "每页显示条数必须大于等于1")
         Integer pageSize,    // 每页显示条数
         String keyword      // 可选，搜索关键词
     ) {}

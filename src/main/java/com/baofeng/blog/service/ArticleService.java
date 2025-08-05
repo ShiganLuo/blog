@@ -4,13 +4,10 @@ import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
-import com.baofeng.blog.vo.common.Article.ArticleVO;
 import com.baofeng.blog.vo.front.FrontArticleVO.ArticleDetailResponse;
-import com.baofeng.blog.vo.front.FrontArticleVO.ArticleDetailResponsePair;
 import com.baofeng.blog.vo.front.FrontArticleVO.ArticleRecommendResponse;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,12 +20,42 @@ public interface ArticleService {
      */
     public ApiResponse<ArticlePageResponseVO> getArticlePage(ArticlePageRequestVO request);
 
+    /**
+     * 创建文章
+     * @param articleRequest
+     * @return
+     * @throws Exception
+     */
+    public ApiResponse<Long> createArticle(CreateArticleRequest articleRequest);
 
-    Long createArticle(CreateArticleRequest articleRequest) throws Exception;
-    boolean deleteArticle(Long id);
-    Article getArticleById(Long id);
-    boolean updateArticleSelective(Article article);
-    boolean updatePinStaus(Long id,boolean isPinned);
+    /**
+     * 删除文章
+     * @param id
+     * @return
+     */
+    public ApiResponse<String> deleteArticle(Long id);
+
+    /**
+     * 根据id获取文章
+     * @param id
+     * @return
+     */
+    public ApiResponse<Article> getArticleById(Long id);
+
+    /**
+     * 更新文章
+     * @param article
+     * @return
+     */
+    public ApiResponse<String> updateArticleSelective(Article article);
+
+    /**
+     * 更新文章置顶状态
+     * @param id
+     * @param isPinned
+     * @return
+     */
+    public ApiResponse<String> updatePinStaus(Long id,boolean isPinned);
 
 
 
@@ -46,8 +73,20 @@ public interface ArticleService {
      */
     public ApiResponse<Long> getLikesById(Long id);
     
-    boolean publishArticle(Long articleId,Long authorId);
-    boolean isTitleExist(String title);
+    /**
+     * 发表文章
+     * @param articleId
+     * @param authorId
+     * @return
+     */
+    public ApiResponse<String> publishArticle(Long articleId,Long authorId);
+
+    /**
+     * 判断文章标题是否存在
+     * @param title
+     * @return
+     */
+    public ApiResponse<String> isTitleExist(String title);
 
     /**
      * 上传文章封面
@@ -56,21 +95,21 @@ public interface ArticleService {
      * @return
      * @throws IOException
      */
-    String storeImage(MultipartFile imageFile,Long articleId) throws IOException;
+    public ApiResponse<String> storeImage(MultipartFile imageFile,Long articleId);
 
     /**
      * 设置文章分类
      * @param CategoryRequest
      * @return boolean
      */
-    boolean addCategory(CategoryRequest request);
+    public ApiResponse<String> addCategory(CategoryRequest request);
 
     /**
      * 设置文章标签
      * @param TagRequest
      * @return boolean
      */
-    boolean addTag(TagRequest request);
+    public ApiResponse<String> addTag(TagRequest request);
 
     /**
      * 统计文章总数

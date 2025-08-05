@@ -7,6 +7,7 @@ import com.baofeng.blog.mapper.TagMapper;
 import com.baofeng.blog.mapper.CategoryMapper;
 import com.baofeng.blog.entity.BlogSetting;
 import com.baofeng.blog.service.BlogSettingService;
+import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminBlogSettingVO.initSettingRequest;
 import com.baofeng.blog.vo.front.FrontBlogSettinVO.configDetail;
@@ -34,10 +35,10 @@ public class BlogSettingServiceImpl implements BlogSettingService {
             : ApiResponse.error(400, "访问量增加失败");
     }
     @Override
-    public boolean initSetting(initSettingRequest request){
+    public ApiResponse<String> initSetting(initSettingRequest request){
         BlogSetting settring1 = blogSettingMapper.getSettingById((long) 1);
         if ( settring1 != null) {
-            return false; // 默认第一条记录为博客系统设置
+            return ApiResponse.error(ResultCode.PARAM_ERROR,"博客系统设置已存在"); // 默认第一条记录为博客系统设置
         }
         BlogSetting setting = new BlogSetting();
         setting.setSiteTitle(null == request.siteTitle() ? "" : request.siteTitle());
@@ -58,16 +59,14 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         setting.setVisitCount(0);
         setting.setEnableComments(false);
         int success = blogSettingMapper.insertSetting(setting);
-        if ( success > 0 ) {
-            return true;
-        } else {
-            return false;
-        }
+        return success > 0
+            ? ApiResponse.success("网站初始化成功")
+            : ApiResponse.error(ResultCode.SERVER_ERROR, "网站初始化失败");
 
     }
 
     @Override
-    public boolean updateSettingById(initSettingRequest request) {
+    public ApiResponse<String> updateSettingById(initSettingRequest request) {
         BlogSetting setting = new BlogSetting();
         setting.setId((long) 1);// 默认第一条记录为博客系统设置
         setting.setSiteTitle(null == request.siteTitle() ? "" : request.siteTitle());
@@ -88,11 +87,9 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         setting.setEnableComments(request.enableComments());
         setting.setVisitCount(0);
         int success = blogSettingMapper.updateSettingById(setting);
-        if ( success > 0 ) {
-            return true;
-        } else {
-            return false;
-        }
+        return success > 0
+            ? ApiResponse.success("网站设置更新成功")
+            : ApiResponse.error(ResultCode.SERVER_ERROR, "网站设置更新失败");
     }
 
     @Override

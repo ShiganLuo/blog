@@ -17,22 +17,21 @@ public interface TagService {
      * @param request 分页查询参数
      * @return 分页结果
      */
-    TagPageResponseVO getTagPage(TagPageRequestVO request);
+    public ApiResponse<TagPageResponseVO> getTagPage(TagPageRequestVO request);
 
     /**
      * 创建标签
      * @param request 创建标签请求
      * @return 是否创建成功
      */
-    boolean createTag(CreateTagRequest request);
+    public ApiResponse<String> createTag(CreateTagRequest request);
 
     /**
      * 删除标签
      * @param id 标签ID
      * @return 是否删除成功
-     * @throws RuntimeException 当标签不存在或标签下有文章时抛出
      */
-    boolean deleteTag(Long id);
+    public ApiResponse<String> deleteTag(Long id);
 
     /**
      * 获取标签字典

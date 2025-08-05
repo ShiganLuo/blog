@@ -22,7 +22,27 @@
         <result property="createTime" column="created_at"/>
         <result property="updateTime" column="updated_at"/>
     </resultMap>
-    
+
+    <select id="getCategoryPage" resultMap="CategoryPageResultMap">
+        SELECT 
+            c.id, c.name, c.description, 
+            c.created_at, c.updated_at,
+            COUNT(a.id) AS article_count
+        FROM categories c
+        LEFT JOIN article_categories ac ON c.id = ac.category_id
+        LEFT JOIN articles a ON ac.article_id = a.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    c.name LIKE CONCAT('%', #{keyword}, '%') 
+                    OR c.description LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
+        GROUP BY c.id, c.name, c.description, c.created_at, c.updated_at
+        ORDER BY c.created_at DESC
+    </select>
+
     <!-- article_categories结果映射-->
     <resultMap id="articleCategoriesResultMap" type="com.baofeng.blog.entity.ArticleCategory">
         <id property="id" column="id"/>
@@ -46,6 +66,11 @@
         INSERT INTO article_categories (article_id, category_id, created_at, updated_at)
         VALUES (#{articleId}, #{categoryId}, NOW(), NOW())
     </insert>
+
+    <!-- 获取分类下的文章数量 -->
+    <select id="getArticleCount" resultType="int">
+        SELECT COUNT(*) FROM article_categories WHERE category_id = #{id}
+    </select>
 
     <!--获取所有分类名-->
     <select id="getAllCategoryName">
@@ -75,33 +100,10 @@
         SELECT * FROM categories WHERE id = #{id}
     </select>
 
-    <!-- 获取分类下的文章数量 -->
-    <select id="getArticleCount" resultType="int">
-        SELECT COUNT(*) FROM articles WHERE category_id = #{id}
-    </select>
-
     <!-- 删除分类 -->
     <delete id="deleteCategory">
         DELETE FROM categories WHERE id = #{id}
     </delete>
-
-    <!-- 分页查询分类列表 -->
-    <select id="getCategoryPage" resultMap="CategoryPageResultMap">
-        SELECT 
-            c.id, c.name, c.description, 
-            c.created_at, c.updated_at,
-            COUNT(a.id) as article_count
-        FROM categories c
-        LEFT JOIN articles a ON c.id = a.category_id
-        <where>
-            <if test="keyword != null and keyword != ''">
-                AND (c.name LIKE CONCAT('%', #{keyword}, '%') 
-                OR c.description LIKE CONCAT('%', #{keyword}, '%'))
-            </if>
-        </where>
-        GROUP BY c.id, c.name, c.description, c.created_at, c.updated_at
-        ORDER BY c.created_at DESC
-    </select>
 
     <resultMap id="TagResultMap" type="com.baofeng.blog.vo.admin.AdminCategoryPageVO$CategoryDictionaryResponse">
         <id property="id" column="id"/>

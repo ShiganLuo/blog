@@ -10,6 +10,7 @@ import com.baofeng.blog.vo.common.Tag.TagDictionaryResponse;
 import com.baofeng.blog.entity.Tag;
 import com.baofeng.blog.mapper.TagMapper;
 import com.baofeng.blog.service.TagService;
+import com.baofeng.blog.util.ResultCode;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class TagServiceImpl implements TagService {
     private final TagMapper tagMapper;
 
     @Override
-    public TagPageResponseVO getTagPage(TagPageRequestVO request) {
+    public ApiResponse<TagPageResponseVO> getTagPage(TagPageRequestVO request) {
         // 参数校验
         int pageNum = request.pageNum() != null ? request.pageNum() : 1;
         int pageSize = request.pageSize() != null ? request.pageSize() : 10;
@@ -43,40 +44,44 @@ public class TagServiceImpl implements TagService {
         response.setTotal(pageInfo.getTotal());    // 总记录数
         response.setPages(pageInfo.getPages());    // 总页数
         response.setList(pageInfo.getList());      // 当前页数据
-        return response;
+        return ApiResponse.success(response);
     }
 
     @Override
-    public boolean createTag(CreateTagRequest request) {
+    public ApiResponse<String> createTag(CreateTagRequest request) {
         // 检查标签名称是否已存在
         if (tagMapper.getTagByName(request.name()) != null) {
-            throw new RuntimeException("标签名称已存在");
+            return ApiResponse.error(ResultCode.PARAM_ERROR,"标签名称已存在");
         }
 
         // 创建标签
         Tag tag = new Tag();
         tag.setName(request.name());
-
+        int rowsUpdated = tagMapper.createTag(tag);
         // 保存标签
-        return tagMapper.createTag(tag) > 0;
+        return rowsUpdated > 0 
+            ? ApiResponse.success()
+            : ApiResponse.error(ResultCode.SERVER_ERROR,"标签创建失败");
     }
 
     @Override
-    public boolean deleteTag(Long id) {
+    public ApiResponse<String> deleteTag(Long id) {
         // 检查标签是否存在
         Tag tag = tagMapper.getTagById(id);
         if (tag == null) {
-            throw new RuntimeException("标签不存在");
+            return ApiResponse.error(ResultCode.PARAM_ERROR,"标签不存在");
         }
 
         // 检查标签下是否有文章
         int articleCount = tagMapper.getArticleCount(id);
         if (articleCount > 0) {
-            throw new RuntimeException("该标签下还有" + articleCount + "篇文章，无法删除");
+            return ApiResponse.error(ResultCode.PARAM_ERROR,"该标签下还有" + articleCount + "篇文章，无法删除");
         }
-
+        int rowsDeleted = tagMapper.deleteTag(id);
         // 删除标签
-        return tagMapper.deleteTag(id) > 0;
+        return rowsDeleted > 0
+            ? ApiResponse.success()
+            : ApiResponse.error(ResultCode.SERVER_ERROR,"删除失败");
     }
     @Override
     public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(){

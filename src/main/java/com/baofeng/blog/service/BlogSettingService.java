@@ -10,8 +10,19 @@ public interface BlogSettingService {
      */
     public ApiResponse<String> addViews();
 
-    boolean initSetting(initSettingRequest request);
-    boolean updateSettingById(initSettingRequest request);
+    /**
+     * 初始化网站设置
+     * @param request
+     * @return
+     */
+    public ApiResponse<String> initSetting(initSettingRequest request);
+
+    /**
+     * 更新网站设置
+     * @param request
+     * @return
+     */
+    public ApiResponse<String> updateSettingById(initSettingRequest request);
 
     /**
      * 获取网站设置

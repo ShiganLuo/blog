@@ -25,17 +25,7 @@ public class AdminArticleController {
      */
     @PostMapping("/create")
     public ApiResponse<Long> createArticle(@RequestBody CreateArticleRequest articleRequest) {
-        try {
-            Long articleId = articleService.createArticle(articleRequest);
-            if ( articleId != null) {
-                return ApiResponse.success(articleId);
-            }else{
-                return ApiResponse.error(400, "创建失败");
-            }
-        } catch (Exception e) {
-            return ApiResponse.error(400, "创建失败: "+e.getMessage());
-        }
-
+        return articleService.createArticle(articleRequest);
     }
     /**
      * 发表文章
@@ -46,12 +36,8 @@ public class AdminArticleController {
     public ApiResponse<String> publishArticle(@RequestBody JsonNode requestBody) {
         Long articleId = requestBody.get("articleId").asLong(); // 从请求体中提取用户名
         Long authorId = requestBody.get("authorId").asLong(); // 提取新密码
-        boolean success = articleService.publishArticle(articleId,authorId);
-        if ( success ){
-            return ApiResponse.success(null);
-        } else {
-            return ApiResponse.error(400, "发表失败");
-        }
+        return articleService.publishArticle(articleId,authorId);
+        
     }
     /**
      * 根据id删除文章
@@ -60,13 +46,9 @@ public class AdminArticleController {
      */
     @DeleteMapping("/deleteArticleById/{id}")
     public ApiResponse<String> deleteArticle(@PathVariable Long id){
-        boolean success = articleService.deleteArticle(id);
-        if (success) {
-            return ApiResponse.success(null);
-        } else {
-            return ApiResponse.error(404, "文章未找到");
-        }
+        return articleService.deleteArticle(id);
     }
+
     /**
      * 根据id获取文章
      * @param id 文章id
@@ -74,30 +56,22 @@ public class AdminArticleController {
      */
     @GetMapping("/getArticleById/{id}")
     public ApiResponse<Article> getArticleById(@PathVariable Long id){
-        Article article = articleService.getArticleById(id);
-        if (article !=null ) {
-            return ApiResponse.success(article);
-        } else {
-            return ApiResponse.error(404, "文章不存在");
-        }
+        return articleService.getArticleById(id);
     }
+
     /**
-     * 更新文章
+     * 更新文章（作者信息是否可以更新？）
      * @param article 文章
      * @return 分页结果
      */
     @PostMapping("/update")
     public ApiResponse<String> updateArticleSelective(@RequestBody Article article){
-        if ( article.getId() == null){
+        if ( article.getId() == null) {
             return ApiResponse.error(400,"文章id不能为空");
-        }else {
-            boolean success =  articleService.updateArticleSelective(article);
-            if (success) {
-                return ApiResponse.success(null);
-            } else {
-                return ApiResponse.error(400, "更新失败");
-            }
         }
+        
+        return articleService.updateArticleSelective(article);
+
     }
 
     /**
@@ -108,12 +82,7 @@ public class AdminArticleController {
      */
     @PutMapping("/isTop/{id}/{isPinned}")
     public ApiResponse<String> updataPinStaus(@PathVariable Long id,@PathVariable boolean isPinned){
-        boolean success = articleService.updatePinStaus(id,isPinned);
-        if ( success ) {
-            return ApiResponse.success(null);
-        } else {
-            return ApiResponse.error(400, "文章状态更新失败");
-        }
+        return articleService.updatePinStaus(id,isPinned);
     }
 
     /**
@@ -146,6 +115,7 @@ public class AdminArticleController {
     private boolean isValidSortOrder(String sortOrder) {
         return sortOrder == null || sortOrder.equalsIgnoreCase("asc") || sortOrder.equalsIgnoreCase("desc");
     }
+
     /**
      * 判断文章标题是否重复
      * @param title 文章标题
@@ -153,19 +123,10 @@ public class AdminArticleController {
      */
     @PostMapping("/titleExist")
     public ApiResponse<String> titleExist(@RequestBody String title) {
-        try {
-            boolean isDuplicated = articleService.isTitleExist(title);
-            if ( !isDuplicated ) {
-                return ApiResponse.success("标题不存在");
-            } else {
-                return ApiResponse.error(400, "标题已存在");
-            }
-        } catch (Exception e){
-            return ApiResponse.error(400, "错误："+ e.getMessage());
-
-        }
+        return articleService.isTitleExist(title);
 
     }
+
     /**
      * 封面图片上传接口
      * @param file 图片文件
@@ -173,44 +134,21 @@ public class AdminArticleController {
      */
     @PostMapping("/uploadCover")
     public ApiResponse<String> uploadCover(@RequestParam("file") MultipartFile file,@RequestParam("articleId") Long articleId) {
-        try {
-            String imageUrl = articleService.storeImage(file,articleId);
-            return ApiResponse.success(imageUrl);
-        } catch (Exception e) {
-            return ApiResponse.error(500, "上传失败：" + e.getMessage());
-        }
+        return articleService.storeImage(file,articleId);
     }
     /**
      * 增加分类接口,如果表中没有则添加
      */
     @PostMapping("/uploadCategory")
     public ApiResponse<String> uploadCategory(@RequestBody CategoryRequest request){
-        try {
-            boolean success = articleService.addCategory(request);
-            if ( success ) {
-                return ApiResponse.success(null);
-            } else {
-                return ApiResponse.error(400, "文章分类设置失败");
-            }
-        } catch ( Exception e) {
-            return ApiResponse.error(400, "文章分类设置失败："+ e.getMessage());
-        }
+        return articleService.addCategory(request);
     }
     /**
      * 增加标签接口,如果表中没有则添加
      */
     @PostMapping("/uploadTag")
     public ApiResponse<String> uploadTag(@RequestBody TagRequest request) {
-        try {
-            boolean success = articleService.addTag(request);
-            if ( success ) {
-                return ApiResponse.success(null);
-            } else {
-                return ApiResponse.error(400, "文章标签设置失败");
-            }
-        } catch ( Exception e ) {
-            return ApiResponse.error(400, "文章标签设置失败" + e.getMessage());
-        }
+        return articleService.addTag(request);
     }
 }
 

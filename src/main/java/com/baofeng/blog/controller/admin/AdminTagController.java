@@ -6,14 +6,11 @@ import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
 import com.baofeng.blog.vo.common.Tag.TagDictionaryResponse;
-import com.baofeng.blog.entity.Tag;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.validation.annotation.Validated;
 
@@ -31,27 +28,8 @@ public class AdminTagController {
      * @return 创建结果
      */
     @PostMapping("/create")
-    public ApiResponse<String> createTag(@RequestBody CreateTagRequest request) {
-        // 参数校验
-        if (request == null) {
-            return ApiResponse.error(400, "请求参数不能为空");
-        }
-        if (request.name() == null || request.name().trim().isEmpty()) {
-            return ApiResponse.error(400, "标签名称不能为空");
-        }
-        
-        try {
-            boolean success = tagService.createTag(request);
-            if (success) {
-                return ApiResponse.success(null);
-            } else {
-                return ApiResponse.error(500, "创建标签失败");
-            }
-        } catch (RuntimeException e) {
-            return ApiResponse.error(400, e.getMessage());
-        } catch (Exception e) {
-            return ApiResponse.error(500, "创建失败：" + e.getMessage());
-        }
+    public ApiResponse<String> createTag(@Validated @RequestBody CreateTagRequest request) {        
+        return tagService.createTag(request);
     }
 
     /**
@@ -61,18 +39,7 @@ public class AdminTagController {
      */
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteTag(@PathVariable Long id) {
-        try {
-            boolean success = tagService.deleteTag(id);
-            if (success) {
-                return ApiResponse.success(null);
-            } else {
-                return ApiResponse.error(500, "删除标签失败");
-            }
-        } catch (RuntimeException e) {
-            return ApiResponse.error(400, e.getMessage());
-        } catch (Exception e) {
-            return ApiResponse.error(500, "删除失败：" + e.getMessage());
-        }
+        return tagService.deleteTag(id);
     }
 
     /**
@@ -82,22 +49,7 @@ public class AdminTagController {
      */
     @PostMapping("/list")
     public ApiResponse<TagPageResponseVO> getTagPage(@RequestBody TagPageRequestVO request) {
-        // 参数校验
-        if (request == null) {
-            return ApiResponse.error(400, "请求参数不能为空");
-        }
-        if (request.pageNum() != null && request.pageNum() < 1) {
-            return ApiResponse.error(400, "页码必须大于0");
-        }
-        if (request.pageSize() != null && request.pageSize() < 1) {
-            return ApiResponse.error(400, "每页显示条数必须大于0");
-        }
-        
-        try {
-            return ApiResponse.success(tagService.getTagPage(request));
-        } catch (Exception e) {
-            return ApiResponse.error(500, "查询失败：" + e.getMessage());
-        }
+        return tagService.getTagPage(request);
     }
     /**
      * 查询标签列表

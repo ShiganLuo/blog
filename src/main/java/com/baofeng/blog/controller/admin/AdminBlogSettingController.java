@@ -17,16 +17,7 @@ public class AdminBlogSettingController {
     private final BlogSettingService blogSettingService;
     @PostMapping("/initSetting")
     public ApiResponse<String> initSetting(@RequestBody AdminBlogSettingVO.initSettingRequest request){
-        try {
-            boolean success = blogSettingService.initSetting(request);
-            if ( success ){
-                return ApiResponse.success("网站初始化成功");
-            } else {
-                return ApiResponse.error(400, "网站初始化失败");
-            }
-        } catch(Exception e){
-            return ApiResponse.error(400, "网站初始化失败" + e.getMessage());
-        }
+        return blogSettingService.initSetting(request);
 
     }
     @PutMapping("/addView")
@@ -36,16 +27,7 @@ public class AdminBlogSettingController {
 
     @PostMapping("/changeSetting")
     public ApiResponse<String> changeSetting(@RequestBody AdminBlogSettingVO.initSettingRequest request){
-        try {
-            boolean success = blogSettingService.updateSettingById(request);
-            if ( success ){
-                return ApiResponse.success("网站设置更新成功");
-            } else {
-                return ApiResponse.error(400, "网站设置更新失败");
-            }
-        } catch(Exception e){
-            return ApiResponse.error(400, "网站设置更新失败" + e.getMessage());
-        }
+        return blogSettingService.updateSettingById(request);
     }
 
 } 

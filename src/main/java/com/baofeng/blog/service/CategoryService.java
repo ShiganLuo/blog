@@ -1,5 +1,6 @@
 package com.baofeng.blog.service;
 
+import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryDictionaryResponse;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageResponseVO;
@@ -12,14 +13,14 @@ public interface CategoryService {
      * @param request 分页查询参数
      * @return 分页结果
      */
-    CategoryPageResponseVO getCategoryPage(CategoryPageRequestVO request);
+    public ApiResponse<CategoryPageResponseVO> getCategoryPage(CategoryPageRequestVO request);
 
     /**
      * 创建分类
      * @param request 创建分类请求
      * @return 是否创建成功
      */
-    boolean createCategory(CreateCategoryRequest request);
+    public ApiResponse<String> createCategory(CreateCategoryRequest request);
 
     /**
      * 删除分类
@@ -27,12 +28,13 @@ public interface CategoryService {
      * @return 是否删除成功
      * @throws RuntimeException 当分类不存在或分类下有文章时抛出
      */
-    boolean deleteCategory(Long id);
+    public ApiResponse<String> deleteCategory(Long id);
+
     /**
      * 获取目录字典列表
      * @return
      */
-    List<CategoryDictionaryResponse> getCategoryDictionary();
+    public ApiResponse<List<CategoryDictionaryResponse>> getCategoryDictionary();
 
     /**
      * 计算分类总数

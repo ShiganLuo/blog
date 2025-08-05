@@ -12,13 +12,25 @@ import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
 public interface UserService {
     User registerUser(RegisterRequest registerDTO);
     /**
-     * 登录
+     * 前台登录
      * @param loginDTO
      * @return
      */
     public ApiResponse<FrontLoginResponseVO> loginUserFront(LoginRequest loginDTO);
 
+    /**
+     * 后台登录
+     * @param loginDTO
+     * @return
+     */
     public ApiResponse<AdminLoginResponseVO> loginUserAdmin(LoginRequest loginDTO);
+
+    /**
+     * 刷新token
+     * @param rawToken
+     * @return
+     */
+    public ApiResponse<refreshTokenResponse> refreshToken(String rawToken);
 
     User getUserByUsername(String username);
     /**
@@ -28,7 +40,27 @@ public interface UserService {
      */
     public ApiResponse<User> getUserInfoById(Long id);
     
-    boolean updateUserRole(Long id, String role);
-    userPageResponse getUserList(userPageRequest param);
-    boolean updatePassword(String username,String newPassword);
+    public ApiResponse<String> updateUserRole(Long id, String role);
+
+    /**
+     * 获取用户列表
+     * @param param
+     * @return
+     */
+    public ApiResponse<userPageResponse> getUserList(userPageRequest param);
+
+    /**
+     * 根据token获取用户信息
+     * @param BearerToken
+     * @return
+     */
+    public ApiResponse<User> getUserInfoByToken(String BearerToken);
+
+    /**
+     * 更新用户密码
+     * @param username
+     * @param newPassword
+     * @return
+     */
+    public ApiResponse<String> updatePassword(String username,String newPassword);
 } 
