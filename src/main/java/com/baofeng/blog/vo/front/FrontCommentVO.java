@@ -91,4 +91,19 @@ public class FrontCommentVO {
         private Boolean showApplyInput;
     }
 
+
+    /**
+     * 通用评论筛选请求
+     */
+    public record SelectCommentRequest(
+        Integer current,
+        Integer size,
+        String type,
+        Long for_id,
+        String order
+    ) {}
+
+
+
+    
 }

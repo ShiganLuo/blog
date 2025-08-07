@@ -2,6 +2,9 @@ package com.baofeng.blog.service;
 
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.front.FrontCommentVO.*;
+import com.baofeng.blog.entity.Comment;
+
+import java.util.List;
 
 public interface CommentService {
 
@@ -38,6 +41,14 @@ public interface CommentService {
      * @param id
      * @return
      */
-     public ApiResponse<String> deleteCommentById(Long id);
+    public ApiResponse<String> deleteCommentById(Long id);
+
+    /**
+     * 获取某评论的子评论
+     * @param commentId
+     * @return
+     */
+    public ApiResponse<List<Comment>> getChildComment(Long commentId);
+
 
 } 

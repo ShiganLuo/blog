@@ -12,7 +12,7 @@ public class Comment {
     private String type; // 评论对象类型（post=文章评论，comment=回复评论）
     private Long authorId; // 作者ID
     private Long likes; // 点赞数
-    private Boolean isDelated; // 逻辑删除标志
+    private Boolean isDeleted; // 逻辑删除标志
     private Boolean status; // 评论审核状态
     private LocalDateTime createdAt; // 评论创建时间
     private LocalDateTime updatedAt; // 评论修改时间

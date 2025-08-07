@@ -2,11 +2,16 @@ package com.baofeng.blog.controller.front;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 import org.springframework.validation.annotation.Validated;
 
+import com.baofeng.blog.entity.Comment;
 import com.baofeng.blog.service.CommentService;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.front.FrontCommentVO.*;
+
 
 @RestController
 @RequestMapping("/api/front/comments")
@@ -57,11 +62,20 @@ public class FrontCommentController {
         return commentService.getCommentPage(request);
     }
 
+    /**
+     * 根据id删除评论
+     * @param id
+     * @return
+     */
     @GetMapping("/deleteCommentById/{id}")
     public ApiResponse<String> deleteCommentById(@PathVariable Long id) {
         return commentService.deleteCommentById(id);
     }
 
+    @GetMapping("/getChileComment/{id}")
+    public ApiResponse<List<Comment>> getChileCommentById(@PathVariable Long id) {
+        return commentService.getChildComment(id);
+    }
 
     
 }

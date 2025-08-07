@@ -89,4 +89,11 @@ public class CommentServiceImpl implements CommentService {
       ? ApiResponse.success("评论删除成功")
       : ApiResponse.error(400, "评论删除失败");
   }
+
+  @Override
+  public ApiResponse<List<Comment>> getChildComment(Long commentId) {
+    List<Comment> comments = commentMapper.selectChildComment(commentId);
+    return ApiResponse.success(comments);
+  }
+
 } 

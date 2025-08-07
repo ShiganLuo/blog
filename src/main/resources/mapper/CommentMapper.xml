@@ -73,6 +73,7 @@
         <result property="createdAt" column="created_at"/>
         <result property="thumbs_up" column="likes"/>
     </resultMap>
+    
     <select id="getCommentPage" resultMap="CommentPageResultMap">
         SELECT 
             c.id, c.from_id, u.username AS from_name, u.avatar_url AS from_avatar, 
@@ -101,8 +102,17 @@
     </update>
 
     <!--检查评论是否存在-->
-    <select id="selectCountById" parameterType="int" resultType="boolean">
+    <select id="selectCountById" resultType="boolean">
         SELECT COUNT(*) > 0 FROM likes WHERE id = #{id}
     </select>
 
+    <!--获取评论的子评论-->
+    <select id="selectChildComment" resultMap="BaseResultMap">
+        SELECT *
+        FROM comments
+        WHERE type = 'comment'
+        AND for_id = #{commentId}
+        AND is_deleted = 0
+        ORDER BY created_at ASC
+    </select>
 </mapper> 

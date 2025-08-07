@@ -66,4 +66,18 @@ public interface CommentMapper {
      * @return
      */
     Boolean selectCountById(Long id);
+
+    /**
+     * 获取某评论的所有子评论
+     * @param commentId
+     * @return
+     */
+    List<Comment> selectChildComment(Long commentId);
+
+    /**
+     * 通用筛选评论接口
+     * @param request
+     * @return
+     */
+    List<Comment> selectComments(SelectCommentRequest request);
 } 

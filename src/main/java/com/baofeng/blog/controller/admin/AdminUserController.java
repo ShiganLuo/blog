@@ -2,7 +2,6 @@ package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.service.UserService;
-import com.baofeng.blog.util.JwtTokenProvider;
 import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
