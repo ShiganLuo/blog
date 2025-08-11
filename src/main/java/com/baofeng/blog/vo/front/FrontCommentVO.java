@@ -63,8 +63,30 @@ public class FrontCommentVO {
     public record CommentPageRequest(
         Integer current,
         Integer size,
-        String order // new or hot(time or views)
-    ) {}
+        String type,
+        Long for_id,
+        String order // new or hot
+    ) {
+        public CommentPageRequest {
+            if (current == null) {
+                throw new IllegalArgumentException("当前页不能为空");
+            }
+            if (size == null) {
+                throw new IllegalArgumentException("每页数量不能为空");
+            }
+            if (current < 1) {
+                throw new IllegalArgumentException("当前页必须大于等于 1");
+            }
+            if (size < 1) {
+                throw new IllegalArgumentException("每页数量必须大于等于 1");
+            }
+            if (order != null && !order.isEmpty()) {
+            if (!order.equals("new") && !order.equals("hot")) {
+                throw new IllegalArgumentException("order 参数只能是 'new' 或 'hot'");
+            }
+        }
+        }
+    }
 
     /**
      * 评论分页响应体

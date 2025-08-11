@@ -74,12 +74,37 @@
         <result property="thumbs_up" column="likes"/>
     </resultMap>
     
-    <select id="getCommentPage" resultMap="CommentPageResultMap">
+    <select id="getCommentsByCondition" resultMap="CommentPageResultMap" parameterType="map">
         SELECT 
-            c.id, c.from_id, u.username AS from_name, u.avatar_url AS from_avatar, 
-            c.content, c.created_at, c.likes
+            c.id, 
+            c.from_id, 
+            u.username AS from_name, 
+            u.avatar_url AS from_avatar, 
+            c.content, 
+            c.created_at, 
+            c.likes
         FROM comments c
-        LEFT JOIN users u ON c.author_id = u.id
+        LEFT JOIN users u ON c.from_id = u.id
+        <where>
+            <if test="type != null and type != ''">
+                AND c.type = #{type}
+            </if>
+            <if test="for_id != null">
+                AND c.for_id = #{for_id}
+            </if>
+            AND c.is_deleted = 0 AND c.status = 1
+        </where>
+        <choose>
+        <when test="order == 'new'">
+            ORDER BY c.created_at DESC
+        </when>
+        <when test="order == 'hot'">
+            ORDER BY c.likes DESC
+        </when>
+        <otherwise>
+            ORDER BY c.created_at ASC
+        </otherwise>
+        </choose>
     </select>
 
     <!--删除评论-->

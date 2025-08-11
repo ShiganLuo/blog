@@ -70,7 +70,7 @@ public class CommentServiceImpl implements CommentService {
     int pageSize = request.size() != null ? request.size() : 10;
     // 开启分页
     PageHelper.startPage(pageNum, pageSize);
-    List<CommentResponse> list = commentMapper.getCommentPage(request);
+    List<CommentResponse> list = commentMapper.getCommentsByCondition(request);
     // 获取分页信息
     PageInfo<CommentResponse> pageInfo = new PageInfo<>(list);
     // 封装返回结果

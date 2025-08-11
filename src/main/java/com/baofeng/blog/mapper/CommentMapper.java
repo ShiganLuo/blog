@@ -37,7 +37,7 @@ public interface CommentMapper {
      * @param commentPageRequest
      * @return
      */
-    List<CommentResponse> getCommentPage(CommentPageRequest commentPageRequest);
+    List<CommentResponse> getCommentsByCondition(CommentPageRequest commentPageRequest);
 
     /**
      * 根据id删除评论
