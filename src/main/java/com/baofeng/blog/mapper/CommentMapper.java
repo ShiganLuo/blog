@@ -74,10 +74,4 @@ public interface CommentMapper {
      */
     List<Comment> selectChildComment(Long commentId);
 
-    /**
-     * 通用筛选评论接口
-     * @param request
-     * @return
-     */
-    List<Comment> selectComments(SelectCommentRequest request);
 } 
