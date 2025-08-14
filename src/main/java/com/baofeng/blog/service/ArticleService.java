@@ -6,6 +6,8 @@ import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
 import com.baofeng.blog.vo.front.FrontArticleVO.ArticleDetailResponse;
 import com.baofeng.blog.vo.front.FrontArticleVO.ArticleRecommendResponse;
+import com.baofeng.blog.vo.front.FrontArticleVO.TimeLineRequest;
+import com.baofeng.blog.vo.front.FrontArticleVO.TimeLineResponse;
 
 import java.io.IOException;
 
@@ -123,4 +125,11 @@ public interface ArticleService {
      * @return List<>
      */
     public ApiResponse<ArticleRecommendResponse> getRecommendArticleById(Long id);
+
+    /**
+     * 输出按创建顺序排列的文章
+     * @param request
+     * @return
+     */
+    public ApiResponse<TimeLineResponse> getTimeLine(TimeLineRequest request);
 }

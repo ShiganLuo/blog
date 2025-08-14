@@ -48,5 +48,22 @@ public class FrontArticleVO {
         private ArticleDetailResponse next;
     }
 
+    public record TimeLineRequest(
+        Integer current,
+        Integer size
+    ) {}
+
+    @Data
+    public static class ArticleTimeLineResponse {
+        private Long id;
+        private String article_title;
+        private String article_cover;
+        private LocalDateTime createdAt;
+    }
+    @Data
+    public static class TimeLineResponse {
+        private Long total;
+        private List<ArticleTimeLineResponse> list;
+    }
 
 }

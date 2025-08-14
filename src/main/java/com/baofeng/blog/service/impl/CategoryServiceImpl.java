@@ -1,7 +1,7 @@
 package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryDictionaryResponse;
+import com.baofeng.blog.vo.common.Category.CategoriesResponse;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageResponseVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryVO;
@@ -83,8 +83,8 @@ public class CategoryServiceImpl implements CategoryService {
          : ApiResponse.error(ResultCode.SERVER_ERROR,"删除失败");
     }
     @Override
-    public ApiResponse<List<CategoryDictionaryResponse>> getCategoryDictionary(){
-        List<CategoryDictionaryResponse> categoryDictionaryList = categoryMapper.getAllCategories();
+    public ApiResponse<List<CategoriesResponse>> getCategoryDictionary(){
+        List<CategoriesResponse> categoryDictionaryList = categoryMapper.getAllCategories();
         return ApiResponse.success(categoryDictionaryList);
     }
 

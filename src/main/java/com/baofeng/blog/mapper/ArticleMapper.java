@@ -2,6 +2,7 @@ package com.baofeng.blog.mapper;
 import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.*;
+import com.baofeng.blog.vo.front.FrontArticleVO.ArticleTimeLineResponse;
 
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
@@ -85,4 +86,9 @@ public interface ArticleMapper {
      */
     Boolean selectCountById(Long id);
 
+    /**
+     * 获取按文章创建时间排序的对象
+     * @return
+     */
+    List<ArticleTimeLineResponse> selectArticleOrderedByCreatedAt();
 }

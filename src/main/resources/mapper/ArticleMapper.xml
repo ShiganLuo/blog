@@ -125,7 +125,7 @@
         <result property="article_description" column="summary"/>
         <result property="article_content" column="content"/>
         <result property="view_times" column="views"/>
-        <result property="commentCount" column="comments_count"/>
+        <result property="commentsCount" column="comments_count"/>
         <result property="thumbs_up_times" column="likes"/>
         <result property="type" column="type"/>
         <result property="originUrl" column="origin_url"/>
@@ -268,6 +268,18 @@
         LIMIT #{limit}
     </select>
 
+    <resultMap id="TimeLineMap" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleTimeLineResponse">
+    <id property="id" column="id"/>
+    <result property="article_title" column="title"/>
+    <result property="article_cover" column="cover_image"/>
+    <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="selectArticleOrderedByCreatedAt" resultMap="TimeLineMap">
+        SELECT id, title, cover_image, created_at
+        FROM articles
+        ORDER BY created_at DESC
+    </select>
 
 
 

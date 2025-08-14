@@ -8,14 +8,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public class AdminCategoryPageVO {
-    /**
-     * 创建响应目录字典
-     */
-    @Data
-    public static class CategoryDictionaryResponse{
-        private long id;
-        private String name;
-    }
+
     /**
      * 创建分类请求参数
      */

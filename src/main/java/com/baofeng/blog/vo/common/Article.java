@@ -27,7 +27,7 @@ public class Article {
         private String article_description;
         private String article_content;
         private Integer view_times;
-        private Integer commentCount;
+        private Integer commentsCount;
         private Integer thumbs_up_times;
         private Integer type;
         private String originUrl;

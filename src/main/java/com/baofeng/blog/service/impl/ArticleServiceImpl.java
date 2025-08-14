@@ -362,4 +362,24 @@ public class ArticleServiceImpl implements ArticleService {
         Long likes = articleMapper.getLikesById(id);
         return ApiResponse.success(likes);
     }
+
+    @Override
+    public ApiResponse<TimeLineResponse> getTimeLine(TimeLineRequest request) {
+        // 参数校验
+        int pageNum = request.current() != null ? request.current() : 1;
+        int pageSize = request.size() != null ? request.size() : 10;
+        
+        // 开启分页
+        PageHelper.startPage(pageNum, pageSize);
+        // 执行查询
+        List<ArticleTimeLineResponse> list = articleMapper.selectArticleOrderedByCreatedAt();
+        // 获取分页信息
+        PageInfo<ArticleTimeLineResponse> pageInfo = new PageInfo<>(list);
+        
+        // 封装返回结果
+        TimeLineResponse response = new TimeLineResponse();
+        response.setTotal(pageInfo.getTotal());    // 总记录数
+        response.setList(pageInfo.getList());      // 当前页数据
+        return ApiResponse.success(response);
+    }
 }

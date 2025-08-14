@@ -20,7 +20,7 @@ public class ArticleConvert {
 
         articleDetailResponse.setId(articleVO.getId());
         articleDetailResponse.setAuthorName(
-            articleVO.getAuthor() != null ? articleVO.getAuthor().getAuthorNickname() : null
+            articleVO.getAuthor() != null ? articleVO.getAuthor().getAuthorName() : null
         );
         articleDetailResponse.setType(articleVO.getType());
         articleDetailResponse.setOrigin_url(articleVO.getOriginUrl());

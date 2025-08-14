@@ -2,7 +2,7 @@ package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.service.CategoryService;
 import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryDictionaryResponse;
+import com.baofeng.blog.vo.common.Category.CategoriesResponse;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageResponseVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CreateCategoryRequest;
@@ -52,7 +52,7 @@ public class AdminCategoryController {
      * 返回目录字典
      */
     @GetMapping("/getCategoryDictionary")
-    public ApiResponse<List<CategoryDictionaryResponse>> getCategoryDictionary(){
+    public ApiResponse<List<CategoriesResponse>> getCategoryDictionary(){
         return categoryService.getCategoryDictionary();
     }
 }

@@ -74,4 +74,9 @@ public class FrontArticleController {
     public ApiResponse<ArticleRecommendResponse> getRecommendArticleById(@PathVariable Long id){
         return articleService.getRecommendArticleById(id);
     }
+
+    @PostMapping("/getTimeLineArticle")
+    public ApiResponse<TimeLineResponse> getTimeLineArticle(TimeLineRequest request){
+        return articleService.getTimeLine(request);
+    }
 }

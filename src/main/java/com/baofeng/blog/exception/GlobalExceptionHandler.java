@@ -55,6 +55,7 @@ public class GlobalExceptionHandler {
     // 空指针等运行时异常
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ApiResponse<?>> handleNpe(NullPointerException ex) {
+        System.out.println(ex.getMessage());
         return ResponseEntity.status(500).body(ApiResponse.error(500, "服务器内部错误"));
     }
 
