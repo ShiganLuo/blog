@@ -2,7 +2,6 @@ package com.baofeng.blog.filter;
 
 import com.baofeng.blog.service.CustomUserDetailsService;
 import com.baofeng.blog.util.JwtTokenProvider;
-import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.ResponseUtil;
 
 import jakarta.servlet.FilterChain;

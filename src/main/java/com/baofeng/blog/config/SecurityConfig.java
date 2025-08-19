@@ -23,7 +23,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http,JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/admin/users/register","/api/admin/users/login","/api/admin/users/refreshToken","/api/front/**").permitAll()
+                .requestMatchers("/api/admin/users/register",
+                    "/api/admin/users/login",
+                    "/api/admin/users/refreshToken",
+                    "/api/front/**",
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
+                    "/v3/api-docs",
+                    "/v3/api-docs/**",
+                    "/v3/api-docs.yaml"
+                    ).permitAll()
                 .anyRequest().authenticated() // 需要身份验证的请求
             )
             .csrf(csrf -> csrf.disable())

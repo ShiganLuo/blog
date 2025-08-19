@@ -2,7 +2,6 @@ package com.baofeng.blog.service;
 
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
-import com.baofeng.blog.vo.front.FrontTagVO;
 import com.baofeng.blog.entity.Tag;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;

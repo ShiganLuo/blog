@@ -1,7 +1,6 @@
 package com.baofeng.blog.mapper;
 
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagVO;
-import com.baofeng.blog.vo.front.FrontTagVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.entity.ArticleTag;
 import com.baofeng.blog.entity.Tag;
