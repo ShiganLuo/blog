@@ -8,6 +8,7 @@ target/
 api-docs.md
 export-api2md
 openapi.json
+export-api2md.sh
 
 
 
