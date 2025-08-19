@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3308/blog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3307/blog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -28,4 +28,4 @@ jwt:
   expiration: 86400000  # 24小时
 app:
   upload:
-    dir: /ChIP_seq_2/Data/uploads  # 顶层属性
+    dir: /home/luosg/uploads  # 顶层属性,全路径

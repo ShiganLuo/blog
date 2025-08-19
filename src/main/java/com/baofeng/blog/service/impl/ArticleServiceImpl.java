@@ -217,7 +217,7 @@ public class ArticleServiceImpl implements ArticleService {
         
         //前端实际访问图片地址
         String lastDir = uploadPath.getFileName().toString();
-        String imagePath = "http://10.135.4.3/"+ lastDir + "/" + uniqueFilename;
+        String imagePath = "localhost/"+ lastDir + "/" + uniqueFilename;
         // 更新articles表
         Article article = new Article();
         article.setId(articleId);
