@@ -268,14 +268,14 @@
         LIMIT #{limit}
     </select>
 
-    <resultMap id="TimeLineMap" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleTimeLineResponse">
+    <resultMap id="ArticleAbstractMap" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleAbstractResponse">
     <id property="id" column="id"/>
     <result property="article_title" column="title"/>
     <result property="article_cover" column="cover_image"/>
     <result property="createdAt" column="created_at"/>
     </resultMap>
 
-    <select id="selectArticleOrderedByCreatedAt" resultMap="TimeLineMap">
+    <select id="selectArticleOrderedByCreatedAt" resultMap="ArticleAbstractMap">
         SELECT id, title, cover_image, created_at
         FROM articles
         ORDER BY created_at DESC
@@ -283,28 +283,30 @@
 
 
     <!--根据标签id查询文章列表-->
-    <select id="selectArticlesByTagId" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleTimeLineResponse">
+    <select id="selectArticlesByTagId" resultMap="ArticleAbstractMap">
         SELECT 
             a.id, 
-            a.cover_image AS article_cover,
-            a.title AS article_title,
+            a.cover_image,
+            a.title,
             a.created_at
         FROM articles a
-        INNER JOIN article_tags at ON a.id = at.article_id
+        LEFT JOIN article_tags at ON a.id = at.article_id
         WHERE at.tag_id = #{tagId}
         ORDER BY a.created_at DESC
     </select>
+
     <!--根据目录id查询文章列表-->
-    <select id="selectArticlesByCategoryId" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleTimeLineResponse">
+    <select id="selectArticlesByCategoryId" resultMap="ArticleAbstractMap">
         SELECT 
             a.id, 
-            a.cover_image AS article_cover,
-            a.title AS article_title,
+            a.cover_image,
+            a.title,
             a.created_at
         FROM articles a
-        INNER JOIN article_categories ac ON a.id = ac.article_id
+        LEFT JOIN article_categories ac ON a.id = ac.article_id
         WHERE ac.category_id = #{categoryId}
         ORDER BY a.created_at DESC
     </select>
+
 
 </mapper>

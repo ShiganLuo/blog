@@ -4,10 +4,7 @@ import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
-import com.baofeng.blog.vo.front.FrontArticleVO.ArticleDetailResponse;
-import com.baofeng.blog.vo.front.FrontArticleVO.ArticleRecommendResponse;
-import com.baofeng.blog.vo.front.FrontArticleVO.TimeLineRequest;
-import com.baofeng.blog.vo.front.FrontArticleVO.TimeLineResponse;
+import com.baofeng.blog.vo.front.FrontArticleVO.*;
 
 import java.io.IOException;
 
@@ -131,19 +128,19 @@ public interface ArticleService {
      * @param request
      * @return
      */
-    public ApiResponse<TimeLineResponse> getTimeLine(TimeLineRequest request);
+    public ApiResponse<ArticleAbstractsResponse> getTimeLine(TimeLineRequest request);
 
-    // /**
-    //  * 根据标签ID查询文章
-    //  * @param tagId
-    //  * @return
-    //  */
-    // public ApiResponse<TimeLineResponse> getArticlesByTagId(long tagId);
+    /**
+     * 根据标签ID查询文章
+     * @param tagId
+     * @return
+     */
+    public ApiResponse<ArticleAbstractsResponse> getArticlesByTagId(CategoryOrTagRequest request);
 
-    // /**
-    //  * 根据分类ID查询文章
-    //  * @param categoryId
-    //  * @return
-    //  */
-    // public ApiResponse<TimeLineResponse> getArticlesByCategoryId(long categoryId);
+    /**
+     * 根据分类ID查询文章
+     * @param categoryId
+     * @return
+     */
+    public ApiResponse<ArticleAbstractsResponse> getArticlesByCategoryId(CategoryOrTagRequest request);
 }

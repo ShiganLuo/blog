@@ -2,8 +2,7 @@ package com.baofeng.blog.mapper;
 import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.*;
-import com.baofeng.blog.vo.front.FrontArticleVO.ArticleTimeLineResponse;
-import com.baofeng.blog.vo.front.FrontArticleVO.TimeLineResponse;
+import com.baofeng.blog.vo.front.FrontArticleVO.ArticleAbstractResponse;
 
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
@@ -91,19 +90,19 @@ public interface ArticleMapper {
      * 获取按文章创建时间排序的对象
      * @return
      */
-    List<ArticleTimeLineResponse> selectArticleOrderedByCreatedAt();
+    List<ArticleAbstractResponse> selectArticleOrderedByCreatedAt();
 
     /**
      * 根据标签ID查询文章
      * @param tagId
      * @return
      */
-    ArticleTimeLineResponse selectArticlesByTagId(Long tagId);
+    List<ArticleAbstractResponse> selectArticlesByTagId(Long tagId);
 
     /**
      * 根据分类ID查询文章
      * @param categoryId
      * @return
      */
-    ArticleTimeLineResponse selectArticlesByCategoryId(Long categoryId);
+    List<ArticleAbstractResponse> selectArticlesByCategoryId(Long categoryId);
 }

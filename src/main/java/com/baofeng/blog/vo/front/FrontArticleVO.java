@@ -54,22 +54,22 @@ public class FrontArticleVO {
     ) {}
 
     @Data
-    public static class ArticleTimeLineResponse {
+    public static class ArticleAbstractResponse {
         private Long id;
         private String article_title;
         private String article_cover;
         private LocalDateTime createdAt;
     }
     @Data
-    public static class TimeLineResponse {
+    public static class ArticleAbstractsResponse {
         private Long total;
-        private List<ArticleTimeLineResponse> list;
+        private List<ArticleAbstractResponse> list;
     }
 
     public record CategoryOrTagRequest(
         Integer current,
         Integer size,
-        Integer id
+        Long id
     ) {}
 
 }

@@ -14,7 +14,7 @@ mybatis:
   type-aliases-package: com.baofeng.blog.entity # 设置类型别名包路径（用于 POJO）会搜索该路径下所有mapper
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 配置日志输出（可选）
-    map-underscore-to-camel-case: true  # 开启下划线到驼峰命名的映射
+    map-underscore-to-camel-case: true  # 开启下划线到驼峰命名的映射;注意了java类的属性名必须是驼峰命名，如果直接映射的话。
     default-enum-type-handler: org.apache.ibatis.type.EnumTypeHandler
 pagehelper:
   helper-dialect: mysql       # 数据库方言
@@ -30,3 +30,8 @@ app:
   upload:
     dir: /home/luosg/uploads  # 顶层属性,全路径
     ipPrefix: http://localhost
+minio:
+  endpoint: http://127.0.0.1:9000   # MinIO服务地址
+  accessKey: admin             # 账号
+  secretKey: 12345678            # 密码
+  bucket: my-bucket                 # 默认存储桶

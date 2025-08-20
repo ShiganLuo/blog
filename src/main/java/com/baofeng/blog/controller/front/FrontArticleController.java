@@ -9,6 +9,9 @@ import com.baofeng.blog.service.ArticleService;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -76,7 +79,28 @@ public class FrontArticleController {
     }
 
     @PostMapping("/getTimeLineArticle")
-    public ApiResponse<TimeLineResponse> getTimeLineArticle(TimeLineRequest request){
+    public ApiResponse<ArticleAbstractsResponse> getTimeLineArticle(TimeLineRequest request){
         return articleService.getTimeLine(request);
     }
+
+    /**
+     * 根据分类ID获取文章列表
+     * @param request
+     * @return
+     */
+    @PostMapping("/getArticlesByCategoryId")
+    public ApiResponse<ArticleAbstractsResponse> getArticlesByCategoryId(@RequestBody CategoryOrTagRequest request) {
+        return articleService.getArticlesByCategoryId(request);
+    }
+
+    /**
+     * 根据标签ID获取文章列表
+     * @param request
+     * @return
+     */
+    @PostMapping("/getArticlesByTagId")
+    public ApiResponse<ArticleAbstractsResponse> getArticlesByTagId(@RequestBody CategoryOrTagRequest request) {
+        return articleService.getArticlesByTagId(request); 
+    }
+    
 }

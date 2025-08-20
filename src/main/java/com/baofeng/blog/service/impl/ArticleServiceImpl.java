@@ -8,6 +8,8 @@ import com.baofeng.blog.util.ArticleConvert;
 import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.entity.*;
 import com.baofeng.blog.mapper.*;
+import com.baofeng.blog.util.MinioService;
+
 import com.baofeng.blog.service.ArticleService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -25,24 +27,38 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.time.LocalDateTime;
 import java.util.List;
 
 
 
 @Service
-// 替代@Autowerid显示注入
-@RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
     private final ArticleMapper articleMapper;
     private final ImageMapper imageMapper;
     private final UserMapper userMapper;
     private final CategoryMapper categoryMapper;
     private final TagMapper tagMapper;
+    private final MinioService minioService;
     @Value("${app.upload.dir}")
     private String uploadDir;
     @Value("${app.upload.ipPrefix}")
     private String ipPrefix;
+
+    public ArticleServiceImpl(MinioService minioService,
+                              ArticleMapper articleMapper,
+                              ImageMapper imageMapper,
+                              UserMapper userMapper,
+                              CategoryMapper categoryMapper,
+                              TagMapper tagMapper) {
+        this.minioService = minioService;
+        this.articleMapper = articleMapper;
+        this.imageMapper = imageMapper;
+        this.userMapper = userMapper;
+        this.categoryMapper = categoryMapper;
+        this.tagMapper = tagMapper;
+    }
 
     @Override
     public ApiResponse<Long> createArticle(CreateArticleRequest articleRequest){
@@ -157,6 +173,7 @@ public class ArticleServiceImpl implements ArticleService {
             ? ApiResponse.error(ResultCode.PARAM_ERROR,"标题已存在")
             : ApiResponse.success("可以使用该标题");
     }
+    
     /**
      * 存储图片到服务器并返回相对路径
      * @param imageFile 上传的图片文件
@@ -164,85 +181,71 @@ public class ArticleServiceImpl implements ArticleService {
      * @throws IOException 如果存储失败
      */
     @Override
-    /**
-     * 存储图片到服务器并返回相对路径
-     * @param imageFile 上传的图片文件
-     * @return 图片的相对路径
-     * @throws IOException 如果存储失败
-     */
-    public ApiResponse<String> storeImage(MultipartFile imageFile,Long articleId) {
+    public ApiResponse<String> storeImage(MultipartFile imageFile, Long articleId) {
+        // 1. 检查文章是否存在
         Article article1 = articleMapper.getArticleById(articleId);
-        if ( article1 == null ) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"文章不存在");
+        if (article1 == null) {
+            return ApiResponse.error(ResultCode.PARAM_ERROR, "文章不存在");
         }
-        // 检查文件是否为空
+
+        // 2. 检查文件是否为空
         if (imageFile == null || imageFile.isEmpty()) {
             return ApiResponse.error(ResultCode.PARAM_ERROR, "文件不能为空");
         }
 
-        // 获取文件名并检查
+        // 3. 获取文件名并检查
         String originalFilename = imageFile.getOriginalFilename();
         if (originalFilename == null || originalFilename.isBlank()) {
             return ApiResponse.error(ResultCode.PARAM_ERROR, "文件名不能为空");
         }
 
-        // 检查文件扩展名
+        // 4. 检查扩展名
         int lastDotIndex = originalFilename.lastIndexOf('.');
         if (lastDotIndex == -1) {
             return ApiResponse.error(ResultCode.PARAM_ERROR, "文件没有扩展名");
         }
 
-        // 确保上传目录存在
-        Path uploadPath = Paths.get(uploadDir);
-        try {
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-        } catch (IOException e) {
-            e.printStackTrace(); 
-            return ApiResponse.error(ResultCode.SERVER_ERROR,"创建目录失败");
-        }
-        
-        // 生成唯一文件名
+        // 5. 生成唯一文件名
         String fileExtension = originalFilename.substring(lastDotIndex);
         String uniqueFilename = UUID.randomUUID() + fileExtension;
-        
-        // 存储文件
-        Path filePath = uploadPath.resolve(uniqueFilename);
+
+        String imagePath;
         try {
-            Files.copy(imageFile.getInputStream(), filePath);
-        } catch (IOException e) {
-            e.printStackTrace(); 
-            return ApiResponse.error(ResultCode.SERVER_ERROR,"文件存储失败");
+            // ===== 使用 MinioService 上传 =====
+            minioService.uploadFile(
+                    uniqueFilename,
+                    imageFile.getInputStream(),
+                    imageFile.getSize(),
+                    imageFile.getContentType()
+            );
+
+            // 获取可访问地址
+            imagePath = minioService.getPermanentFileUrl(uniqueFilename);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ApiResponse.error(ResultCode.SERVER_ERROR, "文件存储失败");
         }
-        
-        
-        //前端实际访问图片地址
-        String lastDir = uploadPath.getFileName().toString();
-        String imagePath = ipPrefix + "/" + lastDir + "/" + uniqueFilename;
-        // 更新articles表
+
+        // 6. 更新 articles 表
         Article article = new Article();
         article.setId(articleId);
         article.setCoverImage(imagePath);
         int rowsUpdated = articleMapper.updateArticleSelective(article);
 
-        // 更新images表
+        // 7. 插入 images 表
         Image image = new Image();
         long bytes = imageFile.getSize();
-        long kilobytes = bytes / 1024; // 取整（直接除以 1024，自动舍去小数）
+        long kilobytes = bytes / 1024;
         String contentType = imageFile.getContentType();
         String username = null;
-        //获取当前认证用户
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
-            // 获取用户名
             username = authentication.getName();
-            // 进行相关操作
             System.out.println("Current user: " + username);
-        } else {
-           
-            System.out.println("No user is authenticated");
         }
+
         image.setFilePath(imagePath);
         image.setFileName(uniqueFilename);
         image.setFileSize(kilobytes);
@@ -250,17 +253,18 @@ public class ArticleServiceImpl implements ArticleService {
         image.setCreatedBy(username);
         int rowsUpdated1 = imageMapper.insertImage(image);
         Long imageId = imageMapper.getImageIdByfilePath(imagePath);
-        
-        //更新articles_images表
+
+        // 8. 插入 articles_images 表
         ArticleImage articleImage = new ArticleImage();
         articleImage.setArticleId(articleId);
         articleImage.setImageId(imageId);
         int rowsUpdated2 = imageMapper.insertArticleImage(articleImage);
 
-        return rowsUpdated > 0 && rowsUpdated1 > 0 && rowsUpdated2 > 0 
-            ? ApiResponse.success(imagePath)
-            : ApiResponse.error(ResultCode.SERVER_ERROR);
+        return rowsUpdated > 0 && rowsUpdated1 > 0 && rowsUpdated2 > 0
+                ? ApiResponse.success(imagePath)
+                : ApiResponse.error(ResultCode.SERVER_ERROR);
     }
+
 
     @Override
     public ApiResponse<String> addCategory(CategoryRequest request) {
@@ -366,7 +370,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ApiResponse<TimeLineResponse> getTimeLine(TimeLineRequest request) {
+    public ApiResponse<ArticleAbstractsResponse> getTimeLine(TimeLineRequest request) {
         // 参数校验
         int pageNum = request.current() != null ? request.current() : 1;
         int pageSize = request.size() != null ? request.size() : 10;
@@ -374,19 +378,53 @@ public class ArticleServiceImpl implements ArticleService {
         // 开启分页
         PageHelper.startPage(pageNum, pageSize);
         // 执行查询
-        List<ArticleTimeLineResponse> list = articleMapper.selectArticleOrderedByCreatedAt();
+        List<ArticleAbstractResponse> list = articleMapper.selectArticleOrderedByCreatedAt();
         // 获取分页信息
-        PageInfo<ArticleTimeLineResponse> pageInfo = new PageInfo<>(list);
+        PageInfo<ArticleAbstractResponse> pageInfo = new PageInfo<>(list);
         
         // 封装返回结果
-        TimeLineResponse response = new TimeLineResponse();
+        ArticleAbstractsResponse response = new ArticleAbstractsResponse();
         response.setTotal(pageInfo.getTotal());    // 总记录数
         response.setList(pageInfo.getList());      // 当前页数据
         return ApiResponse.success(response);
     }
 
-    // @Override
-    // public ApiResponse<TimeLineResponse> getArticlesByTagId() {
+    @Override
+    public ApiResponse<ArticleAbstractsResponse> getArticlesByTagId(CategoryOrTagRequest request) {
+        // 参数校验
+        int pageNum = request.current() != null ? request.current() : 1;
+        int pageSize = request.size() != null ? request.size() : 10;
         
-    // }
+        // 开启分页
+        PageHelper.startPage(pageNum, pageSize);
+        // 执行查询
+        List<ArticleAbstractResponse> list = articleMapper.selectArticlesByTagId(request.id());
+        // 获取分页信息
+        PageInfo<ArticleAbstractResponse> pageInfo = new PageInfo<>(list);
+        
+        // 封装返回结果
+        ArticleAbstractsResponse response = new ArticleAbstractsResponse();
+        response.setTotal(pageInfo.getTotal());    // 总记录数
+        response.setList(pageInfo.getList());      // 当前页数据
+        return ApiResponse.success(response);
+        
+    }
+
+    @Override
+    public ApiResponse<ArticleAbstractsResponse> getArticlesByCategoryId(CategoryOrTagRequest request) {
+        // 参数校验
+        int pageNum = request.current() != null ? request.current() : 1;
+        int pageSize = request.size() != null ? request.size() : 10; 
+        // 开启分页
+        PageHelper.startPage(pageNum, pageSize);
+        // 执行查询
+        List<ArticleAbstractResponse> list = articleMapper.selectArticlesByCategoryId(request.id());
+        // 获取分页信息
+        PageInfo<ArticleAbstractResponse> pageInfo = new PageInfo<>(list); 
+        // 封装返回结果
+        ArticleAbstractsResponse response = new ArticleAbstractsResponse();
+        response.setTotal(pageInfo.getTotal());    // 总记录数
+        response.setList(pageInfo.getList());      // 当前页数据
+        return ApiResponse.success(response);
+    }
 }
