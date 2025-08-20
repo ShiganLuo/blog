@@ -29,3 +29,4 @@ jwt:
 app:
   upload:
     dir: /home/luosg/uploads  # 顶层属性,全路径
+    ipPrefix: http://localhost

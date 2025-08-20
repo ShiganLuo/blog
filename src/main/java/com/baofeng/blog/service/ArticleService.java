@@ -132,4 +132,18 @@ public interface ArticleService {
      * @return
      */
     public ApiResponse<TimeLineResponse> getTimeLine(TimeLineRequest request);
+
+    // /**
+    //  * 根据标签ID查询文章
+    //  * @param tagId
+    //  * @return
+    //  */
+    // public ApiResponse<TimeLineResponse> getArticlesByTagId(long tagId);
+
+    // /**
+    //  * 根据分类ID查询文章
+    //  * @param categoryId
+    //  * @return
+    //  */
+    // public ApiResponse<TimeLineResponse> getArticlesByCategoryId(long categoryId);
 }

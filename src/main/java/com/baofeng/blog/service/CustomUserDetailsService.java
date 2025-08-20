@@ -3,7 +3,6 @@ package com.baofeng.blog.service;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.mapper.UserMapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,7 +15,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserMapper userMapper;
 
-    @Autowired
     public CustomUserDetailsService(UserMapper userMapper) {
         this.userMapper = userMapper;
     }

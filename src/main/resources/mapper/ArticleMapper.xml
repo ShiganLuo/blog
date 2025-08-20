@@ -282,5 +282,29 @@
     </select>
 
 
+    <!--根据标签id查询文章列表-->
+    <select id="selectArticlesByTagId" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleTimeLineResponse">
+        SELECT 
+            a.id, 
+            a.cover_image AS article_cover,
+            a.title AS article_title,
+            a.created_at
+        FROM articles a
+        INNER JOIN article_tags at ON a.id = at.article_id
+        WHERE at.tag_id = #{tagId}
+        ORDER BY a.created_at DESC
+    </select>
+    <!--根据目录id查询文章列表-->
+    <select id="selectArticlesByCategoryId" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleTimeLineResponse">
+        SELECT 
+            a.id, 
+            a.cover_image AS article_cover,
+            a.title AS article_title,
+            a.created_at
+        FROM articles a
+        INNER JOIN article_categories ac ON a.id = ac.article_id
+        WHERE ac.category_id = #{categoryId}
+        ORDER BY a.created_at DESC
+    </select>
 
 </mapper>

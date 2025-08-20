@@ -9,7 +9,6 @@ import com.baofeng.blog.entity.User;
 import org.springframework.web.bind.annotation.*;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 
 @RestController
@@ -19,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 public class FrontUserController {
     private final UserService userService;
 
-    @Autowired
     public FrontUserController(UserService userService) {
         this.userService = userService;
     }

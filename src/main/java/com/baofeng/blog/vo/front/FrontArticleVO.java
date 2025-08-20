@@ -66,4 +66,10 @@ public class FrontArticleVO {
         private List<ArticleTimeLineResponse> list;
     }
 
+    public record CategoryOrTagRequest(
+        Integer current,
+        Integer size,
+        Integer id
+    ) {}
+
 }

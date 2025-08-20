@@ -8,7 +8,6 @@ import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
 import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
 import com.baofeng.blog.vo.common.User.LoginRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +21,6 @@ public class AdminUserController {
     
     private final UserService userService;
     
-    @Autowired
     public AdminUserController(UserService userService) {
         this.userService = userService;
     }

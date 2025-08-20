@@ -3,6 +3,7 @@ import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
 import com.baofeng.blog.vo.common.Article.*;
 import com.baofeng.blog.vo.front.FrontArticleVO.ArticleTimeLineResponse;
+import com.baofeng.blog.vo.front.FrontArticleVO.TimeLineResponse;
 
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
@@ -91,4 +92,18 @@ public interface ArticleMapper {
      * @return
      */
     List<ArticleTimeLineResponse> selectArticleOrderedByCreatedAt();
+
+    /**
+     * 根据标签ID查询文章
+     * @param tagId
+     * @return
+     */
+    ArticleTimeLineResponse selectArticlesByTagId(Long tagId);
+
+    /**
+     * 根据分类ID查询文章
+     * @param categoryId
+     * @return
+     */
+    ArticleTimeLineResponse selectArticlesByCategoryId(Long categoryId);
 }

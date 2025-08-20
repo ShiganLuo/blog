@@ -41,6 +41,8 @@ public class ArticleServiceImpl implements ArticleService {
     private final TagMapper tagMapper;
     @Value("${app.upload.dir}")
     private String uploadDir;
+    @Value("${app.upload.ipPrefix}")
+    private String ipPrefix;
 
     @Override
     public ApiResponse<Long> createArticle(CreateArticleRequest articleRequest){
@@ -217,7 +219,7 @@ public class ArticleServiceImpl implements ArticleService {
         
         //前端实际访问图片地址
         String lastDir = uploadPath.getFileName().toString();
-        String imagePath = "localhost/"+ lastDir + "/" + uniqueFilename;
+        String imagePath = ipPrefix + "/" + lastDir + "/" + uniqueFilename;
         // 更新articles表
         Article article = new Article();
         article.setId(articleId);
@@ -382,4 +384,9 @@ public class ArticleServiceImpl implements ArticleService {
         response.setList(pageInfo.getList());      // 当前页数据
         return ApiResponse.success(response);
     }
+
+    // @Override
+    // public ApiResponse<TimeLineResponse> getArticlesByTagId() {
+        
+    // }
 }
