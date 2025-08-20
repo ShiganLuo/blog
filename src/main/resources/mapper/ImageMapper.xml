@@ -80,4 +80,17 @@
     <delete id="deleteImage">
         DELETE FROM images WHERE id = #{id}
     </delete>
+
+    <!--图片摘要-->
+    <resultMap id="AlbumImageMap" type="com.baofeng.blog.vo.front.FrontImageVO$AlbumResponse">
+        <id property="id" column="id"/>
+        <result property="album_name" column="file_name"/>
+        <result property="album_cover" column="file_path"/>
+    </resultMap>
+    <!--获取所有图片-->
+    <select id="selectAllAlbumsAbstract" resultMap="AlbumImageMap">
+        SELECT id, file_name, file_path FROM images
+        ORDER BY created_at DESC
+    </select>
+
 </mapper>

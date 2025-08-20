@@ -1,9 +1,11 @@
 package com.baofeng.blog.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
 
 import com.baofeng.blog.entity.ArticleImage;
 import com.baofeng.blog.entity.Image;
+import com.baofeng.blog.vo.front.FrontImageVO.AlbumResponse;
 
 @Mapper
 public interface ImageMapper {
@@ -43,4 +45,11 @@ public interface ImageMapper {
      * @return 影响行数量
      */
     int insertArticleImage(ArticleImage articleImage);
+
+    /**
+     * 根据文章ID获取图片摘要列表
+     * @param articleId
+     * @return
+     */
+    List<AlbumResponse> selectAllAlbumsAbstract(Long articleId);
 }
