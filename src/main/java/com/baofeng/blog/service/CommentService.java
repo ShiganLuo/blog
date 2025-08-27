@@ -50,5 +50,9 @@ public interface CommentService {
      */
     public ApiResponse<List<Comment>> getChildComment(Long commentId);
 
-
+    /**
+     * 获取所有留言
+     * @return
+     */
+    public ApiResponse<AllMessageResponse> getAllMessage();
 } 

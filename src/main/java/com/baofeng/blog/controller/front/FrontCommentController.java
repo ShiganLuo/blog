@@ -77,5 +77,13 @@ public class FrontCommentController {
         return commentService.getChildComment(id);
     }
 
+    /**
+     * 获取所有留言
+     * @return
+     */
+    @GetMapping("/getAllMessage")
+    public ApiResponse<AllMessageResponse> getAllMessage() {
+        return commentService.getAllMessage();
+    }
     
 }

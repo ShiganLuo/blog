@@ -142,4 +142,23 @@
         AND is_deleted = 0
         ORDER BY created_at ASC
     </select>
+
+    <resultMap id="AllMessageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$MessageResponse">
+        <result property="avatar" column="avatar_url"/>
+        <result property="nick_name" column="nick_name"/>
+        <result property="message" column="content"/>
+    </resultMap>
+    <select id="selectAllMessage" resultMap="AllMessageResultMap">
+        SELECT 
+            u.avatar_url, 
+            u.nick_name, 
+            c.content
+        FROM comments c
+        LEFT JOIN users u ON c.from_id = u.id
+        WHERE c.type = 'message'
+            AND c.is_deleted = 0
+            AND c.status = 1
+        ORDER BY c.created_at DESC
+        LIMIT 20
+    </select>
 </mapper> 

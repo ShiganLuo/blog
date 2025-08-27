@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(passwordEncoder.encode(registerDTO.password()));
         newUser.setRole(User.Role.USER);
         newUser.setStatus(User.Status.ACTIVE);
-        
+        newUser.setNickName(registerDTO.username());
         userMapper.insertUser(newUser);
         return newUser;
     }

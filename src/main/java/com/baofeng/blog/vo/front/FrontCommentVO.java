@@ -113,7 +113,18 @@ public class FrontCommentVO {
         private Boolean showApplyInput;
     }
 
+    @Data
+    public static class AllMessageResponse {
+        private Long total;
+        private List<MessageResponse> list;
+    }
 
-
+    @Data
+    public static class MessageResponse {
+        private String avatar;
+        private String nick_name;
+        private String message;
+        private Boolean isNew;
+    }
     
 }

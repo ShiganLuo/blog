@@ -96,4 +96,12 @@ public class CommentServiceImpl implements CommentService {
     return ApiResponse.success(comments);
   }
 
+  @Override
+  public ApiResponse<AllMessageResponse> getAllMessage() {
+    List<MessageResponse> messages = commentMapper.selectAllMessage();
+    AllMessageResponse response = new AllMessageResponse();
+    response.setTotal((long) messages.size());
+    response.setList(messages);
+    return ApiResponse.success(response);
+  }
 } 

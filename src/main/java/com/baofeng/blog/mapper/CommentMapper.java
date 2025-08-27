@@ -74,4 +74,10 @@ public interface CommentMapper {
      */
     List<Comment> selectChildComment(Long commentId);
 
+    /**
+     * 获取所有留言
+     * @return
+     */
+    List<MessageResponse> selectAllMessage();
+
 } 
