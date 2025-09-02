@@ -8,6 +8,7 @@ import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.front.FrontCommentVO.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.baofeng.blog.util.CommentConvert;
 
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -70,13 +71,14 @@ public class CommentServiceImpl implements CommentService {
     int pageSize = request.size() != null ? request.size() : 10;
     // 开启分页
     PageHelper.startPage(pageNum, pageSize);
-    List<CommentResponse> list = commentMapper.getCommentsByCondition(request);
+    List<ArticleCommentResponse> list = commentMapper.getCommentsByCondition(request);
     // 获取分页信息
-    PageInfo<CommentResponse> pageInfo = new PageInfo<>(list);
+    PageInfo<ArticleCommentResponse> pageInfo = new PageInfo<>(list);
     // 封装返回结果
     CommentPageResponse response = new CommentPageResponse();
     response.setTotal(pageInfo.getTotal());    // 总记录数
-    response.setList(pageInfo.getList());      // 当前页数据
+    List<CommentResponse> commentTree = CommentConvert.buildCommentTree(pageInfo.getList());
+    response.setList(commentTree);
 
     return ApiResponse.success(response);
   }

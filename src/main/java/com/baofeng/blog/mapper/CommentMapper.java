@@ -4,6 +4,7 @@ package com.baofeng.blog.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
+import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.entity.Comment;
 import com.baofeng.blog.vo.front.FrontCommentVO.*;
 
@@ -37,7 +38,7 @@ public interface CommentMapper {
      * @param commentPageRequest
      * @return
      */
-    List<CommentResponse> getCommentsByCondition(CommentPageRequest commentPageRequest);
+    List<ArticleCommentResponse> getCommentsByCondition(CommentPageRequest commentPageRequest);
 
     /**
      * 根据id删除评论
@@ -79,5 +80,12 @@ public interface CommentMapper {
      * @return
      */
     List<MessageResponse> selectAllMessage();
+
+    /**
+     * 根据评论id获取其子评论
+     * @param commentId
+     * @return
+     */
+    List<CommentResponse> selectChildCommentsById(Long id);
 
 } 

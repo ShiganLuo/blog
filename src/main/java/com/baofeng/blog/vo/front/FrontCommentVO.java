@@ -3,6 +3,8 @@ package com.baofeng.blog.vo.front;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.baofeng.blog.entity.Comment;
+
 import lombok.Data;
 
 public class FrontCommentVO {
@@ -65,7 +67,8 @@ public class FrontCommentVO {
         Integer size,
         String type,
         Long for_id,
-        String order // new or hot
+        String order, // new or hot
+        Long rootId
     ) {
         public CommentPageRequest {
             if (current == null) {
@@ -105,12 +108,25 @@ public class FrontCommentVO {
         private Long from_id;
         private String from_name;
         private String from_avatar;
+        private Long for_id;
         private String content;
         private LocalDateTime createdAt;
         private Long thumbs_up;
-        private Boolean is_like;
         private String ipAdress;
-        private Boolean showApplyInput;
+        private List<CommentResponse> childComments;
+    }
+    @Data
+    public static class ArticleCommentResponse {
+        private Long id;
+        private Long from_id;
+        private String from_name;
+        private String from_avatar;
+        private Long for_id;
+        private String type;
+        private String content;
+        private LocalDateTime createdAt;
+        private Long thumbs_up;
+        private String ipAdress;
     }
 
     @Data

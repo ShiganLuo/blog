@@ -16,4 +16,6 @@ public class Comment {
     private Boolean status; // 评论审核状态
     private LocalDateTime createdAt; // 评论创建时间
     private LocalDateTime updatedAt; // 评论修改时间
+    private String ipAddress; // IP地址
+    private Long rootId; // 根评论ID（方便查询）
 } 

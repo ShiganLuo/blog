@@ -17,6 +17,8 @@
         <result property="status" column="status"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="rootId" column="root_id"/>
     </resultMap>
 
     <!--创建评论-->
@@ -28,7 +30,8 @@
             type,
             author_id,
             created_at,
-            updated_at
+            updated_at,
+            ip_address
         )
         VALUES (
             #{fromId},
@@ -37,7 +40,8 @@
             #{type},
             #{authorId},
             NOW(),
-            NOW()
+            NOW(),
+            #{ipAddress}
         )
     </insert>
 
@@ -65,14 +69,17 @@
     </select>
 
     <!--分页获取评论-->
-    <resultMap id="CommentPageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$CommentResponse">
+    <resultMap id="CommentPageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$ArticleCommentResponse">
         <id property="id" column="id"/>
         <result property="from_id" column="from_id"/>
         <result property="from_name" column="from_name"/>
         <result property="from_avatar" column="from_avatar"/>
+        <result property="for_id" column="for_id"/>
         <result property="content" column="content"/>
+        <result property="type" column="type"/>
         <result property="createdAt" column="created_at"/>
         <result property="thumbs_up" column="likes"/>
+        <result property="ipAddress" column="ip_address"/>
     </resultMap>
     
     <select id="getCommentsByCondition" resultMap="CommentPageResultMap" parameterType="map">
@@ -81,7 +88,9 @@
             c.from_id, 
             u.username AS from_name, 
             u.avatar_url AS from_avatar, 
-            c.content, 
+            c.for_id,
+            c.content,
+            c.type,
             c.created_at, 
             c.likes
         FROM comments c
@@ -92,6 +101,9 @@
             </if>
             <if test="for_id != null">
                 AND c.for_id = #{for_id}
+            </if>
+            <if test="rootId != null">
+                AND c.root_id = #{rootId}
             </if>
             AND c.is_deleted = 0 AND c.status = 1
         </where>
@@ -108,6 +120,23 @@
         </choose>
     </select>
 
+    <!--获取评论的子评论-->
+    <select id="selectChildCommentsById" resultMap="CommentPageResultMap">
+        SELECT 
+            c.id, 
+            c.from_id, 
+            u.username AS from_name, 
+            u.avatar_url AS from_avatar, 
+            c.content, 
+            c.created_at, 
+            c.likes
+        FROM comments c
+        LEFT JOIN users u ON c.from_id = u.id
+        WHERE c.type = 'comment'
+        AND c.for_id = #{id}
+        AND c.is_deleted = 0 AND c.status = 1
+        ORDER BY c.created_at ASC
+    </select>
 
     <!--删除评论-->
     <delete id="deleteCommentById">
