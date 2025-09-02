@@ -3,7 +3,6 @@ package com.baofeng.blog.vo.front;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.baofeng.blog.entity.Comment;
 
 import lombok.Data;
 
@@ -16,17 +15,12 @@ public class FrontCommentVO {
         Long from_id,
         String content,
         Long for_id,
+        Long to_id,
         String type,
-        Long author_id
+        Long author_id,
+        Long root_id
     ) {}
 
-    /*
-     * 获取评论总数请求体
-     */
-    public record CommentTotalRequest(
-        Long for_id,
-        String type
-    ){}
 
     /*
      * 用户通知请求体
@@ -65,7 +59,7 @@ public class FrontCommentVO {
     public record CommentPageRequest(
         Integer current,
         Integer size,
-        String type,
+        List<String> type,
         Long for_id,
         String order, // new or hot
         Long rootId
@@ -108,6 +102,7 @@ public class FrontCommentVO {
         private Long from_id;
         private String from_name;
         private String from_avatar;
+        private String to_name;
         private Long for_id;
         private String content;
         private LocalDateTime createdAt;
@@ -121,6 +116,7 @@ public class FrontCommentVO {
         private Long from_id;
         private String from_name;
         private String from_avatar;
+        private String to_name;
         private Long for_id;
         private String type;
         private String content;

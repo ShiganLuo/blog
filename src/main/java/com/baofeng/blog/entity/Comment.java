@@ -18,4 +18,5 @@ public class Comment {
     private LocalDateTime updatedAt; // 评论修改时间
     private String ipAddress; // IP地址
     private Long rootId; // 根评论ID（方便查询）
+    private Long toId; // 被回复用户ID
 } 

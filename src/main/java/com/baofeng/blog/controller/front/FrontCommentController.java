@@ -37,9 +37,9 @@ public class FrontCommentController {
      * @param commentTotalRequest
      * @return
      */
-    @PostMapping("/getCommentTotal")
-    public ApiResponse<Integer> getCommentTotal(@RequestBody CommentTotalRequest commentTotalRequest) {
-        return commentService.getCommentTotal(commentTotalRequest);
+    @GetMapping("/getCommentTotal/{id}")
+    public ApiResponse<Integer> getCommentTotal(@PathVariable Long id) {
+        return commentService.getCommentTotal(id);
     }
 
     /**

@@ -19,38 +19,43 @@
         <result property="updatedAt" column="updated_at"/>
         <result property="ipAddress" column="ip_address"/>
         <result property="rootId" column="root_id"/>
+        <result property="toId" column="to_id"/>
     </resultMap>
 
     <!--创建评论-->
     <insert id="insertComment" parameterType="com.baofeng.blog.entity.Comment" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO comments (
             from_id,
+            to_id,
             content,
             for_id,
             type,
             author_id,
             created_at,
             updated_at,
-            ip_address
+            ip_address,
+            root_id
         )
         VALUES (
             #{fromId},
+            #{toId},
             #{content},
             #{forId},
             #{type},
             #{authorId},
             NOW(),
             NOW(),
-            #{ipAddress}
+            #{ipAddress},
+            #{rootId}
         )
     </insert>
 
     <!--获取评论总数-->
     <select id="getCommentTotal">
         SELECT COUNT(*) FROM comments 
-        WHERE for_id = #{forId}
-            AND type = #{type}
+        WHERE root_id = #{rootId}
             AND is_deleted = 0
+            AND status = 1
     </select>
     
     <!--获取用户通知-->
@@ -74,6 +79,7 @@
         <result property="from_id" column="from_id"/>
         <result property="from_name" column="from_name"/>
         <result property="from_avatar" column="from_avatar"/>
+        <result property="to_name" column="to_name"/>
         <result property="for_id" column="for_id"/>
         <result property="content" column="content"/>
         <result property="type" column="type"/>
@@ -88,6 +94,7 @@
             c.from_id, 
             u.username AS from_name, 
             u.avatar_url AS from_avatar, 
+            u2.username AS to_name,
             c.for_id,
             c.content,
             c.type,
@@ -95,9 +102,13 @@
             c.likes
         FROM comments c
         LEFT JOIN users u ON c.from_id = u.id
+        LEFT JOIN users u2 ON c.to_id = u2.id
         <where>
-            <if test="type != null and type != ''">
-                AND c.type = #{type}
+            <if test="type != null and type.size > 0">
+                AND c.type IN
+                <foreach collection="type" item="t" open="(" separator="," close=")">
+                    #{t}
+                </foreach>
             </if>
             <if test="for_id != null">
                 AND c.for_id = #{for_id}

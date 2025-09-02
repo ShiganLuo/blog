@@ -26,9 +26,11 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = new Comment();
         comment.setFromId(createCommentRequest.from_id());
         comment.setContent(createCommentRequest.content());
+        comment.setToId(createCommentRequest.to_id());
         comment.setForId(createCommentRequest.for_id());
         comment.setType(type);
         comment.setAuthorId(createCommentRequest.author_id());
+        comment.setRootId(createCommentRequest.root_id());
         Integer rowUpdated = commentMapper.insertComment(comment);
 
         return rowUpdated > 0
@@ -38,11 +40,8 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public ApiResponse<Integer> getCommentTotal(CommentTotalRequest commentTotalRequest) {
-    Long forId = commentTotalRequest.for_id();
-    String type = commentTotalRequest.type();
-    Integer counts = commentMapper.getCommentTotal(forId, type);
-
+  public ApiResponse<Integer> getCommentTotal(Long rootId) {
+    Integer counts = commentMapper.getCommentTotal(rootId);
     return ApiResponse.success(counts);
   }
 
@@ -86,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public ApiResponse<String> deleteCommentById(Long id) {
     int rowUpdated = commentMapper.deleteCommentById(id);
-
+    // 待优化，如果是文章评论，应该同步删除其子级评论，防止数据库冗余；或者修改删除状态也行
     return rowUpdated > 0
       ? ApiResponse.success("评论删除成功")
       : ApiResponse.error(400, "评论删除失败");

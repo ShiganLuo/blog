@@ -18,7 +18,7 @@ mybatis:
     default-enum-type-handler: org.apache.ibatis.type.EnumTypeHandler
 pagehelper:
   helper-dialect: mysql       # 数据库方言
-  reasonable: true           # 合理化参数，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页
+  reasonable: false           # 合理化参数，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页
   support-methods-arguments: true  # 支持通过 Mapper 接口参数来传递分页参数
 ###使用了value注入必须定义
 jwt:

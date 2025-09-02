@@ -24,7 +24,7 @@ public interface CommentMapper {
      * @param type
      * @return
      */
-    int getCommentTotal(Long forId, String type);
+    int getCommentTotal(Long rootId);
 
     /**
      * 获取用户相关消息

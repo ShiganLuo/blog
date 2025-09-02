@@ -48,6 +48,7 @@ public class CommentConvert {
         c.setFrom_id(a.getFrom_id());
         c.setFrom_name(a.getFrom_name());
         c.setFrom_avatar(a.getFrom_avatar());
+        c.setTo_name(a.getTo_name());
         c.setFor_id(a.getFor_id());
         c.setContent(a.getContent());
         c.setCreatedAt(a.getCreatedAt());

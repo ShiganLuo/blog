@@ -20,7 +20,7 @@ public interface CommentService {
      * @param commentTotalRequest
      * @return
      */
-    public ApiResponse<Integer> getCommentTotal(CommentTotalRequest commentTotalRequest);
+    public ApiResponse<Integer> getCommentTotal(Long rootId);
 
     /**
      * 获取用户通知信息
