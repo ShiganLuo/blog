@@ -153,7 +153,14 @@
     <delete id="deleteCommentById">
         DELETE FROM comments WHERE id = #{id}
     </delete>
-
+    <!--批量删除评论-->
+    <delete id="deleteCommentsByIds">
+        DELETE FROM comments
+        WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
     <!--用户点赞-->
     <update id="incrementLikeById">
         UPDATE comments

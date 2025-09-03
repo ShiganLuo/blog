@@ -3,10 +3,11 @@ package com.baofeng.blog.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
+import java.util.Set;
 
-import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.entity.Comment;
 import com.baofeng.blog.vo.front.FrontCommentVO.*;
+
 
 @Mapper
 public interface CommentMapper {
@@ -87,5 +88,12 @@ public interface CommentMapper {
      * @return
      */
     List<CommentResponse> selectChildCommentsById(Long id);
+
+    /**
+     * 批量删除评论
+     * @param ids
+     * @return
+     */
+    int deleteCommentsByIds(Set<Long> ids);
 
 } 

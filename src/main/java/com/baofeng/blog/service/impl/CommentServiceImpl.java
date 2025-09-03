@@ -12,7 +12,12 @@ import com.baofeng.blog.util.CommentConvert;
 
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 
 
 @Service
@@ -84,11 +89,41 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public ApiResponse<String> deleteCommentById(Long id) {
-    int rowUpdated = commentMapper.deleteCommentById(id);
-    // 待优化，如果是文章评论，应该同步删除其子级评论，防止数据库冗余；或者修改删除状态也行
-    return rowUpdated > 0
-      ? ApiResponse.success("评论删除成功")
-      : ApiResponse.error(400, "评论删除失败");
+    if (id == null) {
+      return ApiResponse.error(400, "评论ID不能为空");
+    }
+
+    // 存储所有需要删除的评论ID，包括原始评论
+    Set<Long> commentIdsToDelete = new HashSet<>();
+    
+    // 使用队列进行广度优先遍历（BFS）
+    Queue<Long> queue = new LinkedList<>();
+    queue.add(id);
+
+    // 遍历评论树，收集所有子孙评论ID
+    while (!queue.isEmpty()) {
+      Long currentId = queue.poll();
+      commentIdsToDelete.add(currentId);
+
+      List<Comment> childComments = commentMapper.selectChildComment(currentId);
+      if (childComments != null && !childComments.isEmpty()) {
+        for (Comment child : childComments) {
+          queue.add(child.getId());
+        }
+      }
+    }
+
+    // 批量删除所有收集到的评论
+    if (!commentIdsToDelete.isEmpty()) {
+      // 假设你有一个Mapper方法可以批量删除
+      int rowsAffected = commentMapper.deleteCommentsByIds(commentIdsToDelete);
+      
+      return rowsAffected > 0
+          ? ApiResponse.success("评论及其所有子评论删除成功")
+          : ApiResponse.error(400, "评论删除失败");
+    }
+    
+    return ApiResponse.error(400, "评论删除失败");
   }
 
   @Override
