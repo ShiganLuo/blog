@@ -34,7 +34,8 @@
             created_at,
             updated_at,
             ip_address,
-            root_id
+            root_id,
+            tag
         )
         VALUES (
             #{fromId},
@@ -46,7 +47,8 @@
             NOW(),
             NOW(),
             #{ipAddress},
-            #{rootId}
+            #{rootId},
+            #{tag}
         )
     </insert>
 
@@ -177,7 +179,7 @@
 
     <!--检查评论是否存在-->
     <select id="selectCountById" resultType="boolean">
-        SELECT COUNT(*) > 0 FROM likes WHERE id = #{id}
+        SELECT COUNT(*) > 0 FROM comments WHERE id = #{id}
     </select>
 
     <!--获取评论的子评论-->
@@ -192,20 +194,28 @@
 
     <resultMap id="AllMessageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$MessageResponse">
         <result property="avatar" column="avatar_url"/>
-        <result property="nick_name" column="nick_name"/>
-        <result property="message" column="content"/>
+        <result property="username" column="username"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
     </resultMap>
-    <select id="selectAllMessage" resultMap="AllMessageResultMap">
+    <select id="selectAllMessage" resultMap="AllMessageResultMap" parameterType="map">
         SELECT 
             u.avatar_url, 
-            u.nick_name, 
-            c.content
+            u.username, 
+            c.content,
+            c.created_at
         FROM comments c
         LEFT JOIN users u ON c.from_id = u.id
-        WHERE c.type = 'message'
+        <where>
+            <if test="type != null">
+                AND c.type = #{type}
+            </if>
+            <if test="user_id != null">
+                AND c.from_id = #{user_id}
+            </if>
             AND c.is_deleted = 0
             AND c.status = 1
+        </where>
         ORDER BY c.created_at DESC
-        LIMIT 20
     </select>
 </mapper> 

@@ -18,8 +18,22 @@ public class FrontCommentVO {
         Long to_id,
         String type,
         Long author_id,
-        Long root_id
-    ) {}
+        Long root_id,
+        String tag
+    ) {
+        public CreateCommentRequest {
+            if (from_id == null) {
+                throw new IllegalArgumentException("from_id不能为空");
+            }
+            if (type == null) {
+                throw new IllegalArgumentException("type不能为空");
+            }
+            if (content == null) {
+                throw new IllegalArgumentException("content不能为空");
+            }
+
+        }
+    }
 
 
     /*
@@ -78,10 +92,10 @@ public class FrontCommentVO {
                 throw new IllegalArgumentException("每页数量必须大于等于 1");
             }
             if (order != null && !order.isEmpty()) {
-            if (!order.equals("new") && !order.equals("hot")) {
-                throw new IllegalArgumentException("order 参数只能是 'new' 或 'hot'");
+                if (!order.equals("new") && !order.equals("hot")) {
+                    throw new IllegalArgumentException("order 参数只能是 'new' 或 'hot'");
+                }
             }
-        }
         }
     }
 
@@ -110,6 +124,7 @@ public class FrontCommentVO {
         private String ipAdress;
         private List<CommentResponse> childComments;
     }
+
     @Data
     public static class ArticleCommentResponse {
         private Long id;
@@ -125,8 +140,14 @@ public class FrontCommentVO {
         private String ipAdress;
     }
 
+    public record MessagePageRequest(
+        Integer current,
+        Integer size,
+        String type,
+        Long user_id
+    ){}
     @Data
-    public static class AllMessageResponse {
+    public static class MessagePageResponse {
         private Long total;
         private List<MessageResponse> list;
     }
@@ -134,9 +155,9 @@ public class FrontCommentVO {
     @Data
     public static class MessageResponse {
         private String avatar;
-        private String nick_name;
-        private String message;
-        private Boolean isNew;
+        private String username;
+        private String content;
+        private LocalDateTime createdAt;
     }
     
 }

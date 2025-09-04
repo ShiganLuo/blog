@@ -133,11 +133,17 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public ApiResponse<AllMessageResponse> getAllMessage() {
-    List<MessageResponse> messages = commentMapper.selectAllMessage();
-    AllMessageResponse response = new AllMessageResponse();
-    response.setTotal((long) messages.size());
-    response.setList(messages);
+  public ApiResponse<MessagePageResponse> getAllMessage(MessagePageRequest request) {
+    int pageNum = request.current() != null ? request.current() : 1;
+    int pageSize = request.size() != null ? request.size() : 10;
+    PageHelper.startPage(pageNum, pageSize);
+    List<MessageResponse> list =  commentMapper.selectAllMessage(request);
+    // 获取分页信息
+    PageInfo<MessageResponse> pageInfo = new PageInfo<>(list);
+    // 封装返回结果
+    MessagePageResponse response = new MessagePageResponse();
+    response.setTotal(pageInfo.getTotal());    // 总记录数
+    response.setList(pageInfo.getList());      // 当前页数据
     return ApiResponse.success(response);
   }
 } 

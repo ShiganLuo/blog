@@ -11,6 +11,9 @@ import com.baofeng.blog.entity.Comment;
 import com.baofeng.blog.service.CommentService;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.front.FrontCommentVO.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -81,9 +84,9 @@ public class FrontCommentController {
      * 获取所有留言
      * @return
      */
-    @GetMapping("/getAllMessage")
-    public ApiResponse<AllMessageResponse> getAllMessage() {
-        return commentService.getAllMessage();
+    @PostMapping("/getMessagePage")
+    public ApiResponse<MessagePageResponse> getAllMessage(@RequestBody MessagePageRequest request) {
+        return commentService.getAllMessage(request);
     }
     
 }

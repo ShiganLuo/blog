@@ -19,4 +19,5 @@ public class Comment {
     private String ipAddress; // IP地址
     private Long rootId; // 根评论ID（方便查询）
     private Long toId; // 被回复用户ID
+    private String tag; // message类型独有
 } 

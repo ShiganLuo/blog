@@ -103,6 +103,7 @@ public class LikeServiceImpl implements LikeService{
         default -> false;
     };
     if (!isTargetExist) {
+        System.out.println(forId + " " + type + " " + userId);
         return ApiResponse.error(404, "目标不存在或类型错误");
     }
 

@@ -54,5 +54,5 @@ public interface CommentService {
      * 获取所有留言
      * @return
      */
-    public ApiResponse<AllMessageResponse> getAllMessage();
+    public ApiResponse<MessagePageResponse> getAllMessage(MessagePageRequest request);
 } 

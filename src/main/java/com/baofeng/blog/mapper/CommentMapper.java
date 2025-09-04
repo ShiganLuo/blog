@@ -80,7 +80,7 @@ public interface CommentMapper {
      * 获取所有留言
      * @return
      */
-    List<MessageResponse> selectAllMessage();
+    List<MessageResponse> selectAllMessage(MessagePageRequest messagePageRequest);
 
     /**
      * 根据评论id获取其子评论
