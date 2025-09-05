@@ -55,6 +55,7 @@ public class CommentConvert {
         c.setThumbs_up(a.getThumbs_up());
         c.setIpAdress(a.getIpAdress());
         c.setChildComments(new ArrayList<>());
+        c.setIs_like(a.getIs_like());
         return c;
     }
 }

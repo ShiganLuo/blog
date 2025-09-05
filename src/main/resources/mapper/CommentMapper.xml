@@ -193,17 +193,23 @@
     </select>
 
     <resultMap id="AllMessageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$MessageResponse">
+        <id property="id" column="id"/>
         <result property="avatar" column="avatar_url"/>
+        <result property="from_id" column="from_id"/>
         <result property="username" column="username"/>
         <result property="content" column="content"/>
         <result property="createdAt" column="created_at"/>
+        <result property="thumbs_up" column="likes"/>
     </resultMap>
     <select id="selectAllMessage" resultMap="AllMessageResultMap" parameterType="map">
         SELECT 
-            u.avatar_url, 
+            c.id,
+            u.avatar_url,
+            c.from_id,
             u.username, 
             c.content,
-            c.created_at
+            c.created_at,
+            c.likes
         FROM comments c
         LEFT JOIN users u ON c.from_id = u.id
         <where>

@@ -122,6 +122,7 @@ public class FrontCommentVO {
         private LocalDateTime createdAt;
         private Long thumbs_up;
         private String ipAdress;
+        private Boolean is_like;
         private List<CommentResponse> childComments;
     }
 
@@ -138,6 +139,7 @@ public class FrontCommentVO {
         private LocalDateTime createdAt;
         private Long thumbs_up;
         private String ipAdress;
+        private Boolean is_like;
     }
 
     public record MessagePageRequest(
@@ -154,10 +156,14 @@ public class FrontCommentVO {
 
     @Data
     public static class MessageResponse {
+        private Long id;
         private String avatar;
+        private Long from_id;
         private String username;
         private String content;
         private LocalDateTime createdAt;
+        private Long thumbs_up;
+        private Boolean is_like;
     }
     
 }

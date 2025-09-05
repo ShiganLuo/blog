@@ -2,6 +2,7 @@ package com.baofeng.blog.service.impl;
 
 
 import com.baofeng.blog.mapper.CommentMapper;
+import com.baofeng.blog.mapper.LikeMapper;
 import com.baofeng.blog.service.CommentService;
 import com.baofeng.blog.entity.Comment;
 import com.baofeng.blog.vo.ApiResponse;
@@ -18,12 +19,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Objects;
 
 
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
   private final CommentMapper commentMapper;
+  private final LikeMapper likeMapper;
 
   @Override
   public ApiResponse<String> CreateComment(CreateCommentRequest createCommentRequest) {
@@ -70,17 +73,38 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public ApiResponse<CommentPageResponse> getCommentPage(CommentPageRequest request) {
-    // 参数校验
     int pageNum = request.current() != null ? request.current() : 1;
     int pageSize = request.size() != null ? request.size() : 10;
-    // 开启分页
+
     PageHelper.startPage(pageNum, pageSize);
     List<ArticleCommentResponse> list = commentMapper.getCommentsByCondition(request);
-    // 获取分页信息
+
+    if (Objects.nonNull(list) && !list.isEmpty()) {
+      for (ArticleCommentResponse comment : list) {
+          // 一条评论不可能既是一级评论又是子级评论
+          Long postLikeId = likeMapper.selectIdByLikeRequestAndStatus(
+              comment.getId(), 
+              "post", 
+              comment.getFrom_id(), 
+              true
+          );
+          Long commentLikeId = likeMapper.selectIdByLikeRequestAndStatus(
+              comment.getId(), 
+              "comment", 
+              comment.getFrom_id(), 
+              true
+          );
+          if (Objects.nonNull(postLikeId) || Objects.nonNull(commentLikeId)) {
+              comment.setIs_like(true);
+          } else {
+              comment.setIs_like(false);
+          }
+      }
+    }
     PageInfo<ArticleCommentResponse> pageInfo = new PageInfo<>(list);
-    // 封装返回结果
+
     CommentPageResponse response = new CommentPageResponse();
-    response.setTotal(pageInfo.getTotal());    // 总记录数
+    response.setTotal(pageInfo.getTotal());
     List<CommentResponse> commentTree = CommentConvert.buildCommentTree(pageInfo.getList());
     response.setList(commentTree);
 
@@ -133,17 +157,36 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public ApiResponse<MessagePageResponse> getAllMessage(MessagePageRequest request) {
+public ApiResponse<MessagePageResponse> getAllMessage(MessagePageRequest request) {
     int pageNum = request.current() != null ? request.current() : 1;
     int pageSize = request.size() != null ? request.size() : 10;
     PageHelper.startPage(pageNum, pageSize);
-    List<MessageResponse> list =  commentMapper.selectAllMessage(request);
-    // 获取分页信息
+
+    List<MessageResponse> list = commentMapper.selectAllMessage(request);
+
+    if (Objects.nonNull(list) && !list.isEmpty()) {
+        for (MessageResponse message : list) {
+            Long likeId = likeMapper.selectIdByLikeRequestAndStatus(
+                message.getId(), 
+                "message", 
+                message.getFrom_id(), 
+                true
+            );
+            
+            if (Objects.nonNull(likeId)) {
+                message.setIs_like(true);;
+            } else {
+                message.setIs_like(false);
+            }
+        }
+    }
+
     PageInfo<MessageResponse> pageInfo = new PageInfo<>(list);
-    // 封装返回结果
+
     MessagePageResponse response = new MessagePageResponse();
-    response.setTotal(pageInfo.getTotal());    // 总记录数
-    response.setList(pageInfo.getList());      // 当前页数据
+    response.setTotal(pageInfo.getTotal());
+    response.setList(pageInfo.getList());
+
     return ApiResponse.success(response);
-  }
+}
 } 
