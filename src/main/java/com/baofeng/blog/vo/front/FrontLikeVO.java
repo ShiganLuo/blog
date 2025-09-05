@@ -13,7 +13,6 @@ public class FrontLikeVO {
         Long for_id,
         @NotNull(message = "点赞类型不能为空")
         String type,
-        @NotNull(message = "用户Id不能为空")
         Long user_id
     ) {}
     

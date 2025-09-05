@@ -52,22 +52,39 @@ public class LikeServiceImpl implements LikeService{
             return ApiResponse.error(404, "目标不存在或类型错误");
         }
 
-        switch (type) {
-            case "post":
-                rowUpdated = articleMapper.decreaseLikeById(forId);
-                break;
-            case "comment","message":
-                rowUpdated = commentMapper.decreaseLikeById(forId);
-                break;
-            default:
-                return ApiResponse.error(ResultCode.PARAM_ERROR,"type错误,必须为post、comment或message");
+        if (userId == null) {
+            // 游客取消点赞
+            switch (type) {
+                case "post":
+                    rowUpdated = articleMapper.decreaseLikeById(forId);
+                    break;
+                case "comment","message":
+                    rowUpdated = commentMapper.decreaseLikeById(forId);
+                    break;
+                default:
+                    return ApiResponse.error(ResultCode.PARAM_ERROR,"type错误,必须为post、comment或message");
+            }
+        } else {
+            // 用户取消点赞
+            switch (type) {
+                case "post":
+                    rowUpdated = articleMapper.decreaseLikeById(forId);
+                    break;
+                case "comment","message" :
+                    rowUpdated = commentMapper.decreaseLikeById(forId);
+                    break;
+                default:
+                    return ApiResponse.error(ResultCode.PARAM_ERROR,"type错误,必须为post、comment或message");
+            }
+            rowUpdated += likeMapper.updateLikesByLikeRequestAndStatus(forId, type, userId, false);
+            return rowUpdated > 1
+                ? ApiResponse.success()
+                : ApiResponse.error(ResultCode.SERVER_ERROR);
         }
-        rowUpdated += likeMapper.updateLikesByLikeRequestAndStatus(forId, type, userId, false);
-        
-        return rowUpdated > 1
-            ? ApiResponse.success()
-            : ApiResponse.error(ResultCode.SERVER_ERROR);
 
+        return rowUpdated > 0
+                ? ApiResponse.success()
+                : ApiResponse.error(ResultCode.SERVER_ERROR);
     }
 
 
@@ -87,41 +104,59 @@ public class LikeServiceImpl implements LikeService{
     if (!isTargetExist) {
         return ApiResponse.error(404, "目标不存在或类型错误");
     }
-    // 更新点赞数
-    switch(type) {
-        case "post":
-            rowUpdated = articleMapper.incrementLikeById(forId);
-            break;
-        case "comment","message":
-            rowUpdated = commentMapper.incrementLikeById(forId);
-            break;
-        default:
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"type错误,必须为post、comment或message");
-    }
-    //更新关联表状态
-    Long isExist = likeMapper.selectIdByLikeRequestAndStatus(forId, type, userId, false);
-    if (isExist != null) {
-        rowUpdated += likeMapper.updateLikesByLikeRequestAndStatus(forId, type, userId, true);
-    } else {
-        // 使用try catch 防止并发问题
-        try {
-            Like like = new Like();
-            like.setUserId(userId);
-            like.setTargetId(forId);
-            like.setTargetType(type);
-            like.setCreatedAt(LocalDateTime.now());
-            like.setStatus(true);
-            rowUpdated += likeMapper.insertLikeByLike(like);
-        } catch (DuplicateKeyException e) {
-            // 已存在就更新为 true（也可以先查）
-            rowUpdated += likeMapper.updateLikesByLikeRequestAndStatus(forId, type, userId, true);
+
+    // 点赞逻辑
+    if (userId == null) {
+        // 游客点赞
+        switch(type) {
+            case "post":
+                rowUpdated = articleMapper.incrementLikeById(forId);
+                break;
+            case "comment","message":
+                rowUpdated = commentMapper.incrementLikeById(forId);
+                break;
+            default:
+                return ApiResponse.error(ResultCode.PARAM_ERROR,"type错误,必须为post、comment或message");
         }
+    } else {
+        // 用户点赞
+        switch(type) {
+            case "post":
+                rowUpdated = articleMapper.incrementLikeById(forId);
+                break;
+            case "comment","message":
+                rowUpdated = commentMapper.incrementLikeById(forId);
+                break;
+            default:
+                return ApiResponse.error(ResultCode.PARAM_ERROR,"type错误,必须为post、comment或message");
+        }
+        Long isExist = likeMapper.selectIdByLikeRequestAndStatus(forId, type, userId, false);
+        if (isExist != null) {
+            rowUpdated += likeMapper.updateLikesByLikeRequestAndStatus(forId, type, userId, true);
+        } else {
+            // 使用try catch 防止并发问题
+            try {
+                Like like = new Like();
+                like.setUserId(userId);
+                like.setTargetId(forId);
+                like.setTargetType(type);
+                like.setCreatedAt(LocalDateTime.now());
+                like.setStatus(true);
+                rowUpdated += likeMapper.insertLikeByLike(like);
+            } catch (DuplicateKeyException e) {
+                // 已存在就更新为 true（也可以先查）
+                rowUpdated += likeMapper.updateLikesByLikeRequestAndStatus(forId, type, userId, true);
+            }
+        }
+        
+        return rowUpdated > 1
+                ? ApiResponse.success()
+                : ApiResponse.error(ResultCode.SERVER_ERROR);
     }
-    
-    return rowUpdated > 1
+
+    return rowUpdated > 0
             ? ApiResponse.success()
             : ApiResponse.error(ResultCode.SERVER_ERROR);
-
 }
     
 }

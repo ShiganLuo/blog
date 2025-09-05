@@ -3,7 +3,9 @@ package com.baofeng.blog.vo.front;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.checkerframework.checker.units.qual.N;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 public class FrontCommentVO {
@@ -76,7 +78,8 @@ public class FrontCommentVO {
         List<String> type,
         Long for_id,
         String order, // new or hot
-        Long rootId
+        Long rootId,
+        Long user_id
     ) {
         public CommentPageRequest {
             if (current == null) {
@@ -147,7 +150,25 @@ public class FrontCommentVO {
         Integer size,
         String type,
         Long user_id
-    ){}
+    ){
+        public MessagePageRequest {
+            if (current == null) {
+                throw new IllegalArgumentException("当前页不能为空");
+            }
+            if (size == null) {
+                throw new IllegalArgumentException("每页数量不能为空");
+            }
+            if (type == null) {
+                throw new IllegalArgumentException("类型不能为空");
+            }
+            if (current < 1) {
+                throw new IllegalArgumentException("当前页必须大于等于 1");
+            }
+            if (size < 1) {
+                throw new IllegalArgumentException("每页数量必须大于等于 1");
+            }
+        }
+    }
     @Data
     public static class MessagePageResponse {
         private Long total;

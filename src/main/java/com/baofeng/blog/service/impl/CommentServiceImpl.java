@@ -79,28 +79,37 @@ public class CommentServiceImpl implements CommentService {
     PageHelper.startPage(pageNum, pageSize);
     List<ArticleCommentResponse> list = commentMapper.getCommentsByCondition(request);
 
+    
     if (Objects.nonNull(list) && !list.isEmpty()) {
       for (ArticleCommentResponse comment : list) {
-          // 一条评论不可能既是一级评论又是子级评论
-          Long postLikeId = likeMapper.selectIdByLikeRequestAndStatus(
+          // 如果用户id为null，表明是游客
+          if (request.user_id() != null) {
+            // 一条评论不可能既是一级评论又是子级评论
+            Long postLikeId = likeMapper.selectIdByLikeRequestAndStatus(
               comment.getId(), 
               "post", 
-              comment.getFrom_id(), 
+              request.user_id(), 
               true
-          );
-          Long commentLikeId = likeMapper.selectIdByLikeRequestAndStatus(
-              comment.getId(), 
-              "comment", 
-              comment.getFrom_id(), 
-              true
-          );
-          if (Objects.nonNull(postLikeId) || Objects.nonNull(commentLikeId)) {
-              comment.setIs_like(true);
+            );
+            Long commentLikeId = likeMapper.selectIdByLikeRequestAndStatus(
+                comment.getId(), 
+                "comment", 
+                request.user_id(), 
+                true
+            );
+            if (Objects.nonNull(postLikeId) || Objects.nonNull(commentLikeId)) {
+                comment.setIs_like(true);
+            } else {
+                comment.setIs_like(false);
+            }
           } else {
-              comment.setIs_like(false);
+            comment.setIs_like(false);
           }
+
       }
-    }
+    }   
+    
+
     PageInfo<ArticleCommentResponse> pageInfo = new PageInfo<>(list);
 
     CommentPageResponse response = new CommentPageResponse();
@@ -157,7 +166,7 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-public ApiResponse<MessagePageResponse> getAllMessage(MessagePageRequest request) {
+  public ApiResponse<MessagePageResponse> getAllMessage(MessagePageRequest request) {
     int pageNum = request.current() != null ? request.current() : 1;
     int pageSize = request.size() != null ? request.size() : 10;
     PageHelper.startPage(pageNum, pageSize);
@@ -166,6 +175,8 @@ public ApiResponse<MessagePageResponse> getAllMessage(MessagePageRequest request
 
     if (Objects.nonNull(list) && !list.isEmpty()) {
         for (MessageResponse message : list) {
+          // 如果用户id为null，表明是游客
+          if (request.user_id() != null) {
             Long likeId = likeMapper.selectIdByLikeRequestAndStatus(
                 message.getId(), 
                 "message", 
@@ -178,7 +189,10 @@ public ApiResponse<MessagePageResponse> getAllMessage(MessagePageRequest request
             } else {
                 message.setIs_like(false);
             }
-        }
+         } else {
+            message.setIs_like(false);
+          }
+        }   
     }
 
     PageInfo<MessageResponse> pageInfo = new PageInfo<>(list);
@@ -188,5 +202,5 @@ public ApiResponse<MessagePageResponse> getAllMessage(MessagePageRequest request
     response.setList(pageInfo.getList());
 
     return ApiResponse.success(response);
-}
+  }
 } 
