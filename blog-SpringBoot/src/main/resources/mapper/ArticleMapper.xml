@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.baofeng.blog.mapper.ArticleMapper">
+
+    <resultMap id="ArticleResultMap" type="com.baofeng.blog.entity.Article">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="summary" column="summary"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="authorId" column="author_id"/>
+        <result property="status" column="status"
+            typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="commentsCount" column="comments_count"/>
+        <result property="isFeatured" column="is_featured"/>
+        <result property="type" column="type"/>
+        <result property="originUrl" column="origin_url"/>
+        <result property="publishedAt" column="published_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="countAllArticles" resultType="Long">
+        SELECT COUNT(*) FROM articles
+    </select>
+
+    <select id="getArticleById" resultMap="ArticleResultMap">
+        SELECT * FROM articles WHERE id = #{id}
+    </select>
+    
+    <!--检查文章是否存在-->
+    <select id="selectCountById" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM articles WHERE id = #{id}
+    </select>
+
+    <!--获取文章like数-->
+    <select id="getLikesById" resultType="java.lang.Long">
+        SELECT likes FROM articles WHERE id = #{id}
+    </select>
+
+    <select id="getAuthorIdById" resultType="java.lang.Long">
+        SELECT author_id FROM articles WHERE id = #{id}
+    </select>
+    
+
+    <insert id="insertArticle" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO articles (title, content, summary, cover_image, author_id, status, 
+        views, likes, comments_count, is_featured, type, origin_url, published_at, created_at, updated_at)
+        VALUES(#{title}, #{content}, #{summary}, #{coverImage}, #{authorId}, #{status}, #{views}, 
+        #{likes}, #{commentsCount}, #{isFeatured}, #{type}, #{originUrl}, #{publishedAt}, NOW(), NOW())
+    </insert>
+
+    <update id="updateArticle">
+        UPDATE articles
+        SET title=#{title}, content=#{content}, summary=#{summary}, cover_image=#{coverImage}, 
+        author_id=#{authorId}, status=#{status}, views=#{views}, likes=#{likes}, comments_count=#{commentsCount}, 
+        is_featured=#{isFeatured}, type=#{type}, origin_url=#{originUrl}, published_at=#{publishedAt}, 
+        created_at=#{createdAt}, updated_at=#{updatedAt}
+        WHERE id=#{id}
+    </update>
+
+    <!--用户点赞-->
+    <update id="incrementLikeById">
+        UPDATE articles
+        SET likes = likes + 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="decreaseLikeById">
+        UPDATE articles
+        SET likes = likes - 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateArticleSelective">
+          UPDATE articles
+    <set>
+        <if test="title != null">title=#{title},</if>
+        <if test="content != null">content=#{content},</if>
+        <if test="summary != null">summary=#{summary},</if>
+        <if test="coverImage != null">cover_image=#{coverImage},</if>
+        <if test="authorId != null">author_id=#{authorId},</if>
+        <if test="status != null">status=#{status},</if>
+        <if test="views != null">views=#{views},</if>
+        <if test="likes != null">likes=#{likes},</if>
+        <if test="commentsCount != null">comments_count=#{commentsCount},</if>
+        <if test="isFeatured != null">is_featured=#{isFeatured},</if>
+        <if test="type !=null"> type=#{type},</if>
+        <if test="originUrl !=null"> origin_url=#{originUrl},</if>
+        <if test="publishedAt != null">published_at=#{publishedAt},</if>
+        <if test="createdAt != null">created_at=#{createdAt},</if>
+        <if test="updatedAt != null">updated_at=#{updatedAt},</if>
+        updated_at = NOW()
+    </set>
+    WHERE id=#{id}
+    </update>
+
+    <!--减去likes数-->
+    <update id="decrementLikesById">
+        UPDATE articles
+        SET likes = likes - 1
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteArticle">
+        DELETE FROM articles WHERE id = #{id}
+    </delete>
+
+    <!--文章标题是否重复-->
+    <select id="isTitleExist" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM articles WHERE title = #{title}
+        )
+    </select>
+
+    <!--文章分页查询-->
+    <resultMap id="ArticlePageResultMap" type="com.baofeng.blog.vo.common.Article$ArticleVO">
+        <id property="id" column="id"/>
+        <result property="article_title" column="title"/>
+        <result property="article_description" column="summary"/>
+        <result property="article_content" column="content"/>
+        <result property="view_times" column="views"/>
+        <result property="commentsCount" column="comments_count"/>
+        <result property="thumbs_up_times" column="likes"/>
+        <result property="type" column="type"/>
+        <result property="originUrl" column="origin_url"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="status" column="status"
+            typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="article_cover" column="cover_image"/>
+        <result property="is_top" column="is_featured"/>
+
+        <!-- 作者信息映射；一对多关系，不需要分步查询 -->
+        <association property="author" javaType="com.baofeng.blog.vo.common.Article$AuthorVO">
+            <id property="authorId" column="author_id"/>
+            <result property="authorName" column="author_name"/>
+            <result property="authorNickname" column="author_nickname"/>
+            <result property="authorAvatar" column="author_avatar"/>
+        </association>
+
+        <!-- 分类名称子查询 -->
+        <collection property="categoryNameList" ofType="string"
+                    column="id" select="getCategoryNameListByArticleId"/>
+        
+        <!-- 标签名称子查询 -->
+        <collection property="tagNameList" ofType="string"
+                    column="id" select="getTagNameListByArticleId"/>
+    </resultMap>
+    <select id="getArticlePage" resultMap="ArticlePageResultMap">
+        SELECT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
+                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY a.created_at DESC
+    </select>
+    <select id="getCategoryNameListByArticleId" resultType="string">
+        SELECT c.name
+        FROM categories c
+        INNER JOIN article_categories ac ON c.id = ac.category_id
+        WHERE ac.article_id = #{id}
+    </select>
+    <select id="getTagNameListByArticleId" resultType="string">
+        SELECT t.name
+        FROM tags t
+        INNER JOIN article_tags at ON t.id = at.tag_id
+        WHERE at.article_id = #{id}
+    </select>
+
+    <!--文章查询联表查询-->
+    <select id="getArticlePageFormById" resultMap="ArticlePageResultMap">
+    SELECT 
+        a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+        a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+        a.cover_image, a.is_featured,
+        a.author_id,
+        u.username AS author_name,
+        u.nick_name AS author_nickname,
+        u.avatar_url AS author_avatar
+    FROM articles a
+    LEFT JOIN users u ON a.author_id = u.id
+    WHERE a.id = #{id}
+    </select>
+    <!--获取前一篇文章-->
+    <select id="getPrevArticle" resultMap="ArticlePageResultMap">
+        SELECT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        <where>
+            <!-- 关键词搜索 -->
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
+                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+
+            <!-- 创建时间要小于当前文章的时间 -->
+            <if test="createdAt != null">
+                AND a.created_at &lt; #{createdAt}
+            </if>
+        </where>
+        ORDER BY a.created_at DESC
+        LIMIT 1
+    </select>
+
+    <select id="getNextArticle" resultMap="ArticlePageResultMap">
+        SELECT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
+                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="createdAt != null">
+                AND a.created_at &gt; #{createdAt}
+            </if>
+        </where>
+        ORDER BY a.created_at ASC
+        LIMIT 1
+    </select>
+
+    <select id="getRecommendedArticles" resultMap="ArticlePageResultMap">
+        SELECT DISTINCT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        WHERE a.id != #{articleId}
+        AND a.id IN (
+            SELECT at2.article_id
+            FROM article_tags at1
+            JOIN article_tags at2 ON at1.tag_id = at2.tag_id
+            WHERE at1.article_id = #{articleId}
+        )
+        ORDER BY a.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <resultMap id="ArticleAbstractMap" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleAbstractResponse">
+    <id property="id" column="id"/>
+    <result property="article_title" column="title"/>
+    <result property="article_cover" column="cover_image"/>
+    <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="selectArticleOrderedByCreatedAt" resultMap="ArticleAbstractMap">
+        SELECT id, title, cover_image, created_at
+        FROM articles
+        ORDER BY created_at DESC
+    </select>
+
+
+    <!--根据标签id查询文章列表-->
+    <select id="selectArticlesByTagId" resultMap="ArticleAbstractMap">
+        SELECT 
+            a.id, 
+            a.cover_image,
+            a.title,
+            a.created_at
+        FROM articles a
+        LEFT JOIN article_tags at ON a.id = at.article_id
+        WHERE at.tag_id = #{tagId}
+        ORDER BY a.created_at DESC
+    </select>
+
+    <!--根据目录id查询文章列表-->
+    <select id="selectArticlesByCategoryId" resultMap="ArticleAbstractMap">
+        SELECT 
+            a.id, 
+            a.cover_image,
+            a.title,
+            a.created_at
+        FROM articles a
+        LEFT JOIN article_categories ac ON a.id = ac.article_id
+        WHERE ac.category_id = #{categoryId}
+        ORDER BY a.created_at DESC
+    </select>
+
+
+</mapper>

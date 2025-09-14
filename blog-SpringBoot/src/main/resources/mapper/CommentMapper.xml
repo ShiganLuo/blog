@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.baofeng.blog.mapper.CommentMapper">
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.baofeng.blog.entity.Comment">
+        <id property="id" column="id"/>
+        <result property="fromId" column="from_id"/>
+        <result property="content" column="content"/>
+        <result property="forId" column="for_id"/>
+        <result property="type" column="type"/>
+        <result property="authorId" column="author_id"/>
+        <result property="likes" column="likes"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="rootId" column="root_id"/>
+        <result property="toId" column="to_id"/>
+    </resultMap>
+
+    <!--创建评论-->
+    <insert id="insertComment" parameterType="com.baofeng.blog.entity.Comment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comments (
+            from_id,
+            to_id,
+            content,
+            for_id,
+            type,
+            author_id,
+            created_at,
+            updated_at,
+            ip_address,
+            root_id,
+            tag
+        )
+        VALUES (
+            #{fromId},
+            #{toId},
+            #{content},
+            #{forId},
+            #{type},
+            #{authorId},
+            NOW(),
+            NOW(),
+            #{ipAddress},
+            #{rootId},
+            #{tag}
+        )
+    </insert>
+
+    <!--获取评论总数-->
+    <select id="getCommentTotal">
+        SELECT COUNT(*) FROM comments 
+        WHERE root_id = #{rootId}
+            AND is_deleted = 0
+            AND status = 1
+    </select>
+    
+    <!--获取用户通知-->
+    <resultMap id="NotifyPageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$NotifyResponse">
+        <id property="id" column="id"/>
+        <result property="isView" column="status"/>
+        <result property="message" column="content"/>
+        <result property="type" column="type"/>
+        <result property="to_id" column="for_id"/>
+    </resultMap>
+    <select id="getNotifyPage" resultMap="NotifyPageResultMap">
+    SELECT 
+        c.id, c.status, c.content, c.type, c.for_id
+    FROM comments c
+    WHERE c.author_id = #{userId}
+    </select>
+
+    <!--分页获取评论-->
+    <resultMap id="CommentPageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$ArticleCommentResponse">
+        <id property="id" column="id"/>
+        <result property="from_id" column="from_id"/>
+        <result property="from_name" column="from_name"/>
+        <result property="from_avatar" column="from_avatar"/>
+        <result property="to_name" column="to_name"/>
+        <result property="for_id" column="for_id"/>
+        <result property="content" column="content"/>
+        <result property="type" column="type"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="thumbs_up" column="likes"/>
+        <result property="ipAddress" column="ip_address"/>
+    </resultMap>
+    
+    <select id="getCommentsByCondition" resultMap="CommentPageResultMap" parameterType="map">
+        SELECT 
+            c.id, 
+            c.from_id, 
+            u.username AS from_name, 
+            u.avatar_url AS from_avatar, 
+            u2.username AS to_name,
+            c.for_id,
+            c.content,
+            c.type,
+            c.created_at, 
+            c.likes
+        FROM comments c
+        LEFT JOIN users u ON c.from_id = u.id
+        LEFT JOIN users u2 ON c.to_id = u2.id
+        <where>
+            <if test="type != null and type.size > 0">
+                AND c.type IN
+                <foreach collection="type" item="t" open="(" separator="," close=")">
+                    #{t}
+                </foreach>
+            </if>
+            <if test="for_id != null">
+                AND c.for_id = #{for_id}
+            </if>
+            <if test="rootId != null">
+                AND c.root_id = #{rootId}
+            </if>
+            AND c.is_deleted = 0 AND c.status = 1
+        </where>
+        <choose>
+        <when test="order == 'new'">
+            ORDER BY c.created_at DESC
+        </when>
+        <when test="order == 'hot'">
+            ORDER BY c.likes DESC
+        </when>
+        <otherwise>
+            ORDER BY c.created_at ASC
+        </otherwise>
+        </choose>
+    </select>
+
+    <!--获取评论的子评论-->
+    <select id="selectChildCommentsById" resultMap="CommentPageResultMap">
+        SELECT 
+            c.id, 
+            c.from_id, 
+            u.username AS from_name, 
+            u.avatar_url AS from_avatar, 
+            c.content, 
+            c.created_at, 
+            c.likes
+        FROM comments c
+        LEFT JOIN users u ON c.from_id = u.id
+        WHERE c.type = 'comment'
+        AND c.for_id = #{id}
+        AND c.is_deleted = 0 AND c.status = 1
+        ORDER BY c.created_at ASC
+    </select>
+
+    <!--删除评论-->
+    <delete id="deleteCommentById">
+        DELETE FROM comments WHERE id = #{id}
+    </delete>
+    <!--批量删除评论-->
+    <delete id="deleteCommentsByIds">
+        DELETE FROM comments
+        WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--用户点赞-->
+    <update id="incrementLikeById">
+        UPDATE comments
+        SET likes = likes + 1
+        WHERE id = #{id}
+    </update>
+
+    <!--用户取消点赞-->
+    <update id="decreaseLikeById">
+        UPDATE comments
+        SET likes = likes - 1
+        WHERE id = #{id}
+    </update>
+
+    <!--检查评论是否存在-->
+    <select id="selectCountById" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM comments WHERE id = #{id}
+    </select>
+
+    <!--获取评论的子评论-->
+    <select id="selectChildComment" resultMap="BaseResultMap">
+        SELECT *
+        FROM comments
+        WHERE type = 'comment'
+        AND for_id = #{commentId}
+        AND is_deleted = 0
+        ORDER BY created_at ASC
+    </select>
+
+    <resultMap id="AllMessageTalkResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$MessageResponse">
+        <id property="id" column="id"/>
+        <result property="avatar" column="avatar_url"/>
+        <result property="from_id" column="from_id"/>
+        <result property="nick_name" column="nick_name"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="thumbs_up" column="likes"/>
+    </resultMap>
+    <select id="selectAllMessageTalk" resultMap="AllMessageTalkResultMap" parameterType="map">
+        SELECT 
+            c.id,
+            u.avatar_url,
+            c.from_id,
+            u.nick_name, 
+            c.content,
+            c.created_at,
+            c.likes
+        FROM comments c
+        LEFT JOIN users u ON c.from_id = u.id
+        <where>
+            <if test="type != null">
+                AND c.type = #{type}
+            </if>
+            <if test="user_id != null">
+                AND c.from_id = #{user_id}
+            </if>
+            AND c.is_deleted = 0
+            AND c.status = 1
+        </where>
+        ORDER BY c.created_at DESC
+    </select>
+</mapper> 

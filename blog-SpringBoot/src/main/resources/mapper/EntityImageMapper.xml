@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baofeng.blog.mapper.EntityImageMapper">
+    <resultMap id="EntityImagesMap" type="com.baofeng.blog.entity.EntityImage">
+        <id property="id" column="id"/>
+        <result property="entityType" column="entity_type"/>
+        <result property="entityId" column="entity_id"/>
+        <result property="imageId" column="image_id"/>
+        <result property="usageType" column="usage_type"/>
+        <result property="sortOrder" column="sort_order"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+    <insert id="insertEntityImage" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO entity_images (
+            entity_type, entity_id, image_id, usage_type, sort_order, created_at, updated_at
+        )
+        VALUES(
+            #{entityType}, #{entityId}, #{imageId}, #{usageType}, #{sortOrder}, NOW(), NOW()
+        )
+    </insert>
+
+</mapper>

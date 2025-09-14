@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.baofeng.blog.mapper.CategoryMapper">
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.baofeng.blog.entity.Category">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 分类分页查询的结果映射 -->
+    <resultMap id="CategoryPageResultMap" type="com.baofeng.blog.vo.admin.AdminCategoryPageVO$CategoryVO">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="articleCount" column="article_count"/>
+        <result property="createTime" column="created_at"/>
+        <result property="updateTime" column="updated_at"/>
+    </resultMap>
+
+    <select id="getCategoryPage" resultMap="CategoryPageResultMap">
+        SELECT 
+            c.id, c.name, c.description, 
+            c.created_at, c.updated_at,
+            COUNT(a.id) AS article_count
+        FROM categories c
+        LEFT JOIN article_categories ac ON c.id = ac.category_id
+        LEFT JOIN articles a ON ac.article_id = a.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    c.name LIKE CONCAT('%', #{keyword}, '%') 
+                    OR c.description LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
+        GROUP BY c.id, c.name, c.description, c.created_at, c.updated_at
+        ORDER BY c.created_at DESC
+    </select>
+
+    <!-- article_categories结果映射-->
+    <resultMap id="articleCategoriesResultMap" type="com.baofeng.blog.entity.ArticleCategory">
+        <id property="id" column="id"/>
+        <result property="articleId" column="article_id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 创建分类 -->
+    <insert id="createCategory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO categories (
+            name, description, created_at, updated_at
+        ) VALUES (
+            #{name}, #{description}, NOW(), NOW()
+        )
+    </insert>
+    
+    <!--创建article_categories对应关系-->
+    <insert id="insertCategoryReflect" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO article_categories (article_id, category_id, created_at, updated_at)
+        VALUES (#{articleId}, #{categoryId}, NOW(), NOW())
+    </insert>
+
+    <!-- 获取分类下的文章数量 -->
+    <select id="getArticleCount" resultType="int">
+        SELECT COUNT(*) FROM article_categories WHERE category_id = #{id}
+    </select>
+
+    <!--获取所有分类名-->
+    <select id="getAllCategoryName">
+        SELECT name FROM categories
+    </select>
+
+    <!--获取分类总数-->
+    <select id="countAllCategories" resultType="Long">
+        SELECT COUNT(*) FROM categories
+    </select>
+
+    <!--判断name是否在表中有记录,区分大小写-->
+    <select id="checkExactName">
+        SELECT EXISTS(
+            SELECT 1 FROM categories
+            WHERE name = #{name}
+        )
+    </select>
+
+    <!-- 根据名称查询分类 -->
+    <select id="getCategoryByName" resultMap="BaseResultMap">
+        SELECT * FROM categories WHERE name = #{name} LIMIT 1
+    </select>
+
+    <!-- 根据ID查询分类 -->
+    <select id="getCategoryById" resultMap="BaseResultMap">
+        SELECT * FROM categories WHERE id = #{id}
+    </select>
+
+    <!-- 删除分类 -->
+    <delete id="deleteCategory">
+        DELETE FROM categories WHERE id = #{id}
+    </delete>
+
+
+    <select id="getAllCategories">
+        SELECT id, name FROM categories
+    </select>
+</mapper> 

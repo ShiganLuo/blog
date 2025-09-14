@@ -1,0 +1,37 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3307/blog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: blog
+##mybatis属于第三方库，需要位于配置文件的顶层
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml  # 设置 MyBatis Mapper 文件的位置
+  type-aliases-package: com.baofeng.blog.entity # 设置类型别名包路径（用于 POJO）会搜索该路径下所有mapper
+  configuration:
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 配置日志输出（可选）
+    map-underscore-to-camel-case: true  # 开启下划线到驼峰命名的映射;注意了java类的属性名必须是驼峰命名，如果直接映射的话。
+    default-enum-type-handler: org.apache.ibatis.type.EnumTypeHandler
+pagehelper:
+  helper-dialect: mysql       # 数据库方言
+  reasonable: false           # 合理化参数，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页
+  support-methods-arguments: true  # 支持通过 Mapper 接口参数来传递分页参数
+###使用了value注入必须定义
+jwt:
+  tokenHeader: X-Token #JWT存储的请求头
+  tokenHead: Bearer  #令牌前缀
+  secret: "your-256-bit-secret-key-here-1234567890ABCDEF"
+  expiration: 86400000  # 24小时
+app:
+  upload:
+    dir: /home/luosg/uploads  # 顶层属性,全路径
+    ipPrefix: http://localhost
+minio:
+  endpoint: http://127.0.0.1:9000   # MinIO服务地址
+  accessKey: admin             # 账号
+  secretKey: 12345678            # 密码
+  bucket: my-bucket                 # 默认存储桶

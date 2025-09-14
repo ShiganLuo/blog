@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.baofeng.blog.mapper.TagMapper">
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.baofeng.blog.entity.Tag">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 标签分页查询的结果映射 -->
+    <resultMap id="TagPageResultMap" type="com.baofeng.blog.vo.admin.AdminTagPageVO$TagVO">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="articleCount" column="article_count"/>
+        <result property="createTime" column="created_at"/>
+        <result property="updateTime" column="updated_at"/>
+    </resultMap>
+
+    <!--articles_tags表结果映射-->
+    <resultMap id="articleTagsResultMap" type="com.baofeng.blog.entity.ArticleTag">
+        <id property="id" column="id"/>
+        <result property="articleId" column="article_id"/>
+        <result property="tagId" column="tag_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updatedAt"/>
+    </resultMap>
+
+    <!--获取热门标签-->
+    <select id="getHotTags">
+        SELECT
+            t.name
+        FROM
+            article_tags at
+        JOIN
+            tags t ON at.tag_id = t.id
+        GROUP BY
+            t.name
+        ORDER BY
+            COUNT(at.tag_id) DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 创建标签 -->
+    <insert id="createTag" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tags (
+            name, created_at, updated_at
+        ) VALUES (
+            #{name}, NOW(), NOW()
+        )
+    </insert>
+    <!--创建article_tags记录-->
+    <insert id="insertArticleTag" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO article_tags (
+            article_id, tag_id, created_at, updated_at
+        ) VALUES (
+            #{articleId}, #{tagId}, NOW(), NOW()
+        )
+    </insert>
+
+    <!-- 删除标签 -->
+    <delete id="deleteTag">
+        DELETE FROM tags WHERE id = #{id}
+    </delete>
+
+    <!-- 获取标签下的文章数量 -->
+    <select id="getArticleCount" resultType="int">
+        SELECT COUNT(*) FROM article_tags WHERE tag_id = #{id}
+    </select>
+
+    <!--获取标签总数-->
+    <select id="countAllTags" resultType="Long">
+        SELECT COUNT(*) FROM tags
+    </select>
+
+    <!--获取所有tag name-->
+    <select id="getAllTagName">
+        SELECT name FROM tags
+    </select>
+
+    <!--判断name是否在表中有记录,区分大小写-->
+    <select id="checkExactName">
+        SELECT EXISTS(
+            SELECT 1 FROM tags
+            WHERE name = #{name}
+        )
+    </select>
+
+    <!-- 根据名称查询标签 -->
+    <select id="getTagByName" resultMap="BaseResultMap">
+        SELECT * FROM tags WHERE name = #{name} LIMIT 1
+    </select>
+
+    <!-- 根据ID查询标签 -->
+    <select id="getTagById" resultMap="BaseResultMap">
+        SELECT * FROM tags WHERE id = #{id}
+    </select>
+
+    <!-- 分页查询标签列表 -->
+    <select id="getTagPage" resultMap="TagPageResultMap">
+        SELECT 
+            t.id, t.name, t.created_at, t.updated_at,
+            COUNT(DISTINCT at.article_id) as article_count
+        FROM tags t
+        LEFT JOIN article_tags at ON t.id = at.tag_id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND t.name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        GROUP BY t.id, t.name, t.created_at, t.updated_at
+        ORDER BY t.created_at DESC
+    </select>
+
+
+    <select id="getAllTags" resultMap="BaseResultMap">
+        SELECT * FROM tags
+    </select>
+
+
+
+</mapper> 

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.baofeng.blog.mapper.BlogSettingMapper">
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.baofeng.blog.entity.BlogSetting">
+        <id property="id" column="id"/>
+        <result property="siteTitle" column="site_title"/>
+        <result property="siteDescription" column="site_description"/>
+        <result property="siteLogo" column="site_logo"/>
+        <result property="blogNotice" column="blog_notice"/>
+        <result property="personalSay" column="personal_say"/>
+        <result property="giteeLink" column="gitee_link"/>
+        <result property="bilibiliLink" column="bilibili_link"/>
+        <result property="githubLink" column="github_link"/>
+        <result property="qqGroup" column="qq_group"/>
+        <result property="qqLink" column="qq_link"/>
+        <result property="wechatGroup" column="wechat_group"/>
+        <result property="wechatLink" column="wechat_link"/>
+        <result property="aliPay" column="ali_pay"/>
+        <result property="wechatPay" column="wechat_pay"/>
+        <result property="enableComments" column="enable_comments"/>
+        <result property="visitCount" column="visit_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="user_id" column="user_id"/>
+        <result property="site_url" column="site_url"/>
+    </resultMap>
+
+    <!-- 获取所有设置 -->
+    <select id="getAllSettings" resultMap="BaseResultMap">
+        SELECT * FROM blog_settings
+    </select>
+
+
+    <insert id="insertSetting" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO blog_settings (site_title, site_description, site_logo, blog_notice, personal_say, gitee_link, bilibili_link, github_link,
+        qq_group, qq_link, wechat_group, wechat_link, ali_pay, wechat_pay, enable_comments, visit_count, created_at, updated_at)
+        VALUES (#{siteTitle}, #{siteDescription}, #{siteLogo}, #{blogNotice}, #{personalSay}, #{giteeLink}, #{bilibiliLink}, #{githubLink},
+        #{qqGroup}, #{qqLink}, #{wechatGroup}, #{wechatLink}, #{aliPay}, #{wechatPay}, #{enableComments}, #{visitCount}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+
+
+    <!-- 根据 ID 查询博客设置 -->
+    <select id="getSettingById" resultMap="BaseResultMap">
+        SELECT * FROM blog_settings WHERE id = #{id}
+    </select>
+    
+    <!-- 根据 ID 更新所有设置 -->
+    <update id="updateSettingById">
+        UPDATE blog_settings
+        <set>
+            <if test="siteTitle != null">site_title = #{siteTitle},</if>
+            <if test="siteDescription != null">site_description = #{siteDescription},</if>
+            <if test="siteLogo != null">site_logo = #{siteLogo},</if>
+            <if test="personalSay != null">personal_say = #{personalSay},</if>
+            <if test="giteeLink != null">gitee_link = #{giteeLink},</if>
+            <if test="bilibiliLink != null">bilibili_link = #{bilibiliLink},</if>
+            <if test="githubLink != null">github_link = #{githubLink},</if>
+            <if test="qqGroup != null">qq_group = #{qqGroup},</if>
+            <if test="qqLink != null">qq_link = #{qqLink},</if>
+            <if test="wechatGroup != null">wechat_group = #{wechatGroup},</if>
+            <if test="wechatLink != null">wechat_link = #{wechatLink},</if>
+            <if test="aliPay != null">ali_pay = #{aliPay},</if>
+            <if test="wechatPay != null">wechat_pay = #{wechatPay},</if>
+            <if test="enableComments != null">enable_comments = #{enableComments},</if>
+            <if test="visitCount != null">visit_count = #{visitCount},</if>
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteSettingById" >
+        DELETE FROM blog_settings WHERE id = #{id}
+    </delete>
+
+    <!-- 增加网站访问次数 -->
+    <update id="incrementVisitCount">
+        UPDATE blog_settings
+        SET visit_count = visit_count + 1,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <resultMap id="FriendLinkResultMap" type="com.baofeng.blog.vo.front.FrontBlogSettinVO$FriendLinkResponse">
+        <id property="id" column="id"/>
+        <result property="site_avatar" column="site_logo"/>
+        <result property="site_name" column="site_title"/>
+        <result property="site_desc" column="site_description"/>
+        <result property="site_url" column="site_url"/>
+        <result property="user_id" column="user_id"/>
+    </resultMap>
+    <!--获取友联信息-->
+    <select id="selectAllFriendLinks" resultMap="FriendLinkResultMap">
+        SELECT
+            id,
+            site_logo,
+            site_title,
+            site_description,
+            site_url,
+            user_id
+        FROM blog_settings
+        WHERE id != 1
+        ORDER BY created_at DESC
+    </select>
+
+    <!--增加友链-->
+    <insert id="insertFriendLink">
+        INSERT INTO blog_settings 
+        (site_title, site_description, site_url, site_logo, user_id)
+        VALUES (#{site_name}, #{site_desc}, #{site_url}, #{site_avatar}, #{user_id})
+    </insert>
+    <!--更新友链信息-->
+    <update id="updateFriendLinkById">
+        UPDATE blog_settings
+        <set>
+            <if test="site_name!= null">site_title = #{site_name},</if>
+            <if test="site_desc != null">site_description = #{site_desc},</if>
+            <if test="site_url != null">site_url = #{site_url},</if>
+            <if test="site_avatar != null">site_logo = #{site_avatar},</if>
+            <if test="user_id != null">user_id = #{user_id},</if>
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE id = #{id}
+    </update>
+</mapper> 

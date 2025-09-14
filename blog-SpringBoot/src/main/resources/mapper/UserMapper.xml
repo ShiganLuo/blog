@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.baofeng.blog.mapper.UserMapper">
+    
+    <resultMap id="userResultMap" type="com.baofeng.blog.entity.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="avatarUrl" column="avatar_url"/>
+        <result property="bio" column="bio"/>
+        <result property="role" column="role" 
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="status" column="status" 
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="lastLogin" column="last_login"/>
+        <result property="loginAttempts" column="login_attempts"/>
+        <result property="emailVerified" column="is_email_verified"/>
+        <result property="active" column="is_active"/>
+        <result property="nickName" column="nick_name"/>
+    </resultMap>
+
+    <!-- 基础CRUD操作 -->
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (
+            username, email, password, avatar_url, bio, role, status,
+            last_login, login_attempts, is_email_verified, is_active,nick_name
+        ) VALUES (
+            #{username}, #{email}, #{password}, #{avatarUrl}, #{bio}, 
+            #{role}, #{status}, #{lastLogin}, #{loginAttempts}, 
+            #{emailVerified}, #{active}, #{nickName}
+        )
+    </insert>
+
+    <update id="updateUser">
+        UPDATE users SET
+            username = #{username},
+            email = #{email},
+            password = #{password},
+            avatar_url = #{avatarUrl},
+            bio = #{bio},
+            role = #{role},
+            status = #{status},
+            last_login = #{lastLogin},
+            login_attempts = #{loginAttempts},
+            is_email_verified = #{emailVerified},
+            is_active = #{active}
+            nick_name = #{nickName}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteUser">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
+    <!--根据用户名获取用户id-->
+    <select id="getIdByUsername">
+        select id FROM users WHERE username = #{username}
+    </select>
+
+    <select id="selectUserById" resultMap="userResultMap">
+        SELECT * FROM users WHERE id = #{id}
+    </select>
+
+    <!-- 条件查询 -->
+    <select id="selectByCondition" resultMap="userResultMap">
+        SELECT * FROM users
+        <where>
+            <if test="username != null">
+                AND username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="email != null">
+                AND email = #{email}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="selectByPage" resultMap="userResultMap">
+        SELECT username,  nick_name, avatar_url,  role, created_at, updated_at FROM users
+        ORDER BY id DESC
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!-- 登录相关操作 -->
+    <select id="selectByUsernameOrEmail" resultMap="userResultMap">
+        SELECT id, username, password, status, role
+        FROM users
+        WHERE username = #{account} OR email = #{account}
+        LIMIT 1
+    </select>
+
+    <update id="updateLoginInfo">
+        UPDATE users SET
+            last_login = NOW(),
+            login_attempts = 0
+        WHERE id = #{id}
+    </update>
+
+    <update id="incrementLoginAttempts">
+        UPDATE users SET
+            login_attempts = login_attempts + 1
+        WHERE id = #{id}
+    </update>
+    <update id="updatePassword">
+        UPDATE users
+            SET password = #{password} 
+        WHERE username = #{username}
+    </update>
+
+    <!-- 动态更新 -->
+    <update id="updateUserSelective">
+        UPDATE users
+        <set>
+            <if test="username != null">username = #{username},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="avatarUrl != null">avatar_url = #{avatarUrl},</if>
+            <if test="bio != null">bio = #{bio},</if>
+            <if test="role != null">role = #{role},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="lastLogin != null">last_login = #{lastLogin},</if>
+            <if test="loginAttempts != null">login_attempts = #{loginAttempts},</if>
+            <if test="emailVerified != null">is_email_verified = #{emailVerified},</if>
+            <if test="active != null">is_active = #{active},</if>
+            <if test="nickName != null">nick_name = #{nickName},</if>
+            updated_at = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+</mapper> 
