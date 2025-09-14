@@ -28,54 +28,15 @@ const toggle = useToggle(isDark);
 export const useStaticData = defineStore(
   "staticData",
   () => {
-    // ====================
-    // state
-    // ====================
-    const previewThemeList = ref([
-      "default",
-      "github",
-      "vuepress",
-      "mk-cute",
-      "smart-blue",
-      "cyanosis",
-    ]);
-
-    const codeThemeList = ref([
-      "atom",
-      "a11y",
-      "github",
-      "gradient",
-      "kimbie",
-      "paraiso",
-      "qtcreator",
-      "stackoverflow",
-    ]);
-
-    const previewTheme = ref("default");
-    const codeTheme = ref("atom");
     const theme = ref(isDark.value); // 当前主题（黑/白）
-    const pageHeaderList = ref<any[]>([]);
-    const messageTypeIsCard = ref(false);
+    const menuWidth = ref("250px")
 
     // ====================
     // getters (computed)
     // ====================
-    const mainTheme = computed(() => isDark.value);
+    const getTheme = computed(() => isDark.value);
+    const getMenuWidth = computed(() => menuWidth.value);
 
-    const getPageHeaderList = computed(() => {
-      // 优先使用当前的 pageHeaderList
-      if (Array.isArray(pageHeaderList.value) && pageHeaderList.value.length > 0) {
-        return pageHeaderList.value;
-      }
-
-      // 尝试从 localStorage 获取
-      const localData = _getLocalItem("pageHeaderList");
-
-      // 确保返回的始终是数组
-      return Array.isArray(localData) ? localData : [];
-    });
-
-    const getMessageTypeIsCard = computed(() => messageTypeIsCard.value);
 
     // ====================
     // actions
@@ -86,34 +47,17 @@ export const useStaticData = defineStore(
       _setLocalItem("mainTheme", theme.value ? "dark" : "light");
     };
 
-    const setPageHeaderList = (list: any[]) => {
-      pageHeaderList.value = list;
-      _setLocalItem("pageHeaderList", list);
-    };
-
-    const setMessageTypeIsCard = (type: boolean) => {
-      messageTypeIsCard.value = type;
-    };
 
     return {
       // state
-      previewThemeList,
-      codeThemeList,
-      previewTheme,
-      codeTheme,
       theme,
-      pageHeaderList,
-      messageTypeIsCard,
-
+      menuWidth,
       // getters
-      mainTheme,
-      getPageHeaderList,
-      getMessageTypeIsCard,
+      getTheme,
+      getMenuWidth,
 
       // actions
       switchMainTheme,
-      setPageHeaderList,
-      setMessageTypeIsCard,
     };
   },
 );

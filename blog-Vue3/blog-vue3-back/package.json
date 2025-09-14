@@ -16,7 +16,10 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@vueuse/core": "^13.9.0",
     "axios": "^1.12.2",
+    "blog-vue3-back": "link:",
+    "element-plus": "^2.11.2",
     "js-base64": "^3.7.8",
     "pinia": "^3.0.3",
     "vue": "^3.5.18",

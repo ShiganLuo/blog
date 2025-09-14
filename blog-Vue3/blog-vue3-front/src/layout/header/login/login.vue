@@ -2,7 +2,7 @@
 import { ref, reactive, watch, h, nextTick } from "vue";
 import type { FormInstance, FormRules, FormItemRule } from "element-plus";
 import { ElNotification } from "element-plus";
-import { reqLogin, reqRegister, getUserInfoById } from "@/api/user";
+import { reqLogin, reqRegister } from "@/api/user";
 import { useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
 import { getWelcomeSay, _getLocalItem, _setLocalItem, _removeLocalItem } from "@/utils/tool";
