@@ -47,6 +47,10 @@ export const useStaticData = defineStore(
       _setLocalItem("mainTheme", theme.value ? "dark" : "light");
     };
 
+    const setMenuWidth = (width : string) => {
+      menuWidth.value = width;
+    }
+
 
     return {
       // state
@@ -58,6 +62,7 @@ export const useStaticData = defineStore(
 
       // actions
       switchMainTheme,
+      setMenuWidth
     };
   },
 );
