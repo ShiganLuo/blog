@@ -16,12 +16,6 @@ import SwitchTheme from "@/components/SwitchTheme/index.vue";
 import Login from "@/layout/header/login/login.vue";
 import { debounce, isMobile } from "@/utils/tool";
 import BlogSearch from "@/components/Search/blog-search.vue";
-// store 类型
-interface UserInfo {
-  id?: number;
-  avatar?: string;
-  nick_name?: string;
-}
 
 const isPc = computed(() => !isMobile()); // 是否为PC端，响应式更新
 const router = useRouter();
@@ -269,6 +263,15 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .header_box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2001;
+  width: 100%;
+  height: 3.6rem;
+  overflow: hidden;
+  box-sizing: border-box;
+
   .sub-avatar {
     padding: 5px 0 0 0;
     display: flex;

@@ -5,33 +5,20 @@ const route = useRoute();
 
 <template>
   <div
-    v-if="route.path !== '/message/chat'"
-    class="footer_box flex flex-col items-center justify-center"
+    v-if="route.path !== '/message/chat'" class="footer_box"
   >
     <!-- eslint-disable-next-line -->
     <div class="footer-color">&copy 时敢的博客 2025</div>
-    <a class="footer-color change-color mt-[5px]" href="http://beian.miit.gov.cn/" target="_blank"
-      ></a
-    >
-    <div class="footer-color mt-[5px] flex justify-center flex-wrap">
-      <a
-        class="p-[3px]"
-        href="https://www.aliyun.com/?spm=5176.28055625.J_3207526240.1.6a27154aw7v5VK"
-        target="_blank"
-      >
-        <img
-          src="https://img.shields.io/badge/%E9%98%BF%E9%87%8C%E4%BA%91-ECS%E6%9C%8D%E5%8A%A1%E5%99%A8-orange"
-          alt=""
-      /></a>
-      <a class="p-[3px]" href="https://imzbf.github.io/md-editor-v3/docs/index" target="_blank">
+    <div class="footer-color m-5px flex-wrap">
+      <a class="p-3px" href="https://imzbf.github.io/md-editor-v3/docs/index" target="_blank">
         <img
           src="https://img.shields.io/badge/MdEditorV3-MD%E7%BC%96%E8%BE%91%E5%99%A8-159957"
           alt=""
       /></a>
-      <a class="p-[3px]" href="https://butterfly.js.org/" target="_blank">
+      <a class="p-3px" href="https://butterfly.js.org/" target="_blank">
         <img src="https://img.shields.io/badge/HEXO-BUTTERFLY-blue" alt="" />
       </a>
-      <a class="p-[3px]" href="https://min.io/" target="_blank">
+      <a class="p-3px" href="https://min.io/" target="_blank">
         <img
           src="https://img.shields.io/badge/minio-%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F-purple
 "
@@ -49,7 +36,31 @@ const route = useRoute();
   color: var(--font-color);
   text-align: center;
 }
-
+.footer_box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  z-index: 2009;
+  height: 10rem;
+  overflow: hidden;
+  backdrop-filter: saturate(100%) blur(3px);
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+.m-5px {
+  margin-top: 5px;
+}
+.p-3px {
+  padding: 3px;
+}
+.flex-wrap {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 .change-color {
   text-decoration: none;
   transition: all 0.3s;

@@ -76,33 +76,13 @@ div:focus {
   background: var(--global-gradient) !important;
 }
 
-// 头部
-.header_box {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2001;
-  width: 100%;
-  height: 3.6rem;
-  overflow: hidden;
-  box-sizing: border-box;
-}
+
 // 主内容部分
 .main_box {
   box-sizing: border-box;
 }
 .blog_info {
   padding: 0 7.5px !important;
-}
-// 底部
-.footer_box {
-  width: 100%;
-  z-index: 2009;
-  height: 10rem;
-  overflow: hidden;
-  backdrop-filter: saturate(100%) blur(3px);
-  overflow-x: hidden;
-  box-sizing: border-box;
 }
 
 // 给 头部一个 fadeIn 的动画
