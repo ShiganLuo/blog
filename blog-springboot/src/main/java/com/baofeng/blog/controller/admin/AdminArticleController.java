@@ -8,7 +8,6 @@ import com.baofeng.blog.service.ArticleService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.validation.annotation.Validated;
 import com.fasterxml.jackson.databind.JsonNode;
 

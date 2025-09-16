@@ -7,32 +7,31 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import java.util.List;
+
 import com.baofeng.blog.filter.JwtAuthenticationFilter;
 import com.baofeng.blog.service.CustomUserDetailsService;
 import com.baofeng.blog.util.JwtTokenProvider;
-// import com.baofeng.blog.exception.CustomAccessDeniedHandler;
-// import com.baofeng.blog.exception.CustomAuthenticationEntryPoint;
-// import org.springframework.beans.factory.annotation.Autowired;
+
+
+
+
+
 //博客前台访问不需要token
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    // @Autowired
-    // private CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final List<String> whiteListUris;
+    public SecurityConfig(JwtProperties jwtProperties) {
+        this.whiteListUris = jwtProperties.getWhitelist();
+    }
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   JwtAuthenticationFilter jwtAuthenticationFilter
+                                                ) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/admin/users/register",
-                    "/api/admin/users/login",
-                    "/api/admin/users/refreshToken",
-                    "/api/front/**",
-                    "/swagger-ui.html",
-                    "/swagger-ui/**",
-                    "/v3/api-docs",
-                    "/v3/api-docs/**",
-                    "/v3/api-docs.yaml"
-                    ).permitAll()
+                .requestMatchers(whiteListUris.toArray(new String[0])).permitAll()
                 .anyRequest().authenticated() // 需要身份验证的请求
             )
             .csrf(csrf -> csrf.disable())
@@ -49,8 +48,9 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider,
-                                                       CustomUserDetailsService userDetailsService) {
-        return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService);
+                                                       CustomUserDetailsService userDetailsService
+                                                       ) {
+        return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService, whiteListUris);
     }
 
     @Bean

@@ -1,5 +1,6 @@
 package com.baofeng.blog.util;
 
+import com.baofeng.blog.config.JwtProperties;
 import com.baofeng.blog.entity.User;
 
 import io.jsonwebtoken.Jwts;
@@ -10,18 +11,16 @@ import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider {
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
-    // @Value注解从application.yml中获取
-    @Value("${jwt.secret}")
-    private String secret;
-    // 默认token有效时间
-    @Value("${jwt.expiration}")
-    private long expiration;
+    private final String secret;
+    public JwtTokenProvider(JwtProperties jwtProperties) {
+        this.secret = jwtProperties.getSecret();
+    }
+
     /**
      * 从token中获取登录用户名
      */
@@ -52,11 +51,21 @@ public class JwtTokenProvider {
         Claims claims = parseToken(token);
         if ( claims != null) {
             Date expiredDate = claims.getExpiration();
-            return expiredDate.after(new Date());
+            return !expiredDate.after(new Date());
         } else {
-            return false;
+            return true;
         }
 
+    }
+
+    public boolean isRefreshToken(String token) {
+        Claims claims = parseToken(token);
+        String type = (String) claims.get("type");
+        if (type.equals("refresh")){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     public String generateToken(User user, long expiration, boolean isRefreshToken) {

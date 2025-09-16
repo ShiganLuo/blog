@@ -66,7 +66,7 @@ const save = async () => {
     text: "图片保存中......"
   });
   const addPhotosRes = await addPhotos({ photoList: finalList });
-  if (addPhotosRes.code == 0) {
+  if (addPhotosRes.code == 200) {
     message("保存成功", { type: "success" });
   } else {
     imgSaveLoading.close();

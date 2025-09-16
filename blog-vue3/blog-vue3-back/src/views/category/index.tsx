@@ -131,7 +131,7 @@ export function useColumns() {
   }
   async function deleteCategory(row) {
     const res = await deleteCategoryList({ categoryIdList: [row.id] });
-    if (res.code == 0) {
+    if (res.code == 200) {
       message(`删除分类${row.category_name}成功`, { type: "success" });
       getPageCategoryList();
     }
@@ -140,7 +140,7 @@ export function useColumns() {
     if (selectList.value.length) {
       const list = selectList.value.map(se => se.id);
       const res = await deleteCategoryList({ categoryIdList: list });
-      if (res.code == 0) {
+      if (res.code == 200) {
         message(`批量删除分类成功`, { type: "success" });
         getPageCategoryList();
       }
@@ -162,7 +162,7 @@ export function useColumns() {
         } else {
           res = await addCategory(form);
         }
-        if (res.code == 0) {
+        if (res.code == 200) {
           message(`${form.id ? "修改" : "新增"}成功`, { type: "success" });
           dialogVisible.value = false;
           resetForm(formEl);
@@ -175,7 +175,7 @@ export function useColumns() {
 
   async function getPageCategoryList() {
     const res = await getCategoryList(param);
-    if (res.code == 0) {
+    if (res.code == 200) {
       dataList.value = res.result.list;
       pagination.total = res.result.total;
       loading.value = false;

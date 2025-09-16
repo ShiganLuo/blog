@@ -4,7 +4,7 @@ import { useUserStoreHook } from "@/store/modules/user";
 
 export interface DataInfo<T> {
   /** token */
-  token: string;
+  accessToken: string;
   /** 用户名 */
   username?: string;
   /** 当前登陆用户的角色 */
@@ -26,7 +26,7 @@ export function getToken(): DataInfo<number> {
  * 设置token
  */
 export function setToken(data: DataInfo<string>) {
-  const { token } = data;
+  const { accessToken } = data;
 
   function setSessionKey(username: string, role: number) {
     useUserStoreHook().SET_USERNAME(username);
@@ -40,7 +40,7 @@ export function setToken(data: DataInfo<string>) {
     );
   }
 
-  Cookies.set(TokenKey, JSON.stringify({ token }));
+  Cookies.set(TokenKey, JSON.stringify({ accessToken }));
 
   if (data.username && data.role) {
     const { username, role } = data;

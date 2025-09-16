@@ -116,7 +116,7 @@ export function useColumns() {
         const res = await deleteMessage({ idList: list });
         console.log(res);
 
-        if (res.code == 0) {
+        if (res.code == 200) {
           message(`批量删除留言成功`, { type: "success" });
           getPageMessageList();
         }
@@ -128,7 +128,7 @@ export function useColumns() {
 
   async function getPageMessageList() {
     const res = await getMessageList(param);
-    if (res.code == 0) {
+    if (res.code == 200) {
       dataList.value = res.result.list;
       pagination.total = res.result.total;
       loading.value = false;

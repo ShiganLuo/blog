@@ -4,6 +4,7 @@ import com.baofeng.blog.exception.DuplicateUserException;
 import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.util.ResultCode;
+import com.baofeng.blog.config.JwtProperties;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
@@ -13,7 +14,6 @@ import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
 import com.baofeng.blog.util.JwtTokenProvider;
 import com.baofeng.blog.util.LoginType;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,14 +26,21 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final long accessTokenExpiration;
+    private final long refreshTokenExpiration;
 
-    public UserServiceImpl(BCryptPasswordEncoder passwordEncoder,JwtTokenProvider jwtTokenProvider) {
+    public UserServiceImpl(BCryptPasswordEncoder passwordEncoder,
+                            JwtTokenProvider jwtTokenProvider, 
+                            UserMapper userMapper,
+                            JwtProperties jwtProperties) {
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userMapper = userMapper;
+        this.accessTokenExpiration = jwtProperties.getAccessTokenExpiration();
+        this.refreshTokenExpiration = jwtProperties.getRefreshTokenExpiration();
     }
 
     @Override
@@ -82,8 +89,8 @@ public class UserServiceImpl implements UserService {
 
         userMapper.updateLoginInfo(user.getId());
 
-        String accessToken = jwtTokenProvider.generateToken(user, 3600000, false);
-        String refreshToken = jwtTokenProvider.generateToken(user, 1209600000, true);
+        String accessToken = jwtTokenProvider.generateToken(user, accessTokenExpiration, false);
+        String refreshToken = jwtTokenProvider.generateToken(user, refreshTokenExpiration, true);
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expires = now.plus(1, ChronoUnit.HOURS);
 
@@ -99,6 +106,7 @@ public class UserServiceImpl implements UserService {
             return (ApiResponse<T>) ApiResponse.success(response);
         } else {
             AdminLoginResponseVO.User userInfo = new AdminLoginResponseVO.User(
+                user.getId(),
                 user.getAvatarUrl(),
                 user.getUsername(),
                 user.getNickName(),
@@ -170,18 +178,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse<refreshTokenResponse> refreshToken(String rawToken) {
         String refreshToken = rawToken.replaceAll("^\"|\"$", "");
-        boolean success = jwtTokenProvider.isTokenExpired(refreshToken);
-        if ( success ){
+        boolean isTokenExpired = jwtTokenProvider.isTokenExpired(refreshToken);
+        boolean isRefreshToken = jwtTokenProvider.isRefreshToken(refreshToken);
+        if ( !isTokenExpired && !isRefreshToken ){
             String username = jwtTokenProvider.getUserNameFromToken(refreshToken);
             User user = userMapper.selectByUsernameOrEmail(username);
-            String accessToken = jwtTokenProvider.generateToken(user, 3600000,false);
+            String accessToken = jwtTokenProvider.generateToken(user, accessTokenExpiration,false);
             refreshTokenResponse response = new refreshTokenResponse();
             response.setAccessToken(accessToken);
             response.setRefreshToken(refreshToken);
             response.setExpires(LocalDateTime.now().plus(1, ChronoUnit.HOURS));
             return ApiResponse.success(response);
         } else {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"refreshToken验证失败");
+            return !isRefreshToken
+            ? ApiResponse.error(ResultCode.PARAM_ERROR,"token类型错误")
+            : ApiResponse.error(ResultCode.PARAM_ERROR,"token过期");
+            // return ApiResponse.error(ResultCode.PARAM_ERROR,"refreshToken验证失败");
         }
     }
 

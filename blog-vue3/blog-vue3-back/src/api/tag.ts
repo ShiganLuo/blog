@@ -28,5 +28,5 @@ export const deleteTagList = (data?: object) => {
 
 /** 获取标签字典 */
 export const getTagDictionary = () => {
-  return http.request<TagResult>("get", "/api/tag/getTagDictionary", {});
+  return http.request<TagResult>("get", "/api/admin/tags/getTagDictionary", {});
 };

@@ -77,7 +77,7 @@ class PureHttp {
           : new Promise(resolve => {
               const data = getToken();
               if (data) {
-                config.headers["Authorization"] = data.token;
+                config.headers["Authorization"] = data.accessToken;
                 resolve(config);
               } else {
                 resolve(config);

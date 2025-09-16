@@ -38,34 +38,18 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
     },
     // 服务端渲染
     server: {
-      // 自动开浏览器
-      open: true,
-      // 热更新
-      hmr: {
-        overlay: false
-      },
-      // 是否开启 https
-      https: false,
-      // 端口号
-      port: VITE_PORT,
-      host: "0.0.0.0",
-      // 本地跨域代理 https://cn.vitejs.dev/config/server-options.html#server-proxy
+      port: 3002,
+        host: "0.0.0.0",
+        open: true,
+        hmr: {
+          overlay: false
+        },
       proxy: {
         "/api": {
-          target: "http://127.0.0.1:8888",
+          target: "http://127.0.0.1:8080",
           changeOrigin: true,
-          rewrite: path => path.replace(/^\/api/, "")
+          // rewrite: path => path.replace(/^\/api/, "")
         },
-        "/blog-images": {
-          target: "http://mrzym.top:9000/blog-images",
-          changeOrigin: true,
-          rewrite: path => path.replace(/^\/blog-images/, "")
-        },
-        "/gitee": {
-          target: "https://gitee.com/mrzym",
-          changeOrigin: true,
-          rewrite: path => path.replace(/^\/gitee/, "")
-        }
       }
     },
     plugins: [

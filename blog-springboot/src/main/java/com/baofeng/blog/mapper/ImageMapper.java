@@ -3,7 +3,6 @@ package com.baofeng.blog.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
-import com.baofeng.blog.entity.EntityImage;
 import com.baofeng.blog.entity.Image;
 import com.baofeng.blog.vo.front.FrontImageVO.AlbumResponse;
 

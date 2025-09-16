@@ -163,7 +163,7 @@ export function useColumns() {
     if (val) {
       const { id, is_top } = val;
       const res = await updateArticleTop(id, is_top);
-      if (res.code == 0) {
+      if (res.code == 200) {
         message(`${is_top == 1 ? "置顶" : "取消置顶"} 成功`, {
           type: "success"
         });
@@ -175,7 +175,7 @@ export function useColumns() {
   async function revertArticleById(id, article_title) {
     if (id) {
       const res = await revertArticle(id);
-      if (res.code == 0) {
+      if (res.code == 200) {
         message(`恢复文章 ${article_title}成功`, { type: "success" });
       }
       pageGetArticleList();
@@ -184,7 +184,7 @@ export function useColumns() {
   // 公开隐藏文章
   async function changeArticlePublic(id, status) {
     const res = await isArticlePublic(id, status);
-    if (res.code == 0) {
+    if (res.code == 200) {
       message(`${status == 1 ? "隐藏" : "公开"} 文章成功`, { type: "success" });
     }
     pageGetArticleList();
@@ -212,7 +212,7 @@ export function useColumns() {
   // 通过id删除文章
   async function deleteArticleById(id, status, article_title) {
     const res = await deleteArticle(id, status);
-    if (res.code == 0) {
+    if (res.code == 200) {
       if (status == 3) {
         message(`删除文章 ${article_title}成功`, { type: "success" });
       } else {
@@ -227,7 +227,7 @@ export function useColumns() {
     loading.value = true;
     const res = await getArticleList(param);
 
-    if (res.code == 0) {
+    if (res.code == 200) {
       tableData.value = res.result.list;
       pagination.total = res.result.total;
       tableImageList.value = [];
@@ -240,13 +240,13 @@ export function useColumns() {
 
   async function getTagD() {
     const res = await getTagDictionary();
-    if (res.code == 0) {
+    if (res.code == 200) {
       tagOptionList.value = res.result;
     }
   }
   async function getCategoryD() {
     const res = await getCategoryDictionary();
-    if (res.code == 0) {
+    if (res.code == 200) {
       categoryOptionList.value = res.result;
     }
   }

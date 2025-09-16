@@ -137,7 +137,7 @@ export function useArticle() {
         text: "图片上传中"
       });
       const res = await imgUpload(articleForm.coverList[0]);
-      if (res.code == 0) {
+      if (res.code == 200) {
         const { url } = res.result;
         articleForm.article_cover = url;
       }
@@ -242,7 +242,7 @@ export function useArticle() {
           // 编辑
           res = await editArticle(finalArticle);
         }
-        if (res.code == 0) {
+        if (res.code == 200) {
           message(res.message, { type: "success" });
           resetForm(formEl.value);
           resetForm(articleFormRef.value);
@@ -260,21 +260,21 @@ export function useArticle() {
   // 获取标签列表
   async function getTagD() {
     const res = await getTagDictionary();
-    if (res.code == 0) {
+    if (res.code == 200) {
       tagOptionList.value = res.result;
     }
   }
   // 获取分类列表
   async function getCategoryD() {
     const res = await getCategoryDictionary();
-    if (res.code == 0) {
+    if (res.code == 200) {
       categoryOptionList.value = res.result;
     }
   }
   // 根据id获取文章详情
   async function getArticleDetailsById(article_id) {
     const res = await getArticleById(article_id);
-    if (res.code == 0) {
+    if (res.code == 200) {
       const { article_cover } = res.result;
       Object.assign(articleForm, res.result);
 

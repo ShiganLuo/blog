@@ -92,7 +92,7 @@ export function useSite() {
   // 初始化网站设置
   async function initConfig() {
     const res = await getConfigDetail();
-    if (res.code == 0) {
+    if (res.code == 200) {
       if (res.result) {
         const {
           blog_avatar,
@@ -192,21 +192,21 @@ export function useSite() {
     // 先上传图片
     if (siteInfoForm.bgList.length && !siteInfoForm.bgList[0].id) {
       const imgRes = await imgUpload(siteInfoForm.bgList[0]);
-      if (imgRes.code == 0) {
+      if (imgRes.code == 200) {
         const { url } = imgRes.result;
         siteInfoForm.avatar_bg = url;
       }
     }
     if (siteInfoForm.avatarList.length && !siteInfoForm.avatarList[0].id) {
       const imgRes = await imgUpload(siteInfoForm.avatarList[0]);
-      if (imgRes.code == 0) {
+      if (imgRes.code == 200) {
         const { url } = imgRes.result;
         siteInfoForm.blog_avatar = url;
       }
     }
     if (siteInfoForm.qqCoverList.length && !siteInfoForm.qqCoverList[0].id) {
       const imgRes = await imgUpload(siteInfoForm.qqCoverList[0]);
-      if (imgRes.code == 0) {
+      if (imgRes.code == 200) {
         const { url } = imgRes.result;
         siteInfoForm.qq_link = url;
       }
@@ -218,7 +218,7 @@ export function useSite() {
       !siteInfoForm.weChatCoverList[0].id
     ) {
       const imgRes = await imgUpload(siteInfoForm.weChatCoverList[0]);
-      if (imgRes.code == 0) {
+      if (imgRes.code == 200) {
         const { url } = imgRes.result;
         siteInfoForm.we_chat_link = url;
       }
@@ -230,7 +230,7 @@ export function useSite() {
       !siteInfoForm.weChatGroupList[0].id
     ) {
       const imgRes = await imgUpload(siteInfoForm.weChatGroupList[0]);
-      if (imgRes.code == 0) {
+      if (imgRes.code == 200) {
         const { url } = imgRes.result;
         siteInfoForm.we_chat_group = url;
       }
@@ -240,11 +240,11 @@ export function useSite() {
 
     if (siteInfoForm.qqGroupList.length && !siteInfoForm.qqGroupList[0].id) {
       const imgRes = await imgUpload(siteInfoForm.qqGroupList[0]);
-      if (imgRes.code == 0) {
+      if (imgRes.code == 200) {
         const { url } = imgRes.result;
         siteInfoForm.qq_group = url;
       }
-    } else if (siteInfoForm.qqGroupList.length == 0) {
+    } else if (siteInfoForm.qqGroupList.length == 200) {
       siteInfoForm.qq_group = "";
     }
 
@@ -253,7 +253,7 @@ export function useSite() {
       !siteInfoForm.weChatPayGroupList[0].id
     ) {
       const imgRes = await imgUpload(siteInfoForm.weChatPayGroupList[0]);
-      if (imgRes.code == 0) {
+      if (imgRes.code == 200) {
         const { url } = imgRes.result;
         siteInfoForm.we_chat_pay = url;
       }
@@ -266,7 +266,7 @@ export function useSite() {
       !siteInfoForm.aliPayGroupList[0].id
     ) {
       const imgRes = await imgUpload(siteInfoForm.aliPayGroupList[0]);
-      if (imgRes.code == 0) {
+      if (imgRes.code == 200) {
         const { url } = imgRes.result;
         siteInfoForm.ali_pay = url;
       }
@@ -276,7 +276,7 @@ export function useSite() {
 
     imgUploading.close();
     const res = await updateConfigDetail(siteInfoForm);
-    if (res.code == 0) {
+    if (res.code == 200) {
       message("网站设置修改成功", { type: "success" });
       initConfig();
     }

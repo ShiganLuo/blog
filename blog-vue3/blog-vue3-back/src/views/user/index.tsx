@@ -131,7 +131,7 @@ export function useColumns() {
 
   async function getPageUserList() {
     const res = await getUserList(param);
-    if (res.code == 0) {
+    if (res.code == 200) {
       dataList.value = res.result.list;
       pagination.total = res.result.total;
       loading.value = false;
@@ -144,7 +144,7 @@ export function useColumns() {
 
     try {
       const res = await updateUserRole(id, role);
-      if (res.code == 0) {
+      if (res.code == 200) {
         message("修改用户角色成功", { type: "success" });
         getPageUserList();
       }
@@ -188,7 +188,7 @@ export function useColumns() {
               text: "图片上传中"
             });
             const res = await imgUpload(form.avatarList[0]);
-            if (res.code == 0) {
+            if (res.code == 200) {
               const { url } = res.result;
               form.avatar = url;
             }
@@ -202,7 +202,7 @@ export function useColumns() {
         // 修改用户
         const { id, nick_name, avatar } = form;
         const res = await adminUpdateUserInfo({ id, nick_name, avatar });
-        if (res.code == 0) {
+        if (res.code == 200) {
           message("修改成功", { type: "success" });
           dialogVisible.value = false;
           resetForm(formEl);

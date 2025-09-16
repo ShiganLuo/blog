@@ -29,7 +29,7 @@ const cloudChartRef = ref(null);
 // 静态数据
 const getStatisticData = async () => {
   const res = await getStatistic();
-  if (res.code == 0) {
+  if (res.code == 200) {
     Object.assign(staticsData.value, res.result);
   }
 };

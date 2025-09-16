@@ -21,11 +21,23 @@ pagehelper:
   reasonable: false           # 合理化参数，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页
   support-methods-arguments: true  # 支持通过 Mapper 接口参数来传递分页参数
 ###使用了value注入必须定义
-jwt:
-  tokenHeader: X-Token #JWT存储的请求头
-  tokenHead: Bearer  #令牌前缀
-  secret: "your-256-bit-secret-key-here-1234567890ABCDEF"
-  expiration: 86400000  # 24小时
+security:
+  jwt:
+    whitelist:
+      - /api/admin/users/register
+      - /api/admin/users/login
+      - /api/admin/users/refreshToken
+      - /api/front/**
+      - /swagger-ui.html
+      - /swagger-ui/**
+      - /v3/api-docs
+      - /v3/api-docs/**
+      - /v3/api-docs.yaml
+    tokenHeader: X-Token #JWT存储的请求头
+    tokenHead: Bearer  #令牌前缀
+    secret: "your-256-bit-secret-key-here-1234567890ABCDEF"
+    accessTokenExpiration: 3600000
+    refreshTokenExpiration: 1209600000
 app:
   upload:
     dir: /home/luosg/uploads  # 顶层属性,全路径

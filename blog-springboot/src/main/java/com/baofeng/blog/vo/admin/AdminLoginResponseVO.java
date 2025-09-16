@@ -25,6 +25,7 @@ public class AdminLoginResponseVO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class User {
+        private Long id;
         private String avatar;
         private String username;
         private String nickname;

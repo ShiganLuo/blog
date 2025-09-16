@@ -82,7 +82,7 @@ const save = async () => {
       Object.assign(form, { user_id: userId });
     }
     const res = route.query.id ? await editTalk(form) : await addTalk(form);
-    if (res.code == 0) {
+    if (res.code == 200) {
       message(route.query.id ? "修改成功" : "发布成功", { type: "success" });
       router.go(-1);
     }
@@ -97,7 +97,7 @@ const cancel = () => {
 
 const getTalkDetailById = async id => {
   const res = await getTalkById(id);
-  if (res.code == 0) {
+  if (res.code == 200) {
     res.result.talkImgList = res.result.talkImgList.map(img => {
       return {
         id: id,

@@ -9,21 +9,27 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Claims;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService userDetailsService;
+    private final List<String> whiteListUris;
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService userDetailsService, List<String> whiteListUris) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
+        this.whiteListUris = whiteListUris;
     }
 
     @Override
@@ -31,14 +37,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-        // 从请求头中提取 token，要求带上 "Bearer " 前缀
+        String requestUri = request.getRequestURI();
+        for (String uri : whiteListUris) {
+            if (requestUri.startsWith(uri.replace("/**", ""))) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             // System.out.println("携带Bearer");
             // System.out.println("Received Authorization Header: " + authHeader);
             String token = authHeader.substring(7); // 去除 "Bearer " 前缀获取真正的 token
             // 验证 token 是否有效（包括签名和过期时间）
-            if (jwtTokenProvider.isTokenExpired(token)) {
+            if (!jwtTokenProvider.isTokenExpired(token)) {
                 //解析token
                 Claims claims = jwtTokenProvider.parseToken(token);
                 
@@ -58,18 +71,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         } else {
                             ResponseUtil.sendErrorResponse(response, 400, "Access  Token解析的用户不存在");
+                            logger.error("Access  Token解析的用户不存在");
                         }
                     }
                 } else {
                     ResponseUtil.sendErrorResponse(response, 403, "Refresh Token 不能访问受保护资源");
+                    logger.error("Refresh Token 不能访问受保护资源");
                     return;
                 }
             } else {
                 ResponseUtil.sendErrorResponse(response, 400, "Token 失效");
+                logger.error("Token 失效");
                 return;
 
             }
+        } else {
+            ResponseUtil.sendErrorResponse(response, 403, "请求未携带或者错误携带了Authorization头");
+            logger.error("请求未携带或者错误携带了Authorization头");
+            return;
         }
+
+        
         // 继续执行后续过滤器
         filterChain.doFilter(request, response);
     }
