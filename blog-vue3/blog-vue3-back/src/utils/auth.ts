@@ -3,12 +3,14 @@ import { storageSession } from "@pureadmin/utils";
 import { useUserStoreHook } from "@/store/modules/user";
 
 export interface DataInfo<T> {
-  /** token */
-  accessToken: string;
-  /** 用户名 */
-  username?: string;
-  /** 当前登陆用户的角色 */
-  role?: number;
+    accessToken: string; // token
+    refreshToken: string;
+    expires: string;
+    avatar: string;
+    username: string; // 用户名
+    nickname: string; //
+    role: number; // 用户角色
+    id: number; // 用户id
 }
 
 export const sessionKey = "user-info";

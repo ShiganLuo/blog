@@ -34,6 +34,45 @@ const getStatisticData = async () => {
   }
 };
 
+
+
+// 定义每个日贡献对象的类型
+type ContributionDay = {
+  date: string;
+  intensity: string;
+  count: number;
+};
+
+// 定义每周贡献数组的类型
+type ContributionWeek = ContributionDay[];
+
+// 定义原始 API 数据的类型
+type RawGitHubData = {
+  total: number;
+  contributions: ContributionWeek[];
+};
+
+function github_transformContributions(rawData: RawGitHubData): Array<[string, number]> {
+  if (!rawData || !rawData.contributions) {
+    return [];
+  }
+
+  const flattenedData: Array<[string, number]> = [];
+  rawData.contributions.forEach((week: ContributionWeek) => {
+    week.forEach((day: ContributionDay) => {
+      flattenedData.push([day.date, day.count]);
+    });
+  });
+
+  return flattenedData;
+}
+
+type GiteeCommit = {
+  created_at: string;
+  commit_count: number;
+  [key: string]: any; // 如果有其他不关心的属性，可以使用索引签名
+};
+
 // 创建一个从去年到今年 12个月的数组 用于记录代码提交信息
 const createDayArr = () => {
   const today = new Date();
@@ -46,20 +85,22 @@ const createDayArr = () => {
   return dateArray;
 };
 
-// gitee代码提交记录
-const getCodeCommit = async () => {
-  const arr = createDayArr();
-  const res: any = await getCommitList();
-
+// 原作者gitee
+function gitee_transformContributions(res: GiteeCommit[]): void {
+  const arr = createDayArr();  
   res.length &&
     res.forEach(v => {
       const index = arr.findIndex(d => d[0] == v.created_at.split("T")[0]);
       if (index != -1) {
-        v.commit_count = v.commit_count ? v.commit_count - 0 : 0;
-        arr[index][1] += v.commit_count;
+        v.commit_count = v.commit_count? v.commit_count - 0 : 0;
+        arr[index][1] = Number(arr[index][1]) + v.commit_count;
       }
     });
-
+}
+// github代码提交记录
+const getCodeCommit = async () => {
+  const res: any = await getCommitList();
+  const arr = github_transformContributions(res)
   staticsData.value.commitList = arr;
 };
 
@@ -129,7 +170,7 @@ onMounted(() => {
     </el-row>
     <div class="filings">
       <a class="change-color" href="http://beian.miit.gov.cn/" target="_blank"
-        >蜀ICP备2023007772号</a
+        >暂无</a
       >
     </div>
   </el-card>

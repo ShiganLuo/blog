@@ -8,5 +8,5 @@ export type homeResult = {
 
 /** 获取数据统计 用户、标签、分类、文章数 */
 export const getStatistic = () => {
-  return http.request<homeResult>("get", "/api/statistic", {});
+  return http.request<homeResult>("get", "/api/admin/settings/getBlogConfig", {});
 };

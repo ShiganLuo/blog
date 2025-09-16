@@ -71,23 +71,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         } else {
                             ResponseUtil.sendErrorResponse(response, 400, "Access  Token解析的用户不存在");
-                            logger.error("Access  Token解析的用户不存在");
+                            logger.warn("Access  Token解析的用户不存在");
                         }
                     }
                 } else {
                     ResponseUtil.sendErrorResponse(response, 403, "Refresh Token 不能访问受保护资源");
-                    logger.error("Refresh Token 不能访问受保护资源");
+                    logger.warn("Refresh Token 不能访问受保护资源");
                     return;
                 }
             } else {
                 ResponseUtil.sendErrorResponse(response, 400, "Token 失效");
-                logger.error("Token 失效");
+                logger.warn("Token 失效");
                 return;
 
             }
         } else {
             ResponseUtil.sendErrorResponse(response, 403, "请求未携带或者错误携带了Authorization头");
-            logger.error("请求未携带或者错误携带了Authorization头");
+            logger.warn("请求未携带或者错误携带了Authorization头");
             return;
         }
 

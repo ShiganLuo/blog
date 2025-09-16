@@ -19,7 +19,8 @@ export const getConfigDetail = () => {
 export const getCommitList = () => {
   return http.request<Array<object>>(
     "get",
-    "/gitee/contribution_timeline?url=%2Fmrzym%2Fcontribution_timeline&scope=my&day=&start_date=&end_date=&year=&limit=180&prev_id=&_=1683426798995"
+    "/github/calendar",
+    {}
   );
 };
 
@@ -52,7 +53,7 @@ export const imgUpload = async data => {
 
   const formData = new FormData();
   formData.append("file", res);
-  const token = getToken();
+  const userInfo = getToken();
 
   return new Promise<SiteResult>(resolve => {
     Axios({
@@ -61,7 +62,7 @@ export const imgUpload = async data => {
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: token.token
+        Authorization: userInfo.accessToken
       }
     }).then(response => {
       resolve(response.data);
@@ -88,7 +89,7 @@ export const mdImgUpload = async data => {
 
   const formData = new FormData();
   formData.append("file", res);
-  const token = getToken();
+  const userInfo = getToken();
 
   return new Promise<SiteResult>(resolve => {
     Axios({
@@ -97,7 +98,7 @@ export const mdImgUpload = async data => {
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: token.token
+        Authorization: userInfo.accessToken
       }
     }).then(response => {
       resolve(response.data);

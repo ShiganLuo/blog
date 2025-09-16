@@ -50,6 +50,10 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           changeOrigin: true,
           // rewrite: path => path.replace(/^\/api/, "")
         },
+        "/github/calendar": {
+          target: "https://gh-calendar.rschristian.dev/user/ShiganLuo",
+          changeOrigin: true
+        }
       }
     },
     plugins: [

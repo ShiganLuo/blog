@@ -31,4 +31,10 @@ public interface UserMapper {
      * 根据用户名查询用户id
      */
     Long getIdByUsername(String username);
+
+    /**
+     * 获取网站用户总数
+     * @return
+     */
+    Long countAllUsers();
 } 

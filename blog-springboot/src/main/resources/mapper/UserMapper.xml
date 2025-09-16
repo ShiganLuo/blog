@@ -97,6 +97,10 @@
         LIMIT 1
     </select>
 
+    <!--获取用户总数-->
+    <select id="countAllUsers" resultType="Long">
+        SELECT COUNT(*) FROM users
+    </select>
     <update id="updateLoginInfo">
         UPDATE users SET
             last_login = NOW(),

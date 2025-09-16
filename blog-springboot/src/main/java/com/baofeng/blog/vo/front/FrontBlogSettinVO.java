@@ -37,6 +37,7 @@ public class FrontBlogSettinVO {
         private Long articleCount;
         private Long categoryCount;
         private Long tagCount;
+        private Long userCount;
         private String git_ee_link;
         private String bilibili_link;
         private String github_link;

@@ -102,7 +102,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         Long articleCount = articleMapper.countAllArticles();
         Long tagCount = tagMapper.countAllTags();
         Long categoryCount = categoryMapper.countAllCategories();
-
+        Long userCount = userMapper.countAllUsers();
         configDetail detail = new configDetail();
         detail.setBlog_name(blogSetting.getSiteTitle());
         detail.setBlog_avatar(blogSetting.getSiteDescription());
@@ -124,7 +124,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         
         detail.setTagCount(tagCount);
         detail.setCategoryCount(categoryCount);
-
+        detail.setUserCount(userCount);
         return ApiResponse.success(detail);
     }
     
