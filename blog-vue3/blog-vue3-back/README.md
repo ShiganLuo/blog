@@ -1,126 +1,140 @@
-<p align="center">
-  <a href="http://39.108.51.116/#/login" target="_blank" rel="noopener noreferrer">
-    <img width="180" src="https://img.shields.io/badge/%E5%B0%8F%E5%BC%A0%E7%9A%84%E5%8D%9A%E5%AE%A2%E5%90%8E%E5%8F%B0-v1.0.0-lightgrey" alt="Blog logo">
-  </a>
-</p>
+# 简介
 
-<p align="center">
-  <img src="https://img.shields.io/badge/pnpm-v7.26.3-purple" alt="pnpm version">
-  <a href="https://nodejs.org/en/about/releases/">
-    <img src="https://img.shields.io/badge/node-v16.17.0-green" alt="node compatibility">
-  </a>
-  <a href="https://element-plus.gitee.io/zh-CN/">
-    <img src="https://img.shields.io/badge/ElementPlus-v2.2.17-blue" alt="Element Plus">
-  </a>
-  <a href="https://cn.vuejs.org/">
-    <img src="https://img.shields.io/badge/vue-v3.2.45-brightgreen" alt="Vue.js">
-  </a>
-  <a href="https://imzbf.github.io/md-editor-v3/docs#%F0%9F%A7%B1%20toolbarsExclude">
-    <img src="https://img.shields.io/badge/md--editor--v3-v2.7.2-lightgrey" alt="md-editor-v3">
-  </a>
-  <a href="https://pinia.web3doc.top/">
-    <img src="https://img.shields.io/badge/pinia-v2.0.28-yellowgreen" alt="pinia">
-  </a>
-  <a href="https://router.vuejs.org/zh/guide/">
-    <img src="https://img.shields.io/badge/vue--router-v4.1.6-green" alt="vue-router">
-  </a>
-  <a href="http://yiming_chang.gitee.io/pure-admin-doc/">
-    <img src="https://img.shields.io/badge/pureadmin-v1.1.0-purple" alt="vue-router">
-  </a>
-  <a href="[http://yiming_chang.gitee.io/pure-admin-doc/](https://vueuse.org/)">
-    <img src="https://img.shields.io/badge/vueuse-v9.6.0-pink" alt="vue-use">
-  </a>
-  <a href="https://www.axios-http.cn/docs/intro">
-    <img src="https://img.shields.io/badge/axios-v%5E1.2.0-blueviolet" alt="axios">
-  </a>
-  <a href="https://www.dowebok.com/demo/2014/98/">
-    <img src="https://img.shields.io/badge/animate-v%5E4.1.1-orange" alt="animate">
-  </a>
-</p>
+基于 Vue3 + Vue-router + Webpack5 + NaiveUI + Pinia 搭建的博客后台
 
-## ⚡ 简介 introduction
+# 预览
 
-一个前后端分离的个人博客项目
+线上地址：[https://admin.hsslive.cn](https://admin.hsslive.cn)
 
-已适配移动端、PC端，适合新手用于学习。
+# 项目截图
 
-#### 前台
+登录：
 
-博客前台基于 vue3、element plus、pinia、axios、vue-router、vue-cli、vue-use、npm、scss 等主流技术
+![https://resource.hsslive.cn/image/e8241c8c3c9b259a0cc61ca316482f93.webp](https://resource.hsslive.cn/image/e8241c8c3c9b259a0cc61ca316482f93.webp)
 
-前台线上预览地址：<http://mrzym.top>
+控制台：
 
-gitee 仓库地址：<https://gitee.com/mrzym/blog-v3>
+![https://resource.hsslive.cn/image/d9068218a9c6558b3db07266b554fc7a.webp](https://resource.hsslive.cn/image/d9068218a9c6558b3db07266b554fc7a.webp)
 
-#### 管理后台
+角色列表：
 
-博客管理后台基于 pureadmin、vue3、element plus、pinia、axios、vue-router、vue-use、pnpm、vite、sass、tailwindcss 等主流技术
+![https://resource.hsslive.cn/image/b7466a76a9cb2b104ec514df7d35b893.webp](https://resource.hsslive.cn/image/b7466a76a9cb2b104ec514df7d35b893.webp)
 
-后台线上预览地址：<http://mrzym.top/admin>
+角色树：
 
-gitee 仓库地址： <https://gitee.com/mrzym/blog-v3-admin>
+![https://resource.hsslive.cn/image/804590ba404c7eda28dec55ce8094689.webp](https://resource.hsslive.cn/image/804590ba404c7eda28dec55ce8094689.webp)
 
-测试账户: test
+权限列表：
 
-密码: test123
+![https://resource.hsslive.cn/image/a95304ea89428ce356a74d05570bf78e.webp](https://resource.hsslive.cn/image/a95304ea89428ce356a74d05570bf78e.webp)
 
-也可以自行注册用户
+权限树：
 
-#### 后端
+![https://resource.hsslive.cn/image/bf76360b9f52c12598dacad1f7cc4a8d.webp](https://resource.hsslive.cn/image/bf76360b9f52c12598dacad1f7cc4a8d.webp)
 
-博客后端基于 node.js、koa、koa-router、koa-body、seqlize、mysql、qiniu(七牛云对象存储)、bcryptjs、nodemon 等主流技术
+用户列表：
 
-gitee 仓库地址：<https://gitee.com/mrzym/blogServer>
+![https://resource.hsslive.cn/image/f43a658965af056418f8507628fbf157.webp](https://resource.hsslive.cn/image/f43a658965af056418f8507628fbf157.webp)
 
-## 🚀 博客后台管理系统下载运行
+日志列表：
 
-```git
-# pnpm 版本 v7.26.3
-# node 版本 v16 v18 都可
+![https://resource.hsslive.cn/image/8185a484698664f74b06d54bb56feac7.webp](https://resource.hsslive.cn/image/8185a484698664f74b06d54bb56feac7.webp)
 
-1、下载项目
-git clone https://gitee.com/mrzym/blog-v3-admin.git
-tips: 也可以下载zip打开，这样不会和我的仓库关联，也可以自己去解除关联
-2、打开项目，安装依赖
-pnpm i
-3、运行项目
-pnpm run serve
+友链列表：
+
+![https://resource.hsslive.cn/image/6e888d01adb02098136f552e93b64e39.webp](https://resource.hsslive.cn/image/6e888d01adb02098136f552e93b64e39.webp)
+
+文章列表：
+
+![https://resource.hsslive.cn/image/92200b687305c22b6b382e748c0029f1.webp](https://resource.hsslive.cn/image/92200b687305c22b6b382e748c0029f1.webp)
+
+发布文章：
+
+![https://resource.hsslive.cn/image/520d6e3af2f0aa389d7a802cecb29f77.webp](https://resource.hsslive.cn/image/520d6e3af2f0aa389d7a802cecb29f77.webp)
+
+点赞列表：
+
+![https://resource.hsslive.cn/image/3f0bbd0eb5f70511f41f30cb57c32a16.webp](https://resource.hsslive.cn/image/3f0bbd0eb5f70511f41f30cb57c32a16.webp)
+
+评论列表：
+
+![https://resource.hsslive.cn/image/c762c97e87859eb6d1b15c853a026c6d.webp](https://resource.hsslive.cn/image/c762c97e87859eb6d1b15c853a026c6d.webp)
+
+# 本地启动
+
+## 安装依赖
+
+```bash
+pnpm install
 ```
 
-## ✔️ 预览
+更新 billd 依赖：
 
-#### 功能总览
+```bash
+pnpm i billd-utils@latest billd-scss@latest billd-html-webpack-plugin@latest billd-deploy@latest
+```
 
-| 模块         | 功能                                         |
-| ------------ | -------------------------------------------- |
-| 首页         | 代码热力图、博客数据展示                     |
-| 文章管理     | 文章新增、编辑、删除、置顶、公开、私密、搜索 |
-| 用户管理     | 编辑用户角色、用户信息                       |
-| 标签管理     | 标签新增、编辑、删除                         |
-| 分类管理     | 分类新增、编辑、删除                         |
-| 相册管理     | 相册新增、编辑、删除                         |
-| 说说管理     | 说说新增、编辑、删除、恢复                        |
-| 相册详情管理 | 相册内的图片新增、删除、恢复                 |
-| 博客信息管理 | 博客信息编辑(博客公告、博主信息、博客名称等) |
-| 博客背景管理 | 管理博客每个页面的背景图 |
-| 个人信息管理 | 管理当前登录人的个人信息 |
-| 留言管理     | 留言删除 |
-| 友链管理     | 友链审核、编辑、删除 |
+## 运行在根目录
 
-## 🛫 期待
+```bash
+pnpm start
+```
 
-#### 功能开发
+默认运行在 [http://localhost:8000/](http://localhost:8000/)，如果 8000 端口被占用了，会自动递增+1
 
-还留了一个评论管理，接口是写好了的，有兴趣的可以去写一写页面，对一对接口
+> 项目启动完成后，终端会打印调试地址，不必担心调试地址是什么~
 
-## 🌈 部署
+## 运行在非根目录
 
-博客文章会出一系列的部署教程
+```bash
+pnpm start:beta
+# 或
+pnpm start:preview
+# 或
+pnpm start:prod
+```
 
-教程地址：<http://mrzym.top/#/articleList?id=2&type=category&name=%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2>
+默认运行在 [http://localhost:8000/vue3-blog-admin/beta/](http://localhost:8000/vue3-blog-admin/beta/) ，如果 8000 端口被占用了，会自动递增+1
 
-## 🥰 感谢
+默认运行在 [http://localhost:8000/vue3-blog-admin/preview/](http://localhost:8000/vue3-blog-admin/preview/) ，如果 8000 端口被占用了，会自动递增+1
 
-感谢我所使用的这些技术框架的开发者、维护者，每一个框架、库的开发，都需要长时间的技术沉淀，充分的思考与不断地踩坑。维护开源库所需要花费的时间和精力更是常人所难以想象的。
+默认运行在 [http://localhost:8000/vue3-blog-admin/prod/](http://localhost:8000/vue3-blog-admin/prod/) ，如果 8000 端口被占用了，会自动递增+1
 
-如果大家喜欢这个项目的话，麻烦大家点个 star、fork，你们的鼓励是我最大的动力。
+> 项目启动完成后，终端会打印调试地址，不必担心调试地址是什么~
+
+# 项目构建
+
+## 部署在根目录
+
+```bash
+pnpm build
+```
+
+最终构建的静态资源需要部署在服务器根目录。
+
+## 部署在非根目录
+
+> 注意：如果部署在非根目录，需要配合 nginx 做好 try_files
+
+```bash
+pnpm build:beta
+# 或
+pnpm build:preview
+# 或
+pnpm build:prod
+```
+
+最终构建的静态资源需要部署在服务器的/vue3-blog-admin/beta/目录。
+
+最终构建的静态资源需要部署在服务器的/vue3-blog-admin/preview/目录。
+
+最终构建的静态资源需要部署在服务器的/vue3-blog-admin/prod/目录。
+
+# 服务器环境
+
+- 操作系统：CentOS Linux release 8.2.2004
+- nginx 版本：1.21.4
+- node 版本：14.19.0
+- redis 版本：5.0.3
+- mysql 版本：8.0.26
+- pm2 版本：5.1.2

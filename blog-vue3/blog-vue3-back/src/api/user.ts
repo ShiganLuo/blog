@@ -1,62 +1,81 @@
-import { http } from "@/utils/http";
+import { IUser } from '@/interface';
+import request, { IResponse } from '@/utils/request';
 
-export type UserResult = {
-  code: number;
-  message: String;
-  result: {
-    accessToken: string; // token
-    refreshToken: string;
-    expires: string;
-    avatar: string;
-    username: string; // 用户名
-    nickname: string; //
-    role: number; // 用户角色
-    id: number; // 用户id
-  };
-};
+export interface UserLoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  expires: string;        // 也可以用 Date，如果在代码中转成 Date 对象
+  id: number;
+  avatar: string | null;
+  username: string;
+  nickname: string | null;
+  roles: string;          // 如果有可能是数组，也可以改成 string[]
+}
 
-export type Result = {
-  code: number;
-  message: string;
-  result: any;
-};
+export function fetchLogin({ username, password }) {
+  return request<IResponse<UserLoginResponse>>({
+    url: '/api/admin/users/login',
+    method: 'post',
+    data: { username, password },
+  });
+}
 
-/** 登录 */
-export const getLogin = (data?: object) => {
-  return http.request<UserResult>("post", "/api/admin/users/login", { data });
-};
+export function fetchUserInfo() {
+  return request({
+    url: '/user/get_user_info',
+    method: 'get',
+  });
+}
 
-/** 注册 */
-export const registerUser = (data?: object) => {
-  return http.request<Result>("post", "/api/admin/users/register", { data });
-};
+export function fetchUserList(params) {
+  return request({
+    url: '/user/list',
+    method: 'get',
+    params,
+  });
+}
 
-/** 用户修改个人信息 */
-export const updateUserInfo = (data?: object) => {
-  return http.request<Result>("put", "/api/user/updateOwnUserInfo", { data });
-};
+export function fetchUserDetail(id: number): Promise<IResponse<IUser>> {
+  return request.get(`/user/find/${id}`);
+}
 
-/** 用户修改密码 */
-export const updateUserPassword = (data?: object) => {
-  return http.request<Result>("put", "/api/admin/users/passwordUpdate", { data });
-};
+export function fetchUserPwd() {
+  return request({
+    url: `/user/get_pwd`,
+    method: 'get',
+  });
+}
 
-/** 管理员修改用户角色 */
-export const updateUserRole = (id, role) => {
-  return http.request<Result>("put", `/api/user/updateRole/${id}/${role}`, {});
-};
+export function fetchUpdateUser({ id, username, status, avatar, desc }: IUser) {
+  return request({
+    url: `/user/update/${id}`,
+    method: 'put',
+    data: {
+      username,
+      status,
+      avatar,
+      desc,
+    },
+  });
+}
 
-/** 管理员修改用户信息 */
-export const adminUpdateUserInfo = data => {
-  return http.request<Result>("put", "/api/user/adminUpdateUserInfo", { data });
-};
+export function fetchUpdatePwd({ oldpwd, newpwd }) {
+  return request({
+    url: `/user/update_pwd`,
+    method: 'put',
+    data: {
+      oldpwd,
+      newpwd,
+    },
+  });
+}
 
-/** 条件分页获取用户信息 */
-export const getUserList = (data?: object) => {
-  return http.request<Result>("post", "/api/user/getUserList", { data });
-};
-
-/** 获取当前登录人的信息 */
-export const getUserInfoById = id => {
-  return http.request<Result>("get", `/api/admin/users/getUserInfoById/` + id, {});
-};
+export function fetchUpdateUserRole({ id, user_roles }: IUser) {
+  return request({
+    url: `/user/update_user_role/${id}`,
+    method: 'put',
+    data: {
+      user_roles,
+    },
+  });
+}

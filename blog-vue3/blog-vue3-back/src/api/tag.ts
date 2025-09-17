@@ -1,32 +1,33 @@
-import { http } from "@/utils/http";
+import { ITag } from '@/interface';
+import request from '@/utils/request';
 
-export type TagResult = {
-  code: number;
-  message: string;
-  result: any;
-};
+export function fetchTagList(params) {
+  return request({
+    url: '/tag/list',
+    method: 'get',
+    params,
+  });
+}
 
-/** 获取标签列表 */
-export const getTagList = (data?: object) => {
-  return http.request<TagResult>("post", "/api/tag/getTagList", { data });
-};
+export function fetchCreateTag(data: ITag) {
+  return request({
+    url: '/tag/create',
+    method: 'post',
+    data,
+  });
+}
 
-/** 新增标签 */
-export const addTag = (data?: object) => {
-  return http.request<TagResult>("post", "/api/tag/add", { data });
-};
+export function fetchUpdateTag(data: ITag) {
+  return request({
+    url: `/tag/update/${data.id}`,
+    method: 'put',
+    data,
+  });
+}
 
-/** 修改标签 */
-export const editTag = (data?: object) => {
-  return http.request<TagResult>("put", "/api/tag/update", { data });
-};
-
-/** 删除标签 */
-export const deleteTagList = (data?: object) => {
-  return http.request<TagResult>("post", "/api/tag/delete", { data });
-};
-
-/** 获取标签字典 */
-export const getTagDictionary = () => {
-  return http.request<TagResult>("get", "/api/admin/tags/getTagDictionary", {});
-};
+export function fetchDeleteTag(id: number) {
+  return request({
+    url: `/tag/delete/${id}`,
+    method: 'delete',
+  });
+}

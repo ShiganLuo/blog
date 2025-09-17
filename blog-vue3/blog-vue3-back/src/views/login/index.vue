@@ -1,251 +1,414 @@
-<script setup lang="ts" name="Login">
-import Motion from "./utils/motion";
-import { useRouter, useRoute } from "vue-router";
-import { message } from "@/utils/message";
-import { loginRules } from "./utils/rule";
-import { useNav } from "@/layout/hooks/useNav";
-import type { FormInstance } from "element-plus";
-import { useUserStoreHook } from "@/store/modules/user";
-import { useLayout } from "@/layout/hooks/useLayout";
-import { bg, avatar, illustration } from "./utils/static";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from "vue";
-import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
-import { storageLocal } from "@pureadmin/utils";
-
-import dayIcon from "@/assets/svg/day.svg?component";
-import darkIcon from "@/assets/svg/dark.svg?component";
-import Lock from "@iconify-icons/ri/lock-fill";
-import User from "@iconify-icons/ri/user-3-fill";
-
-import { initRouter } from "@/router/utils";
-
-type RuleFormType = {
-  username?: string;
-  password?: string;
-};
-
-const router = useRouter();
-const loading = ref(false);
-const ruleFormRef = ref<FormInstance>();
-
-const { initStorage } = useLayout();
-initStorage();
-
-const { dataTheme, dataThemeChange } = useDataThemeChange();
-dataThemeChange();
-
-const { title } = useNav();
-
-const ruleForm = reactive<RuleFormType>({
-  username: "",
-  password: ""
-});
-
-const isRememberMe = ref(false);
-
-const onLogin = async (formEl: FormInstance | undefined) => {
-  loading.value = true;
-  if (!formEl) return;
-  await formEl.validate(async (valid, fields) => {
-    if (valid) {
-      if (isRememberMe.value) {
-        storageLocal().setItem("loginInfo", ruleForm);
-      } else {
-        storageLocal().removeItem("loginInfo");
-      }
-      useUserStoreHook()
-        .loginByUsername(ruleForm)
-        .then(res => {
-          if (res.code == 200) {
-            initRouter().then(() => {
-              router.push("/");
-              message("登录成功", { type: "success" });
-            });
-          } else {
-            loading.value = false;
-          }
-        })
-        .catch(_err => {
-          console.log("console.error");
-
-          loading.value = false;
-        });
-    } else {
-      loading.value = false;
-      return fields;
-    }
-  });
-};
-
-/** 使用公共函数，避免`removeEventListener`失效 */
-function onkeypress({ code }: KeyboardEvent) {
-  if (code === "Enter") {
-    onLogin(ruleFormRef.value);
-  }
-}
-
-const goRegister = () => {
-  router.push("/register");
-};
-
-const changeAccount = () => {
-  ruleForm.password = "";
-};
-
-onMounted(() => {
-  window.document.addEventListener("keypress", onkeypress);
-  const route = useRoute();
-
-  if (route.query.username) {
-    ruleForm.username = route.query.username + "";
-    isRememberMe.value = true;
-  } else {
-    if (storageLocal().getItem("loginInfo")) {
-      isRememberMe.value = true;
-      Object.assign(ruleForm, storageLocal().getItem("loginInfo"));
-    }
-  }
-});
-
-onBeforeUnmount(() => {
-  window.document.removeEventListener("keypress", onkeypress);
-});
-</script>
-
 <template>
-  <div class="select-none relative">
-    <img :src="bg" class="wave" />
-    <div class="flex-c absolute right-5 top-3">
-      <!-- 主题 -->
-      <el-switch
-        v-model="dataTheme"
-        inline-prompt
-        :active-icon="dayIcon"
-        :inactive-icon="darkIcon"
-        @change="dataThemeChange"
+  <div class="login-warp">
+    <div class="content">
+      <img
+        v-if="!focus"
+        class="top"
+        src="@/assets/img/juejin-open-eye.svg"
+        alt=""
       />
-    </div>
-    <div class="login-container">
-      <div class="img">
-        <component :is="toRaw(illustration)" />
-      </div>
-      <div class="login-box">
-        <div class="login-form">
-          <avatar class="avatar" />
-          <Motion>
-            <h2 class="outline-none">{{ title }}</h2>
-          </Motion>
-
-          <el-form
-            ref="ruleFormRef"
-            :model="ruleForm"
-            :rules="loginRules"
-            size="large"
+      <img
+        v-else
+        class="top close"
+        src="@/assets/img/juejin-close-eye.svg"
+        alt=""
+      />
+      <n-card>
+        <n-tabs
+          :value="currentTab"
+          :default-value="currentTab"
+          size="large"
+          :on-update:value="tabChange"
+        >
+          <n-tab-pane
+            name="pwdlogin"
+            tab="账密登录"
           >
-            <Motion :delay="100">
-              <el-form-item
-                :rules="[
-                  {
-                    required: true,
-                    message: '请输入账号',
-                    trigger: 'blur'
-                  }
-                ]"
-                prop="username"
-              >
-                <el-input
-                  clearable
-                  v-model="ruleForm.username"
-                  placeholder="账号"
-                  @clear="changeAccount"
-                  :prefix-icon="useRenderIcon(User)"
-                />
-              </el-form-item>
-            </Motion>
-
-            <Motion :delay="150">
-              <el-form-item prop="password">
-                <el-input
-                  clearable
-                  show-password
-                  v-model="ruleForm.password"
-                  placeholder="密码"
-                  :prefix-icon="useRenderIcon(Lock)"
-                />
-              </el-form-item>
-            </Motion>
-
-            <Motion :delay="250">
-              <el-button
-                class="w-full mt-4"
-                size="default"
-                type="primary"
-                :loading="loading"
-                @click="onLogin(ruleFormRef)"
-              >
-                登录
-              </el-button>
-            </Motion>
-            <Motion :delay="250" class="register">
-              <el-checkbox v-model="isRememberMe">记住我</el-checkbox>
-              <div>
-                没有账号？<span class="line" @click="goRegister">去注册</span>
-              </div>
-            </Motion>
-          </el-form>
+            <n-form
+              ref="loginFormRef"
+              label-placement="left"
+              size="large"
+              :model="loginForm"
+              :rules="loginRules"
+            >
+              <n-form-item path="id">
+                <n-input
+                  v-model:value="loginForm.id"
+                  type="text"
+                  placeholder="请输入账号"
+                >
+                  <template #prefix>
+                    <n-icon
+                      size="20"
+                      class="lang"
+                    >
+                      <PersonOutline></PersonOutline>
+                    </n-icon>
+                  </template>
+                </n-input>
+              </n-form-item>
+              <n-form-item path="password">
+                <n-input
+                  v-model:value="loginForm.password"
+                  type="password"
+                  show-password-on="mousedown"
+                  placeholder="请输入密码"
+                  @focus="onFocus"
+                  @blur="onBlur"
+                  @keyup.enter="handleLoginSubmit"
+                >
+                  <template #prefix>
+                    <n-icon
+                      size="20"
+                      class="lang"
+                    >
+                      <LockClosedOutline></LockClosedOutline>
+                    </n-icon>
+                  </template>
+                </n-input>
+              </n-form-item>
+            </n-form>
+            <n-button
+              type="primary"
+              block
+              secondary
+              strong
+              @click="handleLoginSubmit"
+            >
+              登录
+            </n-button>
+          </n-tab-pane>
+          <n-tab-pane
+            name="codelogin"
+            tab="免密登录"
+          >
+            <n-form
+              ref="registerFormRef"
+              label-placement="left"
+              size="large"
+              :model="registerForm"
+              :rules="registerRules"
+            >
+              <n-form-item path="email">
+                <n-input
+                  v-model:value="registerForm.email"
+                  placeholder="请输入邮箱"
+                >
+                  <template #prefix>
+                    <n-icon
+                      size="20"
+                      class="lang"
+                    >
+                      <MailOutline></MailOutline>
+                    </n-icon>
+                  </template>
+                </n-input>
+              </n-form-item>
+              <n-form-item path="code">
+                <n-input-group>
+                  <n-input
+                    v-model:value="registerForm.code"
+                    placeholder="请输入验证码"
+                    @keyup.enter="handleRegisterSubmit"
+                  />
+                  <n-button
+                    type="primary"
+                    ghost
+                    :disabled="downCount !== 0"
+                    :loading="sendCodeLoading"
+                    @click="sendCode()"
+                  >
+                    发送{{ downCount !== 0 ? `(${downCount})` : '' }}
+                  </n-button>
+                </n-input-group>
+              </n-form-item>
+            </n-form>
+            <n-button
+              type="primary"
+              block
+              secondary
+              strong
+              @click="handleRegisterSubmit"
+            >
+              登录
+            </n-button>
+          </n-tab-pane>
+          <n-tab-pane
+            name="register"
+            tab="注册"
+          >
+            <n-form
+              ref="registerFormRef"
+              label-placement="left"
+              size="large"
+              :model="registerForm"
+              :rules="registerRules"
+            >
+              <n-form-item path="email">
+                <n-input
+                  v-model:value="registerForm.email"
+                  placeholder="请输入邮箱"
+                >
+                  <template #prefix>
+                    <n-icon
+                      size="20"
+                      class="lang"
+                    >
+                      <MailOutline></MailOutline>
+                    </n-icon>
+                  </template>
+                </n-input>
+              </n-form-item>
+              <n-form-item path="code">
+                <n-input-group>
+                  <n-input
+                    v-model:value="registerForm.code"
+                    placeholder="请输入验证码"
+                    @keyup.enter="handleRegisterSubmit"
+                  />
+                  <n-button
+                    type="primary"
+                    ghost
+                    :disabled="downCount !== 0"
+                    :loading="sendCodeLoading"
+                    @click="sendCode()"
+                  >
+                    发送{{ downCount !== 0 ? `(${downCount})` : '' }}
+                  </n-button>
+                </n-input-group>
+              </n-form-item>
+            </n-form>
+            <n-button
+              type="primary"
+              block
+              secondary
+              strong
+              @click="handleRegisterSubmit"
+            >
+              注册
+            </n-button>
+          </n-tab-pane>
+        </n-tabs>
+      </n-card>
+      <div class="other-login">
+        <span>第三方登录：</span>
+        <div
+          class="logo-wrap"
+          @click="qqLogin"
+        >
+          <img
+            class="qq-logo"
+            src="../../assets/img/qq_logo.svg"
+          />
+        </div>
+        <div
+          class="logo-wrap"
+          @click="githubLogin"
+        >
+          <img
+            class="qq-logo"
+            src="../../assets/img/github_logo.svg"
+          />
         </div>
       </div>
     </div>
-    <div class="filings">
-      <a class="change-color" href="http://beian.miit.gov.cn/" target="_blank"
-        >蜀ICP备2023007772号</a
-      >
-    </div>
+    <PoweredByCpt></PoweredByCpt>
   </div>
 </template>
 
-<style scoped>
-@import url("@/style/login.css");
-</style>
+<script lang="ts" setup>
+import {
+  LockClosedOutline,
+  MailOutline,
+  PersonOutline,
+} from '@vicons/ionicons5';
+import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-<style lang="scss" scoped>
-:deep(.el-input-group__append, .el-input-group__prepend) {
-  padding: 0;
-}
+import { fetchSendLoginCode, fetchSendRegisterCode } from '@/api/emailUser';
+import PoweredByCpt from '@/components/PoweredBy/index.vue';
+import { useGithubLogin, useQQLogin } from '@/hooks/use-login';
+import { useAppStore } from '@/store/app';
+import { useUserStore } from '@/store/user';
 
-.register {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8em;
-  color: #676767;
+const loginRules = {
+  id: { required: true, message: '请输入账号', trigger: 'blur' },
+  password: { required: true, message: '请输入密码', trigger: 'blur' },
+};
+const registerRules = {
+  email: { required: true, message: '请输入邮箱', trigger: 'blur' },
+  code: { required: true, message: '请输入验证码', trigger: 'blur' },
+};
 
-  :deep(.el-checkbox.el-checkbox--large .el-checkbox__label) {
-    font-size: 0.8em;
-    color: #676767;
+const router = useRouter();
+const route = useRoute();
+const userStore = useUserStore();
+const appStore = useAppStore();
+
+/** qq登录 */
+const qqLogin = () => {
+  useQQLogin();
+  appStore.setLoading(true);
+};
+
+/** github登录 */
+const githubLogin = () => {
+  useGithubLogin();
+  appStore.setLoading(true);
+};
+
+const loginForm = ref({
+  id: '',
+  password: '',
+});
+const registerForm = ref({
+  email: '',
+  code: '',
+});
+const loginFormRef = ref(null);
+const registerFormRef = ref(null);
+const currentTab = ref('pwdlogin');
+const sendCodeLoading = ref(false);
+const downCount = ref(0);
+
+const handleLogin = async () => {
+  let token = null;
+  if (currentTab.value === 'codelogin') {
+    token = await userStore.codeLogin({
+      email: registerForm.value.email,
+      code: registerForm.value.code,
+    });
+  } else {
+    token = await userStore.pwdLogin({
+      username: loginForm.value.id,
+      password: loginForm.value.password,
+    });
   }
-}
-.line {
-  cursor: pointer;
-  text-decoration: underline;
-}
+  if (token) {
+    window.$message.success('登录成功!');
+    router.push((route.query.redirect as '') || '/');
+  }
+};
 
-.filings {
-  position: absolute;
-  bottom: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  color: #333;
-  font-size: 12px;
+const handleRegister = async () => {
+  const { token } = await userStore.register({
+    email: registerForm.value.email,
+    code: registerForm.value.code,
+  });
+  if (token) {
+    window.$message.success('注册成功!');
+    router.push((route.query.redirect as '') || '/');
+  }
+};
+const handleLoginSubmit = (e) => {
+  e.preventDefault();
+  // @ts-ignore
+  loginFormRef.value.validate((errors) => {
+    if (!errors) {
+      handleLogin();
+    }
+  });
+};
+const handleRegisterSubmit = (e) => {
+  e.preventDefault();
+  // @ts-ignore
+  registerFormRef.value.validate((errors) => {
+    if (!errors) {
+      if (currentTab.value === 'register') {
+        handleRegister();
+      } else {
+        handleLogin();
+      }
+    }
+  });
+};
+/** 发送验证码 */
+const sendCode = async () => {
+  if (registerForm.value.email === '')
+    return window.$message.warning('请输入邮箱!');
+  try {
+    sendCodeLoading.value = true;
+    if (currentTab.value === 'codelogin') {
+      await fetchSendLoginCode(registerForm.value.email);
+    } else {
+      await fetchSendRegisterCode(registerForm.value.email);
+    }
+    sendCodeLoading.value = false;
+    window.$message.success('发送成功!');
+    downCount.value = 60;
+    const timer = setInterval(() => {
+      downCount.value -= 1;
+      if (downCount.value === 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
+  } catch (error: any) {
+    sendCodeLoading.value = false;
+    console.log(error);
+  }
+};
+const tabChange = (v) => {
+  currentTab.value = v;
+};
+const focus = ref(false);
+const onFocus = () => {
+  focus.value = true;
+};
+const onBlur = () => {
+  focus.value = false;
+};
+</script>
 
-  .change-color {
-    text-decoration: none;
-    transition: all 0.3s;
+<style lang="scss">
+.login-warp {
+  position: relative;
+  min-height: 100vh;
+  background-color: #f5f7f9;
+  .content {
+    background-color: #fff;
+    border-radius: 5px;
+    position: absolute;
+    min-width: 350px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
-    &:hover {
-      color: #000;
+    .top {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -90%);
+      z-index: 100;
+      width: 120px;
+      &.close {
+        transform: translate(-50%, -99%);
+        z-index: 0;
+      }
+    }
+
+    .title {
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .other-login {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      margin: 5px 0;
+      .logo-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #f4f8fb;
+        display: flex;
+        cursor: pointer;
+
+        .qq-logo {
+          width: 25px;
+          margin: 0 auto;
+        }
+      }
     }
   }
 }

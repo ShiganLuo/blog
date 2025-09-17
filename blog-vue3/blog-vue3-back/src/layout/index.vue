@@ -1,216 +1,164 @@
-<script setup lang="ts">
-import "animate.css";
-// 引入 src/components/ReIcon/src/offlineIcon.ts 文件中所有使用addIcon添加过的本地图标
-import "@/components/ReIcon/src/offlineIcon";
-import { setType } from "./types";
-import { emitter } from "@/utils/mitt";
-import { useLayout } from "./hooks/useLayout";
-import { useAppStoreHook } from "@/store/modules/app";
-import { useSettingStoreHook } from "@/store/modules/settings";
-import { deviceDetection, useDark, useGlobal } from "@pureadmin/utils";
-import { h, reactive, computed, onMounted, defineComponent } from "vue";
-
-import navbar from "./components/navbar.vue";
-import tag from "./components/tag/index.vue";
-import appMain from "./components/appMain.vue";
-import setting from "./components/setting/index.vue";
-import Vertical from "./components/sidebar/vertical.vue";
-import Horizontal from "./components/sidebar/horizontal.vue";
-import backTop from "@/assets/svg/back_top.svg?component";
-
-const { isDark } = useDark();
-const { layout } = useLayout();
-const isMobile = deviceDetection();
-const pureSetting = useSettingStoreHook();
-const { $storage } = useGlobal<GlobalPropertiesApi>();
-
-const set: setType = reactive({
-  sidebar: computed(() => {
-    return useAppStoreHook().sidebar;
-  }),
-
-  device: computed(() => {
-    return useAppStoreHook().device;
-  }),
-
-  fixedHeader: computed(() => {
-    return pureSetting.fixedHeader;
-  }),
-
-  classes: computed(() => {
-    return {
-      hideSidebar: !set.sidebar.opened,
-      openSidebar: set.sidebar.opened,
-      withoutAnimation: set.sidebar.withoutAnimation,
-      mobile: set.device === "mobile"
-    };
-  }),
-
-  hideTabs: computed(() => {
-    return $storage?.configure.hideTabs;
-  })
-});
-
-function setTheme(layoutModel: string) {
-  window.document.body.setAttribute("layout", layoutModel);
-  $storage.layout = {
-    layout: `${layoutModel}`,
-    theme: $storage.layout?.theme,
-    darkMode: $storage.layout?.darkMode,
-    sidebarStatus: $storage.layout?.sidebarStatus,
-    epThemeColor: $storage.layout?.epThemeColor
-  };
-}
-
-function toggle(device: string, bool: boolean) {
-  useAppStoreHook().toggleDevice(device);
-  useAppStoreHook().toggleSideBar(bool, "resize");
-}
-
-// 判断是否可自动关闭菜单栏
-let isAutoCloseSidebar = true;
-
-// 监听容器
-emitter.on("resize", ({ detail }) => {
-  if (isMobile) return;
-  const { width } = detail;
-  width <= 760 ? setTheme("vertical") : setTheme(useAppStoreHook().layout);
-  /** width app-wrapper类容器宽度
-   * 0 < width <= 760 隐藏侧边栏
-   * 760 < width <= 990 折叠侧边栏
-   * width > 990 展开侧边栏
-   */
-  if (width > 0 && width <= 760) {
-    toggle("mobile", false);
-    isAutoCloseSidebar = true;
-  } else if (width > 760 && width <= 990) {
-    if (isAutoCloseSidebar) {
-      toggle("desktop", false);
-      isAutoCloseSidebar = false;
-    }
-  } else if (width > 990) {
-    if (!set.sidebar.isClickCollapse) {
-      toggle("desktop", true);
-      isAutoCloseSidebar = true;
-    }
-  }
-});
-
-onMounted(() => {
-  if (isMobile) {
-    toggle("mobile", false);
-  }
-});
-
-const layoutHeader = defineComponent({
-  render() {
-    return h(
-      "div",
-      {
-        class: { "fixed-header": set.fixedHeader },
-        style: [
-          set.hideTabs && layout.value.includes("horizontal")
-            ? isDark.value
-              ? "box-shadow: 0 1px 4px #0d0d0d"
-              : "box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08)"
-            : ""
-        ]
-      },
-      {
-        default: () => [
-          !pureSetting.hiddenSideBar &&
-          (layout.value.includes("vertical") || layout.value.includes("mix"))
-            ? h(navbar)
-            : null,
-          !pureSetting.hiddenSideBar && layout.value.includes("horizontal")
-            ? h(Horizontal)
-            : null,
-          h(tag)
-        ]
-      }
-    );
-  }
-});
-</script>
-
 <template>
-  <div :class="['app-wrapper', set.classes]" v-resize>
-    <div
-      v-show="
-        set.device === 'mobile' &&
-        set.sidebar.opened &&
-        layout.includes('vertical')
-      "
-      class="app-mask"
-      @click="useAppStoreHook().toggleSideBar()"
-    />
-    <Vertical
-      v-show="
-        !pureSetting.hiddenSideBar &&
-        (layout.includes('vertical') || layout.includes('mix'))
-      "
-    />
-    <div
-      :class="[
-        'main-container',
-        pureSetting.hiddenSideBar ? 'main-hidden' : ''
-      ]"
+  <n-space class="layout-wrap">
+    <n-layout
+      position="absolute"
+      has-sider
     >
-      <div v-if="set.fixedHeader">
-        <layout-header />
-        <!-- 主体内容 -->
-        <app-main :fixed-header="set.fixedHeader" />
-      </div>
-      <el-scrollbar v-else>
-        <el-backtop
-          title="回到顶部"
-          target=".main-container .el-scrollbar__wrap"
+      <n-layout-sider
+        bordered
+        collapse-mode="width"
+        :collapsed-width="64"
+        :width="240"
+        :collapsed="appStore.collapsed"
+        show-trigger
+        @collapse="appStore.setCollapsed(true)"
+        @expand="appStore.setCollapsed(false)"
+      >
+        <n-menu
+          :value="currentPath"
+          :collapsed="appStore.collapsed"
+          :collapsed-width="64"
+          :collapsed-icon-size="22"
+          :options="menuOptions"
+          :render-label="renderMenuLabel"
+          :render-icon="renderMenuIcon"
+          :expand-icon="expandIcon"
+          @update:value="handleUpdateValue"
+        />
+      </n-layout-sider>
+      <n-layout>
+        <div
+          class="head-wrap"
+          :style="{
+            width: !appStore.collapsed
+              ? 'calc(100vw - 240px)'
+              : 'calc(100vw - 64px)',
+          }"
         >
-          <backTop />
-        </el-backtop>
-        <layout-header />
-        <!-- 主体内容 -->
-        <app-main :fixed-header="set.fixedHeader" />
-      </el-scrollbar>
-    </div>
-    <!-- 系统设置 -->
-    <setting />
-  </div>
+          <HeaderCpt></HeaderCpt>
+          <openTabCpt></openTabCpt>
+        </div>
+        <div class="main-wrap">
+          <router-view></router-view>
+        </div>
+      </n-layout>
+    </n-layout>
+    <PoweredByCpt></PoweredByCpt>
+  </n-space>
 </template>
 
+<script lang="ts" setup>
+import { CaretDownOutline } from '@vicons/ionicons5';
+import { NIcon } from 'naive-ui';
+import { h, ref, watch } from 'vue';
+import { RouteRecordRaw, useRoute, useRouter } from 'vue-router';
+
+import PoweredByCpt from '@/components/PoweredBy/index.vue';
+import { defaultRoutes } from '@/router/index';
+import { useAppStore } from '@/store/app';
+import { useUserStore } from '@/store/user';
+
+import HeaderCpt from './header/header.vue';
+import openTabCpt from './openTab/openTab.vue';
+
+// import { deepCloneExclude } from '@/utils';
+
+const router = useRouter();
+const route = useRoute();
+const appStore = useAppStore();
+const userStore = useUserStore();
+// const copyOriginDefaultRoutes = deepCloneExclude(
+//   defaultRoutes,
+//   'component'
+// );
+const handleRoutes = (routes: RouteRecordRaw[]) => {
+  routes.forEach((v) => {
+    if (v.children && v.children.length === 1) {
+      v.meta = {
+        title: v.children[0].meta?.title,
+        icon: v.children[0].meta?.icon,
+        hidden: v.children[0].meta?.hidden,
+        sort: v.meta?.sort,
+      };
+      // @ts-ignore
+      v.label = v.meta.title;
+      // @ts-ignore
+      v.key = v.children[0].path;
+      // @ts-ignore
+      v.show = !v.meta.hidden;
+      delete v.children;
+    } else if (v.children && v.children.length > 1) {
+      // @ts-ignore
+      v.label = v.meta && v.meta.title;
+      // @ts-ignore
+      v.key = v.path;
+      handleRoutes(v.children);
+    } else if (!v.children) {
+      if (v.meta) {
+        // @ts-ignore
+        v.label = v.meta && v.meta.title;
+        // @ts-ignore
+        v.key = v.path;
+        // @ts-ignore
+        v.show = !v.meta.hidden;
+      }
+    }
+  });
+  return routes;
+};
+
+function sortRoute(a, b) {
+  return (b.meta?.sort || 0) - (a.meta?.sort || 0);
+}
+
+const menuOptions = ref(
+  handleRoutes([...defaultRoutes, ...appStore.routes]).sort(sortRoute)
+);
+const handleUpdateValue = (key: string, item) => {
+  currentPath.value = key;
+  if (!appStore.tabList[key]) {
+    appStore.setTabList({
+      ...appStore.tabList,
+      [key]: item.meta.title,
+    });
+  }
+  router.push(key);
+};
+const currentPath = ref(route.path);
+watch(
+  () => route.path,
+  () => {
+    appStore.setPath(route.path);
+    currentPath.value = route.path;
+  }
+);
+appStore.setRoutes(menuOptions);
+appStore.setPath(route.path);
+appStore.setTabList({ [route.path]: route.meta.title });
+function renderMenuLabel(option) {
+  return option.label;
+}
+function renderMenuIcon(option) {
+  const vn = option.meta && option.meta.icon;
+  return vn ? h(vn) : false;
+}
+function expandIcon() {
+  return h(NIcon, null, { default: () => h(CaretDownOutline) });
+}
+</script>
+
 <style lang="scss" scoped>
-@mixin clearfix {
-  &::after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-}
+.layout-wrap {
+  height: 100vh;
 
-.app-wrapper {
-  @include clearfix;
-
-  position: relative;
-  height: 100%;
-  width: 100%;
-
-  &.mobile.openSidebar {
+  .head-wrap {
     position: fixed;
-    top: 0;
+    z-index: 10;
+    background-color: white;
   }
-}
-
-.app-mask {
-  background: #000;
-  opacity: 0.3;
-  width: 100%;
-  top: 0;
-  height: 100%;
-  position: absolute;
-  z-index: 999;
-}
-
-.re-screen {
-  margin-top: 12px;
+  .main-wrap {
+    margin-top: 90px;
+    padding: 10px 10px 50px 10px;
+  }
 }
 </style>

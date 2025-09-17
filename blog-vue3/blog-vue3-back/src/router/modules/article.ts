@@ -1,53 +1,50 @@
-export default {
-  path: "/article",
-  redirect: "/article/articleList",
-  meta: {
-    icon: "list",
-    title: "文章",
-    // showLink: false,
-    rank: 1
+import { CodeSlashOutline } from '@vicons/ionicons5';
+import { RouteRecordRaw } from 'vue-router';
+
+import { ROUTE_ROLES, ROUTE_SORT } from '@/constant';
+import Layout from '@/layout/index.vue';
+
+import { renderIcon } from '../utils';
+
+// 异步路由
+export const routes: RouteRecordRaw[] = [
+  {
+    name: 'article',
+    path: '/article',
+    component: Layout,
+    meta: {
+      title: '文章管理',
+      icon: renderIcon(CodeSlashOutline),
+      sort: ROUTE_SORT.article,
+    },
+    children: [
+      {
+        name: 'articleList',
+        path: '/article/list',
+        component: () => import('@/views/article/list/index.vue'),
+        meta: {
+          title: '文章列表',
+        },
+      },
+      {
+        name: 'addArticle',
+        path: '/article/add',
+        component: () => import('@/views/article/add'),
+        meta: {
+          title: '添加文章',
+          roles: [ROUTE_ROLES.SUPER_ADMIN],
+        },
+      },
+      {
+        name: 'editArticle',
+        path: '/article/update',
+        component: () => import('@/views/article/edit/index.vue'),
+        meta: {
+          title: '编辑文章',
+          roles: [ROUTE_ROLES.SUPER_ADMIN],
+          hidden: true,
+        },
+      },
+    ],
   },
-  children: [
-    {
-      path: "/article/articleList",
-      name: "articleList",
-      component: () => import("@/views/article/article-manage/index.vue"),
-      meta: {
-        title: "文章列表"
-      }
-    },
-    {
-      path: "/article/addArticle",
-      name: "addArticle",
-      component: () => import("@/views/article/add-edit-article/index.vue"),
-      meta: {
-        title: "新增文章"
-      }
-    },
-    {
-      path: "/article/editArticle",
-      name: "editArticle",
-      component: () => import("@/views/article/add-edit-article/index.vue"),
-      meta: {
-        showLink: false,
-        title: "编辑文章"
-      }
-    },
-    {
-      path: "/article/tagManagement",
-      name: "tagManagement",
-      component: () => import("@/views/tag/index.vue"),
-      meta: {
-        title: "标签管理"
-      }
-    },
-    {
-      path: "/article/categoryManagement",
-      name: "categoryManagement",
-      component: () => import("@/views/category/index.vue"),
-      meta: {
-        title: "分类管理"
-      }
-    }
-  ]
-} as RouteConfigsTable;
+];
