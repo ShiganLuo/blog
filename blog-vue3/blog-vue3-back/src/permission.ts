@@ -1,9 +1,9 @@
 import { useAppStore } from '@/store/app';
 import { useUserStore } from '@/store/user';
-import cache from '@/utils/cache';
+import {_getLocalItem} from '@/utils/localStorage/cache';
 
 import router from './router';
-
+// 用户守卫拦截页面跳转
 // 白名单，不需要登录即可跳转，如登录页
 const whiteList = ['/login', '/oauth/qq_login', '/oauth/github_login'];
 
@@ -11,10 +11,10 @@ router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
   const appStore = useAppStore();
   const { roles } = userStore;
-  const hasToken = cache.getStorageExp('token');
+  const accessToken = _getLocalItem("accessToken");
   appStore.setLoading(true);
   // 先判断有没有登录
-  if (hasToken) {
+  if (accessToken) {
     // userStore.setToken(hasToken);
     if (to.path === '/login') {
       next('/');
@@ -25,11 +25,13 @@ router.beforeEach(async (to, from, next) => {
     } else {
       const { code, data }: any = await userStore.getUserInfo();
       if (code !== 200) {
-        next(false);
+        // next(false);
+        next(true);
         return;
       }
       if (!data.roles || !data.roles.length) {
-        next(false);
+        // next(false);
+        next(true)
         window.$message.error('你没有角色');
         return;
       }

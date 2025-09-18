@@ -18,13 +18,13 @@ export const useUpload = async ({
 
   const mergeAndUpload = async ({ hash, ext }) => {
     await fetchUploadMergeChunk({ hash, ext });
-    const { data } = await fetchUpload({
+    const res = await fetchUpload({
       hash,
       ext,
       prefix,
     });
     clearInterval(timer);
-    return data;
+    return res.result;
   };
 
   try {
@@ -33,7 +33,7 @@ export const useUpload = async ({
     if (code === 3) {
       const res = await fetchUpload({ prefix, hash, ext });
       return new Promise((resolve) => {
-        resolve(res.data);
+        resolve(res.result);
       });
     }
     const chunkList = splitFile(file);
@@ -48,7 +48,7 @@ export const useUpload = async ({
         form.append('chunkTotal', `${chunkList.length}`);
         form.append('uploadFiles', v.chunk);
         fetchUploadChunk(form).then((res) => {
-          if (res.data.percentage === 50) {
+          if (res.result.percentage === 50) {
             if (!isMerge) {
               mergeAndUpload({ hash, ext }).then((uploadRes) => {
                 resolve(uploadRes);
@@ -62,7 +62,7 @@ export const useUpload = async ({
       timer = setInterval(async () => {
         try {
           // eslint-disable-next-line @typescript-eslint/no-shadow
-          const { code, data, message } = await fetchUploadProgress({
+          const res = await fetchUploadProgress({
             hash,
             prefix,
             ext,
@@ -71,13 +71,13 @@ export const useUpload = async ({
             clearInterval(timer);
             return;
           }
-          if (code === 1) {
-            const percentage = data.percentage!;
+          if (res.code === 1) {
+            const percentage = res.result.percentage!;
             if (percentage === 100) {
               flag = true;
             }
           } else {
-            console.log(code, data, message);
+            console.log(code, res.result, res.message);
           }
         } catch (error) {
           console.log(error);

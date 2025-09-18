@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-import { getCurrEnv } from '@/utils/localStorage';
+import { getCurrEnv } from '@/utils/localStorage/env';
 
 export const useAppStore = defineStore('app', {
   state: () => {

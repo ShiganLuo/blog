@@ -2,84 +2,94 @@ import { defineStore } from 'pinia';
 
 import { fetchEmailCodeLogin, fetchRegister } from '@/api/emailUser';
 import { fetchLogin, fetchUserInfo } from '@/api/user';
-import { IRole } from '@/interface';
+import { IRole,UserLoginResponse } from '@/interface';
 import { asyncRoutes } from '@/router/index';
-import cache from '@/utils/cache';
+import cache, {_getLocalItem,_setLocalItem,_removeLocalItem} from '@/utils/localStorage/cache';
 
-type RootState = {
-  userInfo: {
-    id: number;
-    username: string;
-    status: number;
-    avatar: string;
-    title: string;
-    created_at: string;
-    updated_at: string;
-    deleted_at: any;
-    send_comments_total: number;
-    receive_comments_total: number;
-    send_stars_total: number;
-    receive_stars_total: number;
-    articles_total: number;
-    qq_users: any[];
-    github_users: any[];
-    email_users: any[];
-    roles: IRole[];
-  } | null;
-  token: string | null;
-  roles: IRole[] | null;
+type UserInfo = {
+  id:string;
+  avatar:string;
+  username:string;
+  nickname:string;
+  roles:string;
 };
 
 export const useUserStore = defineStore('user', {
   state: () => {
     return {
-      userInfo: null,
-      token: null,
-      roles: null,
-    } as RootState;
+      accessToken: '',
+      refreshToken: '',
+      expires: '',
+      id: '',
+      avatar: '',
+      username: '',
+      nickname: '',
+      roles: '',
+    } as UserLoginResponse;
   },
   actions: {
-    setUserInfo(res) {
-      this.userInfo = res;
+    setUserInfo(userInfo:UserInfo) {
+      _setLocalItem('userInfo',userInfo)
+      this.id = userInfo.id;
+      this.avatar = userInfo.avatar;
+      this.username = userInfo.username;
+      this.nickname = userInfo.nickname;
     },
-    setToken(res) {
-      cache.setStorageExp('token', res, 24);
-      this.token = res;
+    setExpires(expires:string) {
+      _setLocalItem('expires',expires);
+      this.expires = expires;
+    },
+    setAcessToken(accessToken:string) {
+      _setLocalItem('accessToken',accessToken)
+      this.accessToken = accessToken;
+    },
+    setRefreshToken(refreshToken:string) {
+      _setLocalItem("refreshToken",refreshToken);
+      this.refreshToken = refreshToken;
     },
     setRoles(res) {
       this.roles = res;
     },
     logout() {
-      cache.clearStorage('token');
-      this.token = null;
-      this.userInfo = null;
-      this.roles = null;
+      _removeLocalItem('accessToken');
+      _removeLocalItem('refreshToken');
+      _removeLocalItem('expires')
+      this.accessToken = '';
+      this.refreshToken = '';
+      this.roles = '';
     },
     async pwdLogin({ username, password }) {
       try {
-        const { data: accessToken } = await fetchLogin({
+        const res = await fetchLogin({
           username,
           password,
         });
-        console.log(accessToken);
-        this.setToken(accessToken);
-        return accessToken;
+        const {accessToken, refreshToken, expires,...userInfo} = res.result
+        this.setAcessToken(accessToken);
+        this.setRefreshToken(refreshToken);
+        this.setExpires(expires);
+        this.setUserInfo(userInfo);
+        return true;
       } catch (error: any) {
         // 错误返回401，全局的响应拦截会打印报错信息
-        return null;
+        return false;
       }
     },
     async codeLogin({ email, code }) {
       try {
-        const { data: token } = await fetchEmailCodeLogin({
+        const res = await fetchEmailCodeLogin({
           email,
           code,
         });
-        this.setToken(token);
-        return token;
+        const {accessToken, refreshToken,expires,...userInfo} = res.result
+        this.setAcessToken(accessToken);
+        this.setRefreshToken(refreshToken);
+        this.setExpires(expires);
+        this.setUserInfo(userInfo);
+        return true;
       } catch (error: any) {
         // 错误返回401，全局的响应拦截会打印报错信息
-        return null;
+        return false;
       }
     },
     async register({ email, code }) {
@@ -89,22 +99,15 @@ export const useUserStore = defineStore('user', {
           email,
           code,
         });
-        this.setToken(token);
         return { token };
       } catch (error: any) {
         window.$message.error(error.message);
         return error;
       }
     },
-    async getUserInfo() {
-      try {
-        const { code, data }: any = await fetchUserInfo();
-        this.setUserInfo(data);
-        this.setRoles(data.roles);
-        return { code, data };
-      } catch (error) {
-        return error;
-      }
+    getUserInfo() {
+      const userInfo: UserInfo = _getLocalItem("userInfo");
+      return userInfo;
     },
     generateAsyncRoutes(roles) {
       // 比较两数组是否有交集(返回true代表有交集)

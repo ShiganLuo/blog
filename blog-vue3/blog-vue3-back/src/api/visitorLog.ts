@@ -1,5 +1,5 @@
 import { IVisitorLog } from '@/interface';
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export function fetchVisitorList(params) {
   return request({

@@ -272,20 +272,21 @@ const sendCodeLoading = ref(false);
 const downCount = ref(0);
 
 const handleLogin = async () => {
-  let token = null;
+  let flag = false;
   if (currentTab.value === 'codelogin') {
-    token = await userStore.codeLogin({
+    flag = await userStore.codeLogin({
       email: registerForm.value.email,
       code: registerForm.value.code,
     });
   } else {
-    token = await userStore.pwdLogin({
+    flag = await userStore.pwdLogin({
       username: loginForm.value.id,
       password: loginForm.value.password,
     });
   }
-  if (token) {
+  if (flag) {
     window.$message.success('登录成功!');
+    console.log(route.query.redirect)
     router.push((route.query.redirect as '') || '/');
   }
 };

@@ -1,5 +1,5 @@
 import { ILink } from '@/interface';
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export function fetchLinkList(params) {
   return request({

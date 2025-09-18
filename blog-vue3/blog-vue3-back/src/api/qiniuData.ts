@@ -1,5 +1,5 @@
 import { IQiniuData, IQiniuKey } from '@/interface';
-import request, { IResponse } from '@/utils/request';
+import { request } from '@/utils/request';
 
 export function fetchQiniuDataList(params) {
   return request({
@@ -17,45 +17,51 @@ export function fetchDiff(params) {
 }
 
 // 上传图片
-export function fetchUpload(data: IQiniuKey): Promise<
-  IResponse<{
+export function fetchUpload(data: IQiniuKey){
+  // data:new FormData {prefix,uploadFiles}
+  return request<{
     flag: boolean;
     respBody?: any;
     respErr?: any;
     respInfo?: any;
     resultUrl?: string;
-  }>
-> {
-  // data:new FormData {prefix,uploadFiles}
-  return request.post('/qiniu_data/upload', data, {
+  }>({
+    method: "post",
+    url: "/qiniu_data/upload",
+    data,
     timeout: 1000 * 60,
   });
 }
 
 // 上传chunk
-export function fetchUploadChunk(
-  data
-): Promise<IResponse<{ percentage: number }>> {
+export function fetchUploadChunk(data){
   // data:new FormData {prefix,uploadFiles}
-  return request.post('/qiniu_data/upload_chunk', data, {
-    headers: { 'Content-Type': 'multipart/form-data;' },
-    timeout: 1000 * 60,
-  });
+  return request<{ percentage: number }>(
+    {
+      method:"post",
+      url:"/qiniu_data/upload_chunk",
+      data,
+      headers: { 'Content-Type': 'multipart/form-data;' },
+      timeout: 1000 * 60,
+    });
 }
 
 // 合并chunk
-export function fetchUploadMergeChunk(data): Promise<IResponse<any>> {
+export function fetchUploadMergeChunk(data){
   // data:new FormData {prefix,uploadFiles}
-  return request.post('/qiniu_data/merge_chunk', data, {
+  return request({
+    method:"post",
+    url:"/qiniu_data/merge_chunk",
+    data,
     timeout: 1000 * 60,
   });
 }
 
 // 获取上传图片进度
-export function fetchUploadProgress(
-  params: IQiniuKey
-): Promise<IResponse<{ percentage?: number }>> {
-  return request.get('/qiniu_data/progress', {
+export function fetchUploadProgress(params: IQiniuKey){
+  return request<{ percentage?: number }>({
+    method:"get",
+    url:"/qiniu_data/progress",
     timeout: 1000 * 10, // 以免并发轮询获取进度的时候超时
     params,
   });

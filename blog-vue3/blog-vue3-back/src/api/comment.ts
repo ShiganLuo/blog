@@ -1,5 +1,6 @@
 import { IComment } from '@/interface';
-import request from '@/utils/request';
+import { request } from '@/utils/request';
+
 
 export function fetchCommentList(params) {
   return request({

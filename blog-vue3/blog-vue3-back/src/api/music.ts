@@ -1,5 +1,5 @@
 import { IMusic } from '@/interface';
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export function fetchMusicList(params) {
   return request({

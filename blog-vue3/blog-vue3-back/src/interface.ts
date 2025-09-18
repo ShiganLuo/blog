@@ -1,3 +1,14 @@
+export interface UserLoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  expires: string;        // 也可以用 Date，如果在代码中转成 Date 对象
+  id: string;
+  avatar: string;
+  username: string;
+  nickname: string;
+  roles: string;          // 如果有可能是数组，也可以改成 string[]
+}
+
 export interface IQiniuKey {
   prefix: string;
   hash: string;

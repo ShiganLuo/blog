@@ -1,5 +1,5 @@
 import { IRole } from '@/interface';
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 /** 角色列表(分页) */
 export function fetchRoleList(params) {

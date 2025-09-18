@@ -1,12 +1,19 @@
 import { IFrontend } from '@/interface';
-import request, { IResponse } from '@/utils/request';
+import { request } from '@/utils/request';
 
-export function fetchFrontendList(params): Promise<IResponse<IFrontend>> {
-  return request.get('/frontend/list', { params });
+export function fetchFrontendList(params){
+  return request<IFrontend>({
+    method:"get",
+    url:"/frontend/list",
+    params
+  });
 }
 
-export function fetchFindFrontend(id: number): Promise<IResponse<IFrontend>> {
-  return request.get(`/frontend/find/${id}`);
+export function fetchFindFrontend(id: number){
+  return request<IFrontend>({
+    method:"get",
+    url: `/frontend/find/${id}`
+  });
 }
 
 export function fetchCreateFrontend(data: IFrontend) {

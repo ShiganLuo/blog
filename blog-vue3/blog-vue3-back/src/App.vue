@@ -14,7 +14,6 @@ import { toRef } from 'vue';
 import SwitchEnvCpt from '@/components/SwitchEnv/index.vue';
 import { loginMessage } from '@/hooks/use-login';
 import { useAppStore } from '@/store/app';
-
 const appStore = useAppStore();
 const appLoading = toRef(appStore, 'loading');
 loginMessage();

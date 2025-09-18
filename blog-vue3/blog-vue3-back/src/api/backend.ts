@@ -1,5 +1,5 @@
 import { IBackend } from '@/interface';
-import request, { IResponse } from '@/utils/request';
+import { request } from '@/utils/request';
 
 // 执行命令
 export function fetchExecCmd(cmd: string) {
@@ -10,12 +10,19 @@ export function fetchExecCmd(cmd: string) {
   });
 }
 
-export function fetchBackendList(params): Promise<IResponse<IBackend>> {
-  return request.get('/backend/list', { params });
+export function fetchBackendList(params){
+  return request<IBackend>({
+    method: "get",
+    url: "/backend/list",
+    params
+  });
 }
 
-export function fetchFindBackend(id: number): Promise<IResponse<IBackend>> {
-  return request.get(`/backend/find/${id}`);
+export function fetchFindBackend(id: number){
+  return request<IBackend>({
+    method:"get",
+    url:`/backend/find/${id}`
+  });
 }
 
 export function fetchCreateBackend(data: IBackend) {

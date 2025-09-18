@@ -1,5 +1,5 @@
 import { IAuth } from '@/interface';
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 /** 权限列表(分页) */
 export function fetchAuthList(params) {

@@ -31,29 +31,29 @@ export const handleLogin = async (e) => {
     let token = '';
     switch (type) {
       case 'qq_login':
-        if (userStore.userInfo) {
+        if (userStore.accessToken) {
           const res: any = await fetchBindQQ(code);
           window.$message.success(res.message);
           // eslint-disable-next-line
           userStore.getUserInfo();
         } else {
-          const { data } = await fetchQQLogin(code);
-          token = data;
+          const { result } = await fetchQQLogin(code);
+          token = result;
         }
         break;
       case 'github_login':
-        if (userStore.userInfo) {
+        if (userStore.accessToken) {
           const res: any = await fetchBindGithub(code);
           window.$message.success(res.message);
           // eslint-disable-next-line
           userStore.getUserInfo();
         } else {
-          const { data } = await fetchGithubLogin(code);
-          token = data;
+          const { result } = await fetchGithubLogin(code);
+          token = result;
         }
         break;
     }
-    userStore.setToken(token);
+    userStore.setAcessToken(token);
     // eslint-disable-next-line
     router.push(redirect || '/');
   } catch (error) {

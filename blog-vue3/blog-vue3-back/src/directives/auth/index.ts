@@ -18,11 +18,16 @@ export default {
     const userStore = useUserStore();
     const roles = userStore.roles;
     if (value && roles) {
-      const isPermission = roles.some((item) => {
-        if (item.role_value === value) {
-          return true;
-        }
-      });
+      let isPermission = false;
+      if (roles == value) {
+        isPermission = true;
+      }
+      // 角色为数组时
+      // const isPermission = roles.some((item) => {
+      //   if (item.role_value === value) {
+      //     return true;
+      //   }
+      // });
       if (!isPermission) {
         // auth验证不通过！
         el.parentNode && el.parentNode.removeChild(el);

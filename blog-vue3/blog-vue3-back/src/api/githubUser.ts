@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 // github列表
 export function fetchGithubUserList(params) {

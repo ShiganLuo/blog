@@ -1,28 +1,34 @@
-import { IUser } from '@/interface';
-import request, { IResponse } from '@/utils/request';
-
-export interface UserLoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  expires: string;        // 也可以用 Date，如果在代码中转成 Date 对象
-  id: number;
-  avatar: string | null;
-  username: string;
-  nickname: string | null;
-  roles: string;          // 如果有可能是数组，也可以改成 string[]
-}
+import { IUser,UserLoginResponse } from '@/interface';
+import { request,IResponse } from '@/utils/request';
 
 export function fetchLogin({ username, password }) {
-  return request<IResponse<UserLoginResponse>>({
+  return request<UserLoginResponse>({
     url: '/api/admin/users/login',
     method: 'post',
     data: { username, password },
   });
 }
 
-export function fetchUserInfo() {
-  return request({
-    url: '/user/get_user_info',
+export interface UserInfo {
+  id: number;
+  username: string;
+  email: string | null;
+  password?: string; // 敏感信息，通常不需要
+  avatarUrl: string | null;
+  bio: string | null;
+  nickName: string;
+  role: 'USER' | 'ADMIN' | string; // 角色通常是枚举值
+  status: 'ACTIVE' | 'INACTIVE' | string; // 状态通常也是枚举值
+  createdAt: string;
+  updatedAt: string;
+  lastLogin: string | null;
+  loginAttempts: number;
+  emailVerified: boolean | null;
+  active: boolean | null;
+}
+export function fetchUserInfo(id:number) {
+  return request<UserInfo>({
+    url: `/api/admin/users/getUserInfoById/${id}`,
     method: 'get',
   });
 }
@@ -36,7 +42,10 @@ export function fetchUserList(params) {
 }
 
 export function fetchUserDetail(id: number): Promise<IResponse<IUser>> {
-  return request.get(`/user/find/${id}`);
+  return request({
+    method: 'get',
+    url: `/user/find/${id}`
+  });
 }
 
 export function fetchUserPwd() {

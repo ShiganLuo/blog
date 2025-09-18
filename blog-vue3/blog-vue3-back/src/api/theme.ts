@@ -1,5 +1,5 @@
 import { ITheme } from '@/interface';
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export function fetchThemeList(params) {
   return request({

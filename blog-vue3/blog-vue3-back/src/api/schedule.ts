@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 // 查看当前备份任务
 export function fetchDbJob() {

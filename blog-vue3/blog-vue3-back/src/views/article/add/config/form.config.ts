@@ -33,7 +33,7 @@ export const formConfig = async (): Promise<IForm<IArticle>> => {
         type: FormTypeEnum.checkbox,
         label: '分类',
         placeholder: '请选择分类',
-        options: typeList.data.rows.map((v) => ({
+        options: typeList.result.rows.map((v) => ({
           label: v.name,
           value: v.id,
         })),
@@ -43,7 +43,7 @@ export const formConfig = async (): Promise<IForm<IArticle>> => {
         type: FormTypeEnum.checkbox,
         label: '标签',
         placeholder: '请选择标签',
-        options: tagList.data.rows.map((v) => ({ label: v.name, value: v.id })),
+        options: tagList.result.rows.map((v) => ({ label: v.name, value: v.id })),
       },
       {
         field: 'status',

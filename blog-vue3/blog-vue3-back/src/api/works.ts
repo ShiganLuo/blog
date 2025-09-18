@@ -1,5 +1,5 @@
 import { IWorks } from '@/interface';
-import request from '@/utils/request';
+import { request } from '@/utils/request';
 
 export function fetchWorksList(params) {
   return request({
