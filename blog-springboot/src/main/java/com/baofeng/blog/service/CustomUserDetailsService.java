@@ -38,7 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         Collection<? extends GrantedAuthority> authorities = roleMapper.selectRolesByUserId(user.getId()).stream()
-            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole_name()))
+            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
             .collect(Collectors.toList());
         // 构造 Spring Security 的 UserDetails 对象
         return new org.springframework.security.core.userdetails.User(

@@ -31,7 +31,7 @@
     <!--插入角色-->
     <insert id="insertRole" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO roles (role_name, role_desc, created_at, updated_at)
-        VALUES (#{role_name}, #{role_desc}, NOW(), NOW())
+        VALUES (#{roleName}, #{roleDesc}, NOW(), NOW())
     </insert>
     <!--删除角色-->
     <delete id="deleteRoleById">

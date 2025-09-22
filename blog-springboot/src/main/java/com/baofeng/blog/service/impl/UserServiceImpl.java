@@ -74,8 +74,8 @@ public class UserServiceImpl implements UserService {
         if (role == null) {
             logger.info("USER不存在于roles表,创建USER角色");
             role = new Role();
-            role.setRole_name(RoleType.USER.getName()); // 默认分配USER权限
-            role.setRole_desc(RoleType.USER.getDescription());
+            role.setRoleName(RoleType.USER.getName()); // 默认分配USER权限
+            role.setRoleDesc(RoleType.USER.getDescription());
             int rowUpdated2 = roleMapper.insertRole(role);
             if (rowUpdated2 == 0) {
                 logger.error("USER角色创建失败");
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
         LocalDateTime expires = now.plus(1, ChronoUnit.HOURS);
 
         List<String> roles = roleMapper.selectRolesByUserId(user.getId()).stream()
-            .map(Role::getRole_name)
+            .map(Role::getRoleName)
             .collect(Collectors.toList());
         if (type == LoginType.FRONT) {
             FrontLoginResponseVO.User userInfo = new FrontLoginResponseVO.User(
@@ -191,8 +191,8 @@ public class UserServiceImpl implements UserService {
             if (role == null) {
                 // 如果角色不存在，创建新角色
                 role = new Role();
-                role.setRole_name(RoleType.valueOf(roleName).getName());
-                role.setRole_desc(RoleType.valueOf(roleName).getDescription());
+                role.setRoleName(RoleType.valueOf(roleName).getName());
+                role.setRoleDesc(RoleType.valueOf(roleName).getDescription());
                 int rowUpdated = roleMapper.insertRole(role);
                 if (rowUpdated == 0) {
                     logger.error("角色创建失败: " + roleName);
