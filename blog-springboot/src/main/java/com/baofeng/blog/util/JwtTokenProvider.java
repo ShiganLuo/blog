@@ -1,6 +1,6 @@
 package com.baofeng.blog.util;
 
-import com.baofeng.blog.config.JwtProperties;
+import com.baofeng.blog.config.JwtPropertiesConfig;
 import com.baofeng.blog.entity.User;
 
 import io.jsonwebtoken.Jwts;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class JwtTokenProvider {
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
     private final String secret;
-    public JwtTokenProvider(JwtProperties jwtProperties) {
+    public JwtTokenProvider(JwtPropertiesConfig jwtProperties) {
         this.secret = jwtProperties.getSecret();
     }
 

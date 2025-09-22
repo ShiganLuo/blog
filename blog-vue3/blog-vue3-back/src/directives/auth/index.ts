@@ -12,22 +12,20 @@ export default {
   },
   // 在绑定元素的父组件
   // 及他自己的所有子节点都挂载完成后调用
+  // v-auth=" 'admin' "
   mounted(el, binding) {
     // console.log('mounted', el, binding, vnode, prevVnode);
     const { value } = binding;
     const userStore = useUserStore();
     const roles = userStore.roles;
     if (value && roles) {
-      let isPermission = false;
-      if (roles == value) {
-        isPermission = true;
-      }
-      // 角色为数组时
-      // const isPermission = roles.some((item) => {
-      //   if (item.role_value === value) {
-      //     return true;
-      //   }
-      // });
+
+      const isPermission = roles.some((item) => {
+        if (item === value) {
+          return true;
+        }
+      });
+      console.log('isPermission',isPermission)
       if (!isPermission) {
         // auth验证不通过！
         el.parentNode && el.parentNode.removeChild(el);

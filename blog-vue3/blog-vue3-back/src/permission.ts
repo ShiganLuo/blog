@@ -10,7 +10,7 @@ const whiteList = ['/login', '/oauth/qq_login', '/oauth/github_login'];
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
   const appStore = useAppStore();
-  const { roles } = userStore;
+  const userInfo = userStore.getUserInfo();
   const accessToken = _getLocalItem("accessToken");
   appStore.setLoading(true);
   // 先判断有没有登录
@@ -19,23 +19,21 @@ router.beforeEach(async (to, from, next) => {
     if (to.path === '/login') {
       next('/');
     }
+    console.log("-------1---------")
+    console.log('roles',userInfo.roles)
+    console.log("userInfo",userStore.getUserInfo())
     // 判断用户有没有角色
-    if (roles && roles.length) {
+    if (userInfo.roles && userInfo.roles.length) {
       next();
     } else {
-      const { code, data }: any = await userStore.getUserInfo();
-      if (code !== 200) {
-        // next(false);
-        next(true);
-        return;
-      }
-      if (!data.roles || !data.roles.length) {
+      if (!userInfo.roles || !userInfo.roles.length) {
         // next(false);
         next(true)
         window.$message.error('你没有角色');
         return;
       }
-      const routeRes = userStore.generateAsyncRoutes(data.roles);
+      console.log('userInfo.roles',userInfo.roles)
+      const routeRes = userStore.generateAsyncRoutes(userInfo.roles);
       routeRes.forEach((v) => {
         router.addRoute(v);
       });

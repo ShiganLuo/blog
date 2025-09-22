@@ -3,7 +3,7 @@ import lombok.Data;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonInclude;
-public class AdminRouteVO {
+public class AdminMockVO {
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)//只序列化非null值
     public static class routeResponse{
@@ -96,5 +96,12 @@ public class AdminRouteVO {
         private String enterTransition;
         // 当前页面离场动画，这里是第二种模式，比如 leaveTransition: "animate__fadeOutRight"
         private String leaveTransition;
+    }
+
+    @Data
+    public static class loginFunctionEnabledResponse{
+        private boolean sliderEnabled; //是否启用滑动验证码
+        private boolean forgetPasswordEnabled; //是否启用忘记密码功能
+        private boolean registerUserEnabled; //是否启用注册用户功能
     }
 }

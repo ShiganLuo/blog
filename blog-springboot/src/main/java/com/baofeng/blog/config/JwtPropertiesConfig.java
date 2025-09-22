@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @Component
 @ConfigurationProperties(prefix = "security.jwt")
-public class JwtProperties {
+public class JwtPropertiesConfig {
     private List<String> whitelist;
     private String tokenHeader;
     private String tokenHead;

@@ -6,7 +6,7 @@ export interface UserLoginResponse {
   avatar: string;
   username: string;
   nickname: string;
-  roles: string;          // 如果有可能是数组，也可以改成 string[]
+  roles: string[];          // 如果有可能是数组，也可以改成 string[]
 }
 
 export interface IQiniuKey {

@@ -5,7 +5,7 @@ import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.service.CustomUserDetailsService;
 import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.util.ResultCode;
-import com.baofeng.blog.config.JwtProperties;
+import com.baofeng.blog.config.JwtPropertiesConfig;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
                             RoleMapper roleMapper,
                             BCryptPasswordEncoder passwordEncoder,
                             JwtTokenProvider jwtTokenProvider, 
-                            JwtProperties jwtProperties) {
+                            JwtPropertiesConfig jwtProperties) {
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userMapper = userMapper;

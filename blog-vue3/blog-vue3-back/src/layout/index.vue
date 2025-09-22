@@ -72,39 +72,39 @@ const userStore = useUserStore();
 //   'component'
 // );
 const handleRoutes = (routes: RouteRecordRaw[]) => {
-  routes.forEach((v) => {
-    if (v.children && v.children.length === 1) {
-      v.meta = {
-        title: v.children[0].meta?.title,
-        icon: v.children[0].meta?.icon,
-        hidden: v.children[0].meta?.hidden,
-        sort: v.meta?.sort,
-      };
-      // @ts-ignore
-      v.label = v.meta.title;
-      // @ts-ignore
-      v.key = v.children[0].path;
-      // @ts-ignore
-      v.show = !v.meta.hidden;
-      delete v.children;
-    } else if (v.children && v.children.length > 1) {
-      // @ts-ignore
-      v.label = v.meta && v.meta.title;
-      // @ts-ignore
-      v.key = v.path;
-      handleRoutes(v.children);
-    } else if (!v.children) {
-      if (v.meta) {
-        // @ts-ignore
-        v.label = v.meta && v.meta.title;
-        // @ts-ignore
-        v.key = v.path;
-        // @ts-ignore
-        v.show = !v.meta.hidden;
+  return routes
+    .map((v) => {
+      // Remove any non-menu properties like 'component'
+      const { component, ...rest } = v as any;
+      if (rest.children && rest.children.length === 1) {
+        rest.meta = {
+          title: rest.children[0].meta?.title,
+          icon: rest.children[0].meta?.icon,
+          hidden: rest.children[0].meta?.hidden,
+          sort: rest.meta?.sort,
+        };
+        rest.label = rest.meta.title;
+        rest.key = rest.children[0].path;
+        rest.show = !rest.meta.hidden;
+        delete rest.children;
+      } else if (rest.children && rest.children.length > 1) {
+        rest.label = rest.meta && rest.meta.title;
+        rest.key = rest.path;
+        rest.children = handleRoutes(rest.children);
+      } else if (!rest.children) {
+        if (rest.meta) {
+          rest.label = rest.meta && rest.meta.title;
+          rest.key = rest.path;
+          rest.show = !rest.meta.hidden;
+        }
       }
-    }
-  });
-  return routes;
+      // If this is a divider, add type: 'divider'
+      if (rest.meta && rest.meta.type === 'divider') {
+        rest.type = 'divider';
+      }
+      return rest;
+    })
+    .filter((item) => item.show !== false);
 };
 
 function sortRoute(a, b) {
@@ -135,6 +135,7 @@ watch(
 appStore.setRoutes(menuOptions);
 appStore.setPath(route.path);
 appStore.setTabList({ [route.path]: route.meta.title });
+
 function renderMenuLabel(option) {
   return option.label;
 }

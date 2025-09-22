@@ -11,7 +11,7 @@ type UserInfo = {
   avatar:string;
   username:string;
   nickname:string;
-  roles:string;
+  roles:string[];
 };
 
 export const useUserStore = defineStore('user', {
@@ -24,7 +24,7 @@ export const useUserStore = defineStore('user', {
       avatar: '',
       username: '',
       nickname: '',
-      roles: '',
+      roles: [''],
     } as UserLoginResponse;
   },
   actions: {
@@ -34,6 +34,7 @@ export const useUserStore = defineStore('user', {
       this.avatar = userInfo.avatar;
       this.username = userInfo.username;
       this.nickname = userInfo.nickname;
+      this.roles = userInfo.roles;
     },
     setExpires(expires:string) {
       _setLocalItem('expires',expires);
@@ -56,7 +57,7 @@ export const useUserStore = defineStore('user', {
       _removeLocalItem('expires')
       this.accessToken = '';
       this.refreshToken = '';
-      this.roles = '';
+      this.roles = [''];
     },
     async pwdLogin({ username, password }) {
       try {
@@ -135,6 +136,7 @@ export const useUserStore = defineStore('user', {
           return res;
         };
         const res = deepFind(roleRoutes);
+        console.log(res)
         return res;
       };
       return handleAsyncRoutes(asyncRoutes);

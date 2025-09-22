@@ -22,7 +22,7 @@ import com.baofeng.blog.util.JwtTokenProvider;
 @EnableWebSecurity
 public class SecurityConfig {
     private final List<String> whiteListUris;
-    public SecurityConfig(JwtProperties jwtProperties) {
+    public SecurityConfig(JwtPropertiesConfig jwtProperties) {
         this.whiteListUris = jwtProperties.getWhitelist();
     }
     @Bean
