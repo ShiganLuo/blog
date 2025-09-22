@@ -2,6 +2,7 @@ package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.exception.DuplicateUserException;
 import com.baofeng.blog.mapper.UserMapper;
+import com.baofeng.blog.service.CustomUserDetailsService;
 import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.config.JwtProperties;
@@ -13,11 +14,15 @@ import com.baofeng.blog.vo.common.User.LoginRequest;
 import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
 import com.baofeng.blog.util.JwtTokenProvider;
 import com.baofeng.blog.util.LoginType;
+import com.baofeng.blog.mapper.RoleMapper;
+import com.baofeng.blog.entity.Role;
+import com.baofeng.blog.enums.RoleType;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -27,36 +32,63 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
+    private final RoleMapper roleMapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    public UserServiceImpl(BCryptPasswordEncoder passwordEncoder,
+    public UserServiceImpl(UserMapper userMapper,
+                            RoleMapper roleMapper,
+                            BCryptPasswordEncoder passwordEncoder,
                             JwtTokenProvider jwtTokenProvider, 
-                            UserMapper userMapper,
                             JwtProperties jwtProperties) {
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userMapper = userMapper;
         this.accessTokenExpiration = jwtProperties.getAccessTokenExpiration();
         this.refreshTokenExpiration = jwtProperties.getRefreshTokenExpiration();
+        this.roleMapper = roleMapper;
     }
 
     @Override
     @Transactional
-    public User registerUser(RegisterRequest registerDTO) {
+    public ApiResponse<String> registerUser(RegisterRequest registerDTO) {
         // 检查用户名和邮箱唯一性
         checkUserUniqueness(registerDTO.username());
         
         User newUser = new User();
         newUser.setUsername(registerDTO.username());
         newUser.setPassword(passwordEncoder.encode(registerDTO.password()));
-        newUser.setRole(User.Role.USER);
         newUser.setStatus(User.Status.ACTIVE);
         newUser.setNickName(registerDTO.username());
-        userMapper.insertUser(newUser);
-        return newUser;
+        int rowUpdated1 = userMapper.insertUser(newUser);
+
+        if (rowUpdated1 == 0) {
+            logger.error("用户插入数据库失败");
+            return ApiResponse.error(ResultCode.SERVER_ERROR,"用户创建失败");
+        }
+        // 更新roles表
+        Role role = roleMapper.selectRolesByRoleName(RoleType.USER.getName());
+        if (role == null) {
+            logger.info("USER不存在于roles表,创建USER角色");
+            role = new Role();
+            role.setRole_name(RoleType.USER.getName()); // 默认分配USER权限
+            role.setRole_desc(RoleType.USER.getDescription());
+            int rowUpdated2 = roleMapper.insertRole(role);
+            if (rowUpdated2 == 0) {
+                logger.error("USER角色创建失败");
+                return ApiResponse.error(ResultCode.SERVER_ERROR,"用户创建失败");
+            }
+        }
+
+        //更新user_roles表
+        int rowUpdated3 = roleMapper.insertUserRole(newUser.getId(), role.getId());
+
+        return rowUpdated3 > 0 
+            ? ApiResponse.success("用户创建成功")
+            : ApiResponse.error(ResultCode.SERVER_ERROR,"用户创建失败");
     }
 
     private void checkUserUniqueness(String username) {
@@ -94,13 +126,16 @@ public class UserServiceImpl implements UserService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expires = now.plus(1, ChronoUnit.HOURS);
 
+        List<String> roles = roleMapper.selectRolesByUserId(user.getId()).stream()
+            .map(Role::getRole_name)
+            .collect(Collectors.toList());
         if (type == LoginType.FRONT) {
             FrontLoginResponseVO.User userInfo = new FrontLoginResponseVO.User(
                 user.getId(),
                 user.getAvatarUrl(),
                 user.getUsername(),
                 user.getNickName(),
-                user.getRole().name()
+                roles
             );
             FrontLoginResponseVO response = new FrontLoginResponseVO(accessToken, refreshToken, expires, userInfo);
             return (ApiResponse<T>) ApiResponse.success(response);
@@ -110,7 +145,7 @@ public class UserServiceImpl implements UserService {
                 user.getAvatarUrl(),
                 user.getUsername(),
                 user.getNickName(),
-                user.getRole().name()
+                roles
             );
             AdminLoginResponseVO response = new AdminLoginResponseVO(accessToken, refreshToken, expires, userInfo);
             return (ApiResponse<T>) ApiResponse.success(response);
@@ -131,14 +166,44 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<String> updateUserRole(Long id, String role) {
-        User user = userMapper.selectUserById(id);
-        if (user != null) {
-            user.setRole(User.Role.valueOf(role.toUpperCase()));
-            userMapper.updateUserSelective(user);
-            return ApiResponse.success();
+    public ApiResponse<String> updateUserRole(UpdateUserRoleRequest updateUserRoleRequest) {
+        Long userId = updateUserRoleRequest.userId();
+        List<String> roles = updateUserRoleRequest.roles();
+        List<String> validRoles = List.of(RoleType.USER.getName(), RoleType.ADMIN.getName());
+        // 检查用户是否存在
+        User user = userMapper.selectUserById(userId);
+        if (user == null) {
+            return ApiResponse.error(ResultCode.NOT_FOUND, "用户不存在");
         }
-        return ApiResponse.error(ResultCode.SERVER_ERROR,"角色更新失败");
+        // 检查角色是否有效
+        logger.info("有效用户角色: {}", validRoles);
+        logger.info("请求更新角色: {}", roles);
+        for (String roleName : roles) {
+            if (!validRoles.contains(roleName)) {
+                return ApiResponse.error(ResultCode.PARAM_ERROR, "无效的角色: " + roleName);
+            }
+        }
+        // 删除用户现有角色
+        roleMapper.deleteUserRolesByUserId(userId);
+        // 为用户分配新角色
+        for (String roleName : roles) {
+            Role role = roleMapper.selectRolesByRoleName(roleName);
+            if (role == null) {
+                // 如果角色不存在，创建新角色
+                role = new Role();
+                role.setRole_name(RoleType.valueOf(roleName).getName());
+                role.setRole_desc(RoleType.valueOf(roleName).getDescription());
+                int rowUpdated = roleMapper.insertRole(role);
+                if (rowUpdated == 0) {
+                    logger.error("角色创建失败: " + roleName);
+                }
+            }
+            int rowUpdated = roleMapper.insertUserRole(userId, role.getId());
+            if (rowUpdated == 0) {
+                logger.error("为用户分配角色失败: " + roleName);
+            }
+        }
+        return ApiResponse.success("角色更新成功");
     }
 
     @Override

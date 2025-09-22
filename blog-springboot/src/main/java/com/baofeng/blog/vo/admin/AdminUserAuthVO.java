@@ -52,5 +52,18 @@ public class AdminUserAuthVO {
         // ... 其他需要返回的用户字段
     }
 
+    public record UpdateUserRoleRequest(
+        Long userId,
+        List<String> roles
+    ) { 
+        public UpdateUserRoleRequest {
+            if (userId == null) {
+                throw new IllegalArgumentException("userId不能为空");
+            }
+            if (roles == null || roles.isEmpty()) {
+                throw new IllegalArgumentException("roles不能为空");
+            }
+        }
+    }
 
 } 

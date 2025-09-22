@@ -27,9 +27,9 @@ public class AdminUserController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<User> registerUser(@RequestBody @Valid RegisterRequest registerDTO) {
+    public ApiResponse<String> registerUser(@RequestBody @Valid RegisterRequest registerDTO) {
         //在Serivce写清楚了用户名重复如何处理的逻辑
-        return ApiResponse.success(userService.registerUser(registerDTO));
+        return userService.registerUser(registerDTO);
     }
 
     @PostMapping("/login")
@@ -74,11 +74,9 @@ public class AdminUserController {
         return ApiResponse.success(user);
     }
 
-    @PutMapping("/updateRole/{id}/{role}")
-    public ApiResponse<String> updateUserRole(
-            @PathVariable Long id, 
-            @PathVariable String role) {
-            return userService.updateUserRole(id, role);
+    @PostMapping("/updateUserRoles")
+    public ApiResponse<String> updateUserRole(@RequestBody @Valid UpdateUserRoleRequest updaUserRoleRequest) {
+        return userService.updateUserRole(updaUserRoleRequest);
     }
 
     @PostMapping("/getUsersList")

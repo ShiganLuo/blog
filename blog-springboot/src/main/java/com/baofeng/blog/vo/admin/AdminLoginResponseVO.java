@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.List;
 /**
  * LoginResponse 直接将 token 定义为 String
  */
@@ -29,6 +30,6 @@ public class AdminLoginResponseVO {
         private String avatar;
         private String username;
         private String nickname;
-        private String roles;
+        private List<String> roles;
     }
 } 

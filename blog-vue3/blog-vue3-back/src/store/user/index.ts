@@ -117,7 +117,7 @@ export const useUserStore = defineStore('user', {
       const myRole = roles.map((v) => v.role_value);
       const handleAsyncRoutes = (roleRoutes) => {
         const deepFind = (route) => {
-          const res: any[] = [];
+          const res: any[] = []; // 过滤后的路由
           route.forEach((v) => {
             const t = { ...v };
             if (t.meta && t.meta.roles) {

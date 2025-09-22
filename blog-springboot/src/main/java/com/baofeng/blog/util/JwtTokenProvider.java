@@ -76,7 +76,6 @@ public class JwtTokenProvider {
                 .setSubject(String.valueOf(user.getId()))
                 .claim("type", isRefreshToken ? "refresh" : "access")
                 .claim("username", user.getUsername())
-                .claim("role", user.getRole())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
@@ -92,7 +91,8 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
-            log.info("JWT格式验证失败:{}",token);
+            log.info("Token解析失败:{}",token);
+            throw new IllegalArgumentException("Token解析失败");
         }
         return claims;
     }

@@ -11,8 +11,6 @@
         <result property="password" column="password"/>
         <result property="avatarUrl" column="avatar_url"/>
         <result property="bio" column="bio"/>
-        <result property="role" column="role" 
-                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result property="status" column="status" 
                 typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result property="createdAt" column="created_at"/>
@@ -27,11 +25,11 @@
     <!-- 基础CRUD操作 -->
     <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO users (
-            username, email, password, avatar_url, bio, role, status,
+            username, email, password, avatar_url, bio, status,
             last_login, login_attempts, is_email_verified, is_active,nick_name
         ) VALUES (
             #{username}, #{email}, #{password}, #{avatarUrl}, #{bio}, 
-            #{role}, #{status}, #{lastLogin}, #{loginAttempts}, 
+            #{status}, #{lastLogin}, #{loginAttempts}, 
             #{emailVerified}, #{active}, #{nickName}
         )
     </insert>
@@ -43,7 +41,6 @@
             password = #{password},
             avatar_url = #{avatarUrl},
             bio = #{bio},
-            role = #{role},
             status = #{status},
             last_login = #{lastLogin},
             login_attempts = #{loginAttempts},
@@ -84,14 +81,14 @@
 
     <!-- 分页查询 -->
     <select id="selectByPage" resultMap="userResultMap">
-        SELECT username,  nick_name, avatar_url,  role, created_at, updated_at FROM users
+        SELECT username,  nick_name, avatar_url, created_at, updated_at FROM users
         ORDER BY id DESC
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <!-- 登录相关操作 -->
     <select id="selectByUsernameOrEmail" resultMap="userResultMap">
-        SELECT id, username, password, status, role
+        SELECT id, username, password, status
         FROM users
         WHERE username = #{account} OR email = #{account}
         LIMIT 1
@@ -128,7 +125,6 @@
             <if test="password != null">password = #{password},</if>
             <if test="avatarUrl != null">avatar_url = #{avatarUrl},</if>
             <if test="bio != null">bio = #{bio},</if>
-            <if test="role != null">role = #{role},</if>
             <if test="status != null">status = #{status},</if>
             <if test="lastLogin != null">last_login = #{lastLogin},</if>
             <if test="loginAttempts != null">login_attempts = #{loginAttempts},</if>

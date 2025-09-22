@@ -10,7 +10,12 @@ import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
 
 
 public interface UserService {
-    User registerUser(RegisterRequest registerDTO);
+    /**
+     * 用户注册
+     * @param registerDTO
+     * @return
+     */
+    public ApiResponse<String> registerUser(RegisterRequest registerDTO);
     /**
      * 前台登录
      * @param loginDTO
@@ -40,7 +45,12 @@ public interface UserService {
      */
     public ApiResponse<User> getUserInfoById(Long id);
     
-    public ApiResponse<String> updateUserRole(Long id, String role);
+    /**
+     * 更新用户角色
+     * @param updateUserRoleRequest
+     * @return
+     */
+    public ApiResponse<String> updateUserRole(UpdateUserRoleRequest updateUserRoleRequest);
 
     /**
      * 获取用户列表

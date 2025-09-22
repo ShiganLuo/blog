@@ -21,10 +21,12 @@
 
 <script lang="ts" setup>
 import { useUserStore } from '@/store/user';
-
+import { ROUTE_ROLES } from '@/constant';
 const userStore = useUserStore();
 const userInfo = userStore.getUserInfo();
 console.log("------1----")
+console.log(userInfo.roles)
+console.log(ROUTE_ROLES.SUPER_ADMIN)
 </script>
 
 <style lang="scss" scoped>

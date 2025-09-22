@@ -71,9 +71,9 @@ export const MONIT_TYPE_MAP = {
   8: '备份数据库失败',
 };
 
-export const ROUTE_ROLES = { SUPER_ADMIN: 'SUPER_ADMIN' };
+export const ROUTE_ROLES = { SUPER_ADMIN: 'admin' };
 
-export const USER_ROLE = { SUPER_ADMIN: 'SUPER_ADMIN' };
+export const USER_ROLE = { SUPER_ADMIN: 'admin' };
 
 // 路由sort，值越大越往上
 export const ROUTE_SORT = {
