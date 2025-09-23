@@ -3,6 +3,7 @@ package com.baofeng.blog.filter;
 import com.baofeng.blog.service.CustomUserDetailsService;
 import com.baofeng.blog.util.JwtTokenProvider;
 import com.baofeng.blog.vo.ResponseUtil;
+import com.baofeng.blog.enums.ResultCodeEnum;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -70,24 +71,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         } else {
-                            ResponseUtil.sendErrorResponse(response, 400, "Access  Token解析的用户不存在");
-                            logger.warn("Access  Token解析的用户不存在");
+                            ResponseUtil.sendErrorResponse(response, ResultCodeEnum.BAD_REQUEST, "请求参数错误");
+                            logger.warn("accessToken解析的用户不存在");
                         }
                     }
                 } else {
-                    ResponseUtil.sendErrorResponse(response, 403, "Refresh Token 不能访问受保护资源");
+                    ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "Refresh Token 不能访问受保护资源");
                     logger.warn("Refresh Token 不能访问受保护资源");
                     return;
                 }
             } else {
-                ResponseUtil.sendErrorResponse(response, 400, "Token 失效");
+                ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "Token 失效");
                 logger.warn("Token 失效");
                 return;
 
             }
         } else {
-            ResponseUtil.sendErrorResponse(response, 403, "请求未携带或者错误携带了Authorization头");
-            logger.warn("请求未携带或者错误携带了Authorization头");
+            ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "请求未携带accessToken");
+            logger.warn("请求未携带accessToken");
             return;
         }
 

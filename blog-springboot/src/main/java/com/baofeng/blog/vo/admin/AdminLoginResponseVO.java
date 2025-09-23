@@ -17,8 +17,6 @@ public class AdminLoginResponseVO {
     private String accessToken; // 短期有效
     private String refreshToken; //长期有效
 
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime expires; /** `accessToken`的过期时间（格式'xxxx/xx/xx xx:xx:xx'） */
     @JsonUnwrapped
     private User user;
 

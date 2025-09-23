@@ -126,10 +126,6 @@ public class UserServiceImpl implements UserService {
         // 生成 token
         String accessToken = jwtTokenProvider.generateToken(user, accessTokenExpiration, false);
         String refreshToken = jwtTokenProvider.generateToken(user, refreshTokenExpiration, true);
-        logger.info(accessTokenExpiration + "秒后AccessToken过期");
-        logger.info(refreshTokenExpiration + "秒后RefreshToken过期");
-
-        LocalDateTime expires = LocalDateTime.now().plus(1, ChronoUnit.HOURS);
 
         // 获取角色
         List<String> roles = roleMapper.selectRolesByUserId(user.getId())
@@ -147,7 +143,7 @@ public class UserServiceImpl implements UserService {
                 user.getNickName(),
                 roles
             );
-            response = new FrontLoginResponseVO(accessToken, refreshToken, expires, userInfo);
+            response = new FrontLoginResponseVO(accessToken, refreshToken, userInfo);
         } else if (clazz == AdminLoginResponseVO.class) {
             AdminLoginResponseVO.User userInfo = new AdminLoginResponseVO.User(
                 user.getId(),
@@ -156,7 +152,7 @@ public class UserServiceImpl implements UserService {
                 user.getNickName(),
                 roles
             );
-            response = new AdminLoginResponseVO(accessToken, refreshToken, expires, userInfo);
+            response = new AdminLoginResponseVO(accessToken, refreshToken, userInfo);
         } else {
             logger.error("不支持的登录类型: {}", clazz.getName());
             throw new IllegalArgumentException("不支持的登录类型");

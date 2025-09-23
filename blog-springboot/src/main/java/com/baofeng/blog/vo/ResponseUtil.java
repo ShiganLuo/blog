@@ -1,6 +1,6 @@
 package com.baofeng.blog.vo;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.baofeng.blog.enums.ResultCodeEnum;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -13,11 +13,11 @@ public class ResponseUtil {
      * @param message 错误消息
      * @throws IOException
      */
-    public static void sendErrorResponse(HttpServletResponse response, int statusCode, String message) throws IOException {
+    public static void sendErrorResponse(HttpServletResponse response, ResultCodeEnum resultCodeEnum, String message) throws IOException {
         response.setContentType("application/json; charset=UTF-8");
-        response.setStatus(statusCode);
+        response.setStatus(resultCodeEnum.code());
         
-        ApiResponse<Void> errorResponse = ApiResponse.error(statusCode, message);
+        ApiResponse<Void> errorResponse = ApiResponse.error(resultCodeEnum.code(), message);
         String json = new ObjectMapper().writeValueAsString(errorResponse);
         
         response.getWriter().write(json);

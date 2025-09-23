@@ -8,6 +8,8 @@ import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
 import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
 import com.baofeng.blog.vo.common.User.LoginRequest;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,7 +41,8 @@ public class AdminUserController {
 
     //刷新token;是否需要判断只能用refreshToken来刷新token
     @PostMapping("/refreshToken")
-    public ApiResponse<String> accessToeknGenerate(@RequestBody String rawToken){
+    public ApiResponse<String> accessToeknGenerate(@RequestBody  Map<String, String> body){
+        String rawToken = body.get("refreshToken");
         return userService.refreshToken(rawToken);
     }
 
