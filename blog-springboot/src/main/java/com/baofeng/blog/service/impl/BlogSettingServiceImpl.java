@@ -8,12 +8,11 @@ import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.mapper.CategoryMapper;
 import com.baofeng.blog.entity.BlogSetting;
 import com.baofeng.blog.service.BlogSettingService;
-import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminBlogSettingVO.initSettingRequest;
 import com.baofeng.blog.vo.front.FrontBlogSettinVO.*;
 import com.baofeng.blog.entity.User;
-
+import com.baofeng.blog.enums.ResultCodeEnum;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -42,7 +41,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     public ApiResponse<String> initSetting(initSettingRequest request){
         BlogSetting settring1 = blogSettingMapper.getSettingById((long) 1);
         if ( settring1 != null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"博客系统设置已存在"); // 默认第一条记录为博客系统设置
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"博客系统设置已存在"); // 默认第一条记录为博客系统设置
         }
         BlogSetting setting = new BlogSetting();
         setting.setSiteTitle(null == request.siteTitle() ? "" : request.siteTitle());
@@ -65,7 +64,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         int success = blogSettingMapper.insertSetting(setting);
         return success > 0
             ? ApiResponse.success("网站初始化成功")
-            : ApiResponse.error(ResultCode.SERVER_ERROR, "网站初始化失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "网站初始化失败");
 
     }
 
@@ -93,7 +92,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         int success = blogSettingMapper.updateSettingById(setting);
         return success > 0
             ? ApiResponse.success("网站设置更新成功")
-            : ApiResponse.error(ResultCode.SERVER_ERROR, "网站设置更新失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "网站设置更新失败");
     }
 
     @Override
@@ -146,40 +145,40 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         int rowUpdated = blogSettingMapper.insertFriendLink(addFriendLinkRequest);
         User user = userMapper.selectUserById(addFriendLinkRequest.user_id());
         if (user == null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"用户不存在, 用户必须登录才能添加友链");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在, 用户必须登录才能添加友链");
         }
         return rowUpdated > 0 
             ? ApiResponse.success("友链添加成功")
-            : ApiResponse.error(ResultCode.SERVER_ERROR,"友链添加失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"友链添加失败");
 
     }
 
     @Override
     public ApiResponse<String> updateFriendLink(AddFriendLinkRequest addFriendLinkRequest) {
         if (addFriendLinkRequest.id() == null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"更新友链, id不能为空");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"更新友链, id不能为空");
         }
         if (addFriendLinkRequest.id() == 1) {
-            return ApiResponse.error(ResultCode.UNAUTHORIZED,"没有权限更新该友链");
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED,"没有权限更新该友链");
         }
         BlogSetting blogSetting = blogSettingMapper.getSettingById(addFriendLinkRequest.id());
         if (blogSetting == null) {
-            return ApiResponse.error(ResultCode.NOT_FOUND,"该友链不存在");
+            return ApiResponse.error(ResultCodeEnum.NOT_FOUND,"该友链不存在");
         }
         int rowUpdated = blogSettingMapper.updateFriendLinkById(addFriendLinkRequest);
         return rowUpdated > 0
             ? ApiResponse.success("友链更新成功")
-            : ApiResponse.error(ResultCode.SERVER_ERROR,"友链更新失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"友链更新失败");
     }
 
     @Override
     public ApiResponse<String> deleteFriendLink(Long id) {
         if (id == (long) 1) {
-            return ApiResponse.error(ResultCode.UNAUTHORIZED,"没有权限删除该友链");
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED,"没有权限删除该友链");
         }
         int rowUpdated = blogSettingMapper.deleteSettingById(id);
         return rowUpdated > 0
             ? ApiResponse.success("友链删除成功")
-            : ApiResponse.error(ResultCode.SERVER_ERROR,"友链删除失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"友链删除失败");
     }
 } 

@@ -35,7 +35,7 @@ public interface UserService {
      * @param rawToken
      * @return
      */
-    public ApiResponse<refreshTokenResponse> refreshToken(String rawToken);
+    public ApiResponse<String> refreshToken(String rawToken);
 
     User getUserByUsername(String username);
     /**

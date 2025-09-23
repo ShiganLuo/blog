@@ -1,10 +1,8 @@
 package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.service.UtilService;
-import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.vo.common.Util.CaptchaResponse;
-import com.baofeng.blog.config.CaptchaConfig;
-
+import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.vo.ApiResponse;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import java.awt.image.BufferedImage;
@@ -19,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 @Service
 public class UtilServiceImpl implements UtilService {
-
+    // 与登录接口集成待完成
     private final DefaultKaptcha captchaProducer;
     private static final Logger logger = LoggerFactory.getLogger(UtilServiceImpl.class);
 
@@ -39,7 +37,7 @@ public class UtilServiceImpl implements UtilService {
             ImageIO.write(image, "jpg", bos);
         } catch (IOException e) {
             logger.error("生成验证码失败", e);
-            return ApiResponse.error(ResultCode.SERVER_ERROR, "生成验证码失败" );
+            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "生成验证码失败" );
         }
 
         // 转 Base64

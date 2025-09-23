@@ -27,6 +27,7 @@ security:
       - /api/admin/users/register
       - /api/admin/users/login
       - /api/admin/users/refreshToken
+      - /api/admin/util/get-captcha
       - /api/front/**
       - /swagger-ui.html
       - /swagger-ui/**

@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import com.baofeng.blog.service.ImageService;
 import com.baofeng.blog.service.MinioService;
-import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.mapper.ImageMapper;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.front.FrontImageVO.AlbumResponse;
 import com.baofeng.blog.util.ImageFileUtil;
 import com.baofeng.blog.entity.Image;
+import com.baofeng.blog.enums.ResultCodeEnum;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ public class ImageServiceImpl implements ImageService {
 
         String uniqueFilename = ImageFileUtil.generateUniqueImageName(file);
         if (uniqueFilename == null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"图片为空或图片类型错误, 目前仅支持jpg、png、gif、bmp");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"图片为空或图片类型错误, 目前仅支持jpg、png、gif、bmp");
         }
 
         try {
@@ -77,11 +77,11 @@ public class ImageServiceImpl implements ImageService {
             int rowsUpdated = imageMapper.insertImage(image);
             return rowsUpdated > 0
                 ? ApiResponse.success(imagePath)
-                : ApiResponse.error(ResultCode.SERVER_ERROR);
+                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR);
 
         } catch (Exception e) {
             logger.warn("minio存储文件失败");
-            return ApiResponse.error(ResultCode.SERVER_ERROR, "文件存储失败");
+            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "文件存储失败");
         }
 
 

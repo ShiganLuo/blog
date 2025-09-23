@@ -16,13 +16,7 @@ public class AdminUserAuthVO {
                  message = "密码格式应为6-18位数字、字母、符号的任意两种组合")
         String password
     ) {}
-    @Data
-    public static class  refreshTokenResponse {
-        private String accessToken;
-        private String refreshToken;
-        private LocalDateTime expires;
-        
-    }
+
     @Data
     public static class userPageRequest {
         private Integer current = 1;    // 当前页码

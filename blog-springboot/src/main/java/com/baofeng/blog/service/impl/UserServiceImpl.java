@@ -2,9 +2,7 @@ package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.exception.DuplicateUserException;
 import com.baofeng.blog.mapper.UserMapper;
-import com.baofeng.blog.service.CustomUserDetailsService;
 import com.baofeng.blog.service.UserService;
-import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.config.JwtPropertiesConfig;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.vo.ApiResponse;
@@ -16,7 +14,8 @@ import com.baofeng.blog.util.JwtTokenProvider;
 import com.baofeng.blog.util.LoginType;
 import com.baofeng.blog.mapper.RoleMapper;
 import com.baofeng.blog.entity.Role;
-import com.baofeng.blog.enums.RoleType;
+import com.baofeng.blog.enums.ResultCodeEnum;
+import com.baofeng.blog.enums.RoleTypeEnum;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -67,19 +66,19 @@ public class UserServiceImpl implements UserService {
 
         if (rowUpdated1 == 0) {
             logger.error("用户插入数据库失败");
-            return ApiResponse.error(ResultCode.SERVER_ERROR,"用户创建失败");
+            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户创建失败");
         }
         // 更新roles表
-        Role role = roleMapper.selectRolesByRoleName(RoleType.USER.getName());
+        Role role = roleMapper.selectRolesByRoleName(RoleTypeEnum.USER.getName());
         if (role == null) {
             logger.info("USER不存在于roles表,创建USER角色");
             role = new Role();
-            role.setRoleName(RoleType.USER.getName()); // 默认分配USER权限
-            role.setRoleDesc(RoleType.USER.getDescription());
+            role.setRoleName(RoleTypeEnum.USER.getName()); // 默认分配USER权限
+            role.setRoleDesc(RoleTypeEnum.USER.getDescription());
             int rowUpdated2 = roleMapper.insertRole(role);
             if (rowUpdated2 == 0) {
                 logger.error("USER角色创建失败");
-                return ApiResponse.error(ResultCode.SERVER_ERROR,"用户创建失败");
+                return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户创建失败");
             }
         }
 
@@ -88,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
         return rowUpdated3 > 0 
             ? ApiResponse.success("用户创建成功")
-            : ApiResponse.error(ResultCode.SERVER_ERROR,"用户创建失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户创建失败");
     }
 
     private void checkUserUniqueness(String username) {
@@ -99,37 +98,48 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse<FrontLoginResponseVO> loginUserFront(LoginRequest loginDTO) {
-        return login(loginDTO, LoginType.FRONT);
+        return login(loginDTO, FrontLoginResponseVO.class);
     }
 
+    @Override
     public ApiResponse<AdminLoginResponseVO> loginUserAdmin(LoginRequest loginDTO) {
-        return login(loginDTO, LoginType.ADMIN);
+        return login(loginDTO, AdminLoginResponseVO.class);
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> ApiResponse<T> login(LoginRequest loginDTO, LoginType type) {
+    private <T> ApiResponse<T> login(LoginRequest loginDTO, Class<T> clazz) {
+        // 查询用户
         User user = userMapper.selectByUsernameOrEmail(loginDTO.username());
-
         if (user == null) {
-            return (ApiResponse<T>) ApiResponse.error(ResultCode.NOT_FOUND, "用户不存在");
-        } else if (!passwordEncoder.matches(loginDTO.password(), user.getPassword())) {
+            return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "用户不存在");
+        }
+        if (!passwordEncoder.matches(loginDTO.password(), user.getPassword())) {
             userMapper.incrementLoginAttempts(user.getId());
-            return (ApiResponse<T>) ApiResponse.error(ResultCode.PARAM_ERROR, "密码错误");
-        } else if (user.getStatus() == User.Status.BANNED) {
-            return (ApiResponse<T>) ApiResponse.error(ResultCode.UNAUTHORIZED, "账户被锁定");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "密码错误");
+        }
+        if (user.getStatus() == User.Status.BANNED) {
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "账户被锁定");
         }
 
+        // 更新登录信息
         userMapper.updateLoginInfo(user.getId());
 
+        // 生成 token
         String accessToken = jwtTokenProvider.generateToken(user, accessTokenExpiration, false);
         String refreshToken = jwtTokenProvider.generateToken(user, refreshTokenExpiration, true);
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expires = now.plus(1, ChronoUnit.HOURS);
+        logger.info(accessTokenExpiration + "秒后AccessToken过期");
+        logger.info(refreshTokenExpiration + "秒后RefreshToken过期");
 
-        List<String> roles = roleMapper.selectRolesByUserId(user.getId()).stream()
+        LocalDateTime expires = LocalDateTime.now().plus(1, ChronoUnit.HOURS);
+
+        // 获取角色
+        List<String> roles = roleMapper.selectRolesByUserId(user.getId())
+            .stream()
             .map(Role::getRoleName)
             .collect(Collectors.toList());
-        if (type == LoginType.FRONT) {
+
+        Object response;
+
+        if (clazz == FrontLoginResponseVO.class) {
             FrontLoginResponseVO.User userInfo = new FrontLoginResponseVO.User(
                 user.getId(),
                 user.getAvatarUrl(),
@@ -137,9 +147,8 @@ public class UserServiceImpl implements UserService {
                 user.getNickName(),
                 roles
             );
-            FrontLoginResponseVO response = new FrontLoginResponseVO(accessToken, refreshToken, expires, userInfo);
-            return (ApiResponse<T>) ApiResponse.success(response);
-        } else {
+            response = new FrontLoginResponseVO(accessToken, refreshToken, expires, userInfo);
+        } else if (clazz == AdminLoginResponseVO.class) {
             AdminLoginResponseVO.User userInfo = new AdminLoginResponseVO.User(
                 user.getId(),
                 user.getAvatarUrl(),
@@ -147,10 +156,16 @@ public class UserServiceImpl implements UserService {
                 user.getNickName(),
                 roles
             );
-            AdminLoginResponseVO response = new AdminLoginResponseVO(accessToken, refreshToken, expires, userInfo);
-            return (ApiResponse<T>) ApiResponse.success(response);
+            response = new AdminLoginResponseVO(accessToken, refreshToken, expires, userInfo);
+        } else {
+            logger.error("不支持的登录类型: {}", clazz.getName());
+            throw new IllegalArgumentException("不支持的登录类型");
         }
+
+        // 类型安全转换
+        return ApiResponse.success(clazz.cast(response));
     }
+
     
     @Override
     public User getUserByUsername(String username) {
@@ -162,25 +177,25 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.selectUserById(id);
         return user != null
             ? ApiResponse.success(user)
-            : ApiResponse.error(ResultCode.PARAM_ERROR,"用户不存在");
+            : ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
     }
 
     @Override
     public ApiResponse<String> updateUserRole(UpdateUserRoleRequest updateUserRoleRequest) {
         Long userId = updateUserRoleRequest.userId();
         List<String> roles = updateUserRoleRequest.roles();
-        List<String> validRoles = List.of(RoleType.USER.getName(), RoleType.ADMIN.getName());
+        List<String> validRoles = List.of(RoleTypeEnum.USER.getName(), RoleTypeEnum.ADMIN.getName());
         // 检查用户是否存在
         User user = userMapper.selectUserById(userId);
         if (user == null) {
-            return ApiResponse.error(ResultCode.NOT_FOUND, "用户不存在");
+            return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "用户不存在");
         }
         // 检查角色是否有效
         logger.info("有效用户角色: {}", validRoles);
         logger.info("请求更新角色: {}", roles);
         for (String roleName : roles) {
             if (!validRoles.contains(roleName)) {
-                return ApiResponse.error(ResultCode.PARAM_ERROR, "无效的角色: " + roleName);
+                return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "无效的角色: " + roleName);
             }
         }
         // 删除用户现有角色
@@ -191,8 +206,8 @@ public class UserServiceImpl implements UserService {
             if (role == null) {
                 // 如果角色不存在，创建新角色
                 role = new Role();
-                role.setRoleName(RoleType.valueOf(roleName).getName());
-                role.setRoleDesc(RoleType.valueOf(roleName).getDescription());
+                role.setRoleName(RoleTypeEnum.valueOf(roleName).getName());
+                role.setRoleDesc(RoleTypeEnum.valueOf(roleName).getDescription());
                 int rowUpdated = roleMapper.insertRole(role);
                 if (rowUpdated == 0) {
                     logger.error("角色创建失败: " + roleName);
@@ -237,28 +252,27 @@ public class UserServiceImpl implements UserService {
         int result = userMapper.updatePassword(username, passwordEncoder.encode(newPassword));
         return result > 0
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCode.SERVER_ERROR,"密码更新失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"密码更新失败");
     }
 
     @Override
-    public ApiResponse<refreshTokenResponse> refreshToken(String rawToken) {
+    public ApiResponse<String> refreshToken(String rawToken) {
+        if (rawToken == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"refreshToken不能为空");
+        }
         String refreshToken = rawToken.replaceAll("^\"|\"$", "");
         boolean isTokenExpired = jwtTokenProvider.isTokenExpired(refreshToken);
         boolean isRefreshToken = jwtTokenProvider.isRefreshToken(refreshToken);
-        if ( !isTokenExpired && !isRefreshToken ){
+        if ( !isTokenExpired && isRefreshToken ){
             String username = jwtTokenProvider.getUserNameFromToken(refreshToken);
             User user = userMapper.selectByUsernameOrEmail(username);
             String accessToken = jwtTokenProvider.generateToken(user, accessTokenExpiration,false);
-            refreshTokenResponse response = new refreshTokenResponse();
-            response.setAccessToken(accessToken);
-            response.setRefreshToken(refreshToken);
-            response.setExpires(LocalDateTime.now().plus(1, ChronoUnit.HOURS));
-            return ApiResponse.success(response);
+            return ApiResponse.success(accessToken);
         } else {
             return !isRefreshToken
-            ? ApiResponse.error(ResultCode.PARAM_ERROR,"token类型错误")
-            : ApiResponse.error(ResultCode.PARAM_ERROR,"token过期");
-            // return ApiResponse.error(ResultCode.PARAM_ERROR,"refreshToken验证失败");
+            ? ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"token类型错误")
+            : ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"token过期");
+            // return ApiResponse.error(ResultCode.BAD_REQUEST,"refreshToken验证失败");
         }
     }
 
@@ -269,12 +283,12 @@ public class UserServiceImpl implements UserService {
         String username = jwtTokenProvider.getUserNameFromToken(token);
 
         if (username == null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR, "无效的 token");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "无效的 token");
         }
         // 根据用户名查询数据库返回用户信息
         User user = userMapper.selectByUsernameOrEmail(username);
         if (user == null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR, "未找到用户信息");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "未找到用户信息");
         }
         return ApiResponse.success(user);
     }

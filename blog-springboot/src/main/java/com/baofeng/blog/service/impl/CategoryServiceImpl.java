@@ -7,9 +7,9 @@ import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageResponseVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CreateCategoryRequest;
 import com.baofeng.blog.entity.Category;
+import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.mapper.CategoryMapper;
 import com.baofeng.blog.service.CategoryService;
-import com.baofeng.blog.util.ResultCode;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
     public ApiResponse<String> createCategory(CreateCategoryRequest request) {
         // 检查分类名称是否已存在
         if (categoryMapper.getCategoryByName(request.name()) != null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"分类名称已存在");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"分类名称已存在");
         }
 
         // 创建分类
@@ -60,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         return rowsUpdated > 0
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCode.SERVER_ERROR,"分类创建失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"分类创建失败");
     }
 
     @Override
@@ -68,19 +68,19 @@ public class CategoryServiceImpl implements CategoryService {
         // 检查分类是否存在
         Category category = categoryMapper.getCategoryById(id);
         if (category == null) {
-            return ApiResponse.error(ResultCode.SERVER_ERROR,"分类不存在");
+            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"分类不存在");
         }
 
         // 检查分类下是否有文章
         int articleCount = categoryMapper.getArticleCount(id);
         if (articleCount > 0) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"该分类下还有" + articleCount + "篇文章，无法删除");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"该分类下还有" + articleCount + "篇文章，无法删除");
         }
         int rowsUpdated = categoryMapper.deleteCategory(id);
 
         return rowsUpdated > 0 
          ? ApiResponse.success()
-         : ApiResponse.error(ResultCode.SERVER_ERROR,"删除失败");
+         : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"删除失败");
     }
     @Override
     public ApiResponse<List<CategoriesResponse>> getCategoryDictionary(){

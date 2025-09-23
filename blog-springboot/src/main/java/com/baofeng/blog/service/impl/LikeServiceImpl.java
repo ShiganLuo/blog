@@ -11,9 +11,9 @@ import com.baofeng.blog.mapper.ArticleMapper;
 import com.baofeng.blog.mapper.CommentMapper;
 import com.baofeng.blog.mapper.LikeMapper;
 import com.baofeng.blog.entity.Like;
+import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.front.FrontLikeVO.LikeRequest;
-import com.baofeng.blog.util.ResultCode;
 
 @Service
 // 替代@Autowerid显示注入
@@ -62,7 +62,7 @@ public class LikeServiceImpl implements LikeService{
                     rowUpdated = commentMapper.decreaseLikeById(forId);
                     break;
                 default:
-                    return ApiResponse.error(ResultCode.PARAM_ERROR,"type错误,必须为post、comment或message");
+                    return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"type错误,必须为post、comment或message");
             }
         } else {
             // 用户取消点赞
@@ -74,17 +74,17 @@ public class LikeServiceImpl implements LikeService{
                     rowUpdated = commentMapper.decreaseLikeById(forId);
                     break;
                 default:
-                    return ApiResponse.error(ResultCode.PARAM_ERROR,"type错误,必须为post、comment或message");
+                    return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"type错误,必须为post、comment或message");
             }
             rowUpdated += likeMapper.updateLikesByLikeRequestAndStatus(forId, type, userId, false);
             return rowUpdated > 1
                 ? ApiResponse.success()
-                : ApiResponse.error(ResultCode.SERVER_ERROR);
+                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR);
         }
 
         return rowUpdated > 0
                 ? ApiResponse.success()
-                : ApiResponse.error(ResultCode.SERVER_ERROR);
+                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR);
     }
 
 
@@ -116,7 +116,7 @@ public class LikeServiceImpl implements LikeService{
                 rowUpdated = commentMapper.incrementLikeById(forId);
                 break;
             default:
-                return ApiResponse.error(ResultCode.PARAM_ERROR,"type错误,必须为post、comment或message");
+                return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"type错误,必须为post、comment或message");
         }
     } else {
         // 用户点赞
@@ -128,7 +128,7 @@ public class LikeServiceImpl implements LikeService{
                 rowUpdated = commentMapper.incrementLikeById(forId);
                 break;
             default:
-                return ApiResponse.error(ResultCode.PARAM_ERROR,"type错误,必须为post、comment或message");
+                return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"type错误,必须为post、comment或message");
         }
         Long isExist = likeMapper.selectIdByLikeRequestAndStatus(forId, type, userId, false);
         if (isExist != null) {
@@ -151,12 +151,12 @@ public class LikeServiceImpl implements LikeService{
         
         return rowUpdated > 1
                 ? ApiResponse.success()
-                : ApiResponse.error(ResultCode.SERVER_ERROR);
+                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR);
     }
 
     return rowUpdated > 0
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCode.SERVER_ERROR);
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR);
 }
     
 }

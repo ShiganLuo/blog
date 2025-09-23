@@ -6,8 +6,8 @@ import com.baofeng.blog.vo.common.Article.*;
 import com.baofeng.blog.vo.common.Image.UploadImage;
 import com.baofeng.blog.vo.front.FrontArticleVO.*;
 import com.baofeng.blog.util.ArticleConvert;
-import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.entity.*;
+import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.mapper.*;
 import com.baofeng.blog.util.ImageFileUtil;
 import com.baofeng.blog.service.ArticleService;
@@ -69,7 +69,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setViews((long) 0 );
         Long authorId = userMapper.getIdByUsername(articleRequest.author());
         if ( authorId == null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"用户不存在");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
         }
         article.setAuthorId(authorId);
         article.setStatus(Article.ArticleStatus.DRAFT);
@@ -82,7 +82,7 @@ public class ArticleServiceImpl implements ArticleService {
             Long articleId = article.getId();
             return ApiResponse.success(articleId);
         }else{
-            return ApiResponse.error(ResultCode.SERVER_ERROR);
+            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"文章创建失败");
         }
     }
 
@@ -91,7 +91,7 @@ public class ArticleServiceImpl implements ArticleService {
         int rowsDeleted = articleMapper.deleteArticle(id);
         return rowsDeleted > 0 
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCode.NOT_FOUND,"文章未找到");
+            : ApiResponse.error(ResultCodeEnum.NOT_FOUND,"文章未找到");
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = articleMapper.getArticleById(id);
         return article != null 
             ? ApiResponse.success(article)
-            : ApiResponse.error(ResultCode.NOT_FOUND);
+            : ApiResponse.error(ResultCodeEnum.NOT_FOUND);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ArticleServiceImpl implements ArticleService {
         int rowsUpdated = articleMapper.updateArticleSelective(article);
         return rowsUpdated > 0 
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCode.PARAM_ERROR);
+            : ApiResponse.error(ResultCodeEnum.BAD_REQUEST);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         return rowsUpdated > 0
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCode.PARAM_ERROR);
+            : ApiResponse.error(ResultCodeEnum.BAD_REQUEST);
     }
 
     @Override
@@ -160,16 +160,16 @@ public class ArticleServiceImpl implements ArticleService {
             int rowsUpdated = articleMapper.updateArticleSelective(article);
             return rowsUpdated > 0
                 ? ApiResponse.success()
-                : ApiResponse.error(ResultCode.SERVER_ERROR);
+                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"文章发布失败");
         } else {
-            return ApiResponse.error(ResultCode.PARAM_ERROR, "作者ID与文章实际作者ID不一致");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "作者ID与文章实际作者ID不一致");
         }
     }
     @Override
     public ApiResponse<String> isTitleExist(String title){
         boolean isDuplicated = articleMapper.isTitleExist(title);
         return isDuplicated
-            ? ApiResponse.error(ResultCode.PARAM_ERROR,"标题已存在")
+            ? ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"标题已存在")
             : ApiResponse.success("可以使用该标题");
     }
 
@@ -188,12 +188,12 @@ public class ArticleServiceImpl implements ArticleService {
         String usageType = uploadImage.usageType();
         Article article1 = articleMapper.getArticleById(articleId);
         if (article1 == null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR, "文章不存在");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "文章不存在");
         }
 
         String uniqueFilename = ImageFileUtil.generateUniqueImageName(imageFile);
         if (uniqueFilename == null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"图片为空或图片类型错误, 目前仅支持jpg、png、gif、bmp");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"图片为空或图片类型错误, 目前仅支持jpg、png、gif、bmp");
         }
         try {
             // ===== 使用 MinioService 上传 =====
@@ -239,11 +239,11 @@ public class ArticleServiceImpl implements ArticleService {
 
             return rowsUpdated > 0 && rowsUpdated1 > 0 && rowsUpdated2 > 0
                     ? ApiResponse.success(imagePath)
-                    : ApiResponse.error(ResultCode.SERVER_ERROR);
+                    : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "文件存储失败");
 
         } catch (Exception e) {
             logger.warn("minio存储文件失败",e);
-            return ApiResponse.error(ResultCode.SERVER_ERROR, "文件存储失败");
+            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "文件存储失败");
         }
     }
 
@@ -256,7 +256,7 @@ public class ArticleServiceImpl implements ArticleService {
         newCategory.setName(categoryName);
         Article article = articleMapper.getArticleById(articleId);
         if ( article == null ) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"文章不存在");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"文章不存在");
         }
         boolean flag = categoryMapper.checkExactName(categoryName);
         if ( !flag ) {
@@ -268,9 +268,9 @@ public class ArticleServiceImpl implements ArticleService {
             int rowsInserted1 = categoryMapper.insertCategoryReflect(articleCategory);
             return rowsInserted1 > 0  && rowsInserted > 0
                 ? ApiResponse.success()
-                : ApiResponse.error(ResultCode.SERVER_ERROR,"文章分类设置失败");
+                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"文章分类设置失败");
         }
-        return ApiResponse.error(ResultCode.PARAM_ERROR,"文章分类已存在");
+        return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"文章分类已存在");
     }
 
     @Override
@@ -279,7 +279,7 @@ public class ArticleServiceImpl implements ArticleService {
         Long articleId = request.getArticleId();
         Article article = articleMapper.getArticleById(articleId);
         if ( article == null ) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"文章不存在");
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"文章不存在");
         }
         int tagNamesLen = 0;
         int rowsInserted = 0;
@@ -302,7 +302,7 @@ public class ArticleServiceImpl implements ArticleService {
         }
         return rowsInserted >= tagNamesLen && rowsInserted1 >= tagNamesLen
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCode.SERVER_ERROR,"文章标签设置失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"文章标签设置失败");
     }
 
     @Override

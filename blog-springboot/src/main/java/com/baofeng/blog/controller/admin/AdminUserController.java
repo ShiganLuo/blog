@@ -1,8 +1,8 @@
 package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.entity.User;
+import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.service.UserService;
-import com.baofeng.blog.util.ResultCode;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
 import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
@@ -39,10 +39,7 @@ public class AdminUserController {
 
     //刷新token;是否需要判断只能用refreshToken来刷新token
     @PostMapping("/refreshToken")
-    public ApiResponse<refreshTokenResponse> accessToeknGenerate(@RequestBody String rawToken){
-        if (rawToken == null) {
-            return ApiResponse.error(ResultCode.PARAM_ERROR,"refreshToken不能为空");
-        }
+    public ApiResponse<String> accessToeknGenerate(@RequestBody String rawToken){
         return userService.refreshToken(rawToken);
     }
 
