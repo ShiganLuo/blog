@@ -69,10 +69,10 @@
         <result property="to_id" column="for_id"/>
     </resultMap>
     <select id="getNotifyPage" resultMap="NotifyPageResultMap">
-    SELECT 
-        c.id, c.status, c.content, c.type, c.for_id
-    FROM comments c
-    WHERE c.author_id = #{userId}
+        SELECT 
+            c.id, c.status, c.content, c.type, c.for_id
+        FROM comments c
+        WHERE c.author_id = #{userId}
     </select>
 
     <!--分页获取评论-->
