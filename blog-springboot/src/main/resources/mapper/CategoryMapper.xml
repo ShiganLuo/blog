@@ -43,6 +43,11 @@
         ORDER BY c.created_at DESC
     </select>
 
+    <!--查看指定时间已存在的分类数-->
+    <select id="selectCategoryCountWhenSpecifiedTime" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM categories WHERE created_at &lt;= #{createdAt}
+    </select>
+    
     <!-- article_categories结果映射-->
     <resultMap id="articleCategoriesResultMap" type="com.baofeng.blog.entity.ArticleCategory">
         <id property="id" column="id"/>

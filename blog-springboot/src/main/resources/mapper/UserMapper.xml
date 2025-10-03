@@ -54,6 +54,10 @@
         DELETE FROM users WHERE id = #{id}
     </delete>
 
+    <!--查看指定时间时已存在的用户数-->
+    <select id="selectUserCountWhenSpecifiedTime" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM users WHERE created_at &lt;= #{createdAt}
+    </select>
     <!--根据用户名获取用户id-->
     <select id="getIdByUsername">
         select id FROM users WHERE username = #{username}

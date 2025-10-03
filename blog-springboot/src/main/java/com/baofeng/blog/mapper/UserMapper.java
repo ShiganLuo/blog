@@ -2,10 +2,12 @@ package com.baofeng.blog.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import java.util.List;
+import java.time.LocalDateTime;
 
 import com.baofeng.blog.entity.User;
 
-import java.util.List;
+
 
 @Mapper
 public interface UserMapper {
@@ -37,4 +39,12 @@ public interface UserMapper {
      * @return
      */
     Long countAllUsers();
+
+
+    /**
+     * 查看指定时间时已存在的用户数
+     * @param createdAt
+     * @return
+     */
+    long selectUserCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
 } 

@@ -30,6 +30,11 @@
         <result property="updatedAt" column="updatedAt"/>
     </resultMap>
 
+    <!--查看指定时间已经存在的标签数-->
+    <select id="selectTagCountWhenSpecifiedTime" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM tags WHERE created_at &lt;= #{createdAt}
+    </select>
+    
     <!--获取热门标签-->
     <select id="getHotTags">
         SELECT

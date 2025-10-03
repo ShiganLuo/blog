@@ -28,6 +28,7 @@ security:
       - /api/admin/users/login
       - /api/admin/users/refreshToken
       - /api/admin/util/get-captcha
+      - /api/admin/mock/get-async-routes
       - /api/front/**
       - /swagger-ui.html
       - /swagger-ui/**

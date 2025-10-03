@@ -1,5 +1,8 @@
 package com.baofeng.blog.mapper;
+import java.time.LocalDateTime;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.baofeng.blog.entity.Like;
 
@@ -30,5 +33,7 @@ public interface LikeMapper {
      * 使用了回填；useGeneratedKeys="true" keyProperty="id"
      */
     int insertLikeByLike(Like like);
+
+    long selectLikeCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
 
 }

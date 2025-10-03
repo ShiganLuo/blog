@@ -11,4 +11,5 @@ public class Like {
     private Long targetId;
     private Boolean status;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

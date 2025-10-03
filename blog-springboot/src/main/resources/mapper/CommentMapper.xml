@@ -59,6 +59,11 @@
             AND is_deleted = 0
             AND status = 1
     </select>
+
+    <!--查看指定时间已存在的各种评论总数-->
+    <select id="selectCommentCountWhenSpecifiedTime" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM comments WHERE created_at &lt;= #{createdAt}
+    </select>
     
     <!--获取用户通知-->
     <resultMap id="NotifyPageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$NotifyResponse">

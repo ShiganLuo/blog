@@ -37,4 +37,6 @@ public class AdminBlogSettingController {
         return blogSettingService.getSettingById((long) 1);
     }
 
+    
+
 } 

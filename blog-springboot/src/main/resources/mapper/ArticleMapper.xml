@@ -25,7 +25,7 @@
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
-    <select id="countAllArticles" resultType="Long">
+    <select id="countAllArticles" resultType="java.lang.Long">
         SELECT COUNT(*) FROM articles
     </select>
 
@@ -33,6 +33,11 @@
         SELECT * FROM articles WHERE id = #{id}
     </select>
     
+    <!--查看指定时间的已经存在的文章数-->
+    <select id="selectArticleCountWhenSpecifiedTime" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM articles WHERE created_at &lt;= #{createdAt}
+    </select>
+
     <!--检查文章是否存在-->
     <select id="selectCountById" resultType="boolean">
         SELECT COUNT(*) > 0 FROM articles WHERE id = #{id}

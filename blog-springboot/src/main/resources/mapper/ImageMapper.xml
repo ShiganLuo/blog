@@ -18,6 +18,11 @@
         SELECT * FROM images WHERE id = #{id}
     </select>
 
+    <!--查看指定时间已经存在的图片数-->
+    <select id="selectImageCountWhenSpecifiedTime" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM images WHERE created_at &lt;= #{createdAt}
+    </select>
+    
     <select id="getImageIdByfilePath">
         SELECT id FROM images WHERE file_path = #{filePath}
     </select>

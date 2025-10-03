@@ -1,6 +1,9 @@
 package com.baofeng.blog.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.baofeng.blog.entity.Image;
@@ -45,4 +48,11 @@ public interface ImageMapper {
      * @return
      */
     List<AlbumResponse> selectAllAlbumsAbstract(Long articleId);
+    
+    /**
+     * 查看指定时间已经存在的图片数
+     * @param createdAt
+     * @return
+     */
+    long selectImageCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
 }

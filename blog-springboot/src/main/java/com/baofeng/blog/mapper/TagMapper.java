@@ -6,6 +6,9 @@ import com.baofeng.blog.entity.ArticleTag;
 import com.baofeng.blog.entity.Tag;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -86,5 +89,12 @@ public interface TagMapper {
      * @return 标签列表
      */
     List<String> getHotTags(int limit);
+
+    /**
+     * 查看指定时间已经存在的各种标签数
+     * @param createdAt
+     * @return
+     */
+    long selectTagCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
 
 }

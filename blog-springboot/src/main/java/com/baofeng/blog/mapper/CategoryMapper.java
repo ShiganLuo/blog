@@ -7,6 +7,9 @@ import com.baofeng.blog.entity.ArticleCategory;
 import com.baofeng.blog.entity.Category;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -78,4 +81,11 @@ public interface CategoryMapper {
     * 计算分类总数
     */
   Long countAllCategories();
+
+  /**
+   * 查看指定时间已存在的分类数
+   * @param createdAt
+   * @return
+   */
+  long selectCategoryCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
 } 

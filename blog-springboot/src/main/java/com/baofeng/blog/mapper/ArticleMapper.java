@@ -5,6 +5,9 @@ import com.baofeng.blog.vo.common.Article.*;
 import com.baofeng.blog.vo.front.FrontArticleVO.ArticleAbstractResponse;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -105,4 +108,11 @@ public interface ArticleMapper {
      * @return
      */
     List<ArticleAbstractResponse> selectArticlesByCategoryId(Long categoryId);
+
+    /**
+     * 查看指定时间已经存在的文章
+     * @param createdAt
+     * @return
+     */
+    long selectArticleCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
 }

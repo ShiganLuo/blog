@@ -10,6 +10,7 @@
         <result property="targetId" column="target_id"/>
         <result property="status" column="status"/>
         <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
     </resultMap>
     
     <!--查询用户点赞记录是否存在-->
@@ -22,9 +23,13 @@
         LIMIT 1
     </select>
 
+    <!--查看指定时间已存在的点赞数-->
+    <select id="selectLikeCountWhenSpecifiedTime">
+        SELECT COUNT(*) FROM likes WHERE created_at &lt;= #{createdAt}
+    </select>
     <!-- 删除（取消）文章点赞，改为逻辑删除 -->
     <update id="updateLikesByLikeRequestAndStatus">
-        UPDATE likes SET status = #{status}
+        UPDATE likes SET status = #{status}, updated_at = NOW()
         WHERE target_id = #{targetId} 
           AND target_type = #{type}
           AND user_id = #{userId}
@@ -32,8 +37,8 @@
 
     <!-- 添加点赞 -->
     <insert id="insertLikeByLike" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO likes (user_id, target_type, target_id, status, created_at)
-        VALUES (#{userId}, #{targetType}, #{targetId}, #{status}, #{createdAt})
+        INSERT INTO likes (user_id, target_type, target_id, status, created_at, updated_at)
+        VALUES (#{userId}, #{targetType}, #{targetId}, #{status}, NOW(), NOW())
     </insert>
 
 

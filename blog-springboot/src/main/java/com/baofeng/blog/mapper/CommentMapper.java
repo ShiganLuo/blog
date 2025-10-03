@@ -2,6 +2,9 @@ package com.baofeng.blog.mapper;
 
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -95,5 +98,12 @@ public interface CommentMapper {
      * @return
      */
     int deleteCommentsByIds(Set<Long> ids);
+
+    /**
+     * 查看指定时间已经存在的各种评论总数
+     * @param createdAt
+     * @return
+     */
+    long selectCommentCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
 
 } 
