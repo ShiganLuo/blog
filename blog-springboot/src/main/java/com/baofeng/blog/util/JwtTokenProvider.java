@@ -47,15 +47,28 @@ public class JwtTokenProvider {
     /**
      * 判断token是否已经失效
      */
-    public boolean isTokenExpired(String token) {
-        Claims claims = parseToken(token);
-        if ( claims != null) {
-            Date expiredDate = claims.getExpiration();
-            return !expiredDate.after(new Date());
+    public boolean isTokenExpired(Object tokenOrClaims) {
+        Claims claims = null;
+
+        if (tokenOrClaims instanceof String token) {
+            try {
+                claims = parseToken(token);
+            } catch (Exception e) {
+                // token 解析失败，视为已过期
+                return true;
+            }
+        } else if (tokenOrClaims instanceof Claims c) {
+            claims = c;
         } else {
+            throw new IllegalArgumentException("参数必须是 token(String) 或 claims(Claims)");
+        }
+
+        if (claims == null) {
             return true;
         }
 
+        Date expiredDate = claims.getExpiration();
+        return expiredDate == null || !expiredDate.after(new Date());
     }
 
     public boolean isRefreshToken(String token) {

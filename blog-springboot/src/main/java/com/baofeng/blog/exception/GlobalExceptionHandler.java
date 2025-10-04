@@ -10,7 +10,7 @@ import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-@RestControllerAdvice
+@RestControllerAdvice // 异常在 DispatcherServlet 调用 Controller 方法期间发生的
 public class GlobalExceptionHandler {
     //框架自动抛出异常
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -46,11 +46,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateUserException.class)
     public ResponseEntity<ApiResponse<?>> handleDuplicateUserException(DuplicateUserException ex) {
         return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, ex.getMessage()));
-    }
-    // 自定义认证异常
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<ApiResponse<?>> handleValidationException(AuthException ex){
-        return ResponseEntity.badRequest().body(ApiResponse.error(ex.getStatusCode(), ex.getMessage()));
     }
 
     // 空指针等运行时异常

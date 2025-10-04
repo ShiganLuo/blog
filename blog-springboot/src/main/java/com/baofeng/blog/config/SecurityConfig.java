@@ -16,7 +16,6 @@ import com.baofeng.blog.util.JwtTokenProvider;
 
 
 
-
 //博客前台访问不需要token
 @Configuration
 @EnableWebSecurity
@@ -30,13 +29,13 @@ public class SecurityConfig {
                                                    JwtAuthenticationFilter jwtAuthenticationFilter
                                                 ) throws Exception {
         http
+            .csrf(csrf -> csrf.disable())
+            .httpBasic(httpBasic -> httpBasic.disable())
+            .formLogin(form -> form.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(whiteListUris.toArray(new String[0])).permitAll()
                 .anyRequest().authenticated() // 需要身份验证的请求
             )
-            .csrf(csrf -> csrf.disable())
-            .httpBasic(httpBasic -> httpBasic.disable())
-            .formLogin(form -> form.disable())
             // 在请求被用户名密码的过滤器处理之前，就先执行你的 jwtAuthenticationFilter()，从而实现对请求中 JWT Token 的提取、验证和认证
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);// 添加 JWT 过滤器
             // .exceptionHandling(exceptionHandling -> 
