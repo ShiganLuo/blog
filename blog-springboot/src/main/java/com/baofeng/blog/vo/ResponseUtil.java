@@ -15,7 +15,8 @@ public class ResponseUtil {
      */
     public static void sendErrorResponse(HttpServletResponse response, ResultCodeEnum resultCodeEnum, String message) throws IOException {
         response.setContentType("application/json; charset=UTF-8");
-        response.setStatus(resultCodeEnum.code());
+        // 默认返回200，返回内容属于业务一部分，不写入http status更好区分协议层和业务层状态，同时前端也需要做相应配合（一般默认就行）
+        // response.setStatus(resultCodeEnum.code()); 
         
         ApiResponse<Void> errorResponse = ApiResponse.error(resultCodeEnum.code(), message);
         String json = new ObjectMapper().writeValueAsString(errorResponse);
