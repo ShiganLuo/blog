@@ -3,6 +3,7 @@ package com.baofeng.blog.service.impl;
 import com.baofeng.blog.service.DashBoardService;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminDashBoradVO.BlogDetailNumberResponse;
+import com.baofeng.blog.vo.admin.AdminDashBoradVO.DictTemplateResponse;
 import com.baofeng.blog.vo.admin.AdminDashBoradVO.UserAddInLastWeekResponse;
 import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.enums.ResultCodeEnum;
@@ -12,7 +13,9 @@ import com.baofeng.blog.mapper.TagMapper;
 import com.baofeng.blog.mapper.CommentMapper;
 import com.baofeng.blog.mapper.ImageMapper;
 import com.baofeng.blog.mapper.LikeMapper;
+import com.baofeng.blog.mapper.BlogSettingMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -36,6 +39,7 @@ public class DashBoardServiceImpl implements DashBoardService{
     private final ImageMapper imageMapper;
     private final LikeMapper likeMapper;
     private final CommentMapper commentMapper;
+    private final BlogSettingMapper blogSettingMapper;
     private static final Logger logger = LoggerFactory.getLogger(DashBoardService.class);
 
     public DashBoardServiceImpl(UserMapper userMapper,
@@ -44,7 +48,8 @@ public class DashBoardServiceImpl implements DashBoardService{
                                 TagMapper tagMapper,
                                 ImageMapper imageMapper,
                                 LikeMapper likeMapper,
-                                CommentMapper commentMapper) {
+                                CommentMapper commentMapper,
+                                BlogSettingMapper blogSettingMapper) {
         this.userMapper = userMapper;
         this.articleMapper = articleMapper;
         this.categoryMapper = categoryMapper;
@@ -52,6 +57,7 @@ public class DashBoardServiceImpl implements DashBoardService{
         this.imageMapper = imageMapper;
         this.likeMapper = likeMapper;
         this.commentMapper = commentMapper;
+        this.blogSettingMapper = blogSettingMapper;
     }
 
     @Override
@@ -166,6 +172,7 @@ public class DashBoardServiceImpl implements DashBoardService{
         return String.format("%+.2f%%", percentage);
     }
     
+    @Override
     public ApiResponse<UserAddInLastWeekResponse> getUserAddInLastWeek() {
         try {
             LocalDate today = LocalDate.now();
@@ -199,5 +206,37 @@ public class DashBoardServiceImpl implements DashBoardService{
             return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"获取最近7天新增用户数失败");
         }
         
+    }
+
+    @Override
+    public ApiResponse<String> getUserAddComparedWithLastWeek() {
+        final LocalDateTime currentTime = LocalDateTime.now();
+        final LocalDateTime oneWeekAgo = currentTime.minusWeeks(1);
+        Long startVal = userMapper.selectUserCountWhenSpecifiedTime(oneWeekAgo);
+        Long endVal = userMapper.selectUserCountWhenSpecifiedTime(currentTime);
+        String change = calculatePercentage(endVal, startVal);
+        return ApiResponse.success(change);
+    }
+
+    @Override
+    public ApiResponse<List<DictTemplateResponse>> getAccessAndUserCondition() {
+        final LocalDateTime currentTime = LocalDateTime.now();
+        final LocalDateTime oneWeekAgo = currentTime.minusWeeks(1);
+        final LocalDateTime oneMonthAgo = currentTime.minusMonths(1);
+        final LocalDateTime oneYearAgo = currentTime.minusYears(1);
+        Long endVal = userMapper.selectUserCountWhenSpecifiedTime(currentTime);
+        Long weekStart = userMapper.selectUserCountWhenSpecifiedTime(oneWeekAgo);
+        Long monthStart = userMapper.selectUserCountWhenSpecifiedTime(oneMonthAgo);
+        Long yearStart = userMapper.selectUserCountWhenSpecifiedTime(oneYearAgo);
+        String weekChange = calculatePercentage(endVal, weekStart);
+        String monthChange = calculatePercentage(endVal, monthStart);
+        String yearChange = calculatePercentage(endVal, yearStart);
+        Long visitCount = blogSettingMapper.selectvisitCountById((long) 1); //默认第一个网站设置为本博客
+        List<DictTemplateResponse> dicts = new ArrayList<>();
+        dicts.add(new DictTemplateResponse("周增长", weekChange));
+        dicts.add(new DictTemplateResponse("月增长", monthChange));
+        dicts.add(new DictTemplateResponse("年增长", yearChange));
+        dicts.add(new DictTemplateResponse("访问量", String.valueOf(visitCount)));
+        return ApiResponse.success(dicts);
     }
 }

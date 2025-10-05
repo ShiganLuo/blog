@@ -1,7 +1,10 @@
 package com.baofeng.blog.vo.admin;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 public class AdminDashBoradVO {
 
@@ -21,4 +24,14 @@ public class AdminDashBoradVO {
         private List<String> days;
         private List<Long> counts;
     }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DictTemplateResponse  {
+        private String name;
+        private String num;
+    }
+
+
 }

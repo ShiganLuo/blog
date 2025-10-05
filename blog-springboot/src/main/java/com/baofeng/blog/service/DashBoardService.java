@@ -1,6 +1,5 @@
 package com.baofeng.blog.service;
 
-import com.baofeng.blog.entity.User;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminDashBoradVO.*;
 import java.util.List;
@@ -17,4 +16,16 @@ public interface DashBoardService {
      * @return
      */
     public ApiResponse<UserAddInLastWeekResponse> getUserAddInLastWeek();
+
+    /**
+     * 获取用户相比上周变化数量
+     * @return
+     */
+    public ApiResponse<String> getUserAddComparedWithLastWeek();
+
+    /**
+     * 获取博客访问及用户情况
+     * @return
+     */
+    public ApiResponse<List<DictTemplateResponse>> getAccessAndUserCondition();
 }

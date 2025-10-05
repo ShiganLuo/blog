@@ -26,4 +26,14 @@ public class AdminDashBoardController {
     public ApiResponse<UserAddInLastWeekResponse> getUserAddInLastWeek() {
         return dashBoardService.getUserAddInLastWeek();
     }
+
+    @GetMapping("/getUserAddComparedWithLastWeek")
+    public ApiResponse<String> getUserAddComparedWithLastWeek() {
+        return dashBoardService.getUserAddComparedWithLastWeek();
+    }
+
+    @GetMapping("/getAccessAndUserCondition")
+    public ApiResponse<List<DictTemplateResponse>> getAccessAndUserCondition() {
+        return dashBoardService.getAccessAndUserCondition();
+    }
 }

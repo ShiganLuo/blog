@@ -74,6 +74,13 @@ public interface BlogSettingMapper {
      * @return
      */
     int updateFriendLinkById(AddFriendLinkRequest addFriendLinkRequest);
+
+    /**
+     * 根据id获取网站总访问量
+     * @param id
+     * @return
+     */
+    Long selectvisitCountById(Long id);
      
 
 }

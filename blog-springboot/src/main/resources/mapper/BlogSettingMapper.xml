@@ -48,7 +48,11 @@
         SELECT * FROM blog_settings WHERE id = #{id}
     </select>
     
-    <!-- 根据 ID 更新所有设置 -->
+    <!--获取网站总访问量-->
+    <select id="selectvisitCountById" resultType="java.lang.Long">
+        SELECT visit_count FROM blog_settings WHERE id = #{id}
+    </select>
+    <!-- 根据 ID 选择性更新所有设置 -->
     <update id="updateSettingById">
         UPDATE blog_settings
         <set>
