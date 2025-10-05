@@ -1,10 +1,11 @@
 package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.service.DashBoardService;
-import com.baofeng.blog.service.ImageService;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminDashBoradVO.BlogDetailNumberResponse;
+import com.baofeng.blog.vo.admin.AdminDashBoradVO.UserAddInLastWeekResponse;
 import com.baofeng.blog.mapper.UserMapper;
+import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.mapper.ArticleMapper;
 import com.baofeng.blog.mapper.CategoryMapper;
 import com.baofeng.blog.mapper.TagMapper;
@@ -12,13 +13,14 @@ import com.baofeng.blog.mapper.CommentMapper;
 import com.baofeng.blog.mapper.ImageMapper;
 import com.baofeng.blog.mapper.LikeMapper;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.text.NumberFormat;
+import java.time.LocalTime;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,4 +166,38 @@ public class DashBoardServiceImpl implements DashBoardService{
         return String.format("%+.2f%%", percentage);
     }
     
+    public ApiResponse<UserAddInLastWeekResponse> getUserAddInLastWeek() {
+        try {
+            LocalDate today = LocalDate.now();
+            // 查询累计用户数
+            List<Long> cumulative = IntStream.rangeClosed(0, 7)
+                .mapToObj(i -> {
+                    LocalDate date = today.minusDays(7 - i);
+                    LocalDateTime endTime = date.atTime(LocalTime.of(23, 59, 59));
+                    Long total = userMapper.selectUserCountWhenSpecifiedTime(endTime);
+                    Long safeTotal = Optional.ofNullable(total).orElse(0L);
+                    return safeTotal;
+                })
+                .collect(Collectors.toList());
+            
+            // 计算每日新增数（防止负数）
+            List<Long> counts = IntStream.range(1, cumulative.size())
+                .mapToObj(i -> Math.max(cumulative.get(i) - cumulative.get(i - 1), 0L))
+                .collect(Collectors.toList());
+
+            // 日期列表（默认字符串格式 yyyy-MM-dd）
+            List<String> days = IntStream.rangeClosed(1, 7)
+                .mapToObj(i -> today.minusDays(7 - i).toString())
+                .collect(Collectors.toList());
+            UserAddInLastWeekResponse userAddInLastWeekResponse = new UserAddInLastWeekResponse();
+            userAddInLastWeekResponse.setCounts(counts != null ? counts : List.of());
+            userAddInLastWeekResponse.setDays(days != null ? days : List.of());
+
+            return ApiResponse.success(userAddInLastWeekResponse);
+        } catch (Exception e) {
+            logger.error("获取最近7天新增用户数失败:", e.getMessage());
+            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"获取最近7天新增用户数失败");
+        }
+        
+    }
 }

@@ -22,4 +22,8 @@ public class AdminDashBoardController {
         return dashBoardService.getBlogDetailNumber();
     }
     
+    @GetMapping("/getUserAddInLastWeek")
+    public ApiResponse<UserAddInLastWeekResponse> getUserAddInLastWeek() {
+        return dashBoardService.getUserAddInLastWeek();
+    }
 }
