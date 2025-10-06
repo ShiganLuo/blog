@@ -27,13 +27,23 @@ public class AdminDashBoardController {
         return dashBoardService.getUserAddInLastWeek();
     }
 
-    @GetMapping("/getUserAddComparedWithLastWeek")
-    public ApiResponse<String> getUserAddComparedWithLastWeek() {
-        return dashBoardService.getUserAddComparedWithLastWeek();
+    @GetMapping("/getUserAddComparedToLastWeek")
+    public ApiResponse<String> getUserAddComparedToLastWeek() {
+        return dashBoardService.getUserAddComparedToLastWeek();
     }
 
     @GetMapping("/getAccessAndUserCondition")
     public ApiResponse<List<DictTemplateResponse>> getAccessAndUserCondition() {
         return dashBoardService.getAccessAndUserCondition();
+    }
+
+    @GetMapping("/getArticleAddInThisYear")
+    public ApiResponse<ArticleAddInThisYearResponse> getArticleAddInThisYear() {
+        return dashBoardService.getArticleAddInThisYear();
+    }
+
+    @GetMapping("/getArticleAddCompareToLastWeek")
+    public ApiResponse<String> getArticleAddCompareToLastWeek() {
+        return dashBoardService.getArticleAddCompareToLastWeek();
     }
 }

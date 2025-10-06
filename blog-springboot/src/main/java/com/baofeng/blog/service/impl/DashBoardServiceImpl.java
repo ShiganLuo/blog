@@ -2,6 +2,7 @@ package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.service.DashBoardService;
 import com.baofeng.blog.vo.ApiResponse;
+import com.baofeng.blog.vo.admin.AdminDashBoradVO.ArticleAddInThisYearResponse;
 import com.baofeng.blog.vo.admin.AdminDashBoradVO.BlogDetailNumberResponse;
 import com.baofeng.blog.vo.admin.AdminDashBoradVO.DictTemplateResponse;
 import com.baofeng.blog.vo.admin.AdminDashBoradVO.UserAddInLastWeekResponse;
@@ -19,11 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.Arrays;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.Year;
+import java.time.temporal.TemporalAdjusters;
+
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -209,7 +217,7 @@ public class DashBoardServiceImpl implements DashBoardService{
     }
 
     @Override
-    public ApiResponse<String> getUserAddComparedWithLastWeek() {
+    public ApiResponse<String> getUserAddComparedToLastWeek() {
         final LocalDateTime currentTime = LocalDateTime.now();
         final LocalDateTime oneWeekAgo = currentTime.minusWeeks(1);
         Long startVal = userMapper.selectUserCountWhenSpecifiedTime(oneWeekAgo);
@@ -238,5 +246,65 @@ public class DashBoardServiceImpl implements DashBoardService{
         dicts.add(new DictTemplateResponse("年增长", yearChange));
         dicts.add(new DictTemplateResponse("访问量", String.valueOf(visitCount)));
         return ApiResponse.success(dicts);
+    }
+
+    @Override
+    public ApiResponse<ArticleAddInThisYearResponse> getArticleAddInThisYear() {
+        final LocalTime endTime = LocalTime.of(23, 59, 59);
+        final int currentYear = LocalDate.now().getYear();
+        final int previousYear = currentYear - 1;
+        // 去年12月31日23:59:59
+        
+        LocalDateTime endOfLastYear = Year.of(previousYear)
+            .atMonth(Month.DECEMBER)
+            .atDay(1)
+            .with(TemporalAdjusters.lastDayOfMonth())
+            .atTime(endTime);
+                                          
+        Stream<LocalDateTime> previousYearStream = Stream.of(endOfLastYear);
+        Stream<LocalDateTime> currentYearMonthsStream = Arrays.stream(Month.values())
+            .map(month -> 
+                Year.of(currentYear)
+                    .atMonth(month)
+                    .atDay(1)
+                    .with(TemporalAdjusters.lastDayOfMonth())
+                    .atTime(endTime)
+            );
+        List<LocalDateTime> endDates = Stream.concat(previousYearStream, currentYearMonthsStream)
+            .collect(Collectors.toList());
+        // 累计文章数
+        List<Long> cumulative = endDates.stream()
+            .map(endDateTime -> {
+                Long articleCount = articleMapper.selectArticleCountWhenSpecifiedTime(endDateTime);
+                Long safeArticleCount = Optional.ofNullable(articleCount).orElse(0L);
+                return safeArticleCount;
+            })
+            .collect(Collectors.toList());
+        
+        // 每月文章新增数
+        List<Long> articleCounts = IntStream.range(1, cumulative.size())
+            .mapToObj(i -> Math.max(cumulative.get(i) - cumulative.get(i - 1), 0L))
+            .collect(Collectors.toList());
+        // 月份列表
+        List<String> months = Arrays.stream(Month.values())
+            .map(month -> {
+                int monthValue = month.getValue();
+                return monthValue + "月";
+            })
+            .collect(Collectors.toList());
+        ArticleAddInThisYearResponse articleAddInThisYearResponse = new ArticleAddInThisYearResponse();
+        articleAddInThisYearResponse.setCounts(articleCounts);
+        articleAddInThisYearResponse.setMonths(months);
+        return ApiResponse.success(articleAddInThisYearResponse);
+    }
+
+    @Override
+    public ApiResponse<String> getArticleAddCompareToLastWeek() {
+        final LocalDateTime currentTime = LocalDateTime.now();
+        final LocalDateTime oneWeekAgo = currentTime.minusWeeks(1);
+        Long startVal = articleMapper.selectArticleCountWhenSpecifiedTime(oneWeekAgo);
+        Long endVal = articleMapper.selectArticleCountWhenSpecifiedTime(currentTime);
+        String change = calculatePercentage(endVal, startVal);
+        return ApiResponse.success(change);
     }
 }

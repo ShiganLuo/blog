@@ -21,11 +21,23 @@ public interface DashBoardService {
      * 获取用户相比上周变化数量
      * @return
      */
-    public ApiResponse<String> getUserAddComparedWithLastWeek();
+    public ApiResponse<String> getUserAddComparedToLastWeek();
 
     /**
      * 获取博客访问及用户情况
      * @return
      */
     public ApiResponse<List<DictTemplateResponse>> getAccessAndUserCondition();
+
+    /**
+     * 获取今年各月份文章发表量情况
+     * @return
+     */
+    public ApiResponse<ArticleAddInThisYearResponse> getArticleAddInThisYear();
+
+    /**
+     * 获取文章相比上周变化量
+     * @return
+     */
+    public ApiResponse<String> getArticleAddCompareToLastWeek();
 }

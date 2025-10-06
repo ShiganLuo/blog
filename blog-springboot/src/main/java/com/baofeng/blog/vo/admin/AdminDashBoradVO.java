@@ -33,5 +33,11 @@ public class AdminDashBoradVO {
         private String num;
     }
 
+    @Data
+    public static class ArticleAddInThisYearResponse {
+        private List<String> months;
+        private List<Long> counts;
+    }
+
 
 }
