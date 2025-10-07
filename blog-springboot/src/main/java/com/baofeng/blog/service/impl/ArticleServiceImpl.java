@@ -2,7 +2,6 @@ package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
-import com.baofeng.blog.vo.common.Article.*;
 import com.baofeng.blog.vo.common.Image.UploadImage;
 import com.baofeng.blog.vo.front.FrontArticleVO.*;
 import com.baofeng.blog.util.ArticleConvert;
@@ -409,4 +408,15 @@ public class ArticleServiceImpl implements ArticleService {
         response.setList(pageInfo.getList());      // 当前页数据
         return ApiResponse.success(response);
     }
+    public ApiResponse<AdminArticlePageVO> getAdminArticlePage(CreateAdminArticlePageRequest createAdminArticlePageRequest) {
+        int current = createAdminArticlePageRequest.current() != null ? createAdminArticlePageRequest.current() : 1;
+        int size = createAdminArticlePageRequest.size() != null ? createAdminArticlePageRequest.size() : 10;
+        PageHelper.startPage(current, size);
+        List<AdminArticle> adminArticles = articleMapper.getAdminArticlePage(createAdminArticlePageRequest);
+        PageInfo<AdminArticle> pageInfo = new PageInfo<>(adminArticles);
+        AdminArticlePageVO adminArticlePageVO = new AdminArticlePageVO();
+        adminArticlePageVO.setAdminArticles(pageInfo.getList());
+        adminArticlePageVO.setTotal(pageInfo.getTotal());
+        return ApiResponse.success(adminArticlePageVO);
+    }   
 }

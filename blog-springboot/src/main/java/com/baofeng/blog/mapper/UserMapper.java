@@ -12,6 +12,11 @@ import com.baofeng.blog.entity.User;
 @Mapper
 public interface UserMapper {
     int insertUser(User user);
+    /**
+     * 更新用户信息
+     * @param user
+     * @return
+     */
     int updateUser(User user);
     int deleteUser(Long id);
     User selectUserById(Long id);
@@ -26,7 +31,13 @@ public interface UserMapper {
     User selectByUsernameOrEmail(String account);
     int updateLoginInfo(Long id);
     int incrementLoginAttempts(Long id);
+    /**
+     * 选择性更新用户信息
+     * @param user
+     * @return
+     */
     int updateUserSelective(User user);
+    
     int updatePassword(String username,@Param("password") String newPassword);
     //@Param("username")必须指定，因为resultmap定义好了映射java对象password
     /**

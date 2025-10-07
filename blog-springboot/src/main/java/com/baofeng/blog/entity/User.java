@@ -13,7 +13,7 @@ public class User {
     private String bio;
     private String nickName;
     private String phoneNumber;
-    private int gender;   
+    private Integer gender;   
     private String status;   
     private LocalDateTime createdAt;   
     private LocalDateTime updatedAt;   

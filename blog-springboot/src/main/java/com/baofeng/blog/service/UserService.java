@@ -74,4 +74,11 @@ public interface UserService {
      * @return
      */
     public ApiResponse<String> updatePassword(String username,String newPassword);
+
+    /**
+     * 更新用户信息
+     * @param updateUserInfo
+     * @return
+     */
+    public ApiResponse<String> updateUserInfo(UpdateUserInfo updateUserInfo);
 } 

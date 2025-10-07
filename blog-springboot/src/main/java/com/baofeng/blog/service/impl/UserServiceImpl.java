@@ -322,4 +322,34 @@ public class UserServiceImpl implements UserService {
         .password(null)
         .build();
     }
+
+    @Override
+    public ApiResponse<String> updateUserInfo(UpdateUserInfo updateUserInfo) {
+        
+        if (updateUserInfo.id() == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户id不能为空");
+        }
+        User isUser = userMapper.selectUserById(updateUserInfo.id());
+        if (isUser == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
+        }
+        User user = new User();
+        Integer gender = updateUserInfo.gender();
+        
+        if (GenderEnum.isCodeExit(gender)) {
+            user.setGender(updateUserInfo.gender());
+        } else {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"不支持的性别");
+        }
+        user.setId(updateUserInfo.id());
+        user.setUsername(updateUserInfo.username());
+        user.setNickName(updateUserInfo.nickName());
+        user.setEmail(updateUserInfo.email());
+        user.setPhoneNumber(updateUserInfo.phoneNumber());
+        int rowUpdated = userMapper.updateUserSelective(user);
+        return rowUpdated > 0
+            ? ApiResponse.success("用户信息更新成功")
+            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户信息更新失败");
+
+    }
 } 

@@ -4,7 +4,6 @@ import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.common.User.LoginRequest;
 import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
-import com.baofeng.blog.entity.User;
 import com.baofeng.blog.vo.common.User.UserInfoResponse;
 import org.springframework.web.bind.annotation.*;
 

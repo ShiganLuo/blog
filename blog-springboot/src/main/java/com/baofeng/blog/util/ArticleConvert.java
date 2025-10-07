@@ -1,7 +1,6 @@
 package com.baofeng.blog.util;
 
-import com.baofeng.blog.vo.common.Article.ArticleVO;
-import com.baofeng.blog.vo.front.FrontArticleVO.ArticleDetailResponse;
+import com.baofeng.blog.vo.front.FrontArticleVO.*;
 import java.util.List;
 
 public class ArticleConvert {

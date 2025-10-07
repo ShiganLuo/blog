@@ -96,4 +96,9 @@ public class AdminUserController {
         return userService.updatePassword(username, newPassword);
     }
 
+    @PostMapping("/updateUserInfo")
+    public ApiResponse<String> updateUserInfo(@RequestBody UpdateUserInfo updateUserInfo) {
+        return userService.updateUserInfo(updateUserInfo);
+    }
+
 } 

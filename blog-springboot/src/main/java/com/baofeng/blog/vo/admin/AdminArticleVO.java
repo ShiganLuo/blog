@@ -1,5 +1,6 @@
 package com.baofeng.blog.vo.admin;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
@@ -46,5 +47,44 @@ public class AdminArticleVO {
         private List<String> tagNames;
         private Long articleId;
     }
+
+    public record CreateAdminArticlePageRequest(
+        Integer current,
+        Integer size,
+        String keyword,
+        Long categoryId,
+        Long tagId,
+        String type,
+        String status,
+        Integer isDelted
+    ) {
+    }
+    @Data
+    public static class AdminArticle {
+        private Long id;
+        private Long userId;
+        private Long categoryId;
+        private String articleCover;
+        private String articleTitle;
+        private String articleAbstract;
+        private String articleContent;
+        private String isTop;
+        private String isFeatured;
+        private String isDelted;
+        private String status;
+        private String type;
+        private String password;
+        private String originalUrl;
+        private LocalDateTime createTime;
+        private LocalDateTime updateTime;
+    }
+
+    @Data
+    public static class AdminArticlePageVO {
+        private List<AdminArticle> adminArticles;
+        private Long total;
+    }
+
+
     
 }

@@ -3,7 +3,6 @@ package com.baofeng.blog.service;
 import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
-import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
 import com.baofeng.blog.vo.common.Image.UploadImage;
 import com.baofeng.blog.vo.front.FrontArticleVO.*;
 
@@ -18,6 +17,13 @@ public interface ArticleService {
      * @return ArticlePageResponseVO
      */
     public ApiResponse<ArticlePageResponseVO> getArticlePage(ArticlePageRequestVO request);
+
+    /**
+     * 查询后台文章列表
+     * @param createAdminArticlePageRequest
+     * @return
+     */
+    public ApiResponse<AdminArticlePageVO> getAdminArticlePage(CreateAdminArticlePageRequest createAdminArticlePageRequest);
 
     /**
      * 创建文章

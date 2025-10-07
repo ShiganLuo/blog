@@ -1,12 +1,8 @@
 package com.baofeng.blog.vo.admin;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
-import com.baofeng.blog.enums.RoleTypeEnum;
-
-import com.baofeng.blog.entity.Role;
 public class AdminUserAuthVO {
 
     // 注册请求
@@ -59,6 +55,15 @@ public class AdminUserAuthVO {
             }
         }
     }
+
+    public record UpdateUserInfo (
+        Long id,
+        String username,
+        String nickName,
+        String email,
+        String phoneNumber,
+        Integer gender
+    ) {}
 
 
 

@@ -1,7 +1,7 @@
 package com.baofeng.blog.controller.admin;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
-import com.baofeng.blog.vo.common.Article.ArticlePageResponseVO;
+import com.baofeng.blog.vo.front.FrontArticleVO.*;
 import com.baofeng.blog.vo.common.Image.UploadImage;
 import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.service.ArticleService;
@@ -91,29 +91,8 @@ public class AdminArticleController {
      * @return 分页结果
      */
     @PostMapping("/getArticleList")
-    public ApiResponse<ArticlePageResponseVO> getArticlePage(@RequestBody ArticlePageRequestVO request) {
-        // 参数校验
-        if (request.sortBy() != null && !isValidSortField(request.sortBy())) {
-            return ApiResponse.error(400, "无效的排序字段");
-        }
-        if (request.sortOrder() != null && !isValidSortOrder(request.sortOrder())) {
-            return ApiResponse.error(400, "无效的排序方向");
-        }
-        return articleService.getArticlePage(request);
-    }
-
-    /**
-     * 验证排序字段是否有效
-     */
-    private boolean isValidSortField(String sortBy) {
-        return sortBy == null || sortBy.matches("^(createTime|updateTime|viewCount|likeCount|commentCount)$");
-    }
-
-    /**
-     * 验证排序方向是否有效
-     */
-    private boolean isValidSortOrder(String sortOrder) {
-        return sortOrder == null || sortOrder.equalsIgnoreCase("asc") || sortOrder.equalsIgnoreCase("desc");
+    public ApiResponse<AdminArticlePageVO> getArticlePage(@RequestBody CreateAdminArticlePageRequest createAdminArticlePageRequest) {
+        return articleService.getAdminArticlePage(createAdminArticlePageRequest);
     }
 
     /**

@@ -1,8 +1,7 @@
 package com.baofeng.blog.mapper;
 import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.vo.admin.AdminArticleVO.*;
-import com.baofeng.blog.vo.common.Article.*;
-import com.baofeng.blog.vo.front.FrontArticleVO.ArticleAbstractResponse;
+import com.baofeng.blog.vo.front.FrontArticleVO.*;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,6 +17,13 @@ public interface ArticleMapper {
      * @return 文章列表
      */
     List<ArticleVO> getArticlePage(ArticlePageRequestVO request);
+    
+    /**
+     * 分页查询文章列表1
+     * @param createAdminArticlePageRequest
+     * @return
+     */
+    List<AdminArticle> getAdminArticlePage(CreateAdminArticlePageRequest createAdminArticlePageRequest);
     
     /**
      * 根据id查询文章信息，包括作者，标签和分类

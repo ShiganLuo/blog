@@ -25,7 +25,7 @@ public class AdminLoginResponseVO {
         private Long id;
         private String avatar;
         private String username;
-        private String nickname;
+        private String nickName;
         private List<String> roles;
     }
 } 

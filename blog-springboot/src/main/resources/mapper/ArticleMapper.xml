@@ -124,7 +124,7 @@
     </select>
 
     <!--文章分页查询-->
-    <resultMap id="ArticlePageResultMap" type="com.baofeng.blog.vo.common.Article$ArticleVO">
+    <resultMap id="ArticlePageResultMap" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleVO">
         <id property="id" column="id"/>
         <result property="article_title" column="title"/>
         <result property="article_description" column="summary"/>
@@ -142,7 +142,7 @@
         <result property="is_top" column="is_featured"/>
 
         <!-- 作者信息映射；一对多关系，不需要分步查询 -->
-        <association property="author" javaType="com.baofeng.blog.vo.common.Article$AuthorVO">
+        <association property="author" javaType="com.baofeng.blog.vo.front.FrontArticleVO$AuthorVO">
             <id property="authorId" column="author_id"/>
             <result property="authorName" column="author_name"/>
             <result property="authorNickname" column="author_nickname"/>
@@ -186,6 +186,40 @@
         FROM tags t
         INNER JOIN article_tags at ON t.id = at.tag_id
         WHERE at.article_id = #{id}
+    </select>
+
+    <!--文章分页查询1-->
+    <resultMap id="AdminArticlePageResultMap" type="com.baofeng.blog.vo.admin.AdminArticleVO$AdminArticle">
+        <id property="id" column="id"/>
+        <result property="articleTitle" column="title"/>
+        <result property="articleAbstract" column="summary"/>
+        <result property="articleContent" column="content"/>
+        <result property="type" column="type"/>
+        <result property="originUrl" column="origin_url"/>
+        <result property="createTime" column="created_at"/>
+        <result property="updateTime" column="updated_at"/>
+        <result property="status" column="status"/>
+        <result property="articleCover" column="cover_image"/>
+        <result property="isFeatured" column="is_featured"/>
+        <result property="userId" column="author_id"/>
+    </resultMap>
+
+    <select id="getAdminArticlePage" resultMap="AdminArticlePageResultMap">
+        SELECT id,title,summary,content,type,origin_url,created_at,updated_at,status,cover_image,is_featured,author_id
+        FROM articles
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
+                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY created_at DESC
     </select>
 
     <!--文章查询联表查询-->
