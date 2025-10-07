@@ -11,26 +11,27 @@
         <result property="password" column="password"/>
         <result property="avatarUrl" column="avatar_url"/>
         <result property="bio" column="bio"/>
-        <result property="status" column="status" 
-                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="status" column="status"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
         <result property="lastLogin" column="last_login"/>
         <result property="loginAttempts" column="login_attempts"/>
-        <result property="emailVerified" column="is_email_verified"/>
-        <result property="active" column="is_active"/>
+        <result property="isEmailVerified" column="is_email_verified"/>
+        <result property="isActive" column="is_active"/>
         <result property="nickName" column="nick_name"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="gender" column="gender"/>
     </resultMap>
 
     <!-- 基础CRUD操作 -->
     <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO users (
             username, email, password, avatar_url, bio, status,
-            last_login, login_attempts, is_email_verified, is_active,nick_name
+            last_login, login_attempts, is_email_verified, is_active,nick_name,phone_number,gender
         ) VALUES (
             #{username}, #{email}, #{password}, #{avatarUrl}, #{bio}, 
             #{status}, #{lastLogin}, #{loginAttempts}, 
-            #{emailVerified}, #{active}, #{nickName}
+            #{isEmailVerified}, #{isActive}, #{nickName}, #{phoneNumber}, #{gender}
         )
     </insert>
 
@@ -44,9 +45,11 @@
             status = #{status},
             last_login = #{lastLogin},
             login_attempts = #{loginAttempts},
-            is_email_verified = #{emailVerified},
-            is_active = #{active}
-            nick_name = #{nickName}
+            is_email_verified = #{isEmailVerified},
+            is_active = #{isActive},
+            nick_name = #{nickName},
+            phone_number = #{phoneNumber},
+            gender = #{gender}
         WHERE id = #{id}
     </update>
 
@@ -132,9 +135,11 @@
             <if test="status != null">status = #{status},</if>
             <if test="lastLogin != null">last_login = #{lastLogin},</if>
             <if test="loginAttempts != null">login_attempts = #{loginAttempts},</if>
-            <if test="emailVerified != null">is_email_verified = #{emailVerified},</if>
-            <if test="active != null">is_active = #{active},</if>
+            <if test="isEmailVerified != null">is_email_verified = #{isEmailVerified},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
             <if test="nickName != null">nick_name = #{nickName},</if>
+            <if test="phoneNumber != null">phone_number = #{phoneNumber},</if>
+            <if test="gender != null">gender = #{gender},</if> 
             updated_at = NOW()
         </set>
         WHERE id = #{id}

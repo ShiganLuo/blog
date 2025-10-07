@@ -1,8 +1,12 @@
 package com.baofeng.blog.vo.admin;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.baofeng.blog.enums.RoleTypeEnum;
+
+import com.baofeng.blog.entity.Role;
 public class AdminUserAuthVO {
 
     // 注册请求
@@ -34,11 +38,7 @@ public class AdminUserAuthVO {
         private String username;
         private String nickName;
         private String avatarUrl;
-        private Role role;
-        public enum Role {
-            USER, ADMIN
-        }
-            // 数据库字段 created_at
+        private String role;
         private LocalDateTime createdAt;
         
         // 数据库字段 updated_at
@@ -59,5 +59,7 @@ public class AdminUserAuthVO {
             }
         }
     }
+
+
 
 } 

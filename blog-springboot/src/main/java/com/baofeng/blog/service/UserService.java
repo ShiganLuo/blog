@@ -6,6 +6,7 @@ import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
 import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
 import com.baofeng.blog.vo.common.User.LoginRequest;
 import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
+import com.baofeng.blog.vo.common.User.UserInfoResponse;
 
 
 
@@ -43,7 +44,7 @@ public interface UserService {
      * @param id
      * @return
      */
-    public ApiResponse<User> getUserInfoById(Long id);
+    public ApiResponse<UserInfoResponse> getUserInfoById(Long id);
     
     /**
      * 更新用户角色
@@ -64,7 +65,7 @@ public interface UserService {
      * @param BearerToken
      * @return
      */
-    public ApiResponse<User> getUserInfoByToken(String BearerToken);
+    public ApiResponse<UserInfoResponse> getUserInfoByToken(String BearerToken);
 
     /**
      * 更新用户密码

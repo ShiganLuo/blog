@@ -6,6 +6,7 @@ import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
 import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
 import com.baofeng.blog.vo.common.User.LoginRequest;
+import com.baofeng.blog.vo.common.User.UserInfoResponse;
 
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class AdminUserController {
     }
 
     @GetMapping("/getUserInfoById/{id}")
-    public ApiResponse<User> getUserInfoById(@PathVariable Long id){
+    public ApiResponse<UserInfoResponse> getUserInfoById(@PathVariable Long id){
         return userService.getUserInfoById(id);
     }
 
@@ -84,7 +85,7 @@ public class AdminUserController {
     }
 
     @GetMapping("/getUserInfoByToken")
-    public ApiResponse<User> getUserInfoByToken(@RequestHeader("Authorization") String BearerToken) {
+    public ApiResponse<UserInfoResponse> getUserInfoByToken(@RequestHeader("Authorization") String BearerToken) {
         return userService.getUserInfoByToken(BearerToken);
     }
 

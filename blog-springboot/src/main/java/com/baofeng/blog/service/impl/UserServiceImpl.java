@@ -9,12 +9,14 @@ import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
 import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
 import com.baofeng.blog.vo.common.User.LoginRequest;
+import com.baofeng.blog.vo.common.User.UserInfoResponse;
 import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
 import com.baofeng.blog.util.JwtTokenProvider;
 import com.baofeng.blog.mapper.RoleMapper;
 import com.baofeng.blog.entity.Role;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.enums.RoleTypeEnum;
+import com.baofeng.blog.enums.UserStatusEnum;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -57,7 +59,7 @@ public class UserServiceImpl implements UserService {
         User newUser = new User();
         newUser.setUsername(registerDTO.username());
         newUser.setPassword(passwordEncoder.encode(registerDTO.password()));
-        newUser.setStatus(User.Status.ACTIVE);
+        newUser.setStatus(UserStatusEnum.ACTIVE.name());
         newUser.setNickName(registerDTO.username());
         int rowUpdated1 = userMapper.insertUser(newUser);
 
@@ -113,7 +115,7 @@ public class UserServiceImpl implements UserService {
             userMapper.incrementLoginAttempts(user.getId());
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "密码错误");
         }
-        if (user.getStatus() == User.Status.BANNED) {
+        if (user.getStatus() == UserStatusEnum.BANNED.name()) {
             return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "账户被锁定");
         }
 
@@ -166,11 +168,17 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectByUsernameOrEmail(username);
     }
     @Override
-    public ApiResponse<User> getUserInfoById(Long id){
+    public ApiResponse<UserInfoResponse> getUserInfoById(Long id){
         User user = userMapper.selectUserById(id);
-        return user != null
-            ? ApiResponse.success(user)
-            : ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
+        if (user ==  null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
+        }
+        List<String> roles = roleMapper.selectRolesByUserId(user.getId())
+            .stream()
+            .map(Role::getRoleName)
+            .collect(Collectors.toList());
+        UserInfoResponse userInfoResponse = buildUserInfoResponse(user, roles);
+        return ApiResponse.success(userInfoResponse);
     }
 
     @Override
@@ -183,9 +191,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "用户不存在");
         }
-        // 检查角色是否有效
-        logger.info("有效用户角色: {}", validRoles);
-        logger.info("请求更新角色: {}", roles);
+
         for (String roleName : roles) {
             if (!validRoles.contains(roleName)) {
                 return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "无效的角色: " + roleName);
@@ -270,7 +276,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<User> getUserInfoByToken(String BearerToken) {
+    public ApiResponse<UserInfoResponse> getUserInfoByToken(String BearerToken) {
         String token = BearerToken.substring(7); // 去除 "Bearer " 前缀获取真正的 token
         // 验证 token 并获取用户名
         String username = jwtTokenProvider.getUserNameFromToken(token);
@@ -283,6 +289,34 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "未找到用户信息");
         }
-        return ApiResponse.success(user);
+        List<String> roles = roleMapper.selectRolesByUserId(user.getId())
+            .stream()
+            .map(Role::getRoleName)
+            .collect(Collectors.toList());
+        UserInfoResponse response = buildUserInfoResponse(user,roles);
+        
+        return ApiResponse.success(response);
+    }
+
+    public static UserInfoResponse buildUserInfoResponse(User user, List<String> roles) {
+        return UserInfoResponse.builder()
+        .id(user.getId())
+        .username(user.getUsername())
+        .email(user.getEmail())
+        .avatarUrl(user.getAvatarUrl())
+        .bio(user.getBio())
+        .nickName(user.getNickName())
+        .phoneNumber(user.getPhoneNumber())
+        .gender(user.getGender())
+        .status(user.getStatus())
+        .createdAt(user.getCreatedAt())
+        .updatedAt(user.getUpdatedAt())
+        .lastLogin(user.getLastLogin())
+        .loginAttempts(user.getLoginAttempts())
+        .isEmailVerified(user.getIsEmailVerified())
+        .isActive(user.getIsActive())
+        .roles(roles)
+        .password(null)
+        .build();
     }
 } 

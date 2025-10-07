@@ -18,7 +18,7 @@ public interface UserMapper {
     
     List<User> selectByCondition(@Param("username") String username, 
                                @Param("email") String email,
-                               @Param("status") User.Status status);
+                               @Param("status") String status);
     
     List<User> selectByPage(@Param("offset") int offset, 
                           @Param("pageSize") int pageSize);
