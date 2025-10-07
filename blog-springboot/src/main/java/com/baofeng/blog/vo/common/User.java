@@ -27,7 +27,7 @@ public class User {
         private String bio;
         private String nickName;
         private String phoneNumber;
-        private int gender;
+        private String gender;
         private List<String> roles;
         private String status; 
         private LocalDateTime createdAt;

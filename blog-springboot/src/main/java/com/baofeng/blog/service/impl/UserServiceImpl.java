@@ -14,6 +14,7 @@ import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
 import com.baofeng.blog.util.JwtTokenProvider;
 import com.baofeng.blog.mapper.RoleMapper;
 import com.baofeng.blog.entity.Role;
+import com.baofeng.blog.enums.GenderEnum;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.enums.RoleTypeEnum;
 import com.baofeng.blog.enums.UserStatusEnum;
@@ -299,6 +300,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public static UserInfoResponse buildUserInfoResponse(User user, List<String> roles) {
+
+        GenderEnum genderEnum = GenderEnum.fromCode(user.getGender());
         return UserInfoResponse.builder()
         .id(user.getId())
         .username(user.getUsername())
@@ -307,7 +310,7 @@ public class UserServiceImpl implements UserService {
         .bio(user.getBio())
         .nickName(user.getNickName())
         .phoneNumber(user.getPhoneNumber())
-        .gender(user.getGender())
+        .gender(genderEnum.getName())
         .status(user.getStatus())
         .createdAt(user.getCreatedAt())
         .updatedAt(user.getUpdatedAt())
