@@ -43,6 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         for (String uri : whiteListUris) {
             if (requestUri.startsWith(uri.replace("/**", ""))) {
                 filterChain.doFilter(request, response);
+                logger.info(uri);
                 return;
             }
         }

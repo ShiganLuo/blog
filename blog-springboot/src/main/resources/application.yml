@@ -20,6 +20,20 @@ pagehelper:
   helper-dialect: mysql       # 数据库方言
   reasonable: false           # 合理化参数，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页
   support-methods-arguments: true  # 支持通过 Mapper 接口参数来传递分页参数
+# knife4j配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: "default"
+      paths-to-match: "/**"
+      packages-to-scan: com.baofeng.blog.controller
+  default-flat-param-object: true
+
 ###使用了value注入必须定义
 security:
   jwt:
@@ -31,10 +45,10 @@ security:
       - /api/admin/mock/get-async-routes
       - /api/front/**
       - /swagger-ui.html
-      - /swagger-ui/**
       - /v3/api-docs
-      - /v3/api-docs/**
-      - /v3/api-docs.yaml
+      - /doc.html
+      - /webjars/swagger-ui/*
+      - /**
     tokenHeader: X-Token #JWT存储的请求头
     tokenHead: Bearer  #令牌前缀
     secret: "your-256-bit-secret-key-here-1234567890ABCDEF"
