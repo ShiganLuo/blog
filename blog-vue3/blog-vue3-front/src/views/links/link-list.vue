@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, onBeforeUnmount, h } from "vue";
-import { getFriendLinks } from "@/api/links";
-import { homeGetConfig } from "@/api/config";
+import { LinkService } from "@/api/linksApi";
+import { ConfigService } from "@/api/configApi";
 import { Edit } from "@element-plus/icons-vue";
 import { ElNotification } from "element-plus";
 import { useUserStore } from "@/stores/index";
@@ -12,6 +12,7 @@ import linkApply from "./link-apply.vue";
 import { _removeLocalItem, _setLocalItem } from "@/utils/tool";
 import Loading from "@/components/Loading/index.vue"; // 确保此组件已导入
 import { ElMessage } from "element-plus";
+import { type FriendLink, type FriendLinkListResponse  } from "@/types/link";
 const { getUserInfo } = storeToRefs(useUserStore());
 
 const loading = ref<boolean>(false);
@@ -26,15 +27,6 @@ const params = reactive<{
   status: 2,
 });
 
-// 定义友链列表的类型
-interface FriendLink {
-  id: number;
-  site_avatar: string;
-  site_name: string;
-  site_desc: string;
-  site_url: string;
-  user_id: number;
-}
 const linksList = ref<FriendLink[]>([]);
 const total = ref<number>(0);
 const dialogVisible = ref<boolean>(false);
@@ -86,7 +78,7 @@ const pageGetLinksList = async (): Promise<void> => {
     } else {
       scrollLoading.value = true;
     }
-    const res = await getFriendLinks(params);
+    const res = await LinkService.getFriendLinks(params);
     if (res.code === 200 && res.result) {
       linksList.value =
         params.current === 1 ? res.result.list : [...linksList.value, ...res.result.list];
@@ -112,9 +104,9 @@ const applyLinks = (): void => {
 };
 
 const getConfigDetail = async (): Promise<void> => {
-  let res = await homeGetConfig();
+  let res = await ConfigService.homeGetConfig();
   if (res.code === 200 && res.result) {
-    blogName.value = res.result.blog_name;
+    blogName.value = res.result.blog_name || " ";
   }
 };
 

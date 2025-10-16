@@ -1,26 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { getAllCategory } from "@/api/category";
-
+import { CategoryService } from "@/api/blog/categoryApi";
+import { type Category, type CategoryResponse } from "@/types/blog/category";
 import GsapCount from "@/components/GsapCount/index.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
-
-/**
- * 分类数据类型
- */
-interface Category {
-  id: number;
-  name: string;
-  fontSize: number;
-  fontColor: string;
-}
-
-// 接口返回数据的原始结构
-interface CategoryResponse {
-  id: number;
-  name: string;
-}
 
 const router = useRouter();
 
@@ -38,9 +22,9 @@ const randomFontSize = (): number => {
 
 const getCategoryList = async (): Promise<void> => {
   loading.value = true;
-  const res = await getAllCategory();
+  const res = await CategoryService.getAllCategory();
   if (res.code === 200 && Array.isArray(res.result)) {
-    categoryList.value = (res.result as CategoryResponse[]).map((r) => {
+    categoryList.value = (res.result).map((r) => {
       return {
         id: r.id,
         name: r.name,

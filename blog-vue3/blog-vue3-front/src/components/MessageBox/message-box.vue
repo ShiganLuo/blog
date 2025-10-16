@@ -3,21 +3,13 @@ import { ref, onMounted, reactive, h } from "vue";
 import { useRouter } from "vue-router";
 import type { Ref } from "vue";
 
-import { getNotifylist, updateNotify, deleteNotify } from "@/api/notify";
+import { NotifyService } from "@/api/notifyApi";
 import { containHTML } from "@/utils/tool";
-
+import { type MessageCompoentItem, type MessageCompoentItemListResponse } from "@/types/message";
 import { ElNotification } from "element-plus";
 import { Delete, Compass } from "@element-plus/icons-vue";
 import Loading from "@/components/Loading/index.vue";
 
-interface MessageItem {
-  id: number | string;
-  isView: number;
-  message: string;
-  type: string | number;
-  to_id: number;
-  // Add other properties as needed
-}
 
 interface ListParams {
   current: number;
@@ -39,7 +31,7 @@ const props = defineProps({
 });
 
 const drawerShow: Ref<boolean> = ref(false);
-const messageList: Ref<MessageItem[]> = ref([]);
+const messageList: Ref<MessageCompoentItem[]> = ref([]);
 const loadMore: Ref<boolean> = ref(false);
 const messageTotal: Ref<number> = ref(0);
 const redTotal: Ref<number> = ref(0);
@@ -66,10 +58,10 @@ const handleClose = async (): Promise<void> => {
 };
 
 const readMessage = async (id: number | string): Promise<void> => {
-  await updateNotify(id);
+  await NotifyService.updateNotify(id);
 };
 
-const jump = async (item: MessageItem): Promise<void> => {
+const jump = async (item: MessageCompoentItem): Promise<void> => {
   item.isView == 1 && (await readMessage(item.id));
 
   switch (item.type + "") {
@@ -90,8 +82,8 @@ const jump = async (item: MessageItem): Promise<void> => {
   handleClose();
 };
 
-const deleteMessage = async (confirm: MessageItem): Promise<void> => {
-  const res = await deleteNotify(confirm.id);
+const deleteMessage = async (confirm: MessageCompoentItem): Promise<void> => {
+  const res = await NotifyService.deleteNotify(confirm.id);
   if (res && res.code == 200) {
     ElNotification({
       offset: 60,
@@ -121,7 +113,7 @@ const getMessageList = async (): Promise<void> => {
     if (params.current > 1) {
       loadMore.value = true;
     }
-    const res = await getNotifylist(params);
+    const res = await NotifyService.getNotifylist(params);
     if (res.code == 200) {
       const { list, total } = res.result;
       messageList.value = params.current == 1 ? list : messageList.value.concat(list);

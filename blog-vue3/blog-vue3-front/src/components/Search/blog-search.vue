@@ -2,38 +2,20 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { getHotArticle, getArticleByContent } from "@/api/article";
+import { ArticleService } from "@/api/blog/articleApi";
 import { _setLocalItem, _getLocalItem, _removeLocalItem } from "@/utils/tool";
-
+import { type ArticleInfo } from "@/types/blog/article";
 import { Search } from "@element-plus/icons-vue";
-
-interface Article {
-  id: number;
-  article_title: string;
-  article_content?: string; // 用于 getArticleList 时处理剩余内容
-}
+import { type Article, type ArticleSearch } from "@/types/blog/article";
 
 const router = useRouter();
 
 const isClick = ref<boolean>(false);
 const searchShow = ref<boolean>(false);
 const input = ref<string>(""); // 搜索内容
-const searchResult = ref<
-  {
-    id: number;
-    article_title: string;
-    highlight_content: string;
-    rest_content: string;
-  }[]
->([]); // 搜索结果
+const searchResult = ref<ArticleSearch[]>([]); // 搜索结果
 
-const hotSearchList = ref<
-  {
-    id: number;
-    article_title: string;
-    icon: string;
-  }[]
->([]);
+const hotSearchList = ref<ArticleInfo[]>([]);
 
 const historySearchList = ref<string[]>([]);
 
@@ -44,9 +26,9 @@ const clickSearchIcon = async (): Promise<void> => {
   searchShow.value = true;
   historySearchList.value = _getLocalItem("blogSearchHistory") || [];
 
-  const res = await getHotArticle();
-  if (res.code === 0) {
-    hotSearchList.value = res.result.map((r: Article, index: number) => ({
+  const res = await ArticleService.getHotArticle();
+  if (res.code === 200) {
+    hotSearchList.value = res.result.map((r: ArticleInfo, index: number) => ({
       id: r.id,
       article_title: r.article_title,
       icon: numberList[index],
@@ -76,11 +58,11 @@ const clickHistoryTag = (val: string): void => {
 };
 
 const getArticleList = async (): Promise<void> => {
-  const res = await getArticleByContent({value: input.value});
-  if (res.code === 0) {
+  const res = await ArticleService.getArticleByContent({value: input.value});
+  if (res.code === 200) {
     searchResult.value =
       res.result.length &&
-      res.result.map((r: Article) => ({
+      res.result.map((r: ArticleSearch) => ({
         id: r.id,
         article_title: r.article_title,
         highlight_content: input.value,

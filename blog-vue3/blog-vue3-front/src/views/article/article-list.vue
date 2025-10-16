@@ -2,29 +2,15 @@
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
-import { getArticleListByTagId, getArticleListByCategoryId } from "@/api/article";
-
+import { ArticleService } from "@/api/blog/articleApi";
+import { type ArticleListResponse, type Article } from "@/types/blog/article";
+import { type IResponse } from "@/utils/http/types";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import Tooltip from "@/components/ToolTip/index.vue";
 import Pagination from "@/components/Pagination/pagination.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 
-// 接口返回类型定义
-interface Article {
-  id: string;
-  article_cover: string;
-  article_title: string;
-  createdAt: string;
-}
-
-interface ArticleListResponse {
-  code: number;
-  result: {
-    list: Article[];
-    total: number;
-  };
-}
 
 interface PaginationParam {
   current: number;
@@ -61,13 +47,13 @@ const gotoDetail = (id: string) => {
 
 // 获取文章列表
 const getArticleListById = async () => {
-  let res: ArticleListResponse;
+  let res: IResponse<ArticleListResponse>;
   loading.value = true;
 
   if (currentType.value === "tag") {
-    res = await getArticleListByTagId(param);
+    res = await ArticleService.getArticleListByTagId(param);
   } else {
-    res = await getArticleListByCategoryId(param);
+    res = await ArticleService.getArticleListByCategoryId(param);
   }
 
   if (res.code === 200) {

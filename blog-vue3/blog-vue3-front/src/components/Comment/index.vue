@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, h, watch } from "vue";
 import { useUserStore } from "@/stores/index";
-import { addComment, frontGetCommentTotal } from "@/api/comment";
+import { addComment, frontGetCommentTotal } from "@/api/blog/commentApi";
 import ParentItem from "./item/ParentItem.vue";
 import CommentInput from "./item/CommentInput.vue";
 import { ElNotification } from "element-plus";

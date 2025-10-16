@@ -4,37 +4,18 @@ import { useRoute, useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
 import { useStaticData, useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
-
+import { type ArticleInfo } from "@/types/blog/article"
 import { MdPreview, MdCatalog } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 
-import { getArticleById, getRecommendArticleById, readingDuration } from "@/api/article";
-import { addLike, cancelLike, getIsLikeByIdOrIpAndType } from "@/api/like";
+import { ArticleService } from "@/api/blog/articleApi";
+import { LikeService } from "@/api/likeApi";
 
 import Comment from "@/components/Comment/index.vue";
 import Tooltip from "@/components/ToolTip/index.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
 import GsapCount from "@/components/GsapCount/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
-
-
-interface ArticleInfo {
-  id: number;
-  authorName: string;
-  type: number;
-  origin_url: string;
-  thumbs_up_times: number;
-  author_id: number;
-  article_content: string;
-  article_cover?: string;
-  article_title?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  categoryNameList?: string[];
-  tagNameList?: string[];
-  view_times?: number;
-  reading_duration?: number;
-}
 
 interface MdState {
   text: string;
@@ -95,7 +76,7 @@ const like = async (): Promise<void> => {
   const userId = getUserInfo.value.id;
   // 取消点赞
   if (isLike.value) {
-    const res = await cancelLike({ for_id: articleInfo.value.id,type: "post", user_id: userId });
+    const res = await LikeService.cancelLike({ for_id: articleInfo.value.id,type: "post", user_id: userId });
     if (res.code === 200) {
       articleInfo.value.thumbs_up_times--;
       isLike.value = false;
@@ -109,7 +90,7 @@ const like = async (): Promise<void> => {
         });
     }
   } else { // 点赞
-    const res = await addLike({ for_id: articleInfo.value.id,type: "post", user_id: userId });
+    const res = await LikeService.addLike({ for_id: articleInfo.value.id,type: "post", user_id: userId });
     if (res.code === 200) {
       articleInfo.value.thumbs_up_times++;
       isLike.value = true;
@@ -126,11 +107,11 @@ const like = async (): Promise<void> => {
 };
 
 const getArticleDetails = async (id: string | number): Promise<void> => {
-  const res = await getArticleById(id);
+  const res = await ArticleService.getArticleById(id);
   if (res.code === 200) {
     mdState.text = res.result.article_content;
     articleInfo.value = res.result;
-    const LRes = await getIsLikeByIdOrIpAndType({ for_id: articleInfo.value.id, type: "post", user_id: getUserInfo.value.id });
+    const LRes = await LikeService.getIsLikeByIdOrIpAndType({ for_id: articleInfo.value.id, type: "post", user_id: getUserInfo.value.id });
     if (LRes.code === 200) {
       isLike.value = LRes.result;
     }
@@ -145,7 +126,7 @@ const getArticleDetails = async (id: string | number): Promise<void> => {
 // };
 
 const getRecommendArticle = async (id: string | number): Promise<void> => {
-  const res = await getRecommendArticleById(id);
+  const res = await ArticleService.getRecommendArticleById(id);
   if (res.code === 200) {
     const { previous, next, recommend } = res.result;
     recommendList.value = recommend;

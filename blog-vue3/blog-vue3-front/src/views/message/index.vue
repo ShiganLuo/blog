@@ -10,7 +10,7 @@ import DanmuMessage from "./components/danmu-message.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
 import { ElNotification } from "element-plus";
 
-import { addMessage } from "@/api/message";
+import { MessageService } from "@/api/messageApi";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 
 
@@ -102,7 +102,7 @@ const userAddMessage = (): void => {
     };
     console.log("form", form);
     // 保存弹幕
-    addMessage(form).then((res: AddMessageResponse) => {
+    MessageService.addMessage(form).then((res: AddMessageResponse) => {
       if (res.code === 200) {
         messageRef.value?.addDanmu(form);
         message.value = "";

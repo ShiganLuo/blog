@@ -8,25 +8,10 @@ import ArticleSkeleton from "./components/article-skeleton.vue";
 import Tooltip from "@/components/ToolTip/index.vue";
 import Pagination from "../Pagination/pagination.vue";
 import GsapCount from "@/components/GsapCount/index.vue";
-
+import { type ArticleInfo  } from "@/types/blog/article";
 import { gsapTransY } from "@/utils/transform";
 import { isMobile } from "@/utils/tool";
 import SvgIcon from "@/components/SvgIcon/index.vue";
-
-// 新增类型定义
-interface Article {
-  id?: string | number;
-  article_cover?: string;
-  article_title?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  categoryNameList?: string[];
-  tagNameList?: string[];
-  thumbs_up_times?: number;
-  view_times?: number;
-  article_description?: string;
-  is_top?: number;
-}
 
 interface ParamType {
   loading: boolean;
@@ -45,8 +30,8 @@ const emit = defineEmits<{
 
 const props = defineProps({
   articleList: {
-    type: Array as PropType<Article[]>,
-    default: () => [] as Article[],
+    type: Array as PropType<ArticleInfo[]>,
+    default: () => [] as ArticleInfo[],
   },
   articleTotal: {
     type: Number,
@@ -66,7 +51,7 @@ const router = useRouter();
 
 /* 文章操作 start */
 type OperateType = "detail" | "tag" | "category";
-const operate = (type: OperateType, item: Article): void => {
+const operate = (type: OperateType, item: ArticleInfo): void => {
   const routes: Record<OperateType, RouteLocationRaw> = {
     detail: { path: "/article", query: { id: item.id } },
     tag: { path: "/tag" },

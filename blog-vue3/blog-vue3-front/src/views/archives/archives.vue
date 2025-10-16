@@ -1,31 +1,9 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
-import { blogTimelineGetArticleList } from "@/api/article";
+import { ArticleService } from "@/api/blog/articleApi";
+import { type Article, type ArchiveGroup } from "@/types/blog/article"
 import PageHeader from "@/components/PageHeader/index.vue";
 import TimeLine from "@/components/TimeLine/index.vue";
-
-// 定义文章类型
-interface Article {
-  id: number;
-  article_title: string;
-  article_cover: string;
-  createdAt: string;
-}
-
-// 定义 API 返回类型
-interface ArticleListResponse {
-  code: number;
-  result: {
-    total: number;
-    list: Article[];
-  };
-}
-
-// 每个归档分组类型
-interface ArchiveGroup {
-  year: number;
-  articleList: Article[];
-}
 
 // 归档数据
 const archives = ref<ArchiveGroup[]>([]);
@@ -69,7 +47,7 @@ function groupArticlesByYear(articles: Article[]): ArchiveGroup[] {
 const getArchives = async () => {
   try {
     loading.value = true;
-    const res: ArticleListResponse = await blogTimelineGetArticleList(param);
+    const res = await ArticleService.blogTimelineGetArticleList(param);
     if (res.code === 200) {
       const { total, list } = res.result;
       archives.value = groupArticlesByYear(list);

@@ -3,9 +3,9 @@ import { ref, h, reactive, onMounted, onBeforeUnmount } from "vue";
 import { useUserStore } from "@/stores/index";
 
 import { returnTime } from "@/utils/tool";
-import { addLike, cancelLike } from "@/api/like";
-import { getTalkList } from "@/api/talk";
-
+import { LikeService } from "@/api/likeApi";
+import { TalkService } from "@/api/talkApi";
+import { type TalkItem } from "@/types/talk";
 import { ElNotification } from "element-plus";
 import TextOverflow from "@/components/TextOverflow/index.vue";
 import Comment from "@/components/Comment/index.vue";
@@ -17,19 +17,6 @@ import SvgIcon from "@/components/SvgIcon/index.vue";
 // store
 const userStore = useUserStore();
 
-// 类型定义
-interface TalkItem {
-  id: number | string;
-  from_id: number | string;
-  nick_name: string;
-  avatar: string;
-  content: string;
-  talkImgList: string[];
-  createdAt: string;
-  is_top: number;
-  is_like: boolean;
-  like_times: number;
-}
 
 // ref 和 reactive
 const talkList = ref<TalkItem[]>([]);
@@ -85,7 +72,7 @@ const pageGetTalkList = async () => {
       scrollLoading.value = true;
     }
 
-    const res = await getTalkList(param);
+    const res = await TalkService.getTalkList(param);
     if (res.code === 200) {
       talkList.value =
         param.current === 1
@@ -105,7 +92,7 @@ const like = async (item: TalkItem, index: number) => {
   likePending.value = true;
 
   if (item.is_like) {
-    const res = await cancelLike({ for_id: item.id, type: 2, user_id: userStore.getUserInfo.id });
+    const res = await LikeService.cancelLike({ for_id: item.id, type: 2, user_id: userStore.getUserInfo.id });
     if (res.code === 200) {
       talkList.value[index].is_like = false;
       talkList.value[index].like_times--;
@@ -117,7 +104,7 @@ const like = async (item: TalkItem, index: number) => {
       });
     }
   } else {
-    const res = await addLike({ for_id: item.id, type: 2, user_id: userStore.getUserInfo.id });
+    const res = await LikeService.addLike({ for_id: item.id, type: 2, user_id: userStore.getUserInfo.id });
     if (res.code === 200) {
       talkList.value[index].is_like = true;
       talkList.value[index].like_times++;

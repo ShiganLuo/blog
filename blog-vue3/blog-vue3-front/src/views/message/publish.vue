@@ -7,8 +7,8 @@ import { useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
 
 import PageHeader from "@/components/PageHeader/index.vue";
-import { addMessage, getMessageTag } from "@/api/message";
-import { addComment } from "@/api/comment";
+import { MessageService } from "@/api/messageApi";
+import { CommentSerivce } from "@/api/blog/commentApi";
 import { _getLocalItem, _removeLocalItem, _setLocalItem, debounce } from "@/utils/tool";
 
 
@@ -129,10 +129,10 @@ const leaveMessage = async () => {
   let res: ApiResponse<any>;
   if (form.id) {
     console.log(form)
-    res = await addComment(form);
+    res = await CommentSerivce.addComment(form);
   } else {
     console.log(form)
-    res = await addMessage(form);
+    res = await MessageService.addMessage(form);
   }
 
   if (res && res.code === 200) {
@@ -157,8 +157,8 @@ const leaveMessage = async () => {
 };
 
 const getHotMessageTag = async () => {
-  const res: ApiResponse<{ tag: string }[]> = await getMessageTag();
-  if (res.code === 0) {
+  const res = await MessageService.getMessageTag();
+  if (res.code === 200) {
     tabList.value = Array.isArray(res.result)
       ? res.result.map((v, i) => ({ key: i + 1, label: v.tag }))
       : [];

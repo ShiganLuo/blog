@@ -3,7 +3,7 @@ import { reactive, onMounted, h, ref } from "vue";
 import { storeToRefs } from "pinia";
 
 import { returnTime, _getLocalItem, _setLocalItem, containHTML } from "@/utils/tool";
-import { addLike, cancelLike } from "@/api/like";
+import { LikeService } from "@/api/likeApi";
 import { useUserStore } from "@/stores/index";
 
 import { ElNotification } from "element-plus";
@@ -53,7 +53,7 @@ const like = async (item: MessageItem) => {
 
   if (item.is_like) {
     // 取消点赞
-    const res = await cancelLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
+    const res = await LikeService.cancelLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
     if (res.code === 200) {
       item.thumbs_up--;
       item.is_like = false;
@@ -67,7 +67,7 @@ const like = async (item: MessageItem) => {
     }
   } else {
     // 点赞
-    const res = await addLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
+    const res = await LikeService.addLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
     if (res.code === 200) {
       item.thumbs_up++;
       item.is_like = true;

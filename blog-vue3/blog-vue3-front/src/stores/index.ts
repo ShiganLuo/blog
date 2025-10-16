@@ -122,13 +122,14 @@ export const useUserStore = defineStore('user', () => {
   // State，在 store 启动时从本地存储加载初始值
   const blogAvatar = ref<string>('');
   const userInfo = ref<UserInfo>(_getLocalItem("userInfo") || {}); 
-  const token = ref<string>('');
+  const accessToken = ref<string>('');
+  const refreshToken = ref<string>('');
   const infoFlag = ref<boolean>(false);
   const tokenFlag = ref<boolean>(false);
   const showLogin = ref<boolean>(false);
 
   // Getters (使用 computed)
-  const isLoggedIn = computed(() => !!token.value);
+  const isLoggedIn = computed(() => !!accessToken.value);
   const getUserName = computed(() => userInfo.value.nick_name || userInfo.value.username);
   const getBlogAvatar = computed(() => {
     return userInfo.value.avatar || blogAvatar.value || 'default-avatar.png';
@@ -142,17 +143,26 @@ export const useUserStore = defineStore('user', () => {
   }
   function setUserInfo(info: UserInfo) {
     userInfo.value = info;
-    // 不再需要在这里手动调用 _setLocalItem()
+    
   }
 
-  function setToken(newToken: string) {
-    token.value = newToken;
+  function setToken(newAccessToken: string, newRefreshToken?: string) {
+    accessToken.value = newAccessToken;
+    _setLocalItem("accessToken",accessToken.value);
+    if (newRefreshToken) {
+      refreshToken.value = newRefreshToken;
+      _setLocalItem("refreshToken",refreshToken.value);
+    }
   }
 
-  function clearUserInfo() {
+  function logOut() {
     userInfo.value = {};
-    token.value = '';
-    _removeLocalItem("userInfo")
+    showLogin.value = false;
+    accessToken.value = '';
+    refreshToken.value = '';
+    _removeLocalItem("accessToken");
+    _removeLocalItem("refreshToken");
+    _removeLocalItem("userInfo");
   }
   
   function setShowLogin(show: boolean) {
@@ -174,7 +184,8 @@ export const useUserStore = defineStore('user', () => {
     // State
     blogAvatar,
     userInfo,
-    token,
+    accessToken,
+    refreshToken,
     infoFlag,
     tokenFlag,
     showLogin,
@@ -189,7 +200,7 @@ export const useUserStore = defineStore('user', () => {
     // Actions
     setUserInfo,
     setToken,
-    clearUserInfo,
+    logOut,
     setShowLogin,
     setBlogAvatar
   };

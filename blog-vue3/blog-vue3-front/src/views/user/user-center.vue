@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, h } from "vue";
 import type { FormInstance, FormRules, FormItemRule } from "element-plus";
-import { updateUserInfo, updateUserPassword, getUserInfoById, imgUpload } from "@/api/user";
+import { UserService } from "@/api/userApi";
 import { useUserStore } from "@/stores/index";
 import Upload from "@/components/Upload/upload.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
@@ -112,7 +112,7 @@ const pwdRules: FormRules<PwdForm> = reactive({
 
 // 获取登录用户信息
 const getCurrentUserInfo = async () => {
-  const res = await getUserInfoById(userStore.getUserInfo.id) as ApiResponse<InfoForm>;
+  const res = await UserService.getUserInfoById(userStore.getUserInfo.id) as ApiResponse<InfoForm>;
   if (res && res.code === 200) {
     userStore.setUserInfo(res.result);
     const { avatar } = res.result;
@@ -140,12 +140,12 @@ const updateInfo = async () => {
         loading.value = true;
         // 上传图片
         if (!infoForm.avatarList[0]?.id) {
-          const img = await imgUpload(infoForm.avatarList[0]) as ApiResponse<{ url: string }>;
-          if (img.code === 0) {
-            infoForm.avatar = img.result.url;
+          const img = await UserService.imgUpload(infoForm.avatarList[0]);
+          if (img.code === 200) {
+            infoForm.avatar = img.result;
           }
         }
-        const res = await updateUserInfo(infoForm) as ApiResponse;
+        const res = await UserService.updateUserInfo(infoForm) as ApiResponse;
         if (res && res.code === 0) {
           ElNotification({
             offset: 60,
@@ -176,7 +176,7 @@ const updatePassword = async () => {
         confirmButtonText: "确认",
         cancelButtonText: "取消",
       }).then(async () => {
-        const res = await updateUserPassword(pwdForm) as ApiResponse;
+        const res = await UserService.updateUserPassword(pwdForm) as ApiResponse;
         if (res && res.code === 0) {
           ElNotification({
             offset: 60,
@@ -184,7 +184,7 @@ const updatePassword = async () => {
             message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "修改密码成功"),
           });
           Object.assign(pwdForm, primaryPwdForm);
-          userStore.clearUserInfo();
+          userStore.logOut();
           router.push("/");
         } else {
           ElNotification({

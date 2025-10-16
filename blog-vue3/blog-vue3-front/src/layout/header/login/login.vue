@@ -2,7 +2,7 @@
 import { ref, reactive, watch, h, nextTick } from "vue";
 import type { FormInstance, FormRules, FormItemRule } from "element-plus";
 import { ElNotification } from "element-plus";
-import { reqLogin, reqRegister } from "@/api/user";
+import { UserService } from "@/api/userApi";
 import { useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
 import { getWelcomeSay, _getLocalItem, _setLocalItem, _removeLocalItem } from "@/utils/tool";
@@ -90,8 +90,8 @@ const userRegister = async () => {
         password: registerForm.password1,
         nick_name: registerForm.nick_name,
       };
-      const res = await reqRegister(register);
-      if (res?.code === 0) {
+      const res = await UserService.reqRegister(register);
+      if (res?.code === 200) {
         await userLogin("register");
       } else {
         ElNotification({ offset: 60, title: "错误提示", message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message) });
@@ -117,7 +117,7 @@ const userLogin = async (type?: "register") => {
 };
 
 const onLogin = async (form: LoginForm, type: "login" | "register" = "login") => {
-  const res = await reqLogin(form);
+  const res = await UserService.reqLogin(form);
   if (res?.code === 200) {
     await userStore.setToken(res.result.accessToken);
     // 用户注册后登录

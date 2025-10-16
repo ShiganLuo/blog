@@ -3,19 +3,7 @@ import { useRouter } from "vue-router";
 import SkeletonItem from "../SkeletonItem/skeleton-item.vue";
 import Pagination from "../Pagination/pagination.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
-// 每篇文章类型
-interface Article {
-  id: number;
-  article_title: string;
-  article_cover: string;
-  createdAt: string;
-}
-
-// 每个归档分组类型
-interface ArchiveGroup {
-  year: number;
-  articleList: Article[];
-}
+import { type ArchiveGroup, type Article } from "@/types/blog/article";
 
 // 分页参数类型
 interface PaginationParam {

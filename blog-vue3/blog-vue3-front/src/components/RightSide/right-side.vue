@@ -6,30 +6,14 @@ import { ElCard, ElCol, ElImage, ElRow, ElSkeleton } from "element-plus";
 
 import { numberFormate } from "@/utils/tool";
 import { gsapTransY } from "@/utils/transform";
-
+import { type ColoredTag } from "@/types/blog/tag";
+import { type ConfigDetail } from "@/types/config";
 import RightSideSkeletonItem from "@/components/RightSide/components/skeleton/right-side-skeleton-item.vue";
 import RightSideTopSkeleton from "@/components/RightSide/components/skeleton/right-side-top-skeleton.vue";
 import RightSideItem from "@/components/RightSide/components/item/right-side-item.vue";
 import RightSideTop from "@/components/RightSide/components/item/right-side-top.vue";
 import GsapCount from "@/components/GsapCount/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
-
-// 类型定义
-interface ConfigDetail {
-  blog_notice?: string;
-  qq_group?: string;
-  we_chat_group?: string;
-  ali_pay?: string;
-  we_chat_pay?: string;
-  view_time?: number;
-  articleCount?: number;
-}
-
-interface Tag {
-  id: number;
-  tag_name: string;
-  color: string;
-}
 
 // Props 类型定义
 defineProps({
@@ -46,7 +30,7 @@ defineProps({
     default: false,
   },
   tags: {
-    type: Array as PropType<Tag[]>,
+    type: Array as PropType<ColoredTag[]>,
     default: () => [],
   },
 });
@@ -54,7 +38,7 @@ defineProps({
 const router = useRouter();
 
 // 路由跳转函数
-const goToArticleList = (item: Tag) => {
+const goToArticleList = (item: ColoredTag) => {
   router.push({
     path: "articleList",
     query: {

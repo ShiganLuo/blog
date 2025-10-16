@@ -1,22 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getAllPhotosByAlbumId, getAllAlbum } from "@/api/photo";
+import { PhotoService } from "@/api/photoApi";
 import PageHeader from "@/components/PageHeader/index.vue";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import { isMobile } from "@/utils/tool";
-
-// 定义接口
-interface Photo {
-  id: number;
-  url: string;
-}
-
-interface Album {
-  id: number;
-  album_name: string;
-  album_cover: string;
-}
+import { type Photo, type Album } from "@/types/photo";
 
 // 路由
 const route = useRoute();
@@ -31,7 +20,7 @@ const drawerShow = ref<boolean>(false);
 // 获取照片列表
 const pageGetPhotos = async (id: number) => {
   loading.value = true;
-  const res = await getAllPhotosByAlbumId({id});
+  const res = await PhotoService.getAllPhotosByAlbumId({id});
   if (res.code === 200) {
     photoList.value = res.result;
   }
@@ -52,7 +41,7 @@ const toggleAlbum = (item: Album) => {
 
 // 获取相册和照片
 const getAll = async (id: string | string[] | undefined) => {
-  const res = await getAllAlbum();
+  const res = await PhotoService.getAllAlbum();
   if (res.code === 200) {
     photoAlbumList.value = res.result;
     pageGetPhotos(Number(id));

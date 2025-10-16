@@ -1,24 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getAllTag } from "@/api/tag";
-
+import { TagService } from "@/api/blog/tagApi";
+import { type  TagListResponse, type TagItem } from "@/types/blog/tag"
 import GsapCount from "@/components/GsapCount/index.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
 
-// 标签类型
-interface TagItem {
-  id: number | string;
-  tag_name: string;
-  fontSize: number;
-  fontColor: string;
-}
-
-// 接口返回类型
-interface GetAllTagResponse {
-  code: number;
-  result: Array<{ id: number | string; tag_name: string }>;
-}
 
 // router
 const router = useRouter();
@@ -50,7 +37,7 @@ const goToArticleList = (item: TagItem) => {
 const getTagList = async () => {
   loading.value = true;
   try {
-    const res: GetAllTagResponse = await getAllTag();
+    const res = await TagService.getAllTag();
     if (res.code === 200) {
       total.value = res.result.length;
       tagList.value = res.result.map((tag) => ({

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive, h, watch, nextTick } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
-import { addFriendLinks, updateFriendLinks } from "@/api/links";
+import { LinkService } from "@/api/linksApi";
 import { ElNotification } from "element-plus";
 
-import { imgUpload } from "@/api/user";
+import { UserService } from "@/api/userApi";
 
 import Upload from "@/components/Upload/upload.vue";
 import { _getLocalItem, _removeLocalItem } from "@/utils/tool";
@@ -93,7 +93,7 @@ const applyLinks = async () => {
         // 类型断言，确保bgList[0]是一个File或Blob对象
         const formData = new FormData();
         formData.append('file', form.bgList[0].raw);
-        const img = await imgUpload(formData);
+        const img = await UserService.imgUpload(formData);
         if (img.code === 200 && img.result) {
           const url = img.result;
           form.site_avatar = url;
@@ -102,10 +102,10 @@ const applyLinks = async () => {
       form.status = 1;
       let res;
       if (form.id) {
-        res = await updateFriendLinks(form);
+        res = await LinkService.updateFriendLinks(form);
       } else {
         form.user_id = getUserInfo.value.id;
-        res = await addFriendLinks(form);
+        res = await LinkService.addFriendLinks(form);
       }
 
       if (res && res.code === 200) {

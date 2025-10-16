@@ -3,60 +3,17 @@ import { ref, reactive, onMounted, nextTick, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/index";
 
-import { homeGetArticleList } from "@/api/article";
-import { homeGetConfig } from "@/api/config";
-import { getAllTag } from "@/api/tag";
-import { homeGetStatistic } from "@/api/home";
+import { ArticleService } from "@/api/blog/articleApi";
+import { ConfigService } from "@/api/configApi";
+import { TagService } from "@/api/blog/tagApi";
+import { type ConfigDetail } from "@/types/config";
+import { type ArticleInfo } from "@/types/blog/article";
 import { randomFontColor, numberFormate } from "@/utils/tool";
 import PageHeader from "@/components/PageHeader/index.vue";
 import HomeArticleList from "@/components/HomeArticle/home-article-list.vue";
 import RightSide from "@/components/RightSide/right-side.vue";
 import { gsapTransY } from "@/utils/transform";
-
-// 类型定义
-interface Article {
-  id?: string | number;
-  article_cover?: string;
-  article_title?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  categoryNameList?: string[];
-  tagNameList?: string[];
-  thumbs_up_times?: number;
-  view_times?: number;
-  article_description?: string;
-  is_top?: number;
-}
-
-interface ConfigDetail {
-  blog_avatar?: string;
-  createdAt?: string;
-  articleCount?: number;
-  view_time?: number;
-  qq_group?: string;
-  we_chat_group?: string;
-  blog_notice?: string;
-  // 其他配置字段...
-  avatar_bg?: string;
-  blog_name?: string;
-  personal_say?: string;
-  categoryCount?: number;
-  tagCount?: number;
-  git_ee_link?: string;
-  bilibili_link?: string;
-  github_link?: string;
-  we_chat_link?: string;
-  qq_link?: string;
-}
-
-interface Tag {
-  id: number;
-  tag_name: string;
-}
-
-interface ColoredTag extends Tag {
-  color: string;
-}
+import { type Tag, type ColoredTag } from "@/types/blog/tag"
 
 interface PaginationParams {
   current: number;
@@ -75,12 +32,12 @@ const param: PaginationParams = reactive({
   loading: true, //加载
 });
 
-const articleList: Ref<Article[]> = ref([]);
+const articleList: Ref<ArticleInfo[]> = ref([]);
 const articleTotal: Ref<number> = ref(0);
 
 const getHomeArticleList = async (): Promise<void> => {
   try {
-    const res = await homeGetArticleList( { pageNum: param.current, pageSize: param.size });
+    const res = await ArticleService.homeGetArticleList( { pageNum: param.current, pageSize: param.size });
     if (res.code === 200) {
       const { total, list } = res.result;
       articleTotal.value = total;
@@ -105,7 +62,7 @@ const tags: Ref<ColoredTag[]> = ref([]);
 // 获取网站详细信息
 const getConfigDetail = async (): Promise<void> => {
   try {
-    const res = await homeGetConfig();
+    const res = await ConfigService.homeGetConfig();
     if (res.code === 200 && typeof res.result !== "string") {
       configDetail.value = res.result as ConfigDetail;
       userStore.setBlogAvatar(res.result.blog_avatar || '');
@@ -118,7 +75,7 @@ const getConfigDetail = async (): Promise<void> => {
 
 // 获取所有标签
 const getAllTags = async (): Promise<void> => {
-  const res = await getAllTag();
+  const res = await TagService.getAllTag();
 
   if (res.code === 200 && Array.isArray(res.result)) {
     tags.value = res.result.map((tag: Tag): ColoredTag => ({

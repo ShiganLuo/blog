@@ -6,9 +6,9 @@ import { Edit, Delete, Search } from "@element-plus/icons-vue";
 import { ElNotification, ElMessageBox } from "element-plus";
 
 import { gsapTransXScale } from "@/utils/transform";
-import { getMessageList, deleteMessage, getMessageTag } from "@/api/message";
-import { addLike, cancelLike, getIsLikeByIdOrIpAndType } from "@/api/like";
-
+import { MessageService } from "@/api/messageApi";
+import { LikeService } from "@/api/likeApi";
+import { type MessageItem, type MessageItemListResponse } from "@/types/message";
 import svgIcon from "@/components/SvgIcon/index.vue";
 import Loading from "@/components/Loading/index.vue";
 import {
@@ -25,20 +25,6 @@ const router = useRouter();
 const userStore = useUserStore();
 const { getUserInfo } = storeToRefs(userStore);
 
-// 定义留言项的接口
-interface MessageItem {
-  id: number;
-  avatar: string;
-  nick_name: string;
-  user_id: number;
-  content: string;
-  color: string;
-  font_size: number;
-  font_weight: number;
-  createdAt: string;
-  is_like: boolean;
-  thumbs_up: number;
-}
 const messageList = ref<MessageItem[]>([]);
 const total = ref<number>(0);
 const loading = ref<boolean>(false);
@@ -139,7 +125,7 @@ const pageGetMessageList = async (): Promise<void> => {
     scrollLoading.value = true;
   }
   try {
-    let res = await getMessageList(param);
+    let res = await MessageService.getMessageList(param);
     if (res.code === 200 && res.result) {
       const { list, sum } = res.result;
       // --- 新增：为每个留言项设置随机值 ---
@@ -155,8 +141,11 @@ const pageGetMessageList = async (): Promise<void> => {
         return ".message" + (messageList.value.length - list.length + index);
       });
       total.value = sum;
+      const elementList = classList
+        .map(selector => document.querySelector(selector))
+        .filter((el): el is HTMLElement => el !== null);
       nextTick(() => {
-        gsapTransXScale(classList, 0, 1.2);
+        gsapTransXScale(elementList, 0, 1.2);
       });
     }
   } finally {
@@ -183,11 +172,11 @@ const like = async (item: MessageItem, index: number): Promise<void> => {
     let res;
     // 取消点赞
     if (item.is_like) {
-      res = await cancelLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
+      res = await LikeService.cancelLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
     }
     // 点赞
     else {
-      res = await addLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
+      res = await LikeService.addLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
     }
 
     if (res && res.code === 200) {
@@ -234,7 +223,7 @@ const handleDeleteMessage = (item: MessageItem): void => {
     cancelButtonText: "取消",
   })
     .then(async () => {
-      const res = await deleteMessage({ id: item.id });
+      const res = await MessageService.deleteMessage({ id: item.id });
       if (res && res.code === 200) {
         ElNotification({
           offset: 60,
@@ -263,7 +252,7 @@ const handleDeleteMessage = (item: MessageItem): void => {
 
 const getHotMessageTag = async (): Promise<void> => {
   tabList.value = [];
-  const res = await getMessageTag();
+  const res = await MessageService.getMessageTag();
   if (res.code === 200 && res.result) {
     tabList.value = Array.isArray(res.result)
       ? res.result.map((v, i) => ({

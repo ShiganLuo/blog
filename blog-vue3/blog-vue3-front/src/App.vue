@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted,onBeforeUnmount } from 'vue'
 import { RouterView, useRouter, useRoute } from 'vue-router'
-import { addView } from './api/site';
+import { SiteService } from './api/siteApi';
 import { isMobile } from './utils/tool';
 import WelcomeMessage from "@/components/WelcomeComps/WelcomeMessage.vue";
 import BackTop from "@/components/BackTop/index.vue";
@@ -32,7 +32,7 @@ onMounted( async () => {
 
   backTopProps.right = 0;
   backTopProps.svgWidth = 6;
-  addView();
+  SiteService.addView();
   document.addEventListener("contextmenu", handleContextMenu);
   document.addEventListener("click", handleClick);
 })

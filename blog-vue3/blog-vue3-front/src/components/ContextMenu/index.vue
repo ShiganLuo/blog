@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { storeToRefs } from "pinia";
 import { useStaticData } from "@/stores/index";
-import { homeGetArticleList } from "@/api/article";
+import { homeGetArticleList } from "@/api/blog/articleApi";
 
 interface Article {
   id: number;

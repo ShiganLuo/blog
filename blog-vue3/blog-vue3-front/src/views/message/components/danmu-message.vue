@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch } from "vue";
-import { getMessageList } from "@/api/message";
+import { MessageService } from "@/api/messageApi";
 import VueDanmaku from "vue3-danmaku";
 
 // 定义弹幕数据类型
@@ -37,7 +37,7 @@ const addDanmu = (danmu: Danmu) => {
 // 加载并播放弹幕
 const loadAndPlayDanmu = async () => {
   try {
-    const res: any = await getMessageList({
+    const res: any = await MessageService.getMessageList({
       current: 1,
       size: 200,
       type: "message",

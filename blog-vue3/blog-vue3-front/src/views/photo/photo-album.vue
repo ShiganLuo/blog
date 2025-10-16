@@ -1,26 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getAllAlbum } from "@/api/photo";
-
+import { PhotoService } from "@/api/photoApi";
+import { type Album } from "@/types/photo";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 
-// 相册类型定义
-interface Album {
-  id: number;
-  album_name: string;
-  album_cover: string;
-  description: string;
-}
-
-// API 响应类型定义
-interface ApiResponse<T> {
-  code: number;
-  result: T;
-  message?: string;
-}
 
 const albumList = ref<Album[]>([]);
 const loading = ref(false);
@@ -42,8 +28,8 @@ const goToPhotos = (item: Album) => {
 // 获取全部相册
 const getAll = async () => {
   loading.value = true;
-  const res: ApiResponse<Album[]> = await getAllAlbum();
-  if (res.code === 0) {
+  const res = await PhotoService.getAllAlbum();
+  if (res.code === 200) {
     albumList.value = res.result;
   }
   loading.value = false;

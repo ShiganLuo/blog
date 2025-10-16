@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref, watch, h } from "vue";
 import { storeToRefs } from "pinia";
-import { frontGetComment, addComment, deleteComment } from "@/api/comment";
-import { addLike, cancelLike } from "@/api/like";
+import { frontGetComment, addComment, deleteComment } from "@/api/blog/commentApi";
+import { addLike, cancelLike } from "@/api/likeApi";
 import Loading from "@/components/Loading/index.vue";
 import { useUserStore } from "@/stores/index";
 import { ElMessageBox, ElNotification } from "element-plus";

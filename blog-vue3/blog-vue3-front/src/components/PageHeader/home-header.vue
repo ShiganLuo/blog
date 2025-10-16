@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, computed, type Ref } from "vue";
 import { useRoute } from "vue-router";
-import { getOneStentence } from "@/api/home";
+import { HomeService } from "@/api/homeApi";
 import { useStaticData } from "@/stores/index";
 import TypeWriter from "@/components/TypeWriter/index.vue";
 import Waves from "@/components/WelcomeComps/waves.vue";
@@ -52,7 +52,7 @@ const scrollListener = debounce(() => {
 // https://github.com/vv314/quotes
 const initOneSentence = async () => {
 
-    const res = await getOneStentence();
+    const res = await HomeService.getOneStentence();
     if (res.code === 200) {
       saying.value = [res.result];
     }
