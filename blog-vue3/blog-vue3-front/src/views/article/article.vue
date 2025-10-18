@@ -4,7 +4,6 @@ import { useRoute, useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
 import { useStaticData, useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
-import { type ArticleInfo } from "@/types/blog/article"
 import { MdPreview, MdCatalog } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 
@@ -39,34 +38,60 @@ const userStore = useUserStore();
 const { codeTheme, previewTheme, mainTheme } = storeToRefs(staticStore);
 const { getUserInfo } = storeToRefs(userStore);
 
-const currentUrl = window.location.href;
-const isLike = ref(false);
-const likePending = ref(false);
-
-// 模仿md文档信息
 const mdState = reactive<MdState>({
   text: "",
   id: "my-editor",
   switch: true,
 });
 
-const loading = ref(false);
-const articleInfo = ref<ArticleInfo>({} as ArticleInfo);
-const scrollElement = document.documentElement;
+const articleFormState = {
+  article_content: '',
+  authorName: '',
+  type: 1,
+  origin_url: '',
+  thumbs_up_times: 0,
+  article_cover: '',
+  article_title: '',
+  author_id: 0,
+  id: 0,
+}
 
-// 移动端目录是否可见
-const drawerShow = ref(false);
-// 推荐文章
-const recommendList = ref<ArticleInfo[]>([]);
-const previousArticle = ref<ArticleInfo>({} as ArticleInfo);
-const nextArticle = ref<ArticleInfo>({} as ArticleInfo);
+const previousArticleFormState = {
+    article_cover: '',
+    article_title: '',
+    id: 0
+}
+
+const nextArticleFormState = {
+    article_cover: '',
+    article_title: '',
+    id: 0
+}
+
+type RecommendArticle = {
+  id: number
+  article_cover: string
+  article_title: string
+  createdAt: string
+}
+const articleForm = reactive({ ...articleFormState });
+const previousArticleForm = reactive({ ... previousArticleFormState});//上一篇文章
+const nextArticleForm = reactive({...nextArticleFormState});//下一篇文章
+const recommendArticleListForm = ref<RecommendArticle[]>([]); // 推荐文章
+const loading = ref(false);
+
+const scrollElement = document.documentElement;
+const currentUrl = window.location.href;
+const isLike = ref(false);
+const likePending = ref(false);
+const drawerShow = ref(false); // 移动端目录是否可见
 
 const toggleDrawer = (): void => {
   drawerShow.value = !drawerShow.value;
 };
 
-const goToArticle = (article: ArticleInfo): void => {
-  router.push({ path: "/article", query: { id: article.id } });
+const goToArticle = (id: number): void => {
+  router.push({ path: "/article", query: { id: id } });
 };
 
 // 文章点赞
@@ -76,9 +101,9 @@ const like = async (): Promise<void> => {
   const userId = getUserInfo.value.id;
   // 取消点赞
   if (isLike.value) {
-    const res = await LikeService.cancelLike({ for_id: articleInfo.value.id,type: "post", user_id: userId });
+    const res = await LikeService.cancelLike({ for_id: articleForm.id,type: "post", user_id: userId });
     if (res.code === 200) {
-      articleInfo.value.thumbs_up_times--;
+      articleForm.thumbs_up_times--;
       isLike.value = false;
       likePending.value = false;
       ElNotification({
@@ -90,9 +115,9 @@ const like = async (): Promise<void> => {
         });
     }
   } else { // 点赞
-    const res = await LikeService.addLike({ for_id: articleInfo.value.id,type: "post", user_id: userId });
+    const res = await LikeService.addLike({ for_id: articleForm.id,type: "post", user_id: userId });
     if (res.code === 200) {
-      articleInfo.value.thumbs_up_times++;
+      articleForm.thumbs_up_times++;
       isLike.value = true;
       likePending.value = false;
       ElNotification({
@@ -109,9 +134,9 @@ const like = async (): Promise<void> => {
 const getArticleDetails = async (id: string | number): Promise<void> => {
   const res = await ArticleService.getArticleById(id);
   if (res.code === 200) {
-    mdState.text = res.result.article_content;
-    articleInfo.value = res.result;
-    const LRes = await LikeService.getIsLikeByIdOrIpAndType({ for_id: articleInfo.value.id, type: "post", user_id: getUserInfo.value.id });
+    Object.assign(articleForm,res.result);
+    mdState.text = articleForm.article_content;
+    const LRes = await LikeService.getIsLikeByIdOrIpAndType({ for_id: articleForm.id, type: "post", user_id: getUserInfo.value.id });
     if (LRes.code === 200) {
       isLike.value = LRes.result;
     }
@@ -129,9 +154,15 @@ const getRecommendArticle = async (id: string | number): Promise<void> => {
   const res = await ArticleService.getRecommendArticleById(id);
   if (res.code === 200) {
     const { previous, next, recommend } = res.result;
-    recommendList.value = recommend;
-    previousArticle.value = previous;
-    nextArticle.value = next;
+    const recommendArticleTemp:RecommendArticle[] = recommend.map(item => ({
+        id: item.id ?? item.id ?? 0,
+        article_title: item.article_title ?? item.article_title ?? '',
+        article_cover: item.article_cover ?? item.article_cover ?? '',
+        createdAt: item.createdAt ?? item.createdAt ?? ''
+    }));
+    recommendArticleListForm.value = recommendArticleTemp;
+    Object.assign(previousArticleForm,previous);
+    Object.assign(nextArticleForm,next);
   }
 };
 
@@ -181,7 +212,7 @@ watch(
 </script>
 
 <template>
-  <PageHeader :article="articleInfo" :loading="loading" />
+  <PageHeader :article="articleForm" :loading="loading" />
   <div class="article article-center">
     <el-row class="article_box">
       <el-col :xs="0" :sm="0" :md="4"></el-col>
@@ -201,19 +232,19 @@ watch(
               <div>
                 <span>文章作者：</span>
                 <a class="to_pointer" href="">{{
-                  articleInfo.authorName
+                  articleForm.authorName
                 }}</a>
               </div>
               <div>
                 <span>类型：</span>
                 <el-tag>{{
-                  articleInfo.type == 1 ? "原创" : articleInfo.type == 2 ? "转载" : "翻译"
+                  articleForm.type == 1 ? "原创" : articleForm.type == 2 ? "转载" : "翻译"
                 }}</el-tag>
               </div>
-              <div v-if="articleInfo.type != 1">
+              <div v-if="articleForm.type != 1">
                 <span>原文链接：</span>
-                <a class="to_pointer" :href="articleInfo.origin_url">{{
-                  articleInfo.origin_url
+                <a class="to_pointer" :href="articleForm.origin_url">{{
+                  articleForm.origin_url
                 }}</a>
               </div>
               <div v-else>
@@ -227,19 +258,19 @@ watch(
             <i class="iconfont icon-icon1 mr-5px"></i>
             <GsapCount
               :class="[isLike ? 'is-like' : '']"
-              v-if="articleInfo.thumbs_up_times - 0 < 1000"
-              :value="articleInfo.thumbs_up_times"
+              v-if="articleForm.thumbs_up_times - 0 < 1000"
+              :value="articleForm.thumbs_up_times"
             />
             <span v-else :class="[isLike ? 'is-like' : '']">
-              {{ articleInfo.thumbs_up_times }}
+              {{ articleForm.thumbs_up_times }}
             </span>
           </div>
           <div class="recommend flex_r_between">
-            <div class="recommend-box" @click="goToArticle(previousArticle)">
+            <div class="recommend-box" @click="goToArticle(previousArticleForm.id)">
               <el-image
                 class="recommend-box-img animate__animated animate__fadeInDown"
                 fit="cover"
-                :src="previousArticle.article_cover"
+                :src="previousArticleForm.article_cover"
               >
                 <template #error>
                   <svg-icon name="image404" :width="10" :height="5"></svg-icon>
@@ -254,16 +285,16 @@ watch(
                   width="60%"
                   color="#fff"
                   :weight="600"
-                  :name="previousArticle.article_title"
+                  :name="previousArticleForm.article_title"
                   align="left"
                 ></Tooltip>
               </span>
             </div>
-            <div class="recommend-box" @click="goToArticle(nextArticle)">
+            <div class="recommend-box" @click="goToArticle(nextArticleForm.id)">
               <el-image
                 class="recommend-box-img animate__animated animate__fadeInDown"
                 fit="cover"
-                :src="nextArticle.article_cover"
+                :src="nextArticleForm.article_cover"
               >
                 <template #error>
                   <svg-icon name="image404" :width="10" :height="5"></svg-icon>
@@ -278,7 +309,7 @@ watch(
                   width="60%"
                   color="#fff"
                   :weight="600"
-                  :name="nextArticle.article_title"
+                  :name="nextArticleForm.article_title"
                   align="right"
                 ></Tooltip>
               </span>
@@ -290,9 +321,9 @@ watch(
               <div class="recommend-title">推荐文章</div>
               <el-col
                 :span="12"
-                v-for="item in recommendList"
+                v-for="item in recommendArticleListForm"
                 :key="item.id"
-                @click="goToArticle(item)"
+                @click="goToArticle(item.id)"
               >
                 <el-card class="card card-hover">
                   <template #header>
@@ -317,7 +348,7 @@ watch(
               class="w-100"
               type="post"
               :id="Number(route.query.id ?? 0)"
-              :author-id="articleInfo.author_id"
+              :author-id="articleForm.author_id"
             />
           </div>
         </el-card>
@@ -328,9 +359,9 @@ watch(
           <div class="command-box">
             <div
               class="command-box-item"
-              v-for="(item, index) in recommendList"
+              v-for="(item, index) in recommendArticleListForm"
               :key="index"
-              @click="goToArticle(item)"
+              @click="goToArticle(item.id)"
             >
               <el-image
                 class="command-box-item__img animate__animated animate__fadeInDown"
