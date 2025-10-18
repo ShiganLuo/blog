@@ -3,7 +3,7 @@ import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 import { ArticleService } from "@/api/blog/articleApi";
-import { type ArticleListResponse, type Article } from "@/types/blog/article";
+import { type ArticleListResponse} from "@/types/blog/article";
 import { type IResponse } from "@/utils/http/types";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import Tooltip from "@/components/ToolTip/index.vue";
@@ -17,20 +17,25 @@ interface PaginationParam {
   size: number;
   id: string;
 }
-
-const router = useRouter();
-
-const articleList = ref<Article[]>([]);
-const currentType = ref<string | null>(null);
-const currentName = ref<string | null>(null);
-const loading = ref<boolean>(false);
-
 const param = reactive<PaginationParam>({
   current: 1,
   size: 4,
   id: "",
 });
 
+const router = useRouter();
+
+type Article = {
+  id: string,
+  article_cover: string,
+  article_title: string,
+  createdAt: string,
+}
+const articleListForm = ref<Article[]>([]);
+
+const currentType = ref<string | null>(null);
+const currentName = ref<string | null>(null);
+const loading = ref<boolean>(false);
 const total = ref<number>(0);
 const layout = "prev, pager, next";
 
@@ -57,7 +62,7 @@ const getArticleListById = async () => {
   }
 
   if (res.code === 200) {
-    articleList.value = res.result.list;
+    articleListForm.value = res.result.list;
     total.value = res.result.total;
   }
 
@@ -101,7 +106,7 @@ onMounted(() => {
           <div class="article-list__head-total">文章总数：{{ total }}</div>
         </div>
         <el-row>
-          <el-col :xs="12" :sm="8" :md="6" v-for="(item, index) in articleList" :key="index">
+          <el-col :xs="12" :sm="8" :md="6" v-for="(item, index) in articleListForm" :key="index">
             <el-card class="card-hover" @click="gotoDetail(item.id)">
               <div v-image="item.article_cover" class="article-img scale">
                 <el-image

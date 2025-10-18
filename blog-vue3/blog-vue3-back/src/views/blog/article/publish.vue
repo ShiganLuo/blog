@@ -216,13 +216,25 @@
     password: '',
     originalUrl: ''
   }
-  const form = reactive({ ...initialFormState })
+ const form = reactive({ ...initialFormState })
+ type CategoryResult = {
+    id: string,
+    categoryName: string,
+    createTime: string,
+    updateTime: string,
+  }
+  const categorys = ref<CategoryResult[]>([])
+
+  type TagResult = {
+    id: string,
+    tagName: string,
+    createTime: string,
+    updateTime: string,
+  }
+  const tagList = ref<TagResult[]>([])
+
   const categoryName = ref('')
   const tagName = ref('')
-  import { CategoryResult } from '@/types/blog/category'
-  import { TagResult } from '@/types/blog/tag'
-  const categorys = ref<CategoryResult[]>([])
-  const tagList = ref<TagResult[]>([])
 
   const userStore = useUserStore()
   let { accessToken } = userStore
