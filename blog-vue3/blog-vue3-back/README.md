@@ -1,140 +1,69 @@
-# 简介
+# blog-admin
 
-基于 Vue3 + Vue-router + Webpack5 + NaiveUI + Pinia 搭建的博客后台
+## 项目介绍
+blog-admin 是一款专注于用户体验和视觉设计的后台管理系统模板，基于 Vue3、TypeScript、Vite 和 Element Plus 等现代前端技术栈开发。项目采用了最新的前端技术栈，提供了丰富的功能组件和优雅的界面设计。
 
-# 预览
+## 技术栈
+- 样式来自于: [art-design-pro](https://github.com/Daymychen/art-design-pro.git)主题
+- 核心框架：Vue 3
+- 开发语言：TypeScript
+- 构建工具：Vite
+- UI 框架：Element Plus
+- 状态管理：Pinia
+- 路由管理：Vue Router
+- HTTP 工具：Axios
+- 图表库：ECharts
+- 国际化：vue-i18n
 
-线上地址：[https://admin.hsslive.cn](https://admin.hsslive.cn)
+## 后端服务
+- 后端仓库：[Server](https://github.com/851543/Server.git)
+- 说明：本项目配套的后端服务器，提供完整的API接口支持，包含用户管理、权限控制等核心功能
 
-# 项目截图
+## 功能特点
+- 💡 最新技术栈：使用 Vue3/Vite/TypeScript 等前沿技术开发
+- 🔥 热重载：开发环境下的实时预览和热重载
+- 📦 组件封装：二次封装了多个常用的组件
+- 🎨 主题定制：可自定义主题，支持动态切换
+- 🌍 国际化：内置中英文国际化方案
+- 🔒 权限管理：完善的前端权限管理方案
+- 📊 数据可视化：集成 ECharts 图表组件
+- 🎯 Mock 数据：内置模拟数据，轻松调试
 
-登录：
-
-![https://resource.hsslive.cn/image/e8241c8c3c9b259a0cc61ca316482f93.webp](https://resource.hsslive.cn/image/e8241c8c3c9b259a0cc61ca316482f93.webp)
-
-控制台：
-
-![https://resource.hsslive.cn/image/d9068218a9c6558b3db07266b554fc7a.webp](https://resource.hsslive.cn/image/d9068218a9c6558b3db07266b554fc7a.webp)
-
-角色列表：
-
-![https://resource.hsslive.cn/image/b7466a76a9cb2b104ec514df7d35b893.webp](https://resource.hsslive.cn/image/b7466a76a9cb2b104ec514df7d35b893.webp)
-
-角色树：
-
-![https://resource.hsslive.cn/image/804590ba404c7eda28dec55ce8094689.webp](https://resource.hsslive.cn/image/804590ba404c7eda28dec55ce8094689.webp)
-
-权限列表：
-
-![https://resource.hsslive.cn/image/a95304ea89428ce356a74d05570bf78e.webp](https://resource.hsslive.cn/image/a95304ea89428ce356a74d05570bf78e.webp)
-
-权限树：
-
-![https://resource.hsslive.cn/image/bf76360b9f52c12598dacad1f7cc4a8d.webp](https://resource.hsslive.cn/image/bf76360b9f52c12598dacad1f7cc4a8d.webp)
-
-用户列表：
-
-![https://resource.hsslive.cn/image/f43a658965af056418f8507628fbf157.webp](https://resource.hsslive.cn/image/f43a658965af056418f8507628fbf157.webp)
-
-日志列表：
-
-![https://resource.hsslive.cn/image/8185a484698664f74b06d54bb56feac7.webp](https://resource.hsslive.cn/image/8185a484698664f74b06d54bb56feac7.webp)
-
-友链列表：
-
-![https://resource.hsslive.cn/image/6e888d01adb02098136f552e93b64e39.webp](https://resource.hsslive.cn/image/6e888d01adb02098136f552e93b64e39.webp)
-
-文章列表：
-
-![https://resource.hsslive.cn/image/92200b687305c22b6b382e748c0029f1.webp](https://resource.hsslive.cn/image/92200b687305c22b6b382e748c0029f1.webp)
-
-发布文章：
-
-![https://resource.hsslive.cn/image/520d6e3af2f0aa389d7a802cecb29f77.webp](https://resource.hsslive.cn/image/520d6e3af2f0aa389d7a802cecb29f77.webp)
-
-点赞列表：
-
-![https://resource.hsslive.cn/image/3f0bbd0eb5f70511f41f30cb57c32a16.webp](https://resource.hsslive.cn/image/3f0bbd0eb5f70511f41f30cb57c32a16.webp)
-
-评论列表：
-
-![https://resource.hsslive.cn/image/c762c97e87859eb6d1b15c853a026c6d.webp](https://resource.hsslive.cn/image/c762c97e87859eb6d1b15c853a026c6d.webp)
-
-# 本地启动
-
-## 安装依赖
-
-```bash
-pnpm install
+## 项目结构
+```
+├── src/
+│   ├── api/           # API 接口管理
+│   ├── assets/        # 静态资源文件
+│   ├── components/    # 公共组件
+│   ├── config/        # 全局配置
+│   ├── directives/    # 自定义指令
+│   ├── language/      # 国际化资源
+│   ├── router/        # 路由配置
+│   ├── store/         # 状态管理
+│   ├── utils/         # 工具函数
+│   └── views/         # 页面视图
 ```
 
-更新 billd 依赖：
+## 快速开始
 
+1. 安装依赖
 ```bash
-pnpm i billd-utils@latest billd-scss@latest billd-html-webpack-plugin@latest billd-deploy@latest
+yarn install
 ```
 
-## 运行在根目录
-
+2. 启动开发服务器
 ```bash
-pnpm start
+yarn dev
 ```
 
-默认运行在 [http://localhost:8000/](http://localhost:8000/)，如果 8000 端口被占用了，会自动递增+1
-
-> 项目启动完成后，终端会打印调试地址，不必担心调试地址是什么~
-
-## 运行在非根目录
-
+3. 构建生产版本
 ```bash
-pnpm start:beta
-# 或
-pnpm start:preview
-# 或
-pnpm start:prod
-```
+yarn build
 
-默认运行在 [http://localhost:8000/vue3-blog-admin/beta/](http://localhost:8000/vue3-blog-admin/beta/) ，如果 8000 端口被占用了，会自动递增+1
+## 贡献指南
+欢迎提交问题和改进建议。请确保在提交之前：
+1. 检查现有的 issues
+2. 创建一个新的分支
+3. 提交你的更改
+4. 创建一个 Pull Request
 
-默认运行在 [http://localhost:8000/vue3-blog-admin/preview/](http://localhost:8000/vue3-blog-admin/preview/) ，如果 8000 端口被占用了，会自动递增+1
-
-默认运行在 [http://localhost:8000/vue3-blog-admin/prod/](http://localhost:8000/vue3-blog-admin/prod/) ，如果 8000 端口被占用了，会自动递增+1
-
-> 项目启动完成后，终端会打印调试地址，不必担心调试地址是什么~
-
-# 项目构建
-
-## 部署在根目录
-
-```bash
-pnpm build
-```
-
-最终构建的静态资源需要部署在服务器根目录。
-
-## 部署在非根目录
-
-> 注意：如果部署在非根目录，需要配合 nginx 做好 try_files
-
-```bash
-pnpm build:beta
-# 或
-pnpm build:preview
-# 或
-pnpm build:prod
-```
-
-最终构建的静态资源需要部署在服务器的/vue3-blog-admin/beta/目录。
-
-最终构建的静态资源需要部署在服务器的/vue3-blog-admin/preview/目录。
-
-最终构建的静态资源需要部署在服务器的/vue3-blog-admin/prod/目录。
-
-# 服务器环境
-
-- 操作系统：CentOS Linux release 8.2.2004
-- nginx 版本：1.21.4
-- node 版本：14.19.0
-- redis 版本：5.0.3
-- mysql 版本：8.0.26
-- pm2 版本：5.1.2

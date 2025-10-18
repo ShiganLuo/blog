@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { storeToRefs } from "pinia";
 import { useStaticData } from "@/stores/index";
-import { homeGetArticleList } from "@/api/blog/articleApi";
+import { ArticleService } from "@/api/blog/articleApi";
 
 interface Article {
   id: number;
@@ -91,7 +91,7 @@ defineExpose({
 // 获取文章列表
 async function fetchArticles() {
   try {
-    const res = await homeGetArticleList({ pageNum: 1, pageSize: 200 });
+    const res = await ArticleService.homeGetArticleList({ pageNum: 1, pageSize: 200 });
     if (res.code === 200) {
       articles.value = res.result.list;
     } else {

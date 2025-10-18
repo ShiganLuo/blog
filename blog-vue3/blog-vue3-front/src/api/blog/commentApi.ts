@@ -1,5 +1,6 @@
 import request from "@/utils/http/index";
 
+// import { }
 export class CommentSerivce {
   static addComment(data?: object) {
     return request.post({
@@ -10,8 +11,7 @@ export class CommentSerivce {
 
   static frontGetCommentTotal(id: number | string) {
     return request.get({
-      url: "/api/front/comments/getCommentTotal",
-      params: id
+      url: `/api/front/comments/getCommentTotal/${id}`
     })
   }
 
@@ -31,8 +31,7 @@ export class CommentSerivce {
 
   static deleteComment(id?: number | string) {
     return request.get({
-      url: "/api/front/comments/deleteCommentById",
-      params:id
+      url: `/api/front/comments/deleteCommentById/${id}`
     })
   }
 }

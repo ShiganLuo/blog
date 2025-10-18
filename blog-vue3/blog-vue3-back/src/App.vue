@@ -1,32 +1,44 @@
 <template>
-  <n-spin :show="appLoading">
-    <div class="app-wrap">
-      <router-view></router-view>
-    </div>
-    <SwitchEnvCpt></SwitchEnvCpt>
-  </n-spin>
+  <el-config-provider :size="elSize" :locale="locales[language]" :z-index="3000">
+    <router-view></router-view>
+  </el-config-provider>
 </template>
 
-<script lang="ts" setup>
-import VConsole from 'vconsole';
-import { toRef } from 'vue';
+<script setup lang="ts">
+  import { useUserStore } from './store/modules/user'
+  import zh from 'element-plus/es/locale/lang/zh-cn'
+  import en from 'element-plus/es/locale/lang/en'
+  import { initState, saveUserData } from './utils/storage'
 
-import SwitchEnvCpt from '@/components/SwitchEnv/index.vue';
-import { loginMessage } from '@/hooks/use-login';
-import { useAppStore } from '@/store/app';
-const appStore = useAppStore();
-const appLoading = toRef(appStore, 'loading');
-loginMessage();
-function handleVConsole() {
-  const vConsole = new VConsole();
-  console.log(vConsole);
-}
-// handleVConsole();
-console.log(window.location.href);
+  const userStore = useUserStore()
+  const language = computed(() => userStore.language)
+  const elSize = computed(() => (document.body.clientWidth >= 500 ? 'large' : 'default'))
+
+  const locales = {
+    zh: zh,
+    en: en
+  }
+
+  onBeforeMount(() => {
+    setBodyClass(true)
+  })
+
+  onMounted(() => {
+    initState()
+    saveUserData()
+    setBodyClass(false)
+  })
+
+  // 提升暗黑主题下页面刷新视觉体验
+  const setBodyClass = (addClass: boolean) => {
+    let el = document.getElementsByTagName('body')[0]
+
+    if (addClass) {
+      el.setAttribute('class', 'theme-change')
+    } else {
+      setTimeout(() => {
+        el.removeAttribute('class')
+      }, 300)
+    }
+  }
 </script>
-
-<style lang="scss" scoped>
-.app-wrap {
-  min-height: 100vh;
-}
-</style>

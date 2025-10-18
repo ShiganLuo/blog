@@ -25,8 +25,7 @@ export class UserService {
 
   static getUserInfoById(id?: string | number) {
     return request.get({
-      url: "/api/front/users/getUserInfoById",
-      params: id
+      url: `/api/front/users/getUserInfoById/${id}`
     })
   }
 

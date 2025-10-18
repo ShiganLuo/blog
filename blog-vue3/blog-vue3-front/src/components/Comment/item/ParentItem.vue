@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref, watch, h } from "vue";
 import { storeToRefs } from "pinia";
-import { frontGetComment, addComment, deleteComment } from "@/api/blog/commentApi";
-import { addLike, cancelLike } from "@/api/likeApi";
+import { CommentSerivce } from "@/api/blog/commentApi";
+import { LikeService } from "@/api/likeApi";
 import Loading from "@/components/Loading/index.vue";
 import { useUserStore } from "@/stores/index";
 import { ElMessageBox, ElNotification } from "element-plus";
@@ -39,7 +39,7 @@ const params = reactive<CommentParams>({
 const getComment = async (type?: string) => {
   params.loading = true;
   if (type === "clear") params.current = 1;
-  const res = await frontGetComment(params);
+  const res = await CommentSerivce.frontGetComment(params);
   if (res && res.code === 200) {
     const { list, total } = res.result;
     commentList.value = params.current === 1 ? list : commentList.value.concat(list);
@@ -60,14 +60,14 @@ const handleLike = async (comment: CommentItem) => {
   let res;
   const payload = { for_id: comment.id, type: "comment", user_id: userStore.getUserInfo.id };
   if (comment.is_like) {
-    res = await cancelLike(payload);
+    res = await LikeService.cancelLike(payload);
     if (res?.code === 200) {
       comment.is_like = false;
       comment.thumbs_up--;
       ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "已取消点赞") });
     }
   } else {
-    res = await addLike(payload);
+    res = await LikeService.addLike(payload);
     if (res?.code === 200) {
       comment.is_like = true;
       comment.thumbs_up++;
@@ -82,7 +82,7 @@ const handleDelete = (commentId: number | string) => {
     confirmButtonText: "确认",
     cancelButtonText: "取消",
   }).then(async () => {
-    const res = await deleteComment(commentId);
+    const res = await CommentSerivce.deleteComment(commentId);
     if (res?.code === 200) {
       ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "删除成功") });
       getComment("clear");
@@ -106,7 +106,7 @@ const publish = async (data: { content: string, for_id?: number | string, to_id?
     root_id: props.id
   };
   console.log(commentData)
-  const res = await addComment(commentData);
+  const res = await CommentSerivce.addComment(commentData);
   if (res.code === 200) {
     ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "评论成功") });
     getComment("clear");

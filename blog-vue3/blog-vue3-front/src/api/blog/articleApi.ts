@@ -36,8 +36,7 @@ export class ArticleService {
       throw new Error('getArticleById: id is required')
     }
     return request.get<ArticleInfo>({
-      url: "/api/front/articles/getArticleById/",
-      params: id
+      url: `/api/front/articles/getArticleById/${id}`,
     })
   }
 
@@ -57,8 +56,7 @@ export class ArticleService {
 
   static getRecommendArticleById(id?: string | number) {
     return request.get<recommendArticles>({
-      url: "/api/front/articles/getRecommendArticleById",
-      params: id
+      url: `/api/front/articles/getRecommendArticleById/${id}`,
     })
   }
 

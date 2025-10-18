@@ -24,8 +24,7 @@ export class LikeService {
 
   static getLikesById(id?: string | number) {
     return request.get({
-      url: "/api/front/articles/getLikesById",
-      params: id
+      url: `/api/front/articles/getLikesById/${id}`
     })
   }
 }

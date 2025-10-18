@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, h, watch } from "vue";
 import { useUserStore } from "@/stores/index";
-import { addComment, frontGetCommentTotal } from "@/api/blog/commentApi";
+import { CommentSerivce } from "@/api/blog/commentApi";
 import ParentItem from "./item/ParentItem.vue";
 import CommentInput from "./item/CommentInput.vue";
 import { ElNotification } from "element-plus";
@@ -72,7 +72,7 @@ const publish = async (): Promise<void> => {
     root_id: props.id
   };
   console.log(data)
-  const res: any = await addComment(data);
+  const res: any = await CommentSerivce.addComment(data);
   if (res.code === 200) {
     commentText.value = "";
     ElNotification({
@@ -103,7 +103,7 @@ const getTotal = (val: number): void => {
 
 // 获取评论总数（后端接口）
 const getCommentTotal = async (): Promise<void> => {
-  const res: any = await frontGetCommentTotal(props.id);
+  const res: any = await CommentSerivce.frontGetCommentTotal(props.id);
   if (res && res.code === 200) {
     getTotal(Number(res.result));
   } else {

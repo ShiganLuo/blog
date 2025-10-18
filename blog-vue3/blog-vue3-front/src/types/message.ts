@@ -16,7 +16,7 @@ export type MessageItemListResponse = {
     sum: number,
     list: MessageItem[]
 }
-interface MessageCompoentItem {
+export interface MessageCompoentItem {
   id: number | string;
   isView: number;
   message: string;

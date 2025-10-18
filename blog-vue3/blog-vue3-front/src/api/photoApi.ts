@@ -8,10 +8,9 @@ export class PhotoService {
     })
   }
 
-  static getAllAlbum(data?: object) {
+  static getAllAlbum() {
     return request.get<AlbumList>({
-      url: "/api/front/images/getAllAlbum",
-      data: data      
+      url: "/api/front/images/getAllAlbum"  
     })
   }
 }
