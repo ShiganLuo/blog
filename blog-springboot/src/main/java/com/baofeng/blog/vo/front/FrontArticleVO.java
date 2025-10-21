@@ -19,13 +19,13 @@ public class FrontArticleVO {
         private Long id;
         private String authorName;
         private Integer type;
-        private String origin_url;
-        private Integer thumbs_up_times;
-        private Long author_id;
-        private String article_content;
-        private String article_cover;
-        private String article_title;
-        private Integer view_times;
+        private String originUrl;
+        private Integer thumbsUpTimes;
+        private Long authorId;
+        private String articleContent;
+        private String articleCover;
+        private String articleTitle;
+        private Integer viewTimes;
         private List<String> categoryNameList;
         private List<String> tagNameList;
         private LocalDateTime createdAt;
@@ -56,8 +56,8 @@ public class FrontArticleVO {
     @Data
     public static class ArticleAbstractResponse {
         private Long id;
-        private String article_title;
-        private String article_cover;
+        private String articleTitle;
+        private String articleCover;
         private LocalDateTime createdAt;
     }
     @Data
@@ -89,19 +89,20 @@ public class FrontArticleVO {
     @Data
     public static class ArticleVO {
         private Long id;
-        private String article_title;
-        private String article_description;
-        private String article_content;
-        private Integer view_times;
+        private String articleTitle;
+        private String articleDescription;
+        private String articleContent;
+        private Integer viewTimes;
         private Integer commentsCount;
-        private Integer thumbs_up_times;
+        private Integer thumbsUpTimes;
         private Integer type;
         private String originUrl;
         private LocalDateTime  createdAt;
         private LocalDateTime updatedAt;
         private ArticleStatus status;
-        private String article_cover;
-        private Boolean is_top;
+        private String articleCover;
+        private Boolean isTop;
+        private Boolean isFeatured;
         private AuthorVO author;
         private List<String> categoryNameList;
         private List<String> tagNameList;

@@ -1,7 +1,7 @@
 export interface Article {
   id: string;
-  article_cover: string;
-  article_title: string;
+  articleCover: string;
+  articleTitle: string;
   createdAt: string;
 }
 export type ArticleListResponse = {
@@ -20,19 +20,18 @@ export interface ArticleInfo {
   id: number;
   authorName: string;
   type: number;
-  origin_url: string;
-  thumbs_up_times: number;
-  author_id: number;
-  article_content: string;
-  article_cover?: string;
-  article_title?: string;
-  article_description?: string;
+  originUrl: string;
+  thumbsUpTimes: number;
+  authorId: number;
+  articleContent: string;
+  articleCover?: string;
+  articleTitle?: string;
+  articleDescription?: string;
   createdAt?: string;
   updatedAt?: string;
   categoryNameList?: string[];
   tagNameList?: string[];
-  view_times?: number;
-  reading_duration?: number;
+  viewTimes?: number;
   is_top: number;
 }
 export type ArticleInfoListResponse = {

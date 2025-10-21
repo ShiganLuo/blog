@@ -60,13 +60,6 @@ export class ArticleService {
     })
   }
 
-  static readingDuration(data?: object) {
-    return request.post({
-      url: '',
-      data
-    })
-  }
-
   static blogTimelineGetArticleList(data?: object) {
     return request.post<ArticleListResponse>({
       url: '/api/front/articles/getTimeLineArticle',

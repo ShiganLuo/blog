@@ -8,7 +8,6 @@ import ArticleSkeleton from "./components/article-skeleton.vue";
 import Tooltip from "@/components/ToolTip/index.vue";
 import Pagination from "../Pagination/pagination.vue";
 import GsapCount from "@/components/GsapCount/index.vue";
-import { type ArticleInfo  } from "@/types/blog/article";
 import { gsapTransY } from "@/utils/transform";
 import { isMobile } from "@/utils/tool";
 import SvgIcon from "@/components/SvgIcon/index.vue";
@@ -24,14 +23,27 @@ interface PageState {
   current: number;
 }
 
+interface ArticleItem {
+  id: number
+  articleCover: string
+  articleTitle: string
+  articleDescription: string
+  is_top: number
+  createdAt: string
+  updatedAt: string
+  categoryNameList: string[]
+  tagNameList: string[]
+  thumbsUpTimes: number
+  viewTimes: number
+}
 const emit = defineEmits<{
   (event: "pageChange", payload: PageState): void;
 }>();
 
 const props = defineProps({
   articleList: {
-    type: Array as PropType<ArticleInfo[]>,
-    default: () => [] as ArticleInfo[],
+    type: Array as PropType<ArticleItem[]>,
+    default: () => [] as ArticleItem[],
   },
   articleTotal: {
     type: Number,
@@ -51,7 +63,7 @@ const router = useRouter();
 
 /* 文章操作 start */
 type OperateType = "detail" | "tag" | "category";
-const operate = (type: OperateType, item: ArticleInfo): void => {
+const operate = (type: OperateType, item: ArticleItem): void => {
   const routes: Record<OperateType, RouteLocationRaw> = {
     detail: { path: "/article", query: { id: item.id } },
     tag: { path: "/tag" },
@@ -125,11 +137,11 @@ watch(
                 @click="operate('detail', item)"
               >
                 <div
-                  v-image="item.article_cover"
+                  v-image="item.articleCover"
                   class="scale flex justify-center items-center"
                   style="width: 100%; height: 100%"
                 >
-                  <el-image :src="item.article_cover" fit="cover" class="image">
+                  <el-image :src="item.articleCover" fit="cover" class="image">
                     <template #error>
                       <svg-icon name="image404" :width="15" :height="15"></svg-icon>
                     </template>
@@ -140,10 +152,10 @@ watch(
               <div class="article-info flex_c_between">
                 <span
                   class="title text_overflow"
-                  :title="item.article_title"
+                  :title="item.articleTitle"
                   @click="operate('detail', item)"
                 >
-                  {{ item.article_title }}
+                  {{ item.articleTitle }}
                 </span>
                 <div class="meta">
                   <span v-if="item.is_top == 1" class="to_pointer">
@@ -186,11 +198,11 @@ watch(
                     <i class="iconfont icon-icon1"></i>
                     <GsapCount
                       class="meta-value"
-                      v-if="(item.thumbs_up_times ?? 0) - 0 < 1000"
-                      :value=parseFloat(numberFormate(item.thumbs_up_times))
+                      v-if="(item.thumbsUpTimes ?? 0) - 0 < 1000"
+                      :value=parseFloat(numberFormate(item.thumbsUpTimes))
                     />
                     <span v-else class="meta-value">
-                      {{ numberFormate(item.thumbs_up_times) }}
+                      {{ numberFormate(item.thumbsUpTimes) }}
                     </span>
                   </span>
                   <span class="article-meta__separator"></span>
@@ -198,11 +210,11 @@ watch(
                     <i class="iconfont icon-chakan"></i>
                     <GsapCount
                       class="meta-value"
-                      v-if="(item.view_times ?? 0) - 0 < 1000"
-                      :value=parseFloat(numberFormate(item.view_times))
+                      v-if="(item.viewTimes ?? 0) - 0 < 1000"
+                      :value=parseFloat(numberFormate(item.viewTimes))
                     />
                     <span v-else class="meta-value">
-                      {{ numberFormate(item.view_times) }}
+                      {{ numberFormate(item.viewTimes) }}
                     </span>
                   </span>
                 </div>
@@ -211,7 +223,7 @@ watch(
                   size="1.2rem"
                   align="left"
                   :lineHeight="3"
-                  :name="item.article_description"
+                  :name="item.articleDescription"
                 />
               </div>
             </div>

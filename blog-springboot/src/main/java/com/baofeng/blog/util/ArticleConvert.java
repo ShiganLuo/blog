@@ -20,15 +20,15 @@ public class ArticleConvert {
             articleVO.getAuthor() != null ? articleVO.getAuthor().getAuthorName() : null
         );
         articleDetailResponse.setType(articleVO.getType());
-        articleDetailResponse.setOrigin_url(articleVO.getOriginUrl());
-        articleDetailResponse.setThumbs_up_times(articleVO.getThumbs_up_times());
-        articleDetailResponse.setAuthor_id(
+        articleDetailResponse.setOriginUrl(articleVO.getOriginUrl());
+        articleDetailResponse.setThumbsUpTimes(articleVO.getThumbsUpTimes());
+        articleDetailResponse.setAuthorId(
             articleVO.getAuthor() != null ? articleVO.getAuthor().getAuthorId() : null
         );
-        articleDetailResponse.setArticle_content(articleVO.getArticle_content());
-        articleDetailResponse.setArticle_cover(articleVO.getArticle_cover());
-        articleDetailResponse.setArticle_title(articleVO.getArticle_title());
-        articleDetailResponse.setView_times(articleVO.getView_times());
+        articleDetailResponse.setArticleContent(articleVO.getArticleContent());
+        articleDetailResponse.setArticleCover(articleVO.getArticleCover());
+        articleDetailResponse.setArticleTitle(articleVO.getArticleTitle());
+        articleDetailResponse.setViewTimes(articleVO.getViewTimes());
         articleDetailResponse.setCreatedAt(articleVO.getCreatedAt());
         articleDetailResponse.setUpdatedAt(articleVO.getUpdatedAt());
 

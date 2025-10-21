@@ -25,13 +25,13 @@ const param = reactive<PaginationParam>({
 
 const router = useRouter();
 
-type Article = {
+interface ArticleSimple {
   id: string,
-  article_cover: string,
-  article_title: string,
+  articleCover: string,
+  articleTitle: string,
   createdAt: string,
 }
-const articleListForm = ref<Article[]>([]);
+const articleListForm = ref<ArticleSimple[]>([]);
 
 const currentType = ref<string | null>(null);
 const currentName = ref<string | null>(null);
@@ -108,11 +108,11 @@ onMounted(() => {
         <el-row>
           <el-col :xs="12" :sm="8" :md="6" v-for="(item, index) in articleListForm" :key="index">
             <el-card class="card-hover" @click="gotoDetail(item.id)">
-              <div v-image="item.article_cover" class="article-img scale">
+              <div v-image="item.articleCover" class="article-img scale">
                 <el-image
                   class="w-[100%] h-[100%] scale animate__animated animate__fadeInDown"
                   fit="cover"
-                  :src="item.article_cover"
+                  :src="item.articleCover"
                 >
                   <template #error>
                     <svg-icon name="image404" :width="8" :height="8"></svg-icon>
@@ -120,7 +120,7 @@ onMounted(() => {
                 </el-image>
               </div>
               <div class="article-title">
-                <Tooltip :name="item.article_title" size="1.2rem" color="#676767" />
+                <Tooltip :name="item.articleTitle" size="1.2rem" color="#676767" />
                 <Tooltip :name="item.createdAt" size="1rem" color="#676767" />
               </div>
             </el-card>

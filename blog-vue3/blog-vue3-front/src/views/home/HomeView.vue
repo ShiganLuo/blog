@@ -7,7 +7,6 @@ import { ArticleService } from "@/api/blog/articleApi";
 import { ConfigService } from "@/api/configApi";
 import { TagService } from "@/api/blog/tagApi";
 import { type ConfigDetail } from "@/types/config";
-import { type ArticleInfo } from "@/types/blog/article";
 import { randomFontColor, numberFormate } from "@/utils/tool";
 import PageHeader from "@/components/PageHeader/index.vue";
 import HomeArticleList from "@/components/HomeArticle/home-article-list.vue";
@@ -32,7 +31,21 @@ const param: PaginationParams = reactive({
   loading: true, //加载
 });
 
-const articleList: Ref<ArticleInfo[]> = ref([]);
+interface ArticleItem {
+  id: number
+  articleCover: string
+  articleTitle: string
+  articleDescription: string
+  is_top: number
+  createdAt: string
+  updatedAt: string
+  categoryNameList: string[]
+  tagNameList: string[]
+  thumbsUpTimes: number
+  viewTimes: number
+}
+
+const articleList: Ref<ArticleItem[]> = ref([]);
 const articleTotal: Ref<number> = ref(0);
 
 const getHomeArticleList = async (): Promise<void> => {
@@ -41,7 +54,7 @@ const getHomeArticleList = async (): Promise<void> => {
     if (res.code === 200) {
       const { total, list } = res.result;
       articleTotal.value = total;
-      articleList.value = list;
+      Object.assign(articleList.value, list);
     }
   } finally {
     param.loading = false;

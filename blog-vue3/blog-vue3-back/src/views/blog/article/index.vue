@@ -68,7 +68,7 @@
 
     <art-table
       v-loading="loading"
-      :data="articleList"
+      :data="articleListForm"
       selection
       :total="total"
       :current-page="queryParams.current"
@@ -157,7 +157,7 @@
         <el-table-column
           label="文章标签"
           align="center"
-          prop="tagDTOs[0].tagName"
+          prop="tagNames[0]"
           v-if="columns[15].show"
         />
         <el-table-column label="操作" align="center">
@@ -185,12 +185,11 @@
   import { ref, reactive } from 'vue'
   import { resetForm } from '@/utils/utils'
   import { ElMessage, ElMessageBox } from 'element-plus'
-  import { ArticleResult } from '@/types/blog/article'
   import { CategoryService } from '@/api/blog/categoryApi'
   import { TagService } from '@/api/blog/tagApi'
   import { parseTime } from '@/utils/utils'
   import defaultAvatar from '@/assets/img/avatar/default-avatar.png'
-  const articleList = ref<ArticleResult[]>([])
+  
   const loading = ref(true)
   const ids = ref([])
   const multiple = ref(true)
@@ -207,7 +206,27 @@
     status: '',
     isDelete: 0
   })
-
+  interface initialArticleFormState {
+    id: number,
+    userId: number,
+    articleCover: string,
+    articleTitle: string,
+    categoryId: number,
+    categoryName: string,
+    articleAbstract: string,
+    articleContent: string,
+    isTop: number,
+    isFeatured: number,
+    isDelete: number,
+    status: number,           // 默认公开
+    type: number,             // 默认原创
+    password: string,
+    originalUrl: string,
+    viewsCount: number,
+    createTime: string,
+    tagNames: string[],
+  }
+  const articleListForm = ref<initialArticleFormState[]>([])
   /** 查询文章列表 */
   const getList = async () => {
     loading.value = true
@@ -217,7 +236,7 @@
     }
     const res = await ArticleService.listArticle(query)
     if (res.code === 200) {
-      articleList.value = res.result.list
+      Object.assign(articleListForm.value, res.result.list)
       total.value = res.result.total
       loading.value = false
     }

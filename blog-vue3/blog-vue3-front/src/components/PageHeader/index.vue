@@ -16,15 +16,14 @@ import Waves from "@/components/WelcomeComps/waves.vue";
 // props 类型定义
 // =====================
 interface Article {
-  article_cover?: string;
-  article_title?: string;
+  articleCover?: string;
+  articleTitle?: string;
   createdAt?: string;
   updatedAt?: string;
   categoryNameList?: string[];
   tagNameList?: string[];
-  thumbs_up_times?: number;
-  view_times?: number;
-  reading_duration?: number;
+  thumbsUpTimes?: number;
+  viewTimes?: number;
 }
 
 interface Props {
@@ -57,20 +56,6 @@ const toggleMdTheme = (type: "codeTheme" | "previewTheme", theme: string) => {
 
 const finalUrl = ref("");
 
-// 阅读时长格式化
-const readingDuration = (times?: number): string => {
-  if (!times || times <= 0) return "0 分";
-
-  if (times > 3.6e6) {
-    const hours = (times / 3.6e6).toFixed(0);
-    const minutes = ((times % 3.6e6) / 6e4).toFixed(0);
-    return `${addZero(+hours)} 时 ${addZero(+minutes)} 分`;
-  } else {
-    const minutes = (times / 6e4).toFixed(0);
-    return `${addZero(+minutes)} 分`;
-  }
-};
-
 // 小于 10 补 0
 const addZero = (time: number): string => {
   return time > 0 && time < 10 ? `0${time}` : `${time}`;
@@ -85,7 +70,7 @@ const getBgCover = computed(() => {
   const fallback = "http://10.135.4.3/uploads/f2b516a7-8557-4d31-baf1-2d68d9fe34e7.jpeg";
   // console.log("bgList", bgList);
   if (route.path === "/article") {
-    url = props.article.article_cover || fallback;
+    url = props.article.articleCover || fallback;
   } else if (props.bgUrl) {
     url = props.bgUrl;
   } else {
@@ -123,14 +108,14 @@ watch(
 
   <div v-else class="page-header" :style="getBgCover">
     <div v-if="route.path == '/article'" class="article main-article">
-      <div class="loading" v-image="props.article.article_cover"></div>
+      <div class="loading" v-image="props.article.articleCover"></div>
       <Tooltip
         width="80%"
         weight="500"
         size="2.4rem"
         color="#fff"
         align="center"
-        :name="article.article_title"
+        :name="article.articleTitle"
       />
       <div class="!mt-[20px]">
         <span class="to_pointer">
@@ -154,7 +139,6 @@ watch(
         </span>
         <span class="meta-separator"></span>
         <span class="to_pointer">
-          <i class="iconfont icon-label_fill"></i>
           <span
             class="meta-value"
             v-for="(tagName, index) in (article.tagNameList ?? []).slice(0, 3)"
@@ -168,11 +152,11 @@ watch(
           <span class="meta-label">点赞数</span>
           <GsapCount
             class="meta-value"
-            v-if="(article.thumbs_up_times ?? 0) - 0 < 1000"
-            :value="article.thumbs_up_times"
+            v-if="(article.thumbsUpTimes ?? 0) - 0 < 1000"
+            :value="article.thumbsUpTimes"
           />
           <span v-else class="meta-value">
-            {{ numberFormate(article.thumbs_up_times) }}
+            {{ numberFormate(article.thumbsUpTimes) }}
           </span>
         </span>
         <span class="meta-separator"></span>
@@ -181,17 +165,11 @@ watch(
           <span class="meta-label">浏览次数</span>
           <GsapCount
             class="meta-value"
-            v-if="(article.view_times ?? 0) - 0 < 1000"
-            :value="article.view_times"
+            v-if="(article.viewTimes ?? 0) - 0 < 1000"
+            :value="article.viewTimes"
           />
-          <span v-else class="meta-value">{{ numberFormate(article.view_times) }}</span>
+          <span v-else class="meta-value">{{ numberFormate(article.viewTimes) }}</span>
         </span>
-        <!-- <span class="meta-separator"></span>
-        <span class="to_pointer">
-          <i class="iconfont icon-speechbubble"></i>
-          <span class="meta-label">阅读时长</span>
-          <span class="meta-value">{{ readingDuration(article.reading_duration) }}</span>
-        </span> -->
       </div>
       <div class="toggle-theme">
         <el-dropdown class="theme-card-dropdown">

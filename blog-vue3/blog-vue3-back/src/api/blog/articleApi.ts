@@ -13,7 +13,7 @@ export class ArticleService {
   }
 
   // 查询文章详细
-  static getArticle(id: any) {
+  static getArticleById(id: any) {
     return request.get<ArticleResult>({
       url: '/api/admin/articles/getArticleById/' + id
     })

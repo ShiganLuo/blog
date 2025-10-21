@@ -53,18 +53,19 @@
             <el-form-item label="文章分类">
               <el-tag
                 type="success"
-                v-show="form.categoryName"
+                v-for="(categoryName, index) of form.categoryNameList"
+                :key="index"
                 style="margin: 0 1rem 0 0"
                 :closable="true"
-                @close="removeCategory"
+                @close="removeCategory(categoryName)"
               >
-                {{ form.categoryName }}
+                {{ categoryName }}
               </el-tag>
               <el-popover
                 placement="bottom-start"
                 width="460"
                 trigger="click"
-                v-if="!form.categoryName"
+                v-if="!form.categoryNameList"
               >
                 <div class="popover-title">分类</div>
                 <el-autocomplete
@@ -97,19 +98,19 @@
             </el-form-item>
             <el-form-item label="文章标签">
               <el-tag
-                v-for="(item, index) of form.tagNames"
+                v-for="(tagName, index) of form.tagNameList"
                 :key="index"
                 style="margin: 0 1rem 0 0"
                 :closable="true"
-                @close="removeTag(item)"
+                @close="removeTag(tagName)"
               >
-                {{ item }}
+                {{ tagName }}
               </el-tag>
               <el-popover
                 placement="bottom-start"
                 width="460"
                 trigger="click"
-                v-if="form.tagNames.length < 3"
+                v-if="form.tagNameList.length < 3"
               >
                 <div class="popover-title">标签</div>
                 <el-autocomplete
@@ -207,8 +208,8 @@
     articleContent: '',
     articleAbstract: '',
     articleCover: '',
-    categoryName: null,
-    tagNames: [] as string[],
+    categoryNameList: [] as string[],
+    tagNameList: [] as string[],
     isTop: 0,
     isFeatured: 0,
     type: 1,
@@ -280,8 +281,9 @@
   }
 
   // 移除分类
-  const removeCategory = () => {
-    form.categoryName = null
+  const removeCategory = (item:string) => {
+    const index = form.categoryNameList.indexOf(item)
+    form.categoryNameList.splice(index, 1)
   }
 
   // 搜索分类
@@ -310,7 +312,9 @@
 
   // 添加分类
   const addCategory = (item: any) => {
-    form.categoryName = item.categoryName
+    if (form.categoryNameList.indexOf(item.categoryName) == -1) {
+      form.categoryNameList.push(item.categoryName)
+    }
   }
 
   // 处理选择的分类
@@ -322,14 +326,14 @@
 
   // 移除标签
   const removeTag = (item: any) => {
-    const index = form.tagNames.indexOf(item)
-    form.tagNames.splice(index, 1)
+    const index = form.tagNameList.indexOf(item)
+    form.tagNameList.splice(index, 1)
   }
 
   // 添加标签
   const addTag = (item: any) => {
-    if (form.tagNames.indexOf(item.tagName) == -1) {
-      form.tagNames.push(item.tagName)
+    if (form.tagNameList.indexOf(item.tagName) == -1) {
+      form.tagNameList.push(item.tagName)
     }
   }
 
@@ -352,7 +356,7 @@
 
   // 标签样式
   const tagClass = (item: any) => {
-    return form.tagNames.indexOf(item.tagName) == -1 ? 'tag-item' : 'tag-item active'
+    return form.tagNameList.indexOf(item.tagName) == -1 ? 'tag-item' : 'tag-item active'
   }
 
   // 列出分类
@@ -381,12 +385,12 @@
       return false
     }
 
-    if (form.categoryName == null) {
+    if (form.categoryNameList == null) {
       ElMessage.error(`文章分类不能为空`)
       return false
     }
 
-    if (form.tagNames.length == 0) {
+    if (form.tagNameList.length == 0) {
       ElMessage.error(`文章标签不能为空`)
       return false
     }
@@ -452,7 +456,7 @@
     if (form.id == 0) {
       return
     }
-    const res = await ArticleService.getArticle(form.id)
+    const res = await ArticleService.getArticleById(form.id)
     if (res.code === 200) {
       res.result.status = res.result.status == '3' ? '1' : res.result.status
       Object.assign(form, res.result)

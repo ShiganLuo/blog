@@ -45,15 +45,21 @@ const mdState = reactive<MdState>({
 });
 
 const articleFormState = {
-  article_content: '',
+  id: 0,
+  articleCover: '',
+  articleTitle: '',
+  articleContent: '',
+  originUrl: '',  
+  createdAt: '',
+  updatedAt: '',
+  categoryNameList: [],
+  tagNameList: [],
+  thumbsUpTimes: 0,
+  viewTimes: 0,
   authorName: '',
   type: 1,
-  origin_url: '',
-  thumbs_up_times: 0,
-  article_cover: '',
-  article_title: '',
-  author_id: 0,
-  id: 0,
+  authorId: 0,
+  
 }
 
 const previousArticleFormState = {
@@ -103,7 +109,7 @@ const like = async (): Promise<void> => {
   if (isLike.value) {
     const res = await LikeService.cancelLike({ for_id: articleForm.id,type: "post", user_id: userId });
     if (res.code === 200) {
-      articleForm.thumbs_up_times--;
+      articleForm.thumbsUpTimes--;
       isLike.value = false;
       likePending.value = false;
       ElNotification({
@@ -117,7 +123,7 @@ const like = async (): Promise<void> => {
   } else { // 点赞
     const res = await LikeService.addLike({ for_id: articleForm.id,type: "post", user_id: userId });
     if (res.code === 200) {
-      articleForm.thumbs_up_times++;
+      articleForm.thumbsUpTimes++;
       isLike.value = true;
       likePending.value = false;
       ElNotification({
@@ -135,7 +141,7 @@ const getArticleDetails = async (id: string | number): Promise<void> => {
   const res = await ArticleService.getArticleById(id);
   if (res.code === 200) {
     Object.assign(articleForm,res.result);
-    mdState.text = articleForm.article_content;
+    mdState.text = articleForm.articleContent;
     const LRes = await LikeService.getIsLikeByIdOrIpAndType({ for_id: articleForm.id, type: "post", user_id: getUserInfo.value.id });
     if (LRes.code === 200) {
       isLike.value = LRes.result;
@@ -143,12 +149,6 @@ const getArticleDetails = async (id: string | number): Promise<void> => {
   }
 };
 
-// const addReadingDuration = async (id: string | number): Promise<void> => {
-//   if (!setUpTimes) return;
-//   const now = new Date();
-//   const duration = now.getTime() - setUpTimes.getTime();
-//   await readingDuration({id, duration});
-// };
 
 const getRecommendArticle = async (id: string | number): Promise<void> => {
   const res = await ArticleService.getRecommendArticleById(id);
@@ -156,8 +156,8 @@ const getRecommendArticle = async (id: string | number): Promise<void> => {
     const { previous, next, recommend } = res.result;
     const recommendArticleTemp:RecommendArticle[] = recommend.map(item => ({
         id: item.id ?? item.id ?? 0,
-        article_title: item.article_title ?? item.article_title ?? '',
-        article_cover: item.article_cover ?? item.article_cover ?? '',
+        article_title: item.articleTitle ?? item.articleTitle ?? '',
+        article_cover: item.articleCover ?? item.articleCover ?? '',
         createdAt: item.createdAt ?? item.createdAt ?? ''
     }));
     recommendArticleListForm.value = recommendArticleTemp;
@@ -203,12 +203,6 @@ watch(
 );
 
 
-// onBeforeUnmount(() => {
-//   if (setUpTimes && lastArticleId) {
-//     addReadingDuration(lastArticleId);
-//   }
-// });
-
 </script>
 
 <template>
@@ -243,8 +237,8 @@ watch(
               </div>
               <div v-if="articleForm.type != 1">
                 <span>原文链接：</span>
-                <a class="to_pointer" :href="articleForm.origin_url">{{
-                  articleForm.origin_url
+                <a class="to_pointer" :href="articleForm.originUrl">{{
+                  articleForm.originUrl
                 }}</a>
               </div>
               <div v-else>
@@ -258,11 +252,11 @@ watch(
             <i class="iconfont icon-icon1 mr-5px"></i>
             <GsapCount
               :class="[isLike ? 'is-like' : '']"
-              v-if="articleForm.thumbs_up_times - 0 < 1000"
-              :value="articleForm.thumbs_up_times"
+              v-if="articleForm.thumbsUpTimes - 0 < 1000"
+              :value="articleForm.thumbsUpTimes"
             />
             <span v-else :class="[isLike ? 'is-like' : '']">
-              {{ articleForm.thumbs_up_times }}
+              {{ articleForm.thumbsUpTimes }}
             </span>
           </div>
           <div class="recommend flex_r_between">
@@ -348,7 +342,7 @@ watch(
               class="w-100"
               type="post"
               :id="Number(route.query.id ?? 0)"
-              :author-id="articleForm.author_id"
+              :author-id="articleForm.authorId"
             />
           </div>
         </el-card>
