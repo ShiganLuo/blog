@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-  const modelValue = defineModel<string>({ required: true })
+  const modelValue = defineModel<string | null>({ required: true })
 
   defineProps({
     label: String,

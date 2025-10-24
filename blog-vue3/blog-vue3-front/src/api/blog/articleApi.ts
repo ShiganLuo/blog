@@ -3,14 +3,13 @@ import { type ArticleListResponse,
         type ArticleInfo, 
         type recommendArticles,
         type ArticleInfoListResponse,
-        type homeGetArticleListParam,
         type ArticleSearch
 } from "@/types/blog/article";
 
 
 export class ArticleService {
 
-  static homeGetArticleList(data?: homeGetArticleListParam) {
+  static homeGetArticleList(data?: object) {
     return request.post<ArticleInfoListResponse>({
         url: '/api/front/articles/getArticleList',
         data

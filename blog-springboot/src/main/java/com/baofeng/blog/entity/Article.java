@@ -11,12 +11,14 @@ public class Article {
     private String summary;
     private String coverImage;
     private Long authorId;
-    private ArticleStatus status;
     private Long views;
     private Long likes;
     private Long commentsCount;
     private Boolean isFeatured;
+    private Boolean isTop;
+    private Boolean isDelted;
     private Integer type;
+    private ArticleStatus status;
     private String originUrl;
     private LocalDateTime publishedAt;
     private LocalDateTime createdAt;

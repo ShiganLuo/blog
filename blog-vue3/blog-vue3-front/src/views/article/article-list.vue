@@ -3,7 +3,6 @@ import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 import { ArticleService } from "@/api/blog/articleApi";
-import { type ArticleListResponse} from "@/types/blog/article";
 import { type IResponse } from "@/utils/http/types";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import Tooltip from "@/components/ToolTip/index.vue";
@@ -52,7 +51,7 @@ const gotoDetail = (id: string) => {
 
 // 获取文章列表
 const getArticleListById = async () => {
-  let res: IResponse<ArticleListResponse>;
+  let res;
   loading.value = true;
 
   if (currentType.value === "tag") {

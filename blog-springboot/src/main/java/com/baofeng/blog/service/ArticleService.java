@@ -23,7 +23,7 @@ public interface ArticleService {
      * @param createAdminArticlePageRequest
      * @return
      */
-    public ApiResponse<AdminArticlePageVO> getAdminArticlePage(CreateAdminArticlePageRequest createAdminArticlePageRequest);
+    public ApiResponse<AdminArticlePageVO> getAdminArticleList(CreateAdminArticlePageRequest createAdminArticlePageRequest);
 
     /**
      * 创建文章

@@ -56,32 +56,53 @@ public class AdminArticleVO {
         Long tagId,
         String type,
         String status,
-        Integer isDelted
+        Boolean delted
     ) {
+        public CreateAdminArticlePageRequest {
+            if (current == null || current < 1) {
+                throw new IllegalArgumentException("页码必须大于等于1");
+            }
+            if (size == null || size < 1) {
+                throw new IllegalArgumentException("每页显示条数必须大于等于1");
+            }
+            if (categoryId != null && categoryId < 1) {
+                throw new IllegalArgumentException("分类ID必须大于等于1");
+            }
+            if (tagId != null && tagId < 1) {
+                throw new IllegalArgumentException("标签ID必须大于等于1");
+            }
+            if (type != null && type.isEmpty()) {
+                type = null;
+            }
+            if (status != null && status.isEmpty()) {
+                status = null;
+            };
+        }
     }
+
     @Data
     public static class AdminArticle {
         private Long id;
-        private Long userId;
-        private Long categoryId;
+        private String authorName;
         private String articleCover;
         private String articleTitle;
+        private List<String> categoryNameList;
         private String articleAbstract;
         private String articleContent;
-        private String isTop;
-        private String isFeatured;
-        private String isDelted;
+        private Boolean isTop;
+        private Boolean isFeatured;
+        private Boolean isDelted;
         private String status;
-        private String type;
-        private String password;
+        private Integer type;
         private String originalUrl;
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        private List<String> tagNameList;
     }
 
     @Data
     public static class AdminArticlePageVO {
-        private List<AdminArticle> adminArticles;
+        private List<AdminArticle> list;
         private Long total;
     }
 

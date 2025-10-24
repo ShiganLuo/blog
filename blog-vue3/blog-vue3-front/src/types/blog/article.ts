@@ -8,13 +8,6 @@ export type ArticleListResponse = {
     list: Article[];
     total: number;
 }
-export interface homeGetArticleListParam {
-  pageNum: number;
-  pageSize: number;
-  keyword?: string;
-  sortBy?: string;
-  sortOrder?: string;
-}
 
 export interface ArticleInfo {
   id: number;
@@ -34,6 +27,7 @@ export interface ArticleInfo {
   viewTimes?: number;
   is_top: number;
 }
+
 export type ArticleInfoListResponse = {
     total: number,
     list: ArticleInfo[]

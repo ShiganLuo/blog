@@ -90,8 +90,8 @@ public class AdminArticleController {
      * @return 分页结果
      */
     @PostMapping("/getArticleList")
-    public ApiResponse<AdminArticlePageVO> getArticlePage(@RequestBody CreateAdminArticlePageRequest createAdminArticlePageRequest) {
-        return articleService.getAdminArticlePage(createAdminArticlePageRequest);
+    public ApiResponse<AdminArticlePageVO> getArticleList(@RequestBody CreateAdminArticlePageRequest createAdminArticlePageRequest) {
+        return articleService.getAdminArticleList(createAdminArticlePageRequest);
     }
 
     /**

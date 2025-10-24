@@ -1,6 +1,5 @@
 import request from '@/utils/http'
 import { ArticleResult, ArticleRecordResult } from '@/types/blog/article'
-import { CodeMsgResult } from '@/types/axios'
 
 // 文章
 export class ArticleService {

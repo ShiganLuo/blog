@@ -79,7 +79,7 @@
       row-key="id"
     >
       <template #default>
-        <el-table-column label="文章作者" align="center" prop="userId" v-if="columns[0].show" />
+        <el-table-column label="文章作者" align="center" prop="authorName" v-if="columns[0].show" />
         <el-table-column label="缩略图" align="center" prop="articleCover" v-if="columns[2].show">
           <template #default="scope">
             <el-image
@@ -94,12 +94,27 @@
           prop="articleTitle"
           v-if="columns[3].show"
         />
-        <el-table-column
-          label="文章分类"
-          align="center"
-          prop="categoryName"
-          v-if="columns[1].show"
-        />
+        <el-table-column label="文章分类" align="center">
+          <template #default="{ row }">
+            <div
+              style="display: flex; flex-wrap: wrap; justify-content: center;"
+            >
+              <el-tooltip
+                v-for="(name, idx) in row.categoryNameList"
+                :key="idx"
+                :content="name"
+                placement="top"
+              >
+                <el-tag
+                  type="info"
+                  style="margin: 2px; max-width: 100px; overflow: hidden; text-overflow: ellipsis;"
+                >
+                  {{ name }}
+                </el-tag>
+              </el-tooltip>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           label="摘要"
           align="center"
@@ -115,7 +130,7 @@
         <el-table-column label="置顶" align="center" prop="isTop" v-if="columns[6].show">
           <template #default="scope">
             <el-switch
-              :disabled="scope.row.isDelete == 1"
+              :disabled="scope.row.isDeleted == 1"
               v-model="scope.row.isTop"
               :active-value="1"
               :inactive-value="0"
@@ -126,7 +141,7 @@
         <el-table-column label="推荐" align="center" prop="isFeatured" v-if="columns[7].show">
           <template #default="scope">
             <el-switch
-              :disabled="scope.row.isDelete == 1"
+              :disabled="scope.row.isDeleted == 1"
               v-model="scope.row.isFeatured"
               :active-value="1"
               :inactive-value="0"
@@ -134,14 +149,13 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="删除" align="center" prop="isDelete" v-if="columns[8].show" />
+        <el-table-column label="删除" align="center" prop="isDeleted" v-if="columns[8].show" />
         <el-table-column label="状态" align="center" prop="status" v-if="columns[9].show" />
         <el-table-column label="类型" align="center" prop="type" v-if="columns[10].show">
           <template #default="scope">
             <dict-tag :options="articleType" :value="scope.row.status" />
           </template>
         </el-table-column>
-        <el-table-column label="访问密码" align="center" prop="password" v-if="columns[11].show" />
         <el-table-column
           label="原文链接"
           align="center"
@@ -149,17 +163,32 @@
           v-if="columns[12].show"
         />
         <el-table-column label="浏览量" align="center" prop="viewsCount" v-if="columns[13].show" />
-        <el-table-column label="创建时间" align="center" prop="createTime" v-if="columns[14].show">
+        <el-table-column label="创建时间" align="center" prop="createdAt" v-if="columns[14].show">
           <template #default="scope">
-            {{ parseTime(scope.row.createTime) }}
+            {{ parseTime(scope.row.createdAt) }}
           </template>
         </el-table-column>
-        <el-table-column
-          label="文章标签"
-          align="center"
-          prop="tagNames[0]"
-          v-if="columns[15].show"
-        />
+        <el-table-column label="文章标签" align="center">
+          <template #default="{ row }">
+            <div
+              style="display: flex; flex-wrap: wrap; justify-content: center;"
+            >
+              <el-tooltip
+                v-for="(name, idx) in row.tagNameList"
+                :key="idx"
+                :content="name"
+                placement="top"
+              >
+                <el-tag
+                  type="info"
+                  style="margin: 2px; max-width: 100px; overflow: hidden; text-overflow: ellipsis;"
+                >
+                  {{ name }}
+                </el-tag>
+              </el-tooltip>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
           <template #default="scope">
             <button-table
@@ -200,31 +229,29 @@
     current: 1,
     size: 10,
     keywords: '',
-    categoryId: '',
-    tagId: '',
-    type: '',
+    categoryId: null,
+    tagId: null,
+    type: null,
     status: '',
-    isDelete: 0
+    isDeleted: 0
   })
   interface initialArticleFormState {
     id: number,
-    userId: number,
+    authorName: number,
     articleCover: string,
     articleTitle: string,
-    categoryId: number,
-    categoryName: string,
+    categoryNameList: string[],
     articleAbstract: string,
     articleContent: string,
     isTop: number,
     isFeatured: number,
-    isDelete: number,
+    isDeleted: number,
     status: number,           // 默认公开
     type: number,             // 默认原创
-    password: string,
     originalUrl: string,
     viewsCount: number,
-    createTime: string,
-    tagNames: string[],
+    createdAt: string,
+    tagNameList: string[],
   }
   const articleListForm = ref<initialArticleFormState[]>([])
   /** 查询文章列表 */
@@ -243,7 +270,7 @@
   }
 
   const columns = reactive([
-    { name: '文章作者', show: false },
+    { name: '文章作者', show: true },
     { name: '文章分类', show: true },
     { name: '缩略图', show: true },
     { name: '文章标题', show: true },
@@ -311,7 +338,7 @@
       `是否确认${deleteBut.value ? ' （彻底） ' : ''}删除文章编号为"${_ids}"的数据项？`
     )
     if (Tr && !deleteBut.value) {
-      const res = await ArticleService.updateArticle({ ids: _ids, isDelete: 1 })
+      const res = await ArticleService.updateArticle({ ids: _ids, isDeleted: 1 })
       if (res.code === 200) {
         getList()
         ElMessage.success(res.message)
@@ -331,7 +358,7 @@
     const _ids = row.id ? [row.id] : ids.value
     const Tr = await ElMessageBox.confirm('是否确认恢复文章编号为"' + _ids + '"的数据项？')
     if (Tr) {
-      const res = await ArticleService.updateArticle({ ids: _ids, isDelete: 0 })
+      const res = await ArticleService.updateArticle({ ids: _ids, isDeleted: 0 })
       if (res.code === 200) {
         getList()
         ElMessage.success(res.message)
@@ -377,13 +404,13 @@
 
   /** 状态切换操作 */
   const handleStatusChange = () => {
-    // 如果选择回收站，设置isDelete为1
+    // 如果选择回收站，设置isDeleted为1
     if (queryParams.status === '4') {
       deleteBut.value = true
-      queryParams.isDelete = 1
+      queryParams.isDeleted = 1
     } else {
       deleteBut.value = false
-      queryParams.isDelete = 0
+      queryParams.isDeleted = 0
     }
     queryParams.current = 1
     getList()

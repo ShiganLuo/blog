@@ -12,14 +12,15 @@
         <result property="summary" column="summary"/>
         <result property="coverImage" column="cover_image"/>
         <result property="authorId" column="author_id"/>
-        <result property="status" column="status"
-            typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result property="views" column="views"/>
         <result property="likes" column="likes"/>
         <result property="commentsCount" column="comments_count"/>
         <result property="isTop" column="is_top"/>
         <result property="isFeatured" column="is_featured"/>
+        <result property="isDelted" column="is_deleted"/>
         <result property="type" column="type"/>
+        <result property="status" column="status"
+            typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result property="originUrl" column="origin_url"/>
         <result property="publishedAt" column="published_at"/>
         <result property="createdAt" column="created_at"/>
@@ -55,18 +56,18 @@
     
 
     <insert id="insertArticle" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO articles (title, content, summary, cover_image, author_id, status, 
-        views, likes, comments_count, is_top,is_featured, type, origin_url, published_at, created_at, updated_at)
-        VALUES(#{title}, #{content}, #{summary}, #{coverImage}, #{authorId}, #{status}, #{views}, 
-        #{likes}, #{commentsCount}, #{isTop}, #{isFeatured}, #{type}, #{originUrl}, #{publishedAt}, NOW(), NOW())
+        INSERT INTO articles (title, content, summary, cover_image, author_id,
+        views, likes, comments_count, is_top,is_featured,is_deleted, type,status, origin_url, published_at, created_at, updated_at)
+        VALUES(#{title}, #{content}, #{summary}, #{coverImage}, #{authorId}, #{views}, 
+        #{likes}, #{commentsCount}, #{isTop}, #{isFeatured},#{isDeleted} #{type}, #{status}, #{originUrl}, #{publishedAt}, NOW(), NOW())
     </insert>
 
     <update id="updateArticle">
         UPDATE articles
         SET title=#{title}, content=#{content}, summary=#{summary}, cover_image=#{coverImage}, 
-        author_id=#{authorId}, status=#{status}, views=#{views}, likes=#{likes}, comments_count=#{commentsCount}, 
-        is_top=#{isTop}, is_featured=#{isFeatured}, type=#{type}, origin_url=#{originUrl}, published_at=#{publishedAt}, 
-        created_at=#{createdAt}, updated_at=#{updatedAt}
+        author_id=#{authorId}, views=#{views}, likes=#{likes}, comments_count=#{commentsCount}, 
+        is_top=#{isTop}, is_featured=#{isFeatured}, is_deleted=#{isDeleted}, type=#{type}, status=#{status}, 
+        origin_url=#{originUrl}, published_at=#{publishedAt}, created_at=#{createdAt}, updated_at=#{updatedAt}
         WHERE id=#{id}
     </update>
 
@@ -91,13 +92,14 @@
         <if test="summary != null">summary=#{summary},</if>
         <if test="coverImage != null">cover_image=#{coverImage},</if>
         <if test="authorId != null">author_id=#{authorId},</if>
-        <if test="status != null">status=#{status},</if>
         <if test="views != null">views=#{views},</if>
         <if test="likes != null">likes=#{likes},</if>
         <if test="commentsCount != null">comments_count=#{commentsCount},</if>
         <if test="isTop != null">is_top=#{isTop},</if>
         <if test="isFeatured != null">is_featured=#{isFeatured},</if>
+        <if test="isDeleted != null">is_deleted=#{isDeleted},</if>
         <if test="type !=null"> type=#{type},</if>
+        <if test="status != null">status=#{status},</if>
         <if test="originUrl !=null"> origin_url=#{originUrl},</if>
         <if test="publishedAt != null">published_at=#{publishedAt},</if>
         <if test="createdAt != null">created_at=#{createdAt},</if>
@@ -194,32 +196,60 @@
     <!--文章分页查询1-->
     <resultMap id="AdminArticlePageResultMap" type="com.baofeng.blog.vo.admin.AdminArticleVO$AdminArticle">
         <id property="id" column="id"/>
+        <result property="authorName" column="username"/>
+        <result property="articleCover" column="cover_image"/>
         <result property="articleTitle" column="title"/>
         <result property="articleAbstract" column="summary"/>
         <result property="articleContent" column="content"/>
+        <result property="isTop" column="is_top"/>
+        <result property="isFeatured" column="is_featured"/>
+        <result property="isDelted" column="is_deleted"/>
+        <result property="status" column="status"/>
         <result property="type" column="type"/>
         <result property="originUrl" column="origin_url"/>
-        <result property="createTime" column="created_at"/>
-        <result property="updateTime" column="updated_at"/>
-        <result property="status" column="status"/>
-        <result property="articleCover" column="cover_image"/>
-        <result property="isFeatured" column="is_featured"/>
-        <result property="userId" column="author_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <!-- 分类名称子查询 -->
+        <collection property="categoryNameList" ofType="string"
+            column="id" select="getCategoryNameListByArticleId"/>
+        <!-- 标签名称子查询 -->
+        <collection property="tagNameList" ofType="string"
+            column="id" select="getTagNameListByArticleId"/>
     </resultMap>
 
     <select id="getAdminArticlePage" resultMap="AdminArticlePageResultMap">
-        SELECT id,title,summary,content,type,origin_url,created_at,updated_at,status,cover_image,is_featured,author_id
-        FROM articles
+        SELECT 
+            a.id, u.username, a.cover_image, a.title, a.summary, a.content, a.is_top, a.is_featured,
+            a.is_deleted, a.status, a.type, a.origin_url, a.created_at, a.updated_at
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
         <where>
             <if test="keyword != null and keyword != ''">
                 AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
                 OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
             </if>
+            <if test="categoryId != null">
+                AND a.id IN (
+                    SELECT ac.article_id
+                    FROM article_categories ac
+                    WHERE ac.category_id = #{categoryId}
+                )
+            </if>
+            <if test="tagId != null">
+                AND a.id IN (
+                    SELECT at.article_id
+                    FROM article_tags at
+                    WHERE at.tag_id = #{tagId}
+                )
+            </if>
             <if test="type != null">
-                AND type = #{type}
+                AND a.type = #{type}
             </if>
             <if test="status != null">
-                AND status = #{status}
+                AND a.status = #{status}
+            </if>
+            <if test="delted != null">
+                AND a.is_deleted = #{delted}
             </if>
         </where>
         ORDER BY created_at DESC

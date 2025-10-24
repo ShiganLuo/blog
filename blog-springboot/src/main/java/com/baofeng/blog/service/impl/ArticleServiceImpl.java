@@ -408,14 +408,14 @@ public class ArticleServiceImpl implements ArticleService {
         response.setList(pageInfo.getList());      // 当前页数据
         return ApiResponse.success(response);
     }
-    public ApiResponse<AdminArticlePageVO> getAdminArticlePage(CreateAdminArticlePageRequest createAdminArticlePageRequest) {
+    public ApiResponse<AdminArticlePageVO> getAdminArticleList(CreateAdminArticlePageRequest createAdminArticlePageRequest) {
         int current = createAdminArticlePageRequest.current() != null ? createAdminArticlePageRequest.current() : 1;
         int size = createAdminArticlePageRequest.size() != null ? createAdminArticlePageRequest.size() : 10;
         PageHelper.startPage(current, size);
         List<AdminArticle> adminArticles = articleMapper.getAdminArticlePage(createAdminArticlePageRequest);
         PageInfo<AdminArticle> pageInfo = new PageInfo<>(adminArticles);
         AdminArticlePageVO adminArticlePageVO = new AdminArticlePageVO();
-        adminArticlePageVO.setAdminArticles(pageInfo.getList());
+        adminArticlePageVO.setList(pageInfo.getList());
         adminArticlePageVO.setTotal(pageInfo.getTotal());
         return ApiResponse.success(adminArticlePageVO);
     }   
