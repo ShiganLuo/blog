@@ -15,15 +15,15 @@ public enum ResultCodeEnum {
     GATEWAY_TIMEOUT(504, "网关超时");
     
 
-    private final int code;
+    private final Integer code;
     private final String message;
 
-    ResultCodeEnum(int code, String message) {
+    ResultCodeEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    public int code() {
+    public Integer code() {
         return code;
     }
 

@@ -1,8 +1,10 @@
 package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.service.CategoryService;
+import com.baofeng.blog.service.ArticleService;
 import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.common.Category.CategoriesResponse;
+import com.baofeng.blog.vo.common.Category.CategoryDictionaryResponse;
+import com.baofeng.blog.vo.admin.AdminArticleVO.CategoryRequest;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageResponseVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CreateCategoryRequest;
@@ -18,7 +20,7 @@ import java.util.List;
 public class AdminCategoryController {
     
     private final CategoryService categoryService;
-
+    private final ArticleService articleService;
     /**
      * 创建分类
      * @param request 创建分类请求
@@ -52,7 +54,15 @@ public class AdminCategoryController {
      * 返回目录字典
      */
     @GetMapping("/getCategoryDictionary")
-    public ApiResponse<List<CategoriesResponse>> getCategoryDictionary(){
+    public ApiResponse<List<CategoryDictionaryResponse>> getCategoryDictionary(){
         return categoryService.getCategoryDictionary();
+    }
+
+    /**
+     * 增加分类接口,如果表中没有则添加
+     */
+    @PostMapping("/uploadCategory")
+    public ApiResponse<String> uploadCategory(@RequestBody CategoryRequest request){
+        return articleService.addCategory(request);
     }
 }

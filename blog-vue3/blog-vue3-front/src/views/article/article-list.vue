@@ -3,7 +3,6 @@ import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 import { ArticleService } from "@/api/blog/articleApi";
-import { type IResponse } from "@/utils/http/types";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import Tooltip from "@/components/ToolTip/index.vue";
 import Pagination from "@/components/Pagination/pagination.vue";

@@ -40,10 +40,9 @@ export class CategoryService {
   }
 
   // 搜索分类
-  static searchCategories(query?: any) {
+  static searchCategories() {
     return request.get<CategoryListResult>({
-      url: '/blog/category/admin/categories/search',
-      params: query
+      url: '/api/admin/categories/getCategoryDictionary',
     })
   }
 }

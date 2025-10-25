@@ -6,7 +6,7 @@ public class Tag {
     @Data
     public static class TagDictionaryResponse{
         private Long id;
-        private String tag_name;
+        private String tagName;
     }
 
 }

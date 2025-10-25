@@ -46,9 +46,9 @@ public class AdminTagPageVO {
     @Data
     public static class TagVO {
         private Long id;
-        private String name;         // 标签名称
+        private String tagName;         // 标签名称
         private Integer articleCount; // 文章数量
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 } 

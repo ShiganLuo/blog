@@ -8,14 +8,14 @@ import java.util.Set;
 
 public enum GenderEnum {
     MAN("男",1),WOMAN("女",2),UNKONWN("未知",9);
-    private final String name;
+    private final String gender;
     private final Integer code;
-    GenderEnum(String name, int code) {
-        this.name = name;
+    GenderEnum(String gender, int code) {
+        this.gender = gender;
         this.code = code;
     }
-    public String getName() {
-        return name;
+    public String getGender() {
+        return gender;
     }
     public Integer getCode() {
         return code;
@@ -26,7 +26,7 @@ public enum GenderEnum {
     
     private static final Map<String, GenderEnum> NAME_MAP = 
         Arrays.stream(GenderEnum.values())
-              .collect(Collectors.toMap(GenderEnum::getName, Function.identity()));
+              .collect(Collectors.toMap(GenderEnum::getGender, Function.identity()));
     
     private static final Set<Integer> VALID_CODES = 
         Arrays.stream(GenderEnum.values())
@@ -38,9 +38,9 @@ public enum GenderEnum {
         return CODE_MAP.getOrDefault(code, UNKONWN);
     }
 
-    public static GenderEnum fromName(String name) {
+    public static GenderEnum fromName(String gender) {
         // 使用缓存的 Map 进行查找，如果找不到，默认返回 UNKNOWN
-        return NAME_MAP.getOrDefault(name, UNKONWN);
+        return NAME_MAP.getOrDefault(gender, UNKONWN);
     }
     
     public static boolean isCodeExit(Integer code) {

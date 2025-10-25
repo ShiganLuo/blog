@@ -89,9 +89,10 @@ public class AdminArticleVO {
         private List<String> categoryNameList;
         private String articleAbstract;
         private String articleContent;
-        private Boolean isTop;
-        private Boolean isFeatured;
-        private Boolean isDelted;
+        private Integer isTop;
+        private Integer isFeatured;
+        private Integer isDelted;
+        private Integer viewsCount;
         private String status;
         private Integer type;
         private String originalUrl;

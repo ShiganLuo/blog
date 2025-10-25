@@ -1,19 +1,19 @@
 package com.baofeng.blog.enums;
 
 public enum RoleTypeEnum {
-    ADMIN("ADMIN", "管理员，拥有系统所有权限"),
-    USER("USER", "普通用户，拥有基本浏览和操作权限");
+    ADMIN("ADMIN", "管理"),
+    USER("USER", "普通用户");
 
-    private final String name;
+    private final String role;
     private final String description;
 
-    RoleTypeEnum(String name, String description) {
-        this.name = name;
+    RoleTypeEnum(String role, String description) {
+        this.role = role;
         this.description = description;
     }
 
-    public String getName() {
-        return name;
+    public String getRole() {
+        return role;
     }
 
     public String getDescription() {

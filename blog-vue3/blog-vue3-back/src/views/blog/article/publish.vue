@@ -221,16 +221,16 @@
  type CategoryResult = {
     id: string,
     categoryName: string,
-    createTime: string,
-    updateTime: string,
+    createdAt: string,
+    updatedAt: string,
   }
   const categorys = ref<CategoryResult[]>([])
 
   type TagResult = {
     id: string,
     tagName: string,
-    createTime: string,
-    updateTime: string,
+    createdAt: string,
+    updatedAt: string,
   }
   const tagList = ref<TagResult[]>([])
 

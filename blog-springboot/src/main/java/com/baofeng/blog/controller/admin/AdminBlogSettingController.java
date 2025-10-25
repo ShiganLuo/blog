@@ -3,6 +3,7 @@ package com.baofeng.blog.controller.admin;
 import com.baofeng.blog.service.BlogSettingService;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminBlogSettingVO;
+import com.baofeng.blog.vo.admin.AdminBlogSettingVO.SystemSettingDictResponse;
 import com.baofeng.blog.vo.front.FrontBlogSettinVO.configDetail;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class AdminBlogSettingController {
     
     private final BlogSettingService blogSettingService;
     @PostMapping("/initSetting")
-    public ApiResponse<String> initSetting(@RequestBody AdminBlogSettingVO.initSettingRequest request){
+    public ApiResponse<String> initSetting(@RequestBody AdminBlogSettingVO.InitSettingRequest request){
         return blogSettingService.initSetting(request);
 
     }
@@ -28,7 +29,7 @@ public class AdminBlogSettingController {
     }
 
     @PostMapping("/changeSetting")
-    public ApiResponse<String> changeSetting(@RequestBody AdminBlogSettingVO.initSettingRequest request){
+    public ApiResponse<String> changeSetting(@RequestBody AdminBlogSettingVO.InitSettingRequest request){
         return blogSettingService.updateSettingById(request);
     }
 
@@ -37,6 +38,10 @@ public class AdminBlogSettingController {
         return blogSettingService.getSettingById((long) 1);
     }
 
+    @GetMapping("/getDictSetting/{type}")
+    public ApiResponse<SystemSettingDictResponse> getDictSetting(@PathVariable String type) {
+        return blogSettingService.getSystemSettingDict(type);
+    }
     
 
 } 

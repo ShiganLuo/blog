@@ -1,8 +1,8 @@
 package com.baofeng.blog.service;
 import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminBlogSettingVO.initSettingRequest;
-import com.baofeng.blog.vo.front.FrontBlogSettinVO.configDetail;
+import com.baofeng.blog.vo.admin.AdminBlogSettingVO.InitSettingRequest;
 import com.baofeng.blog.vo.front.FrontBlogSettinVO.*;
+import com.baofeng.blog.vo.admin.AdminBlogSettingVO.SystemSettingDictResponse;
 public interface BlogSettingService {
 
     /**
@@ -16,14 +16,14 @@ public interface BlogSettingService {
      * @param request
      * @return
      */
-    public ApiResponse<String> initSetting(initSettingRequest request);
+    public ApiResponse<String> initSetting(InitSettingRequest initSettingRequest);
 
     /**
      * 更新网站设置
      * @param request
      * @return
      */
-    public ApiResponse<String> updateSettingById(initSettingRequest request);
+    public ApiResponse<String> updateSettingById(InitSettingRequest initSettingRequest);
 
     /**
      * 获取网站设置
@@ -59,4 +59,12 @@ public interface BlogSettingService {
      * @return
      */
     public ApiResponse<String> deleteFriendLink(Long id);
+
+    /**
+     * 获取系统字典配置
+     * @param type
+     * @return
+     */
+    public ApiResponse<SystemSettingDictResponse> getSystemSettingDict(String type);
+    
 } 

@@ -114,20 +114,7 @@ public class AdminArticleController {
     public ApiResponse<String> uploadCover(@Validated @ModelAttribute UploadImage uploadImage) {
         return articleService.storeImage(uploadImage);
     }
-    /**
-     * 增加分类接口,如果表中没有则添加
-     */
-    @PostMapping("/uploadCategory")
-    public ApiResponse<String> uploadCategory(@RequestBody CategoryRequest request){
-        return articleService.addCategory(request);
-    }
-    /**
-     * 增加标签接口,如果表中没有则添加
-     */
-    @PostMapping("/uploadTag")
-    public ApiResponse<String> uploadTag(@RequestBody TagRequest request) {
-        return articleService.addTag(request);
-    }
+
 }
 
 

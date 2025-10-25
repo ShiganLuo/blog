@@ -89,7 +89,7 @@ public class TagServiceImpl implements TagService {
             .map(tag -> {
                 TagDictionaryResponse resp = new TagDictionaryResponse();
                 resp.setId(tag.getId());
-                resp.setTag_name(tag.getName());
+                resp.setTagName(tag.getName());
                 return resp;
             })
             .collect(Collectors.toList());

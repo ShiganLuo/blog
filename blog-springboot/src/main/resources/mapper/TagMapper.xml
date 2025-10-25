@@ -15,10 +15,10 @@
     <!-- 标签分页查询的结果映射 -->
     <resultMap id="TagPageResultMap" type="com.baofeng.blog.vo.admin.AdminTagPageVO$TagVO">
         <id property="id" column="id"/>
-        <result property="name" column="name"/>
+        <result property="tagName" column="name"/>
         <result property="articleCount" column="article_count"/>
-        <result property="createTime" column="created_at"/>
-        <result property="updateTime" column="updated_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
     <!--articles_tags表结果映射-->

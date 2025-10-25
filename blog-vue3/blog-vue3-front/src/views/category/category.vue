@@ -27,7 +27,7 @@ const getCategoryList = async (): Promise<void> => {
     categoryList.value = (res.result).map((r) => {
       return {
         id: r.id,
-        name: r.name,
+        categoryName: r.categoryName,
         fontSize: randomFontSize(),
         fontColor: randomFontColor(),
       };
@@ -43,7 +43,7 @@ onMounted(() => {
 const goToArticleList = (item: Category): void => {
   router.push({
     path: "/articleList",
-    query: { id: item.id, type: "category", name: item.name },
+    query: { id: item.id, type: "category", name: item.categoryName },
   });
 };
 </script>
@@ -74,7 +74,7 @@ const goToArticleList = (item: Category): void => {
             class="category-item__label scale animate__animated animate__fadeInDown"
             @click="goToArticleList(item)"
           >
-            {{ item.name }}
+            {{ item.categoryName }}
           </span>
         </el-col>
       </el-row>

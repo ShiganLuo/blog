@@ -135,14 +135,14 @@ export const asyncRoutes: MenuListType[] = [
     children: [
       {
         id: uuid(),
-        path: 'publish/:articleId(\\d+)?',
+        path: 'index/:articleId(\\d+)?',
         component: RoutesAlias.ArticlePublish,
         name: 'ArticlePublishIndex',
         meta: { title: '文章发布', keepAlive: false }
       },
       {
         id: uuid(),
-        path: 'index',
+        path: 'statistic',
         component: RoutesAlias.ArticleIndex,
         name: 'ArticleStatistic',
         meta: {title: '文章统计', keepAlive: false}

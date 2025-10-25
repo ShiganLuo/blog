@@ -69,11 +69,11 @@ public class UserServiceImpl implements UserService {
             return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户创建失败");
         }
         // 更新roles表
-        Role role = roleMapper.selectRolesByRoleName(RoleTypeEnum.USER.getName());
+        Role role = roleMapper.selectRolesByRoleName(RoleTypeEnum.USER.getRole());
         if (role == null) {
             logger.info("USER不存在于roles表,创建USER角色");
             role = new Role();
-            role.setRoleName(RoleTypeEnum.USER.getName()); // 默认分配USER权限
+            role.setRoleName(RoleTypeEnum.USER.getRole()); // 默认分配USER权限
             role.setRoleDesc(RoleTypeEnum.USER.getDescription());
             int rowUpdated2 = roleMapper.insertRole(role);
             if (rowUpdated2 == 0) {
@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
     public ApiResponse<String> updateUserRole(UpdateUserRoleRequest updateUserRoleRequest) {
         Long userId = updateUserRoleRequest.userId();
         List<String> roles = updateUserRoleRequest.roles();
-        List<String> validRoles = List.of(RoleTypeEnum.USER.getName(), RoleTypeEnum.ADMIN.getName());
+        List<String> validRoles = List.of(RoleTypeEnum.USER.getRole(), RoleTypeEnum.ADMIN.getRole());
         // 检查用户是否存在
         User user = userMapper.selectUserById(userId);
         if (user == null) {
@@ -206,7 +206,7 @@ public class UserServiceImpl implements UserService {
             if (role == null) {
                 // 如果角色不存在，创建新角色
                 role = new Role();
-                role.setRoleName(RoleTypeEnum.valueOf(roleName).getName());
+                role.setRoleName(RoleTypeEnum.valueOf(roleName).getRole());
                 role.setRoleDesc(RoleTypeEnum.valueOf(roleName).getDescription());
                 int rowUpdated = roleMapper.insertRole(role);
                 if (rowUpdated == 0) {
@@ -310,7 +310,7 @@ public class UserServiceImpl implements UserService {
         .bio(user.getBio())
         .nickName(user.getNickName())
         .phoneNumber(user.getPhoneNumber())
-        .gender(genderEnum.getName())
+        .gender(genderEnum.getGender())
         .status(user.getStatus())
         .createdAt(user.getCreatedAt())
         .updatedAt(user.getUpdatedAt())

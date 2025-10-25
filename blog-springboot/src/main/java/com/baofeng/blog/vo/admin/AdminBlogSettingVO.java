@@ -1,6 +1,10 @@
 package com.baofeng.blog.vo.admin;
+
+import java.util.List;
+import lombok.Data;
+
 public class AdminBlogSettingVO {
-    public record initSettingRequest(
+    public record InitSettingRequest(
         String siteTitle,
         String siteDescription,
         String siteLogo,
@@ -18,4 +22,17 @@ public class AdminBlogSettingVO {
         boolean enableComments
     ) {}
     
+    @Data
+    public static class SystemSettingDict {
+        String label;
+        String value;
+        String elTagType; // e.g., "info", "success", "warning", "danger"
+        String elTagClass; // e.g., "custom-tag-class"
+    }
+
+    @Data
+    public static class SystemSettingDictResponse {
+        Integer total;
+        List<SystemSettingDict> list;
+    }
 }

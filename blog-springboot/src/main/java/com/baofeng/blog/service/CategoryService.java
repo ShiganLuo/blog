@@ -1,7 +1,7 @@
 package com.baofeng.blog.service;
 
 import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.common.Category.CategoriesResponse;
+import com.baofeng.blog.vo.common.Category.CategoryDictionaryResponse;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageResponseVO;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CreateCategoryRequest;
@@ -34,7 +34,7 @@ public interface CategoryService {
      * 获取目录字典列表
      * @return
      */
-    public ApiResponse<List<CategoriesResponse>> getCategoryDictionary();
+    public ApiResponse<List<CategoryDictionaryResponse>> getCategoryDictionary();
 
     /**
      * 计算分类总数

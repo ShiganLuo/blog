@@ -48,10 +48,15 @@ public class AdminCategoryPageVO {
     @Data
     public static class CategoryVO {
         private Long id;
-        private String name;         // 分类名称
-        private String description;  // 分类描述
+        private String categoryName;         // 分类名称
         private Integer articleCount; // 文章数量
         private LocalDateTime createTime;
         private LocalDateTime updateTime;
+    }
+
+    @Data
+    public static class CategoryDictionaryResponse {
+        private long id;
+        private String categoryName;
     }
 } 

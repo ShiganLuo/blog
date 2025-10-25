@@ -1,7 +1,7 @@
 package com.baofeng.blog.mapper;
 
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryVO;
-import com.baofeng.blog.vo.common.Category.CategoriesResponse;
+import com.baofeng.blog.vo.common.Category.CategoryDictionaryResponse;
 import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageRequestVO;
 import com.baofeng.blog.entity.ArticleCategory;
 import com.baofeng.blog.entity.Category;
@@ -58,7 +58,7 @@ public interface CategoryMapper {
     /**
      * 获取目录字典
      */
-    List<CategoriesResponse> getAllCategories();
+    List<CategoryDictionaryResponse> getAllCategories();
     /**
      * 插入article_categories映射表记录
      * @param ArticleCategory

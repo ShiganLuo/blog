@@ -204,6 +204,7 @@
         <result property="isTop" column="is_top"/>
         <result property="isFeatured" column="is_featured"/>
         <result property="isDelted" column="is_deleted"/>
+        <result property="viewsCount" column="views"/>
         <result property="status" column="status"/>
         <result property="type" column="type"/>
         <result property="originUrl" column="origin_url"/>
@@ -220,7 +221,7 @@
     <select id="getAdminArticlePage" resultMap="AdminArticlePageResultMap">
         SELECT 
             a.id, u.username, a.cover_image, a.title, a.summary, a.content, a.is_top, a.is_featured,
-            a.is_deleted, a.status, a.type, a.origin_url, a.created_at, a.updated_at
+            a.is_deleted, a.views,a.status, a.type, a.origin_url, a.created_at, a.updated_at
         FROM articles a
         LEFT JOIN users u ON a.author_id = u.id
         <where>

@@ -16,8 +16,7 @@
     <!-- 分类分页查询的结果映射 -->
     <resultMap id="CategoryPageResultMap" type="com.baofeng.blog.vo.admin.AdminCategoryPageVO$CategoryVO">
         <id property="id" column="id"/>
-        <result property="name" column="name"/>
-        <result property="description" column="description"/>
+        <result property="categoryName" column="name"/>
         <result property="articleCount" column="article_count"/>
         <result property="createTime" column="created_at"/>
         <result property="updateTime" column="updated_at"/>
@@ -25,7 +24,7 @@
 
     <select id="getCategoryPage" resultMap="CategoryPageResultMap">
         SELECT 
-            c.id, c.name, c.description, 
+            c.id, c.name,
             c.created_at, c.updated_at,
             COUNT(a.id) AS article_count
         FROM categories c
@@ -110,8 +109,11 @@
         DELETE FROM categories WHERE id = #{id}
     </delete>
 
-
-    <select id="getAllCategories">
+    <resultMap id="CategoryDictionaryResultMap" type="com.baofeng.blog.vo.common.Category$CategoryDictionaryResponse">
+        <id property="id" column="id"/>
+        <result property="categoryName" column="name"/>
+    </resultMap>
+    <select id="getAllCategories" resultMap="CategoryDictionaryResultMap">
         SELECT id, name FROM categories
     </select>
 </mapper> 

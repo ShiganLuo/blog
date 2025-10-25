@@ -1,9 +1,11 @@
 package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.service.TagService;
+import com.baofeng.blog.service.ArticleService;
 import com.baofeng.blog.vo.ApiResponse;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
+import com.baofeng.blog.vo.admin.AdminArticleVO.TagRequest;
 import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
 import com.baofeng.blog.vo.common.Tag.TagDictionaryResponse;
 
@@ -21,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 public class AdminTagController {
     
     private final TagService tagService;
+    private final ArticleService articleService;
 
     /**
      * 创建标签
@@ -58,5 +61,12 @@ public class AdminTagController {
     @GetMapping("/getTagDictionary")
     public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(){
         return tagService.getTagDictionary(); // 注意返回修改了，记得修改前端
+    }
+    /**
+     * 增加标签接口,如果表中没有则添加
+     */
+    @PostMapping("/uploadTag")
+    public ApiResponse<String> uploadTag(@RequestBody TagRequest request) {
+        return articleService.addTag(request);
     }
 } 

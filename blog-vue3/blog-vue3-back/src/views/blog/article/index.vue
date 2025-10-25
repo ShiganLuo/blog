@@ -237,7 +237,7 @@
   })
   interface initialArticleFormState {
     id: number,
-    authorName: number,
+    authorName: string,
     articleCover: string,
     articleTitle: string,
     categoryNameList: string[],
@@ -246,8 +246,8 @@
     isTop: number,
     isFeatured: number,
     isDeleted: number,
-    status: number,           // 默认公开
-    type: number,             // 默认原创
+    status: string,           // 默认公开
+    type: string,             // 默认原创
     originalUrl: string,
     viewsCount: number,
     createdAt: string,
@@ -264,8 +264,8 @@
     const res = await ArticleService.listArticle(query)
     if (res.code === 200) {
       Object.assign(articleListForm.value, res.result.list)
-      total.value = res.result.total
-      loading.value = false
+      total.value = res.result.total;
+      loading.value = false;
     }
   }
 
@@ -436,6 +436,7 @@
   }
 
   import { useRoute } from 'vue-router'
+  import { ar } from 'element-plus/es/locale'
   const route = useRoute()
   onActivated(() => {
     if (route.query.current) {

@@ -3,8 +3,8 @@ import { BaseArrayResult, BaseObjectResult, BasePageResult, BaseRecordResult } f
 export interface CategoryResult {
   id: string
   categoryName: string
-  createTime: string
-  updateTime: string
+  createdAt: string
+  updatedAt: string
 }
 
 export type CategoryListPageResult = BasePageResult<CategoryResult>

@@ -1,21 +1,22 @@
 import { BaseArrayResult, BaseObjectResult, BasePageResult } from '../axios'
 
 export interface ArticleResult {
-  id: string
+  id: number
   authorName: string
   articleCover: string
   articleTitle: string
   categoryNameList: string[]
   articleAbstract: string
   articleContent: string
-  isTop: string
-  isFeatured: string
-  isDeleted: string
+  isTop: number
+  isFeatured: number
+  isDeleted: number
   status: string
   type: string
   originalUrl: string
-  createAt: string
-  updateAt: string
+  viewsCount: number
+  createdAt: string
+  updatedAt: string
   tagNameList: string[]
 }
 

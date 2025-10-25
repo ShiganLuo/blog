@@ -7,8 +7,8 @@ public class Category {
      * 创建响应目录字典
      */
     @Data
-    public static class CategoriesResponse{
+    public static class CategoryDictionaryResponse{
         private long id;
-        private String name;
+        private String categoryName;
     }
 }

@@ -3,8 +3,8 @@ import { BaseArrayResult, BaseObjectResult, BasePageResult, BaseRecordResult } f
 export interface TagResult {
   id: string
   tagName: string
-  createTime: string
-  updateTime: string
+  createdAt: string
+  updatedAt: string
 }
 
 export type TagListPageResult = BasePageResult<TagResult>

@@ -2,7 +2,7 @@ import type Category from "@/views/category/category.vue";
 
 export interface Category {
   id: number;
-  name: string;
+  categoryName: string;
   fontSize: number;
   fontColor: string;
 }
@@ -10,7 +10,7 @@ export interface Category {
 // 接口返回数据的原始结构
 export interface CategoryResponse {
   id: number;
-  name: string;
+  categoryName: string;
 }
 
 export type CategoryListResponse = CategoryResponse[]

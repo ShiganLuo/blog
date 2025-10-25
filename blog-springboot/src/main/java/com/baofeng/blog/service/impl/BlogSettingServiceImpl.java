@@ -7,18 +7,27 @@ import com.baofeng.blog.mapper.TagMapper;
 import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.mapper.CategoryMapper;
 import com.baofeng.blog.entity.BlogSetting;
+import com.baofeng.blog.entity.Role;
 import com.baofeng.blog.service.BlogSettingService;
 import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminBlogSettingVO.initSettingRequest;
+import com.baofeng.blog.vo.admin.AdminBlogSettingVO.InitSettingRequest;
+import com.baofeng.blog.vo.admin.AdminBlogSettingVO.SystemSettingDict;
+import com.baofeng.blog.vo.admin.AdminBlogSettingVO.SystemSettingDictResponse;
 import com.baofeng.blog.vo.front.FrontBlogSettinVO.*;
 import com.baofeng.blog.entity.User;
-import com.baofeng.blog.enums.ResultCodeEnum;
+import com.baofeng.blog.enums.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
-import java.util.List;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +37,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     private final TagMapper tagMapper;
     private final CategoryMapper categoryMapper;
     private final UserMapper userMapper;
-
+    private static final Logger logger = LoggerFactory.getLogger(BlogSettingService.class);
     @Override
     public ApiResponse<String> addViews(){
         //id默认为1,指第一次初始化
@@ -38,7 +47,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
             : ApiResponse.error(400, "访问量增加失败");
     }
     @Override
-    public ApiResponse<String> initSetting(initSettingRequest request){
+    public ApiResponse<String> initSetting(InitSettingRequest request){
         BlogSetting settring1 = blogSettingMapper.getSettingById((long) 1);
         if ( settring1 != null) {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"博客系统设置已存在"); // 默认第一条记录为博客系统设置
@@ -69,7 +78,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     }
 
     @Override
-    public ApiResponse<String> updateSettingById(initSettingRequest request) {
+    public ApiResponse<String> updateSettingById(InitSettingRequest request) {
         BlogSetting setting = new BlogSetting();
         setting.setId((long) 1);// 默认第一条记录为博客系统设置
         setting.setSiteTitle(null == request.siteTitle() ? "" : request.siteTitle());
@@ -180,5 +189,71 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         return rowUpdated > 0
             ? ApiResponse.success("友链删除成功")
             : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"友链删除失败");
+    }
+
+    @Override
+    public ApiResponse<SystemSettingDictResponse> getSystemSettingDict(String type) {
+        List<SystemSettingDict> systemSettingDicts = new ArrayList<>();
+        switch (type) {
+            case "articleType":
+                systemSettingDicts = Arrays.stream(ArticleTypeEnum.values())
+                                    .map(articleTypeEnum -> {
+                                        SystemSettingDict dict = new SystemSettingDict();
+                                        dict.setLabel(articleTypeEnum.getType());
+                                        dict.setValue(String.valueOf(articleTypeEnum.getCode()));
+                                        dict.setElTagClass("article-type-tag");
+                                        dict.setElTagType("info");
+                                        return dict;
+                                    })
+                                    .collect(Collectors.toList());
+                break;
+            case "gender":
+                systemSettingDicts = Arrays.stream(GenderEnum.values())
+                            .map(genderEnum -> {
+                                SystemSettingDict dict = new SystemSettingDict();
+                                dict.setLabel(genderEnum.getGender());
+                                dict.setValue(String.valueOf(genderEnum.getCode()));
+                                dict.setElTagClass("gender-type-tag");
+                                dict.setElTagType("info");
+                                return dict;
+                            })
+                            .collect(Collectors.toList());
+                break;
+            case "role":
+                systemSettingDicts = Arrays.stream(RoleTypeEnum.values())
+                                        .map(roleTypeEnum -> {
+                                            SystemSettingDict dict = new SystemSettingDict();
+                                            dict.setLabel(roleTypeEnum.getDescription());
+                                            dict.setValue(roleTypeEnum.getRole());
+                                            dict.setElTagClass("role-type-tag");
+                                            dict.setElTagType("info");
+                                            return dict;
+                                        })
+                                        .collect(Collectors.toList());
+                break;
+            case "userStatus":
+                systemSettingDicts = Arrays.stream(UserStatusEnum.values())
+                                        .map(userStatusEnum -> {
+                                            SystemSettingDict dict = new SystemSettingDict();
+                                            dict.setLabel(userStatusEnum.getDescription());
+                                            dict.setValue(userStatusEnum.getStatus());
+                                            dict.setElTagClass("userStatus-type-tag");
+                                            dict.setElTagType("info");
+                                            return dict;
+                                        })
+                                        .collect(Collectors.toList());
+                break;
+            default:
+                logger.info(type);
+                return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"不支持的获取类型");
+        }
+
+
+        int total = systemSettingDicts.size();
+        SystemSettingDictResponse systemSettingDictResponse = new SystemSettingDictResponse();
+        systemSettingDictResponse.setList(systemSettingDicts);
+        systemSettingDictResponse.setTotal(total);
+        return ApiResponse.success(systemSettingDictResponse);
+        
     }
 } 
