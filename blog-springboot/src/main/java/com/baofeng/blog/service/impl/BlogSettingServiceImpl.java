@@ -199,10 +199,10 @@ public class BlogSettingServiceImpl implements BlogSettingService {
                 systemSettingDicts = Arrays.stream(ArticleTypeEnum.values())
                                     .map(articleTypeEnum -> {
                                         SystemSettingDict dict = new SystemSettingDict();
-                                        dict.setLabel(articleTypeEnum.getType());
-                                        dict.setValue(String.valueOf(articleTypeEnum.getCode()));
-                                        dict.setElTagClass("article-type-tag");
-                                        dict.setElTagType("info");
+                                        dict.setDictLabel(articleTypeEnum.getType());
+                                        dict.setDictValue(String.valueOf(articleTypeEnum.getCode()));
+                                        dict.setCssClass("article-type-tag");
+                                        dict.setListClass("info");
                                         return dict;
                                     })
                                     .collect(Collectors.toList());
@@ -211,10 +211,10 @@ public class BlogSettingServiceImpl implements BlogSettingService {
                 systemSettingDicts = Arrays.stream(GenderEnum.values())
                             .map(genderEnum -> {
                                 SystemSettingDict dict = new SystemSettingDict();
-                                dict.setLabel(genderEnum.getGender());
-                                dict.setValue(String.valueOf(genderEnum.getCode()));
-                                dict.setElTagClass("gender-type-tag");
-                                dict.setElTagType("info");
+                                dict.setDictLabel(genderEnum.getGender());
+                                dict.setDictValue(String.valueOf(genderEnum.getCode()));
+                                dict.setCssClass("gender-type-tag");
+                                dict.setListClass("info");
                                 return dict;
                             })
                             .collect(Collectors.toList());
@@ -223,10 +223,10 @@ public class BlogSettingServiceImpl implements BlogSettingService {
                 systemSettingDicts = Arrays.stream(RoleTypeEnum.values())
                                         .map(roleTypeEnum -> {
                                             SystemSettingDict dict = new SystemSettingDict();
-                                            dict.setLabel(roleTypeEnum.getDescription());
-                                            dict.setValue(roleTypeEnum.getRole());
-                                            dict.setElTagClass("role-type-tag");
-                                            dict.setElTagType("info");
+                                            dict.setDictLabel(roleTypeEnum.getDescription());
+                                            dict.setDictValue(roleTypeEnum.getRole());
+                                            dict.setListClass("role-type-tag");
+                                            dict.setCssClass("info");
                                             return dict;
                                         })
                                         .collect(Collectors.toList());
@@ -235,10 +235,10 @@ public class BlogSettingServiceImpl implements BlogSettingService {
                 systemSettingDicts = Arrays.stream(UserStatusEnum.values())
                                         .map(userStatusEnum -> {
                                             SystemSettingDict dict = new SystemSettingDict();
-                                            dict.setLabel(userStatusEnum.getDescription());
-                                            dict.setValue(userStatusEnum.getStatus());
-                                            dict.setElTagClass("userStatus-type-tag");
-                                            dict.setElTagType("info");
+                                            dict.setDictLabel(userStatusEnum.getDescription());
+                                            dict.setDictValue(userStatusEnum.getStatus());
+                                            dict.setListClass("userStatus-type-tag");
+                                            dict.setCssClass("info");
                                             return dict;
                                         })
                                         .collect(Collectors.toList());

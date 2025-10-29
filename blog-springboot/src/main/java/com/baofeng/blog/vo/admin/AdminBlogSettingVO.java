@@ -24,10 +24,10 @@ public class AdminBlogSettingVO {
     
     @Data
     public static class SystemSettingDict {
-        String label;
-        String value;
-        String elTagType; // e.g., "info", "success", "warning", "danger"
-        String elTagClass; // e.g., "custom-tag-class"
+        String dictLabel;
+        String dictValue;
+        String listClass; // e.g., "info", "success", "warning", "danger"
+        String cssClass; // e.g., "custom-tag-class"
     }
 
     @Data

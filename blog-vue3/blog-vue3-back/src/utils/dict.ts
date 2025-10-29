@@ -16,7 +16,7 @@ export interface DictType {
 export function useDict(...args: string[]): Promise<Record<string, DictType[]>> {
   const res = ref<Record<string, any>>({})
   const promises = args.map((dictType) => {
-    return DictDataService.listData({ dictType }).then((resp) => {
+    return DictDataService.listData(dictType).then((resp) => {
       res.value[dictType] = resp.result.list.map((p) => ({
         label: p.dictLabel,
         value: p.dictValue,

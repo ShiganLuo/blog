@@ -5,10 +5,9 @@ import { CodeMsgResult } from '@/types/axios'
 // 字典数据
 export class DictDataService {
   // 查询字典数据列表
-  static listData(query: any) {
+  static listData(type: any) {
     return request.get<DictDataListPageResult>({
-      url: '/system/dict/data/list',
-      params: query
+      url: `/api/admin/settings/getDictSetting/${type}`,
     })
   }
 

@@ -32,7 +32,7 @@
               label="文章类型"
               prop="type"
               v-model="queryParams.type"
-              :options="articleType"
+              :options="article_type"
             />
             <el-col :xs="24" :sm="12" :lg="6">
               <el-form-item label="&nbsp;" />
@@ -80,21 +80,7 @@
     >
       <template #default>
         <el-table-column label="文章作者" align="center" prop="authorName" v-if="columns[0].show" />
-        <el-table-column label="缩略图" align="center" prop="articleCover" v-if="columns[2].show">
-          <template #default="scope">
-            <el-image
-              class="article-cover"
-              :src="scope.row.articleCover ? scope.row.articleCover : defaultAvatar"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="文章标题"
-          align="center"
-          prop="articleTitle"
-          v-if="columns[3].show"
-        />
-        <el-table-column label="文章分类" align="center">
+        <el-table-column label="文章分类" align="center" v-if="columns[1].show">
           <template #default="{ row }">
             <div
               style="display: flex; flex-wrap: wrap; justify-content: center;"
@@ -115,6 +101,21 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column label="缩略图" align="center" prop="articleCover" v-if="columns[2].show">
+          <template #default="scope">
+            <el-image
+              class="article-cover"
+              :src="scope.row.articleCover ? scope.row.articleCover : defaultAvatar"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="文章标题"
+          align="center"
+          prop="articleTitle"
+          v-if="columns[3].show"
+        />
+
         <el-table-column
           label="摘要"
           align="center"
@@ -153,22 +154,22 @@
         <el-table-column label="状态" align="center" prop="status" v-if="columns[9].show" />
         <el-table-column label="类型" align="center" prop="type" v-if="columns[10].show">
           <template #default="scope">
-            <dict-tag :options="articleType" :value="scope.row.status" />
+            <dict-tag :options="article_type" :value="scope.row.type" />
           </template>
         </el-table-column>
         <el-table-column
           label="原文链接"
           align="center"
           prop="originalUrl"
-          v-if="columns[12].show"
+          v-if="columns[11].show"
         />
-        <el-table-column label="浏览量" align="center" prop="viewsCount" v-if="columns[13].show" />
-        <el-table-column label="创建时间" align="center" prop="createdAt" v-if="columns[14].show">
+        <el-table-column label="浏览量" align="center" prop="viewsCount" v-if="columns[12].show" />
+        <el-table-column label="创建时间" align="center" prop="createdAt" v-if="columns[13].show">
           <template #default="scope">
             {{ parseTime(scope.row.createdAt) }}
           </template>
         </el-table-column>
-        <el-table-column label="文章标签" align="center">
+        <el-table-column label="文章标签" align="center" v-if="columns[14].show">
           <template #default="{ row }">
             <div
               style="display: flex; flex-wrap: wrap; justify-content: center;"
@@ -281,7 +282,6 @@
     { name: '删除', show: false },
     { name: '状态', show: false },
     { name: '类型', show: true },
-    { name: '访问密码', show: false },
     { name: '原文链接', show: false },
     { name: '浏览量', show: true },
     { name: '创建时间', show: true },
@@ -396,10 +396,10 @@
 
   // 获取文章类型
   import { useDict, DictType } from '@/utils/dict'
-  const articleType = ref<DictType[]>([]) // 系统字典数据
+  const article_type = ref<DictType[]>([]) // 系统字典数据
   const getuseDict = async () => {
-    const { article_type } = await useDict('article_type')
-    articleType.value = article_type
+    const { articleType } = await useDict('articleType')
+    article_type.value = articleType;
   }
 
   /** 状态切换操作 */
