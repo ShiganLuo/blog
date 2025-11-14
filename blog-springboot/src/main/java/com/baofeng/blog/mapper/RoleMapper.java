@@ -19,7 +19,7 @@ public interface RoleMapper {
      * @param role
      * @return
      */
-    int insertRole(Role role);
+    Role insertRole(Role role);
 
     /**
      * 根据ID删除角色
@@ -48,5 +48,5 @@ public interface RoleMapper {
      * @param roleName
      * @return
      */
-    Role selectRolesByRoleName(String roleName);
+    Role selectRoleByRoleName(String roleName);
 }

@@ -71,11 +71,11 @@ public class AdminArticleVO {
             if (tagId != null && tagId < 1) {
                 throw new IllegalArgumentException("标签ID必须大于等于1");
             }
-            if (type != null && type.isEmpty()) {
-                type = null;
+            if (type == null || type.isEmpty()) {
+                throw new IllegalArgumentException("type不能为空");
             }
-            if (status != null && status.isEmpty()) {
-                status = null;
+            if (status == null || status.isEmpty()) {
+                throw new IllegalArgumentException("status不能为空");
             };
         }
     }

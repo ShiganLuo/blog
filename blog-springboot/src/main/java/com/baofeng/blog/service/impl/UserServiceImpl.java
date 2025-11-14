@@ -2,6 +2,8 @@ package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.exception.DuplicateUserException;
 import com.baofeng.blog.mapper.UserMapper;
+import com.baofeng.blog.mapper.RoleMapper;
+import com.baofeng.blog.mapper.PermissionMapper;
 import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.config.JwtPropertiesConfig;
 import com.baofeng.blog.entity.User;
@@ -12,7 +14,6 @@ import com.baofeng.blog.vo.common.User.LoginRequest;
 import com.baofeng.blog.vo.common.User.UserInfoResponse;
 import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
 import com.baofeng.blog.util.JwtTokenProvider;
-import com.baofeng.blog.mapper.RoleMapper;
 import com.baofeng.blog.entity.Role;
 import com.baofeng.blog.enums.GenderEnum;
 import com.baofeng.blog.enums.ResultCodeEnum;
@@ -24,14 +25,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
+    private final PermissionMapper permissionMapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final long accessTokenExpiration;
@@ -40,15 +45,18 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl(UserMapper userMapper,
                             RoleMapper roleMapper,
+                            PermissionMapper permissionMapper,
                             BCryptPasswordEncoder passwordEncoder,
                             JwtTokenProvider jwtTokenProvider, 
                             JwtPropertiesConfig jwtProperties) {
+        this.userMapper = userMapper;
+        this.roleMapper = roleMapper;
+        this.permissionMapper = permissionMapper;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userMapper = userMapper;
         this.accessTokenExpiration = jwtProperties.getAccessTokenExpiration();
         this.refreshTokenExpiration = jwtProperties.getRefreshTokenExpiration();
-        this.roleMapper = roleMapper;
+
     }
 
     @Override
@@ -69,14 +77,14 @@ public class UserServiceImpl implements UserService {
             return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户创建失败");
         }
         // 更新roles表
-        Role role = roleMapper.selectRolesByRoleName(RoleTypeEnum.USER.getRole());
+        Role role = roleMapper.selectRoleByRoleName(RoleTypeEnum.USER.getRole());
         if (role == null) {
             logger.info("USER不存在于roles表,创建USER角色");
             role = new Role();
             role.setRoleName(RoleTypeEnum.USER.getRole()); // 默认分配USER权限
             role.setRoleDesc(RoleTypeEnum.USER.getDescription());
-            int rowUpdated2 = roleMapper.insertRole(role);
-            if (rowUpdated2 == 0) {
+            Role newRole = roleMapper.insertRole(role);
+            if (newRole == null) {
                 logger.error("USER角色创建失败");
                 return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户创建失败");
             }
@@ -128,11 +136,21 @@ public class UserServiceImpl implements UserService {
         String refreshToken = jwtTokenProvider.generateToken(user, refreshTokenExpiration, true);
 
         // 获取角色
-        List<String> roles = roleMapper.selectRolesByUserId(user.getId())
-            .stream()
-            .map(Role::getRoleName)
-            .collect(Collectors.toList());
-
+        List<Role> roleList = roleMapper.selectRolesByUserId(user.getId());
+        List<String> roles = new ArrayList<>(roleList.size());
+        List<Long> roleIds = new ArrayList<>(roleList.size());
+        for (Role role : roleList) {
+            roles.add(role.getRoleName());
+            roleIds.add(role.getId());
+        }
+        List<String> permissions;
+        if (roleIds.isEmpty()) {
+            // 如果用户没有角色，则权限列表为空
+            permissions = Collections.emptyList();
+        } else {
+            // 调用批量查询方法
+            permissions = permissionMapper.selectPermissionsByRoleIds(roleIds);
+        }
         Object response;
 
         if (clazz == FrontLoginResponseVO.class) {
@@ -150,7 +168,8 @@ public class UserServiceImpl implements UserService {
                 user.getAvatarUrl(),
                 user.getUsername(),
                 user.getNickName(),
-                roles
+                roles,
+                permissions
             );
             response = new AdminLoginResponseVO(accessToken, refreshToken, userInfo);
         } else {
@@ -202,14 +221,14 @@ public class UserServiceImpl implements UserService {
         roleMapper.deleteUserRolesByUserId(userId);
         // 为用户分配新角色
         for (String roleName : roles) {
-            Role role = roleMapper.selectRolesByRoleName(roleName);
+            Role role = roleMapper.selectRoleByRoleName(roleName);
             if (role == null) {
                 // 如果角色不存在，创建新角色
                 role = new Role();
                 role.setRoleName(RoleTypeEnum.valueOf(roleName).getRole());
                 role.setRoleDesc(RoleTypeEnum.valueOf(roleName).getDescription());
-                int rowUpdated = roleMapper.insertRole(role);
-                if (rowUpdated == 0) {
+                Role newRole = roleMapper.insertRole(role);
+                if (newRole == null) {
                     logger.error("角色创建失败: " + roleName);
                 }
             }

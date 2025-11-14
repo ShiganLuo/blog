@@ -38,7 +38,7 @@
         DELETE FROM roles WHERE id = #{roleId}
     </delete>
     <!--判断角色是否存在-->
-    <select id="selectRolesByRoleName">
+    <select id="selectRoleByRoleName">
         SELECT * FROM roles WHERE role_name = #{roleName}
     </select>
 

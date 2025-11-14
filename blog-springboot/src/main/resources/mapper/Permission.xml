@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baofeng.blog.mapper.PermissionMapper">
+    <resultMap id="PermissionMapper" type="com.baofeng.blog.entity.Permission">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="permission" column="permission"/>
+        <result property="type" column="type"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="path" column="path"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+    <!--获取用户权限列表-->
+    <select id="selectPermissionsByRoleIds">
+        SELECT p.permission FROM permissions p
+        JOIN role_permissions rp ON p.id = rp.permission_id
+        WHERE rp.role_id IN
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </select>
+
+    <!--新建权限-->
+    <insert id="insertPermission" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO permissions (name, permission, type, parent_id, path)
+        VALUES (#{name}, #{permission}, #{type}, #{parentId}, #{path})
+    </insert>
+
+    <!--查询权限-->
+    <select id="selectPermissionByName">
+        SELECT * FROM permissions
+        WHERE permission = #{permissionName}
+    </select>
+
+
+    <resultMap id="RolePermissionMapper" type="com.baofeng.blog.entity.RolePermission">
+        <id property="id" column="id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="permissionId" column="permission_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!--为角色分配权限-->
+    <insert id="insertRolePermission">
+        INSERT INTO role_permissions (role_id, permissionId)
+        VALUES (#{roleId}, #{permissionId})
+    </insert>
+
+    <!--查询角色权限是否存在-->
+    <select id="selectRolePermission">
+        SELECT * FROM role_permissions
+        WHERE role_id = #{roleId} and permission_id = #{permissionId}
+    </select>
+
+</mapper>

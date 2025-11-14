@@ -27,5 +27,6 @@ public class AdminLoginResponseVO {
         private String username;
         private String nickName;
         private List<String> roles;
+        private List<String> permissions;
     }
 } 
