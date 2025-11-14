@@ -24,7 +24,7 @@
     </select>
 
     <!--新建权限-->
-    <insert id="insertPermission" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertPermission">
         INSERT INTO permissions (name, permission, type, parent_id, path)
         VALUES (#{name}, #{permission}, #{type}, #{parentId}, #{path})
     </insert>

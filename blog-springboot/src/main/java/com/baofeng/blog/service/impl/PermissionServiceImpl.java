@@ -3,6 +3,7 @@ package com.baofeng.blog.service.impl;
 import com.baofeng.blog.service.ArticleService;
 import com.baofeng.blog.service.PermissionService;
 import com.baofeng.blog.vo.ApiResponse;
+import com.baofeng.blog.vo.admin.AdminPermissionVO.AddNewPermissionRequest;
 import com.baofeng.blog.vo.admin.AdminPermissionVO.AssignPermissionRequest;
 import com.baofeng.blog.entity.Role;
 import com.baofeng.blog.entity.RolePermission;
@@ -10,6 +11,8 @@ import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.entity.Permission;
 import com.baofeng.blog.mapper.PermissionMapper;
 import com.baofeng.blog.mapper.RoleMapper;
+
+import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +31,7 @@ public class PermissionServiceImpl implements PermissionService{
         this.roleMapper = roleMapper;
     }
 
-    public ApiResponse<String> AssignPermissionForRole(AssignPermissionRequest assignPermissionRequest) {
+    public ApiResponse<String> assignPermissionForRole(AssignPermissionRequest assignPermissionRequest) {
         String roleName = assignPermissionRequest.roleName();
         String permissionName = assignPermissionRequest.permission();
 
@@ -71,6 +74,20 @@ public class PermissionServiceImpl implements PermissionService{
         }
     }
 
+    public ApiResponse<String> addNewPermission(AddNewPermissionRequest addNewPermissionRequest) {
+        Permission permission = Permission.builder()
+        .name(addNewPermissionRequest.name())
+        .permission(addNewPermissionRequest.permission())
+        .type(addNewPermissionRequest.type() != null && !addNewPermissionRequest.type().isEmpty() ? addNewPermissionRequest.type() : null)
+        .path(addNewPermissionRequest.path() != null && !addNewPermissionRequest.path().isEmpty() ? addNewPermissionRequest.path() : null)
+        .parentId(addNewPermissionRequest.parentId())
+        .build();
+        
+        int rowUpdated = permissionMapper.insertPermission(permission);
+        return rowUpdated > 0
+            ? ApiResponse.success("权限新建成功")
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"权限新建失败");
+    }
 
 
 }

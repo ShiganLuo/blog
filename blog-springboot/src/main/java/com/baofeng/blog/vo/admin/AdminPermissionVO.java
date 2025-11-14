@@ -17,4 +17,20 @@ public class AdminPermissionVO {
             };
         }
     }
+    public record AddNewPermissionRequest(
+        String name,
+        String permission,
+        String type,
+        Long parentId,
+        String path
+    ){
+        public AddNewPermissionRequest {
+            if (permission == null || permission.isEmpty()) {
+                throw new IllegalArgumentException("permission不能为空");
+            }
+            if (name == null || name.isEmpty()) {
+                throw new IllegalArgumentException("name不能为空");
+            }
+        }
+    }
 }

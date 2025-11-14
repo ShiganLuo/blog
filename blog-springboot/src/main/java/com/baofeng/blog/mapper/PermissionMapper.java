@@ -20,7 +20,7 @@ public interface PermissionMapper {
      * @param permission
      * @return
      */
-    Permission insertPermission(Permission permission);
+    int insertPermission(Permission permission);
 
     /**
      * 根据权限名查询权限
