@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<?>> handleValidationException(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, errorMessage));
+        return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, errorMessage));
     }
     // 业务逻辑中抛出的非法参数异常
     @ExceptionHandler(IllegalArgumentException.class)
@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
         // 如果是构造器里抛的 IllegalArgumentException
         Throwable cause = ex.getCause();
         if (cause instanceof IllegalArgumentException) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, cause.getMessage()));
+            return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, cause.getMessage()));
         }
         return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "请求参数格式错误"));
     }
@@ -38,28 +38,28 @@ public class GlobalExceptionHandler {
         Throwable cause = ex.getCause();
         if (cause != null && cause.getCause() instanceof IllegalArgumentException iae) {
             // 捕获 record 构造器抛的异常
-            return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, iae.getMessage()));
+            return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, iae.getMessage()));
         }
         return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "请求参数格式错误"));
     }
     //自定义重复异常
     @ExceptionHandler(DuplicateUserException.class)
     public ResponseEntity<ApiResponse<?>> handleDuplicateUserException(DuplicateUserException ex) {
-        return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, ex.getMessage()));
+        return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage()));
     }
 
     // 空指针等运行时异常
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ApiResponse<?>> handleNpe(NullPointerException ex) {
         System.out.println(ex.getMessage());
-        return ResponseEntity.status(500).body(ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "服务器内部错误"));
+        return ResponseEntity.status(500).body(ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "服务器内部错误"));
     }
 
     // 所有未处理的异常（兜底）
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleGenericException(Exception ex) {
         System.out.println(ex.getMessage());
-        return ResponseEntity.status(500).body(ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "发生未知错误"));
+        return ResponseEntity.status(500).body(ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "发生未知错误"));
     }
     
 

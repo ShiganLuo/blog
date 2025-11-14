@@ -60,7 +60,7 @@ public class TagServiceImpl implements TagService {
         // 保存标签
         return rowsUpdated > 0 
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"标签创建失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"标签创建失败");
     }
 
     @Override
@@ -80,7 +80,7 @@ public class TagServiceImpl implements TagService {
         // 删除标签
         return rowsDeleted > 0
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"删除失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"删除失败");
     }
     @Override
     public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(){

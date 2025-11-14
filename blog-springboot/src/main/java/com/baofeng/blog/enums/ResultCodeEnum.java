@@ -9,7 +9,7 @@ public enum ResultCodeEnum {
     NOT_FOUND(404, "资源不存在"),
     CONFLICT(409, "资源冲突"),
     UNPROCESSABLE_ENTITY(422, "请求格式正确，但含有语义错误"),
-    INTERNEL_SERVER_ERROR(500, "服务器错误"),
+    INTERNAL_SERVER_ERROR(500, "服务器错误"),
     BAD_GATEWAY(502, "网关错误"),
     SERVICE_UNAVAILABLE(503, "服务不可用"),
     GATEWAY_TIMEOUT(504, "网关超时");

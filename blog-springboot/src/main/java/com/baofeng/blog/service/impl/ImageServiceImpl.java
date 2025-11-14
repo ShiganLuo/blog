@@ -77,11 +77,11 @@ public class ImageServiceImpl implements ImageService {
             int rowsUpdated = imageMapper.insertImage(image);
             return rowsUpdated > 0
                 ? ApiResponse.success(imagePath)
-                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR);
+                : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
 
         } catch (Exception e) {
             logger.warn("minio存储文件失败");
-            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "文件存储失败");
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "文件存储失败");
         }
 
 

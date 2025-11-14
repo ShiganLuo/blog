@@ -73,7 +73,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         int success = blogSettingMapper.insertSetting(setting);
         return success > 0
             ? ApiResponse.success("网站初始化成功")
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "网站初始化失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "网站初始化失败");
 
     }
 
@@ -101,7 +101,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         int success = blogSettingMapper.updateSettingById(setting);
         return success > 0
             ? ApiResponse.success("网站设置更新成功")
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "网站设置更新失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "网站设置更新失败");
     }
 
     @Override
@@ -158,7 +158,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         }
         return rowUpdated > 0 
             ? ApiResponse.success("友链添加成功")
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"友链添加失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"友链添加失败");
 
     }
 
@@ -177,7 +177,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         int rowUpdated = blogSettingMapper.updateFriendLinkById(addFriendLinkRequest);
         return rowUpdated > 0
             ? ApiResponse.success("友链更新成功")
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"友链更新失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"友链更新失败");
     }
 
     @Override
@@ -188,7 +188,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         int rowUpdated = blogSettingMapper.deleteSettingById(id);
         return rowUpdated > 0
             ? ApiResponse.success("友链删除成功")
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"友链删除失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"友链删除失败");
     }
 
     @Override

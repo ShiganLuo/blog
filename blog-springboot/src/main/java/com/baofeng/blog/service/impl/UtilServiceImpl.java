@@ -37,7 +37,7 @@ public class UtilServiceImpl implements UtilService {
             ImageIO.write(image, "jpg", bos);
         } catch (IOException e) {
             logger.error("生成验证码失败", e);
-            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "生成验证码失败" );
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "生成验证码失败" );
         }
 
         // 转 Base64

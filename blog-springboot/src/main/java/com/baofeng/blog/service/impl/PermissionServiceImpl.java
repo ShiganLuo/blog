@@ -59,7 +59,7 @@ public class PermissionServiceImpl implements PermissionService{
         } catch (Exception e) {
             logger.error("分配权限插入数据库失败. Role: {}, Permission: {}. 错误信息: {}", 
                         roleName, permissionName, e.getMessage());
-            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "数据库操作失败，分配权限操作未完成。");
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "数据库操作失败，分配权限操作未完成。");
         }
         
         if (rowUpdated > 0) {
@@ -67,7 +67,7 @@ public class PermissionServiceImpl implements PermissionService{
             return ApiResponse.success("分配权限成功：角色 [" + roleName + "] 获得了权限 [" + permissionName + "]");
         } else {            
             logger.error("分配权限失败，但未捕获到异常。Role: {}, Permission: {}", roleName, permissionName);
-            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "分配权限失败：数据库操作返回 0 行受影响。");
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "分配权限失败：数据库操作返回 0 行受影响。");
         }
     }
 

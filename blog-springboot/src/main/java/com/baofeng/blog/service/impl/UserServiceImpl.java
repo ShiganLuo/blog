@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
         if (rowUpdated1 == 0) {
             logger.error("用户插入数据库失败");
-            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户创建失败");
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户创建失败");
         }
         // 更新roles表
         Role role = roleMapper.selectRoleByRoleName(RoleTypeEnum.USER.getRole());
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
             Role newRole = roleMapper.insertRole(role);
             if (newRole == null) {
                 logger.error("USER角色创建失败");
-                return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户创建失败");
+                return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户创建失败");
             }
         }
 
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
 
         return rowUpdated3 > 0 
             ? ApiResponse.success("用户创建成功")
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户创建失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户创建失败");
     }
 
     private void checkUserUniqueness(String username) {
@@ -271,7 +271,7 @@ public class UserServiceImpl implements UserService {
         int result = userMapper.updatePassword(username, passwordEncoder.encode(newPassword));
         return result > 0
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"密码更新失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"密码更新失败");
     }
 
     @Override
@@ -368,7 +368,7 @@ public class UserServiceImpl implements UserService {
         int rowUpdated = userMapper.updateUserSelective(user);
         return rowUpdated > 0
             ? ApiResponse.success("用户信息更新成功")
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"用户信息更新失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户信息更新失败");
 
     }
 } 

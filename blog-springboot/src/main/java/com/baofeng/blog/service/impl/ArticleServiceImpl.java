@@ -85,7 +85,7 @@ public class ArticleServiceImpl implements ArticleService {
             Long articleId = article.getId();
             return ApiResponse.success(articleId);
         }else{
-            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"文章创建失败");
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"文章创建失败");
         }
     }
 
@@ -163,7 +163,7 @@ public class ArticleServiceImpl implements ArticleService {
             int rowsUpdated = articleMapper.updateArticleSelective(article);
             return rowsUpdated > 0
                 ? ApiResponse.success()
-                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"文章发布失败");
+                : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"文章发布失败");
         } else {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "作者ID与文章实际作者ID不一致");
         }
@@ -242,11 +242,11 @@ public class ArticleServiceImpl implements ArticleService {
 
             return rowsUpdated > 0 && rowsUpdated1 > 0 && rowsUpdated2 > 0
                     ? ApiResponse.success(imagePath)
-                    : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "文件存储失败");
+                    : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "文件存储失败");
 
         } catch (Exception e) {
             logger.warn("minio存储文件失败",e);
-            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR, "文件存储失败");
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "文件存储失败");
         }
     }
 
@@ -271,7 +271,7 @@ public class ArticleServiceImpl implements ArticleService {
             int rowsInserted1 = categoryMapper.insertCategoryReflect(articleCategory);
             return rowsInserted1 > 0  && rowsInserted > 0
                 ? ApiResponse.success()
-                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"文章分类设置失败");
+                : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"文章分类设置失败");
         }
         return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"文章分类已存在");
     }
@@ -305,7 +305,7 @@ public class ArticleServiceImpl implements ArticleService {
         }
         return rowsInserted >= tagNamesLen && rowsInserted1 >= tagNamesLen
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"文章标签设置失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"文章标签设置失败");
     }
 
     @Override

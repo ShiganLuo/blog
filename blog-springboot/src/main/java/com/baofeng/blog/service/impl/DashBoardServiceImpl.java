@@ -210,7 +210,7 @@ public class DashBoardServiceImpl implements DashBoardService{
             return ApiResponse.success(userAddInLastWeekResponse);
         } catch (Exception e) {
             logger.error("获取最近7天新增用户数失败:", e.getMessage());
-            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"获取最近7天新增用户数失败");
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"获取最近7天新增用户数失败");
         }
         
     }

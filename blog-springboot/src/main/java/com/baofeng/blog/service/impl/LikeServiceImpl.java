@@ -79,12 +79,12 @@ public class LikeServiceImpl implements LikeService{
             rowUpdated += likeMapper.updateLikesByLikeRequestAndStatus(forId, type, userId, false);
             return rowUpdated > 1
                 ? ApiResponse.success()
-                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR);
+                : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
         }
 
         return rowUpdated > 0
                 ? ApiResponse.success()
-                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR);
+                : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
     }
 
 
@@ -151,12 +151,12 @@ public class LikeServiceImpl implements LikeService{
         
         return rowUpdated > 1
                 ? ApiResponse.success()
-                : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR);
+                : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
     }
 
     return rowUpdated > 0
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR);
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
 }
     
 }

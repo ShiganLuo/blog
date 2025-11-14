@@ -60,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         return rowsUpdated > 0
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"分类创建失败");
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"分类创建失败");
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
         // 检查分类是否存在
         Category category = categoryMapper.getCategoryById(id);
         if (category == null) {
-            return ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"分类不存在");
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"分类不存在");
         }
 
         // 检查分类下是否有文章
@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         return rowsUpdated > 0 
          ? ApiResponse.success()
-         : ApiResponse.error(ResultCodeEnum.INTERNEL_SERVER_ERROR,"删除失败");
+         : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"删除失败");
     }
     @Override
     public ApiResponse<List<CategoryDictionaryResponse>> getCategoryDictionary(){
