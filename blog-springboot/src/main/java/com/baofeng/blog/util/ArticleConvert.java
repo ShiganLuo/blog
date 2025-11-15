@@ -7,47 +7,47 @@ import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 public class ArticleConvert {
 
     /**
-     * ArticleVO 、ArticleDetailResponse转换类
-     * @param ArticleVO
+     * frontArticle 、ArticleDetailResponse转换类
+     * @param frontArticle
      * @return ArticleDetailResponse
      */
-    public static ArticleDetailResponse convertToDetailResponse(ArticleVO articleVO) {
-        if (articleVO == null) return null;
+    public static ArticleDetailResponse convertToDetailResponse(FrontArticle frontArticle) {
+        if (frontArticle == null) return null;
 
         ArticleDetailResponse articleDetailResponse = new ArticleDetailResponse();
 
-        articleDetailResponse.setId(articleVO.getId());
+        articleDetailResponse.setId(frontArticle.getId());
         articleDetailResponse.setAuthorName(
-            articleVO.getAuthor() != null ? articleVO.getAuthor().getAuthorName() : null
+            frontArticle.getAuthor() != null ? frontArticle.getAuthor().getAuthorName() : null
         );
-        articleDetailResponse.setType(articleVO.getType());
-        articleDetailResponse.setOriginUrl(articleVO.getOriginUrl());
-        articleDetailResponse.setThumbsUpTimes(articleVO.getThumbsUpTimes());
+        articleDetailResponse.setType(frontArticle.getType());
+        articleDetailResponse.setOriginUrl(frontArticle.getOriginUrl());
+        articleDetailResponse.setThumbsUpTimes(frontArticle.getThumbsUpTimes());
         articleDetailResponse.setAuthorId(
-            articleVO.getAuthor() != null ? articleVO.getAuthor().getAuthorId() : null
+            frontArticle.getAuthor() != null ? frontArticle.getAuthor().getAuthorId() : null
         );
-        articleDetailResponse.setArticleContent(articleVO.getArticleContent());
-        articleDetailResponse.setArticleCover(articleVO.getArticleCover());
-        articleDetailResponse.setArticleTitle(articleVO.getArticleTitle());
-        articleDetailResponse.setViewTimes(articleVO.getViewTimes());
-        articleDetailResponse.setCreatedAt(articleVO.getCreatedAt());
-        articleDetailResponse.setUpdatedAt(articleVO.getUpdatedAt());
+        articleDetailResponse.setArticleContent(frontArticle.getArticleContent());
+        articleDetailResponse.setArticleCover(frontArticle.getArticleCover());
+        articleDetailResponse.setArticleTitle(frontArticle.getArticleTitle());
+        articleDetailResponse.setViewTimes(frontArticle.getViewTimes());
+        articleDetailResponse.setCreatedAt(frontArticle.getCreatedAt());
+        articleDetailResponse.setUpdatedAt(frontArticle.getUpdatedAt());
 
-        List<String> categoryList = articleVO.getCategoryNameList();
+        List<String> categoryList = frontArticle.getCategoryNameList();
         articleDetailResponse.setCategoryNameList(categoryList != null ? categoryList : List.of());
 
-        List<String> tagList = articleVO.getTagNameList();
+        List<String> tagList = frontArticle.getTagNameList();
         articleDetailResponse.setTagNameList(tagList != null ? tagList : List.of());
 
         return articleDetailResponse;
     }
 
     /**
-     * ArticleVO 、ArticleDetailResponse批量转换类
-     * @param List<ArticleVO>
+     * frontArticle 、ArticleDetailResponse批量转换类
+     * @param List<FrontArticle>
      * @return List<ArticleDetailResponse>
      */
-    public static List<ArticleDetailResponse> convertToDetailResponseList(List<ArticleVO> list) {
+    public static List<ArticleDetailResponse> convertToDetailResponseList(List<FrontArticle> list) {
         if (list == null || list.isEmpty()) return List.of();
         return list.stream()
                .map(ArticleConvert::convertToDetailResponse)

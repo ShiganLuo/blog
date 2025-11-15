@@ -16,7 +16,7 @@ public interface ArticleService {
      * @param ArticlePageRequestVO
      * @return ArticlePageResponseVO
      */
-    public ApiResponse<ArticlePageResponseVO> getArticlePage(ArticlePageRequestVO request);
+    public ApiResponse<FrontArticlePageResponse> getArticlePage(ArticlePageRequest articlePageRequest);
 
     /**
      * 查询后台文章列表
@@ -45,7 +45,7 @@ public interface ArticleService {
      * @param id
      * @return
      */
-    public ApiResponse<Article> getArticleById(Long id);
+    public ApiResponse<AdminArticle> getAdminArticleById(Long id);
 
     /**
      * 更新文章

@@ -128,7 +128,7 @@
     </select>
 
     <!--文章分页查询-->
-    <resultMap id="ArticlePageResultMap" type="com.baofeng.blog.dto.front.FrontArticleDTO$ArticleVO">
+    <resultMap id="FrontArticlePageResultMap" type="com.baofeng.blog.dto.front.FrontArticleDTO$FrontArticle">
         <id property="id" column="id"/>
         <result property="articleTitle" column="title"/>
         <result property="articleDescription" column="summary"/>
@@ -162,7 +162,8 @@
         <collection property="tagNameList" ofType="string"
                     column="id" select="getTagNameListByArticleId"/>
     </resultMap>
-    <select id="getArticlePage" resultMap="ArticlePageResultMap">
+
+    <select id="getFrontArticles" resultMap="FrontArticlePageResultMap">
         SELECT 
             a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
             a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
@@ -180,12 +181,100 @@
         </where>
         ORDER BY a.created_at DESC
     </select>
+
+    <select id="getFrontArticleById" resultMap="FrontArticlePageResultMap">
+        SELECT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_top, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        WHERE a.id = #{articleId}
+    </select>
+
+    <!--获取前一篇文章-->
+    <select id="getPrevArticle" resultMap="FrontArticlePageResultMap">
+        SELECT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        <where>
+            <!-- 关键词搜索 -->
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
+                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+
+            <!-- 创建时间要小于当前文章的时间 -->
+            <if test="createdAt != null">
+                AND a.created_at &lt; #{createdAt}
+            </if>
+        </where>
+        ORDER BY a.created_at DESC
+        LIMIT 1
+    </select>
+
+    <select id="getNextArticle" resultMap="FrontArticlePageResultMap">
+        SELECT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
+                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="createdAt != null">
+                AND a.created_at &gt; #{createdAt}
+            </if>
+        </where>
+        ORDER BY a.created_at ASC
+        LIMIT 1
+    </select>
+
+    <select id="getRecommendedArticles" resultMap="FrontArticlePageResultMap">
+        SELECT DISTINCT 
+            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
+            a.cover_image, a.is_featured, a.author_id,
+            u.username AS author_name,
+            u.nick_name AS author_nickname,
+            u.avatar_url AS author_avatar
+        FROM articles a
+        LEFT JOIN users u ON a.author_id = u.id
+        WHERE a.id != #{articleId}
+        AND a.id IN (
+            SELECT at2.article_id
+            FROM article_tags at1
+            JOIN article_tags at2 ON at1.tag_id = at2.tag_id
+            WHERE at1.article_id = #{articleId}
+        )
+        ORDER BY a.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!--获取文章目录名-->
     <select id="getCategoryNameListByArticleId" resultType="string">
         SELECT c.name
         FROM categories c
         INNER JOIN article_categories ac ON c.id = ac.category_id
         WHERE ac.article_id = #{id}
     </select>
+
+    <!--获取文章标签名-->
     <select id="getTagNameListByArticleId" resultType="string">
         SELECT t.name
         FROM tags t
@@ -256,96 +345,23 @@
         ORDER BY created_at DESC
     </select>
 
+
     <!--文章查询联表查询-->
-    <select id="getArticlePageFormById" resultMap="ArticlePageResultMap">
-    SELECT 
-        a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
-        a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
-        a.cover_image, a.is_featured,
-        a.author_id,
-        u.username AS author_name,
-        u.nick_name AS author_nickname,
-        u.avatar_url AS author_avatar
-    FROM articles a
-    LEFT JOIN users u ON a.author_id = u.id
-    WHERE a.id = #{id}
-    </select>
-    <!--获取前一篇文章-->
-    <select id="getPrevArticle" resultMap="ArticlePageResultMap">
+    <select id="getAdminArticleById" resultMap="AdminArticlePageResultMap">
         SELECT 
-            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
-            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
-            a.cover_image, a.is_featured, a.author_id,
-            u.username AS author_name,
-            u.nick_name AS author_nickname,
-            u.avatar_url AS author_avatar
+            a.id, u.username, a.cover_image, a.title, a.summary, a.content, a.is_top, a.is_featured,
+            a.is_deleted, a.views,a.status, a.type, a.origin_url, a.created_at, a.updated_at
         FROM articles a
         LEFT JOIN users u ON a.author_id = u.id
-        <where>
-            <!-- 关键词搜索 -->
-            <if test="keyword != null and keyword != ''">
-                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
-                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
-            </if>
-
-            <!-- 创建时间要小于当前文章的时间 -->
-            <if test="createdAt != null">
-                AND a.created_at &lt; #{createdAt}
-            </if>
-        </where>
-        ORDER BY a.created_at DESC
-        LIMIT 1
+        WHERE a.id = #{id}
     </select>
 
-    <select id="getNextArticle" resultMap="ArticlePageResultMap">
-        SELECT 
-            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
-            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
-            a.cover_image, a.is_featured, a.author_id,
-            u.username AS author_name,
-            u.nick_name AS author_nickname,
-            u.avatar_url AS author_avatar
-        FROM articles a
-        LEFT JOIN users u ON a.author_id = u.id
-        <where>
-            <if test="keyword != null and keyword != ''">
-                AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
-                OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
-            </if>
-            <if test="createdAt != null">
-                AND a.created_at &gt; #{createdAt}
-            </if>
-        </where>
-        ORDER BY a.created_at ASC
-        LIMIT 1
-    </select>
-
-    <select id="getRecommendedArticles" resultMap="ArticlePageResultMap">
-        SELECT DISTINCT 
-            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
-            a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
-            a.cover_image, a.is_featured, a.author_id,
-            u.username AS author_name,
-            u.nick_name AS author_nickname,
-            u.avatar_url AS author_avatar
-        FROM articles a
-        LEFT JOIN users u ON a.author_id = u.id
-        WHERE a.id != #{articleId}
-        AND a.id IN (
-            SELECT at2.article_id
-            FROM article_tags at1
-            JOIN article_tags at2 ON at1.tag_id = at2.tag_id
-            WHERE at1.article_id = #{articleId}
-        )
-        ORDER BY a.created_at DESC
-        LIMIT #{limit}
-    </select>
-
+    
     <resultMap id="ArticleAbstractMap" type="com.baofeng.blog.dto.front.FrontArticleDTO$ArticleAbstractResponse">
-    <id property="id" column="id"/>
-    <result property="articleTitle" column="title"/>
-    <result property="articleCover" column="cover_image"/>
-    <result property="createdAt" column="created_at"/>
+        <id property="id" column="id"/>
+        <result property="articleTitle" column="title"/>
+        <result property="articleCover" column="cover_image"/>
+        <result property="createdAt" column="created_at"/>
     </resultMap>
 
     <select id="selectArticleOrderedByCreatedAt" resultMap="ArticleAbstractMap">

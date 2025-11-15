@@ -76,18 +76,18 @@ public class FrontArticleDTO {
      * 文章分页响应数据
      */
     @Data
-    public static class ArticlePageResponseVO {
+    public static class FrontArticlePageResponse {
 
         private long total;          // 总记录数
         private int pages;           // 总页数
-        private List<ArticleVO> list; // 文章列表
+        private List<FrontArticle> list; // 文章列表
     }
 
     /**
      * 文章信息（改为 class，MyBatis 需要 setter）
      */
     @Data
-    public static class ArticleVO {
+    public static class FrontArticle {
         private Long id;
         private String articleTitle;
         private String articleDescription;

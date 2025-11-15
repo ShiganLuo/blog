@@ -1,15 +1,13 @@
 package com.baofeng.blog.controller.front;
 
 import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.admin.AdminArticleDTO.ArticlePageRequestVO;
+import com.baofeng.blog.dto.admin.AdminArticleDTO.ArticlePageRequest;
 import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 import com.baofeng.blog.service.ArticleService;
 
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -27,16 +25,16 @@ public class FrontArticleController {
      * @return 分页结果
      */
     @PostMapping("/getArticleList")
-    public ApiResponse<ArticlePageResponseVO> getArticlePage(@Validated @RequestBody ArticlePageRequestVO request) {
+    public ApiResponse<FrontArticlePageResponse> getArticlePage(@Validated @RequestBody ArticlePageRequest articlePageRequest) {
         // 参数校验
 
-        if (request.sortBy() != null && !isValidSortField(request.sortBy())) {
+        if (articlePageRequest.sortBy() != null && !isValidSortField(articlePageRequest.sortBy())) {
             return ApiResponse.error(400, "无效的排序字段");
         }
-        if (request.sortOrder() != null && !isValidSortOrder(request.sortOrder())) {
+        if (articlePageRequest.sortOrder() != null && !isValidSortOrder(articlePageRequest.sortOrder())) {
             return ApiResponse.error(400, "无效的排序方向");
         }
-        return articleService.getArticlePage(request);
+        return articleService.getArticlePage(articlePageRequest);
     }
     
     /**

@@ -16,8 +16,15 @@ public interface ArticleMapper {
      * @param request 分页查询参数
      * @return 文章列表
      */
-    List<ArticleVO> getArticlePage(ArticlePageRequestVO request);
+    List<FrontArticle> getFrontArticles(ArticlePageRequest articlePageRequest);
     
+    /**
+     * 根据id查询前端文章视图
+     * @param articleId
+     * @return
+     */
+    FrontArticle getFrontArticleById(Long articleId);
+
     /**
      * 分页查询文章列表1
      * @param createAdminArticlePageRequest
@@ -30,27 +37,27 @@ public interface ArticleMapper {
      * @param id
      * @return
      */
-    ArticleVO getArticlePageFormById(Long id);
+    AdminArticle getAdminArticleById(Long articleId);
     /**
      * 查询某篇文章的上一篇文章
      * @param id
-     * @return ArticleVO
+     * @return FrontArticle
      */
-    ArticleVO getPrevArticle(Long id);
+    FrontArticle getPrevArticle(Long id);
 
     /**
      * 
      * @param id
-     * @return ArticleVO
+     * @return FrontArticle
      */
-    ArticleVO getNextArticle(Long id);
+    FrontArticle getNextArticle(Long id);
     
     /**
      * 获得推荐文章
      * @param id
      * @return
      */
-    List<ArticleVO> getRecommendedArticles(Long id);
+    List<FrontArticle> getRecommendedArticles(Long id);
 
     /**
      * 获取文章like数

@@ -54,8 +54,8 @@ public class AdminArticleController {
      * @return 分页结果
      */
     @GetMapping("/getArticleById/{id}")
-    public ApiResponse<Article> getArticleById(@PathVariable Long id){
-        return articleService.getArticleById(id);
+    public ApiResponse<AdminArticle> getArticleById(@PathVariable Long id){
+        return articleService.getAdminArticleById(id);
     }
 
     /**

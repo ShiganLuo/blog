@@ -16,7 +16,7 @@ public class AdminArticleDTO {
     /**
      * 文章分页请求参数
      */
-    public record ArticlePageRequestVO(
+    public record ArticlePageRequest(
         @NotNull(message = "页码不能为空")
         @Min(value = 1, message = "页码必须大于等于1")
         Integer pageNum,     // 当前页码
@@ -67,6 +67,7 @@ public class AdminArticleDTO {
             }
         }
     }
+
 
     @Data
     public static class AdminArticle {

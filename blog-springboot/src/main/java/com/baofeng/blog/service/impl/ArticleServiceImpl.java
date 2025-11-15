@@ -94,10 +94,10 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ApiResponse<Article> getArticleById(Long id){
-        Article article = articleMapper.getArticleById(id);
-        return article != null 
-            ? ApiResponse.success(article)
+    public ApiResponse<AdminArticle> getAdminArticleById(Long id){
+        AdminArticle adminArticle = articleMapper.getAdminArticleById(id);
+        return adminArticle != null 
+            ? ApiResponse.success(adminArticle)
             : ApiResponse.error(ResultCodeEnum.NOT_FOUND);
     }
 
@@ -122,20 +122,20 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ApiResponse<ArticlePageResponseVO> getArticlePage(ArticlePageRequestVO request) {
+    public ApiResponse<FrontArticlePageResponse> getArticlePage(ArticlePageRequest articlePageRequest) {
         // 参数校验
-        int pageNum = request.pageNum() != null ? request.pageNum() : 1;
-        int pageSize = request.pageSize() != null ? request.pageSize() : 10;
+        int pageNum = articlePageRequest.pageNum() != null ? articlePageRequest.pageNum() : 1;
+        int pageSize = articlePageRequest.pageSize() != null ? articlePageRequest.pageSize() : 10;
         
         // 开启分页
         PageHelper.startPage(pageNum, pageSize);
         // 执行查询
-        List<ArticleVO> list = articleMapper.getArticlePage(request);
+        List<FrontArticle> list = articleMapper.getFrontArticles(articlePageRequest);
         // 获取分页信息
-        PageInfo<ArticleVO> pageInfo = new PageInfo<>(list);
+        PageInfo<FrontArticle> pageInfo = new PageInfo<>(list);
         
         // 封装返回结果
-        ArticlePageResponseVO response = new ArticlePageResponseVO();
+        FrontArticlePageResponse response = new FrontArticlePageResponse();
         response.setTotal(pageInfo.getTotal());    // 总记录数
         response.setPages(pageInfo.getPages());    // 总页数
         response.setList(pageInfo.getList());      // 当前页数据
@@ -144,10 +144,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ApiResponse<ArticleDetailResponse> getArticlePageFormById(Long id) {
-        ArticleVO articleVO = articleMapper.getArticlePageFormById(id);
-        ArticleDetailResponse articleDetailResponse = ArticleConvert.convertToDetailResponse(articleVO);
+        FrontArticle frontArticle = articleMapper.getFrontArticleById(id);
+        ArticleDetailResponse articleDetailResponse = ArticleConvert.convertToDetailResponse(frontArticle);
         return ApiResponse.success(articleDetailResponse);
     }
+
     @Override
     public ApiResponse<String> publishArticle(Long articleId,Long authorId) {
         Long articleAuthorId = articleMapper.getAuthorIdById(articleId);
@@ -313,18 +314,18 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ApiResponse<ArticleRecommendResponse> getRecommendArticleById(Long id) {
-        List<ArticleVO> articleVOs = articleMapper.getRecommendedArticles(id);
+        List<FrontArticle> articleVOs = articleMapper.getRecommendedArticles(id);
         List<ArticleDetailResponse> recommend = ArticleConvert.convertToDetailResponseList(articleVOs);
 
         
-        ArticleVO prev = articleMapper.getPrevArticle(id);
-        ArticleVO next = articleMapper.getNextArticle(id);
+        FrontArticle prev = articleMapper.getPrevArticle(id);
+        FrontArticle next = articleMapper.getNextArticle(id);
         // convertToDetailResponse 已经做了null 判空保护
         ArticleDetailResponse prevCt = ArticleConvert.convertToDetailResponse(prev); 
         ArticleDetailResponse nextCt = ArticleConvert.convertToDetailResponse(next);
         // prev 和 next 为 null的情况下该怎么处理
-        ArticleVO articleVO = articleMapper.getArticlePageFormById(id);
-        ArticleDetailResponse articleVOCt = ArticleConvert.convertToDetailResponse(articleVO);
+        FrontArticle frontArticle = articleMapper.getFrontArticleById(id);
+        ArticleDetailResponse articleVOCt = ArticleConvert.convertToDetailResponse(frontArticle);
         if (prevCt == null) {
             prevCt = articleVOCt;
         }
