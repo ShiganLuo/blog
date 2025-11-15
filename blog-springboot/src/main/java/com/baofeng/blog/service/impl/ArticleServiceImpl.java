@@ -1,6 +1,6 @@
 package com.baofeng.blog.service.impl;
 
-import com.baofeng.blog.util.ArticleConvert;
+import com.baofeng.blog.util.ArticleConvertUtil;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminArticleDTO.*;
 import com.baofeng.blog.dto.common.ImageDTO.UploadImage;
@@ -11,6 +11,7 @@ import com.baofeng.blog.mapper.*;
 import com.baofeng.blog.util.ImageFileUtil;
 import com.baofeng.blog.service.ArticleService;
 import com.baofeng.blog.service.MinioService;
+import com.baofeng.blog.util.ListDiffUtil;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -23,7 +24,10 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 
@@ -102,7 +106,72 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ApiResponse<String> updateArticleSelective(Article article){
+    public ApiResponse<String> updateArticleSelective(UpdateArticleRequest updateArticleRequest){
+        // 目录名列表
+        List<String> categoryNameList = updateArticleRequest.categoryNameList();
+        List<String> existCategoryNameList = categoryMapper.getCategoryNamesByArticleId(updateArticleRequest.id());
+        Map<String, List<String>> categoryDiff = ListDiffUtil.diffList(existCategoryNameList, categoryNameList);
+        List<String> categoriesToAdd = categoryDiff.get("toAdd");
+        List<String> categoriesToRemove = categoryDiff.get("toRemove");
+        
+        for (String categoryName : categoriesToAdd) {
+            Long id = categoryMapper.JudgeIsCategoryExistByCategoryName(categoryName);
+            if (id == null) {
+                Category category = new Category();
+                category.setName(categoryName);
+                Category newCategory = categoryMapper.createCategory(category);
+                id = newCategory.getId();
+            }
+
+            ArticleCategory articleCategory = new ArticleCategory();
+            articleCategory.setArticleId(updateArticleRequest.id());
+            articleCategory.setCategoryId(id);
+            categoryMapper.insertArticleCategory(articleCategory);
+        }
+
+        for (String categoryName : categoriesToRemove) {
+            categoryMapper.deleteCategoryByCategoryName(categoryName);
+            // 级联删除不需要删除articleCategory
+        }
+
+        // 标签名列表
+        List<String> tagNameList = updateArticleRequest.tagNameList();
+        List<String> existTagNameList = tagMapper.getTagNamesByArticleId(updateArticleRequest.id());
+        Map<String, List<String>> tagDiff = ListDiffUtil.diffList(existTagNameList, tagNameList);
+        List<String> tagsToAdd = tagDiff.get("toAdd");
+        List<String> tagsToRemove = tagDiff.get("toRemove");
+
+        for (String tagName : tagsToAdd) {
+            Long id = tagMapper.JudegIsTagExistByTagName(tagName);
+            if (id == null) {
+                Tag tag = new Tag();
+                tag.setName(tagName);
+                Tag newTag = tagMapper.createTag(tag);
+                id = newTag.getId();
+            }
+            ArticleTag articleTag = new ArticleTag();
+            articleTag.setArticleId(updateArticleRequest.id());
+            articleTag.setTagId(id);
+            tagMapper.insertArticleTag(articleTag);
+        }
+
+        for (String tagName : tagsToRemove) {
+            tagMapper.delteTagByTagName(tagName);
+            // 级联删除不需要删除articleTag
+        }
+        Article article = Article.builder()
+        .id(updateArticleRequest.id())
+        .title(updateArticleRequest.articleTitle())
+        .content(updateArticleRequest.articleContent())
+        .coverImage(updateArticleRequest.articleCover())
+        .isFeatured(updateArticleRequest.isFeatured())
+        .isTop(updateArticleRequest.isTop())
+        .isFeatured(updateArticleRequest.isFeatured())
+        .isTop(updateArticleRequest.isTop())
+        .originUrl(updateArticleRequest.originalUrl())
+        .type(updateArticleRequest.type())
+        .build();
+
         int rowsUpdated = articleMapper.updateArticleSelective(article);
         return rowsUpdated > 0 
             ? ApiResponse.success()
@@ -145,7 +214,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ApiResponse<ArticleDetailResponse> getArticlePageFormById(Long id) {
         FrontArticle frontArticle = articleMapper.getFrontArticleById(id);
-        ArticleDetailResponse articleDetailResponse = ArticleConvert.convertToDetailResponse(frontArticle);
+        ArticleDetailResponse articleDetailResponse = ArticleConvertUtil.convertToDetailResponse(frontArticle);
         return ApiResponse.success(articleDetailResponse);
     }
 
@@ -260,13 +329,13 @@ public class ArticleServiceImpl implements ArticleService {
         }
         boolean flag = categoryMapper.checkExactName(categoryName);
         if ( !flag ) {
-            int rowsInserted = categoryMapper.createCategory(newCategory);
+            Category category = categoryMapper.createCategory(newCategory);
             Long newCategoryId = newCategory.getId();
             ArticleCategory articleCategory = new ArticleCategory();
             articleCategory.setArticleId(articleId);
             articleCategory.setCategoryId(newCategoryId);
-            int rowsInserted1 = categoryMapper.insertCategoryReflect(articleCategory);
-            return rowsInserted1 > 0  && rowsInserted > 0
+            int rowsInserted1 = categoryMapper.insertArticleCategory(articleCategory);
+            return rowsInserted1 > 0  && category != null
                 ? ApiResponse.success()
                 : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"文章分类设置失败");
         }
@@ -292,7 +361,8 @@ public class ArticleServiceImpl implements ArticleService {
                 tagNamesLen += 1;
                 Tag tag = new Tag();
                 tag.setName(tagName);
-                rowsInserted += tagMapper.createTag(tag);
+                tagMapper.createTag(tag);
+                rowsInserted += 1;
                 Long tagId = tag.getId();
                 ArticleTag articleTag = new ArticleTag();
                 articleTag.setArticleId(articleId);
@@ -315,17 +385,17 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ApiResponse<ArticleRecommendResponse> getRecommendArticleById(Long id) {
         List<FrontArticle> articleVOs = articleMapper.getRecommendedArticles(id);
-        List<ArticleDetailResponse> recommend = ArticleConvert.convertToDetailResponseList(articleVOs);
+        List<ArticleDetailResponse> recommend = ArticleConvertUtil.convertToDetailResponseList(articleVOs);
 
         
         FrontArticle prev = articleMapper.getPrevArticle(id);
         FrontArticle next = articleMapper.getNextArticle(id);
         // convertToDetailResponse 已经做了null 判空保护
-        ArticleDetailResponse prevCt = ArticleConvert.convertToDetailResponse(prev); 
-        ArticleDetailResponse nextCt = ArticleConvert.convertToDetailResponse(next);
+        ArticleDetailResponse prevCt = ArticleConvertUtil.convertToDetailResponse(prev); 
+        ArticleDetailResponse nextCt = ArticleConvertUtil.convertToDetailResponse(next);
         // prev 和 next 为 null的情况下该怎么处理
         FrontArticle frontArticle = articleMapper.getFrontArticleById(id);
-        ArticleDetailResponse articleVOCt = ArticleConvert.convertToDetailResponse(frontArticle);
+        ArticleDetailResponse articleVOCt = ArticleConvertUtil.convertToDetailResponse(frontArticle);
         if (prevCt == null) {
             prevCt = articleVOCt;
         }

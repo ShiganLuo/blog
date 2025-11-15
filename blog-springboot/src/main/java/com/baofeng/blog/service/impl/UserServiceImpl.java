@@ -13,7 +13,7 @@ import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
 import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
 import com.baofeng.blog.entity.User;
-import com.baofeng.blog.util.JwtTokenProvider;
+import com.baofeng.blog.util.JwtTokenProviderUtil;
 import com.baofeng.blog.entity.Role;
 import com.baofeng.blog.enums.GenderEnum;
 import com.baofeng.blog.enums.ResultCodeEnum;
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     private final RoleMapper roleMapper;
     private final PermissionMapper permissionMapper;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProviderUtil jwtTokenProvider;
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
                             RoleMapper roleMapper,
                             PermissionMapper permissionMapper,
                             BCryptPasswordEncoder passwordEncoder,
-                            JwtTokenProvider jwtTokenProvider, 
+                            JwtTokenProviderUtil jwtTokenProvider, 
                             JwtPropertiesConfig jwtProperties) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;

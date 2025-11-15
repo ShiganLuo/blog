@@ -85,7 +85,13 @@ public interface ArticleMapper {
     int insertArticle(Article article);
     int updateArticle(Article article);
     int deleteArticle(Long id);
+    /**
+     * 选择性更新文章
+     * @param article
+     * @return
+     */
     int updateArticleSelective(Article article);
+
     Long getAuthorIdById(Long articleId);
     boolean isTitleExist(String title);
     Long countAllArticles();

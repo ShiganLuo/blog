@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 
-public class ArticleConvert {
+public class ArticleConvertUtil {
 
     /**
      * frontArticle 、ArticleDetailResponse转换类
@@ -50,7 +50,7 @@ public class ArticleConvert {
     public static List<ArticleDetailResponse> convertToDetailResponseList(List<FrontArticle> list) {
         if (list == null || list.isEmpty()) return List.of();
         return list.stream()
-               .map(ArticleConvert::convertToDetailResponse)
+               .map(ArticleConvertUtil::convertToDetailResponse)
                .toList();
 }
 }

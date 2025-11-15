@@ -14,7 +14,7 @@
           <el-col :span="6">
             <el-select v-model="form.type" placeholder="请选择文章类型" filterable>
               <el-option
-                v-for="dict in articleType"
+                v-for="dict in article_type"
                 :key="dict.value"
                 :label="dict.label"
                 :value="Number(dict.value)"
@@ -247,10 +247,10 @@
 
   // 获取文章类型
   import { useDict, DictType } from '@/utils/dict'
-  const articleType = ref<DictType[]>([]) // 系统字典数据
+  const article_type = ref<DictType[]>([]) // 系统字典数据
   const getuseDict = async () => {
-    const { article_type } = await useDict('article_type')
-    articleType.value = article_type
+    const { articleType } = await useDict('articleType')
+    article_type.value = articleType
   }
 
   // 上传成功后的处理函数

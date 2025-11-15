@@ -13,6 +13,21 @@
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
+    <!--选择性更新目录-->
+    <update id="updateCategorySelective">
+        UPDATE categories
+        <set>
+            <if test="name != null and name != ''">name = #{name}</if>
+            <if test="description != null and description != ''">description = #{description}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!--根据分类名判断分类是否存在-->
+    <select id="JudgeIsCategoryExistByCategoryName">
+        SELECT id FROM categories WHERE name = #{categoryName}
+    </select>
+
     <!-- 分类分页查询的结果映射 -->
     <resultMap id="CategoryPageResultMap" type="com.baofeng.blog.dto.admin.AdminCategoryPageDTO$CategoryVO">
         <id property="id" column="id"/>
@@ -56,15 +71,27 @@
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
+    <!--插入文章分类联系记录-->
+    <insert id="insertArticleCategory">
+        INSERT INTO article_categories (article_id, category_id)
+        VALUES (#{articleId}, #{categoryId})
+    </insert>
     <!-- 创建分类 -->
     <insert id="createCategory" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO categories (
-            name, description, created_at, updated_at
+            name, description
         ) VALUES (
-            #{name}, #{description}, NOW(), NOW()
+            #{name}, #{description}
         )
     </insert>
-    
+
+    <!--根据文章id获取目录名列表-->
+    <select id="getCategoryNamesByArticleId">
+        SELECT c.name FROM categories c 
+        JOIN article_categories ac ON ac.category_id = c.id
+        WHERE ac.article_id = #{articleId}
+    </select>
+
     <!--创建article_categories对应关系-->
     <insert id="insertCategoryReflect" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO article_categories (article_id, category_id, created_at, updated_at)
@@ -109,10 +136,16 @@
         DELETE FROM categories WHERE id = #{id}
     </delete>
 
+    <!--根据分类名删除分类-->
+    <delete id="deleteCategoryByCategoryName">
+        DELETE FROM categories WHERE name = #{categoryName}
+    </delete>
+
     <resultMap id="CategoryDictionaryResultMap" type="com.baofeng.blog.dto.common.CategoryDTO$CategoryDictionaryResponse">
         <id property="id" column="id"/>
         <result property="categoryName" column="name"/>
     </resultMap>
+    <!--根据关键词获取目录-->
     <select id="getCategoriesByKeyword" resultMap="CategoryDictionaryResultMap">
         SELECT id, name FROM categories c
         <where>
@@ -122,4 +155,5 @@
             </if>
         </where>
     </select>
+
 </mapper> 

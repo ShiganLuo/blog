@@ -22,11 +22,18 @@ public interface CategoryMapper {
     List<CategoryVO> getCategoryPage(CategoryPageRequestVO request);
 
     /**
+     * 选择性更新目录
+     * @param category
+     * @return
+     */
+    int updateCategorySelective(Category category);
+
+    /**
      * 创建分类
      * @param category 分类信息
      * @return 影响的行数
      */
-    int createCategory(Category category);
+    Category createCategory(Category category);
 
     /**
      * 根据名称查询分类
@@ -64,7 +71,7 @@ public interface CategoryMapper {
      * @param ArticleCategory
      * @return 影响行数量
      */
-    int insertCategoryReflect(ArticleCategory articleCategory);
+    int insertArticleCategory(ArticleCategory articleCategory);
     /**
      * 获取所有分类名
      * @return 所有分类名
@@ -88,4 +95,25 @@ public interface CategoryMapper {
    * @return
    */
   long selectCategoryCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
+
+  /**
+   * 获取文章目录名列表
+   * @param articleId
+   * @return
+   */
+  List<String> getCategoryNamesByArticleId(Long articleId);
+
+  /**
+   * 根据分类名删除分类
+   * @param categoryName
+   * @return
+   */
+  int deleteCategoryByCategoryName(String categoryName);
+
+  /**
+   * 根据分类名判断分类是否存在
+   * @param categoryName
+   * @return
+   */
+  Long JudgeIsCategoryExistByCategoryName(String categoryName);
 } 

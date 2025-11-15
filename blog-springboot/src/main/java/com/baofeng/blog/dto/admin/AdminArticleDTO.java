@@ -96,6 +96,27 @@ public class AdminArticleDTO {
         private Long total;
     }
 
+    public record UpdateArticleRequest(
+        Long id,
+        String articleTitle,
+        String articleContent,
+        String articleAbstract,
+        String articleCover,
+        List<String> categoryNameList,
+        List<String> tagNameList,
+        Boolean isTop,
+        Boolean isFeatured,
+        Integer type,
+        String status,
+        String originalUrl
+    ){
+        public UpdateArticleRequest {
+            if (id == null || id <= 0 ) {
+                throw new IllegalArgumentException("id必须大于0");
+            }
+        }
+    }
+
 
     
 }

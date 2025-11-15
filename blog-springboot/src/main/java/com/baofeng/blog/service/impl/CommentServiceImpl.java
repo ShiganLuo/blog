@@ -9,7 +9,7 @@ import com.baofeng.blog.dto.front.FrontCommentDTO.*;
 import com.baofeng.blog.entity.Comment;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.baofeng.blog.util.CommentConvert;
+import com.baofeng.blog.util.CommentConvertUtil;
 
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -114,7 +114,7 @@ public class CommentServiceImpl implements CommentService {
 
     CommentPageResponse response = new CommentPageResponse();
     response.setTotal(pageInfo.getTotal());
-    List<CommentResponse> commentTree = CommentConvert.buildCommentTree(pageInfo.getList());
+    List<CommentResponse> commentTree = CommentConvertUtil.buildCommentTree(pageInfo.getList());
     response.setList(commentTree);
 
     return ApiResponse.success(response);

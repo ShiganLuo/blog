@@ -14,10 +14,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtTokenProvider {
-    private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
+public class JwtTokenProviderUtil {
+    private static final Logger log = LoggerFactory.getLogger(JwtTokenProviderUtil.class);
     private final String secret;
-    public JwtTokenProvider(JwtPropertiesConfig jwtProperties) {
+    public JwtTokenProviderUtil(JwtPropertiesConfig jwtProperties) {
         this.secret = jwtProperties.getSecret();
     }
 

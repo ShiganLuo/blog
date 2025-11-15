@@ -11,7 +11,7 @@ import java.util.List;
 
 import com.baofeng.blog.filter.JwtAuthenticationFilter;
 import com.baofeng.blog.service.CustomUserDetailsService;
-import com.baofeng.blog.util.JwtTokenProvider;
+import com.baofeng.blog.util.JwtTokenProviderUtil;
 
 
 
@@ -46,7 +46,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider,
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtTokenProviderUtil jwtTokenProvider,
                                                        CustomUserDetailsService userDetailsService
                                                        ) {
         return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService, whiteListUris);

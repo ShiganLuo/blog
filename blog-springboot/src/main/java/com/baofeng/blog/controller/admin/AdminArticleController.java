@@ -64,12 +64,9 @@ public class AdminArticleController {
      * @return 分页结果
      */
     @PostMapping("/update")
-    public ApiResponse<String> updateArticleSelective(@RequestBody Article article){
-        if ( article.getId() == null) {
-            return ApiResponse.error(400,"文章id不能为空");
-        }
-        
-        return articleService.updateArticleSelective(article);
+    public ApiResponse<String> updateArticleSelective(@RequestBody UpdateArticleRequest updateArticleRequest){
+
+        return articleService.updateArticleSelective(updateArticleRequest);
 
     }
 

@@ -87,10 +87,10 @@
     <update id="updateArticleSelective">
           UPDATE articles
     <set>
-        <if test="title != null">title=#{title},</if>
-        <if test="content != null">content=#{content},</if>
-        <if test="summary != null">summary=#{summary},</if>
-        <if test="coverImage != null">cover_image=#{coverImage},</if>
+        <if test="title != null and title != ''">title=#{title},</if>
+        <if test="content != null and content != ''">content=#{content},</if>
+        <if test="summary != null and summary != ''">summary=#{summary},</if>
+        <if test="coverImage != null and coverImage !=''">cover_image=#{coverImage},</if>
         <if test="authorId != null">author_id=#{authorId},</if>
         <if test="views != null">views=#{views},</if>
         <if test="likes != null">likes=#{likes},</if>
@@ -100,7 +100,7 @@
         <if test="isDeleted != null">is_deleted=#{isDeleted},</if>
         <if test="type !=null"> type=#{type},</if>
         <if test="status != null">status=#{status},</if>
-        <if test="originUrl !=null"> origin_url=#{originUrl},</if>
+        <if test="originUrl !=null and originUrl != ''"> origin_url=#{originUrl},</if>
         <if test="publishedAt != null">published_at=#{publishedAt},</if>
         <if test="createdAt != null">created_at=#{createdAt},</if>
         <if test="updatedAt != null">updated_at=#{updatedAt},</if>

@@ -264,7 +264,7 @@
     }
     const res = await ArticleService.listArticle(query)
     if (res.code === 200) {
-      Object.assign(articleListForm.value, res.result.list)
+      articleListForm.value = res.result.list;
       total.value = res.result.total;
       loading.value = false;
     }

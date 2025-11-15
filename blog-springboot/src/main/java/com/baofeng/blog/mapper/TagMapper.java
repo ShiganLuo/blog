@@ -21,6 +21,12 @@ public interface TagMapper {
     List<TagVO> getTagPage(TagPageRequestVO request);
 
     /**
+     * 选择性更新标签
+     * @param tag
+     * @return
+     */
+    int updateTagSelective(Tag tag);
+    /**
      * 根据名称查询标签
      * @param name 标签名称
      * @return 标签信息
@@ -39,7 +45,7 @@ public interface TagMapper {
      * @param tag 标签信息
      * @return 影响的行数
      */
-    int createTag(Tag tag);
+    Tag createTag(Tag tag);
 
     /**
      * 删除标签
@@ -59,17 +65,20 @@ public interface TagMapper {
      * @return 所有标签id和name
      */
     List<Tag> getTagsByKeyword(String keyword);
+
     /**
      * 插入 article_tags映射表记录
      * @param ArticleTag
      * @return 影响行数
      */
     int insertArticleTag(ArticleTag articleTag);
+
     /**
      * 获取所有tag name
      * @return 所有tag name
      */
     List<String> getAllTagName();
+
     /**
      * 判断name是否在表中存在
      * @param name
@@ -97,4 +106,24 @@ public interface TagMapper {
      */
     long selectTagCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
 
+    /**
+     * 获取文章标签名列表
+     * @param articleId
+     * @return
+     */
+    List<String> getTagNamesByArticleId(Long articleId);
+
+    /**
+     * 根据标签名删除标签
+     * @param tagName
+     * @return
+     */
+    int delteTagByTagName(String tagName);
+
+    /**
+     * 根据标签名判断标签是否存在
+     * @param tagName
+     * @return
+     */
+    Long JudegIsTagExistByTagName(String tagName);
 }

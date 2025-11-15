@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import com.baofeng.blog.dto.front.FrontCommentDTO.*;
 
-public class CommentConvert {
+public class CommentConvertUtil {
 
     public static List<CommentResponse> buildCommentTree(List<ArticleCommentResponse> articleComments) {
         if (articleComments == null || articleComments.isEmpty()) {
@@ -14,7 +14,7 @@ public class CommentConvert {
 
         // 1. 转换为 CommentResponse
         Map<Long, CommentResponse> idToComment = articleComments.stream()
-                .map(CommentConvert::toCommentResponse)
+                .map(CommentConvertUtil::toCommentResponse)
                 .collect(Collectors.toMap(CommentResponse::getId, c -> c));
 
         // 2. 结果集合（存放根评论）

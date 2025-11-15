@@ -1,7 +1,7 @@
 package com.baofeng.blog.filter;
 
 import com.baofeng.blog.service.CustomUserDetailsService;
-import com.baofeng.blog.util.JwtTokenProvider;
+import com.baofeng.blog.util.JwtTokenProviderUtil;
 import com.baofeng.blog.dto.ResponseUtil;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import jakarta.servlet.FilterChain;
@@ -23,12 +23,12 @@ import io.jsonwebtoken.Claims;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProviderUtil jwtTokenProvider;
     private final CustomUserDetailsService userDetailsService;
     private final List<String> whiteListUris;
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService userDetailsService, List<String> whiteListUris) {
+    public JwtAuthenticationFilter(JwtTokenProviderUtil jwtTokenProvider, CustomUserDetailsService userDetailsService, List<String> whiteListUris) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
         this.whiteListUris = whiteListUris;
