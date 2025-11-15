@@ -58,7 +58,7 @@ public interface TagMapper {
      * 获取所有标签id和name
      * @return 所有标签id和name
      */
-    List<Tag> getAllTags();
+    List<Tag> getTagsByKeyword(String keyword);
     /**
      * 插入 article_tags映射表记录
      * @param ArticleTag

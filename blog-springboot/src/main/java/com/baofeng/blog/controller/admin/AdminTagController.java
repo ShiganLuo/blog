@@ -59,8 +59,10 @@ public class AdminTagController {
      * @return {id,name}
      */
     @GetMapping("/getTagDictionary")
-    public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(){
-        return tagService.getTagDictionary(); // 注意返回修改了，记得修改前端
+    public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(
+        @RequestParam(required = false) String keyword
+    ){
+        return tagService.getTagDictionary(keyword); // 注意返回修改了，记得修改前端
     }
     /**
      * 增加标签接口,如果表中没有则添加

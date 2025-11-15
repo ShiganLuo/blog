@@ -361,13 +361,13 @@
 
   // 列出分类
   const listCategories = async () => {
-    const res = await CategoryService.searchCategories()
+    const res = await CategoryService.searchCategories('')
     if (res.code === 200) {
       categorys.value = res.result
     }
   }
   const listTags = async () => {
-    const res = await TagService.searchTags()
+    const res = await TagService.searchTags('')
     if (res.code === 200) {
       tagList.value = res.result
     }

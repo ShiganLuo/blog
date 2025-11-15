@@ -121,7 +121,6 @@
   const firstLevelMenus = computed(() => {
     return useMenuStore().getMenuList.filter((item) => !item.meta?.isHide)
   })
-  console.log(firstLevelMenus.value)
   
 
   const menuList = computed(() => {

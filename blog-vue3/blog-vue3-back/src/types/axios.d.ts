@@ -7,6 +7,7 @@ export interface UserLoginResponse {
   username: string;
   nickName: string;
   roles: string[];          // 如果有可能是数组，也可以改成 string[]
+  permissions: string[]
 }
 
 export type ErrorMessageMode = 'none' | 'modal' | 'message' | undefined

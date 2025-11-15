@@ -256,7 +256,7 @@
             nickname: res.result.nickName,
             avatar: res.result.avatar,
             roles: res.result.roles,
-            permissions: res.result.roles
+            permissions: res.result.permissions
           })
 
             // 设置登录状态

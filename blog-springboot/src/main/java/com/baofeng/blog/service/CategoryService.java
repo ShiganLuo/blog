@@ -34,7 +34,7 @@ public interface CategoryService {
      * 获取目录字典列表
      * @return
      */
-    public ApiResponse<List<CategoryDictionaryResponse>> getCategoryDictionary();
+    public ApiResponse<List<CategoryDictionaryResponse>> getCategoryDictionary(String keyword);
 
     /**
      * 计算分类总数

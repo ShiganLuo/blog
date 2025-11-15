@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-  const modelValue = defineModel<string | null>({ required: true })
+  const modelValue = defineModel<number | string>({ required: true })
 
   defineProps({
     label: String,

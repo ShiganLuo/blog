@@ -83,8 +83,8 @@ public class TagServiceImpl implements TagService {
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"删除失败");
     }
     @Override
-    public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(){
-        List<Tag> tags = tagMapper.getAllTags();
+    public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(String keyword){
+        List<Tag> tags = tagMapper.getTagsByKeyword(keyword);
         List<TagDictionaryResponse> tagDictionaryResponse = tags.stream()
             .map(tag -> {
                 TagDictionaryResponse resp = new TagDictionaryResponse();

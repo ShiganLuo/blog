@@ -255,6 +255,5 @@ router.afterEach(() => {
  * @param app Vue 应用实例
  */
 export function initRouter(app: App<Element>): void {
-  console.log(router)
   app.use(router)
 }

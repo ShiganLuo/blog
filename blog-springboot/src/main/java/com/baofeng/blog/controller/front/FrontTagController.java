@@ -23,7 +23,7 @@ public class FrontTagController {
      */
     @GetMapping("/getAllTags")
     public ApiResponse<List<TagDictionaryResponse>> getAllTags() {
-        return tagService.getTagDictionary();
+        return tagService.getTagDictionary(null);
     }
 
     /**

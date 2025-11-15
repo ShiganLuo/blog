@@ -56,7 +56,7 @@ public class AdminArticleDTO {
         Long tagId,
         String type,
         String status,
-        Boolean delted
+        Boolean deleted
     ) {
         public CreateAdminArticlePageRequest {
             if (current == null || current < 1) {
@@ -65,18 +65,6 @@ public class AdminArticleDTO {
             if (size == null || size < 1) {
                 throw new IllegalArgumentException("每页显示条数必须大于等于1");
             }
-            if (categoryId != null && categoryId < 1) {
-                throw new IllegalArgumentException("分类ID必须大于等于1");
-            }
-            if (tagId != null && tagId < 1) {
-                throw new IllegalArgumentException("标签ID必须大于等于1");
-            }
-            if (type == null || type.isEmpty()) {
-                throw new IllegalArgumentException("type不能为空");
-            }
-            if (status == null || status.isEmpty()) {
-                throw new IllegalArgumentException("status不能为空");
-            };
         }
     }
 

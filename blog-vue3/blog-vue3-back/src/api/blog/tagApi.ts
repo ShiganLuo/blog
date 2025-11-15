@@ -40,9 +40,10 @@ export class TagService {
   }
 
   // 搜索标签
-  static searchTags() {
+  static searchTags(keywords: String) {
     return request.get<TagListResult>({
       url: '/api/admin/tags/getTagDictionary',
+      params: keywords
     })
   }
 }

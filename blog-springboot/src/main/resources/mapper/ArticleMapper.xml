@@ -229,28 +229,28 @@
                 AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
                 OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
             </if>
-            <if test="categoryId != null">
+            <if test="categoryId != null and categoryId != 0">
                 AND a.id IN (
                     SELECT ac.article_id
                     FROM article_categories ac
                     WHERE ac.category_id = #{categoryId}
                 )
             </if>
-            <if test="tagId != null">
+            <if test="tagId != null and tagId != 0">
                 AND a.id IN (
                     SELECT at.article_id
                     FROM article_tags at
                     WHERE at.tag_id = #{tagId}
                 )
             </if>
-            <if test="type != null">
+            <if test="type != null and type !=''">
                 AND a.type = #{type}
             </if>
-            <if test="status != null">
+            <if test="status != null and status !=''">
                 AND a.status = #{status}
             </if>
-            <if test="delted != null">
-                AND a.is_deleted = #{delted}
+            <if test="deleted != null">
+                AND a.is_deleted = #{deleted}
             </if>
         </where>
         ORDER BY created_at DESC

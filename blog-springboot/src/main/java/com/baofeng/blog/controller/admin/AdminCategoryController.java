@@ -54,8 +54,9 @@ public class AdminCategoryController {
      * 返回目录字典
      */
     @GetMapping("/getCategoryDictionary")
-    public ApiResponse<List<CategoryDictionaryResponse>> getCategoryDictionary(){
-        return categoryService.getCategoryDictionary();
+    public ApiResponse<List<CategoryDictionaryResponse>> getCategoryDictionary(
+        @RequestParam(required = false) String keyword){
+        return categoryService.getCategoryDictionary(keyword);
     }
 
     /**

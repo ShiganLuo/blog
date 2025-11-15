@@ -58,7 +58,7 @@ public interface CategoryMapper {
     /**
      * 获取目录字典
      */
-    List<CategoryDictionaryResponse> getAllCategories();
+    List<CategoryDictionaryResponse> getCategoriesByKeyword(String keyword);
     /**
      * 插入article_categories映射表记录
      * @param ArticleCategory

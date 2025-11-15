@@ -36,7 +36,7 @@ public interface TagService {
      * 获取标签字典
      * @return 标签字典
      */
-    public ApiResponse<List<TagDictionaryResponse>> getTagDictionary();
+    public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(String keyword);
 
     /**
      * 计算标签总数

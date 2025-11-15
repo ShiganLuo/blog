@@ -18,7 +18,7 @@ public class FrontCategoryController {
 
     @GetMapping("/getAllcategories")
     public ApiResponse<List<CategoryDictionaryResponse>> getAllcategories(){
-        return categoryService.getCategoryDictionary();
+        return categoryService.getCategoryDictionary(null);
     }
     
 

@@ -230,9 +230,9 @@
     current: 1,
     size: 10,
     keywords: '',
-    categoryId: null,
-    tagId: null,
-    type: null,
+    categoryId: 0,
+    tagId: 0,
+    type: '',
     status: '',
     isDeleted: 0
   })
@@ -326,8 +326,7 @@
   /** 修改按钮操作 */
   const handleUpdate = async (row: any) => {
     router.push({
-      path: '/blog/article-publish/index/' + row.id,
-      query: { current: queryParams.current }
+      path: '/blog/article-publish/index/' + row.id
     })
   }
 
@@ -369,7 +368,7 @@
   // 文章分类
   const categoryOption = ref<any>([])
   const searchCategories = async () => {
-    const res = await CategoryService.searchCategories()
+    const res = await CategoryService.searchCategories('')
     if (res.code === 200) {
       categoryOption.value = res.result.map((item: any) => {
         return {
@@ -383,7 +382,7 @@
   // 文章标签
   const tagOption = ref<any>([])
   const searchTags = async () => {
-    const res = await TagService.searchTags()
+    const res = await TagService.searchTags('')
     if (res.code === 200) {
       tagOption.value = res.result.map((item: any) => {
         return {
