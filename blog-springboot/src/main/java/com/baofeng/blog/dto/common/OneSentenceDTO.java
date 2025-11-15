@@ -1,9 +1,9 @@
-package com.baofeng.blog.vo.common;
+package com.baofeng.blog.dto.common;
 
 import java.util.List;
 
 import lombok.Data;
-public class OneSentence {
+public class OneSentenceDTO {
 
     @Data
     public static class OneSentenceAPI{

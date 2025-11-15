@@ -5,9 +5,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
-import com.baofeng.blog.vo.ApiResponse;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.front.FrontLikeDTO.*;
 import com.baofeng.blog.service.LikeService;
-import com.baofeng.blog.vo.front.FrontLikeVO.*;
 
 @RestController
 @RequestMapping("/api/front/likes")

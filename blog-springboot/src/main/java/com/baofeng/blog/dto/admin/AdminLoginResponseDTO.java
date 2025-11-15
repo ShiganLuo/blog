@@ -1,4 +1,4 @@
-package com.baofeng.blog.vo.admin;
+package com.baofeng.blog.dto.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminLoginResponseVO {
+public class AdminLoginResponseDTO {
     private String accessToken; // 短期有效
     private String refreshToken; //长期有效
 

@@ -11,9 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.web.client.RestTemplate;
+
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.common.OneSentenceDTO;
 import com.baofeng.blog.service.NoneTableService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.common.OneSentence;
 
 
 @Service
@@ -33,12 +34,12 @@ public class NoneTableImpl implements NoneTableService {
 
         try {
             if (api.contains("hitokoto")) {
-                OneSentence.OneSentenceAPI one = restTemplate.getForObject(api, OneSentence.OneSentenceAPI.class);
+                OneSentenceDTO.OneSentenceAPI one = restTemplate.getForObject(api, OneSentenceDTO.OneSentenceAPI.class);
                 if (one != null) {
                     return ApiResponse.success(one.getHitokoto());
                 }
             } else if (api.contains("jinrishici")) {
-                OneSentence.PoetryToday poetry = restTemplate.getForObject(api, OneSentence.PoetryToday.class);
+                OneSentenceDTO.PoetryToday poetry = restTemplate.getForObject(api, OneSentenceDTO.PoetryToday.class);
                 if (poetry != null && poetry.getStatus().equals("success")) {
                     return ApiResponse.success(poetry.getData().getContent());
                 }

@@ -1,10 +1,11 @@
 package com.baofeng.blog.controller.front;
 
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
+import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
 import com.baofeng.blog.service.UserService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.common.User.LoginRequest;
-import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
-import com.baofeng.blog.vo.common.User.UserInfoResponse;
+
 import org.springframework.web.bind.annotation.*;
 
 

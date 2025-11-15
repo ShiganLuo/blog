@@ -1,6 +1,6 @@
 package com.baofeng.blog.service;
 
-import com.baofeng.blog.vo.ApiResponse;
+import com.baofeng.blog.dto.ApiResponse;
 
 public interface NoneTableService {
     

@@ -1,8 +1,8 @@
-package com.baofeng.blog.vo.common;
+package com.baofeng.blog.dto.common;
 
 import lombok.Data;
 
-public class Category {
+public class CategoryDTO {
     /**
      * 创建响应目录字典
      */

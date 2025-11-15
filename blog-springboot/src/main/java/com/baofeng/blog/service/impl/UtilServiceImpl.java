@@ -1,9 +1,9 @@
 package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.service.UtilService;
-import com.baofeng.blog.vo.common.Util.CaptchaResponse;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.common.UtilDTO.CaptchaResponse;
 import com.baofeng.blog.enums.ResultCodeEnum;
-import com.baofeng.blog.vo.ApiResponse;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import java.awt.image.BufferedImage;
 import java.util.UUID;

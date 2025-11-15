@@ -1,8 +1,8 @@
-package com.baofeng.blog.vo.front;
+package com.baofeng.blog.dto.front;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
-public class FrontArticleVO {
+public class FrontArticleDTO {
     /**
      * 取消文章点赞
      */

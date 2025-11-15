@@ -1,8 +1,8 @@
 package com.baofeng.blog.controller.front;
 
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminArticleVO.ArticlePageRequestVO;
-import com.baofeng.blog.vo.front.FrontArticleVO.*;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminArticleDTO.ArticlePageRequestVO;
+import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 import com.baofeng.blog.service.ArticleService;
 
 import org.springframework.web.bind.annotation.*;

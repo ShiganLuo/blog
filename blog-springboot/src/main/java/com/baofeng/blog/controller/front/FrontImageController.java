@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.front.FrontImageVO.AlbumResponse;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.front.FrontImageDTO.AlbumResponse;
 import com.baofeng.blog.service.ImageService;
 
 @RestController

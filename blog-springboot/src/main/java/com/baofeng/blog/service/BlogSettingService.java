@@ -1,8 +1,8 @@
 package com.baofeng.blog.service;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminBlogSettingVO.InitSettingRequest;
-import com.baofeng.blog.vo.front.FrontBlogSettinVO.*;
-import com.baofeng.blog.vo.admin.AdminBlogSettingVO.SystemSettingDictResponse;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.InitSettingRequest;
+import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.*;
 public interface BlogSettingService {
 
     /**

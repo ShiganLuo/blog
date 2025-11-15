@@ -1,8 +1,8 @@
-package com.baofeng.blog.vo.front;
+package com.baofeng.blog.dto.front;
 
 import lombok.Data;
 
-public class FrontImageVO {
+public class FrontImageDTO {
     @Data
     public static class AlbumResponse {
         private Long id;

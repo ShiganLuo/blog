@@ -1,4 +1,4 @@
-package com.baofeng.blog.vo.admin;
+package com.baofeng.blog.dto.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-public class AdminDashBoradVO {
+public class AdminDashBoradDTO {
 
     @Builder
     @Data

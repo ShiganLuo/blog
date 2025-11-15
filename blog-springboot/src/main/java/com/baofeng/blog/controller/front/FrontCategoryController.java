@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.common.CategoryDTO.CategoryDictionaryResponse;
 import com.baofeng.blog.service.CategoryService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.common.Category.CategoryDictionaryResponse;
 @RestController
 @RequestMapping("/api/front/categories")
 @RequiredArgsConstructor

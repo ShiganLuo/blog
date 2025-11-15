@@ -2,12 +2,12 @@ package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.service.ArticleService;
 import com.baofeng.blog.service.PermissionService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminPermissionVO.AddNewPermissionRequest;
-import com.baofeng.blog.vo.admin.AdminPermissionVO.AssignPermissionRequest;
 import com.baofeng.blog.entity.Role;
 import com.baofeng.blog.entity.RolePermission;
 import com.baofeng.blog.enums.ResultCodeEnum;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminPermissionDTO.AddNewPermissionRequest;
+import com.baofeng.blog.dto.admin.AdminPermissionDTO.AssignPermissionRequest;
 import com.baofeng.blog.entity.Permission;
 import com.baofeng.blog.mapper.PermissionMapper;
 import com.baofeng.blog.mapper.RoleMapper;

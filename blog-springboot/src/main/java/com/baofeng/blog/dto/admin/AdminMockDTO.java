@@ -1,9 +1,9 @@
-package com.baofeng.blog.vo.admin;
+package com.baofeng.blog.dto.admin;
 import lombok.Data;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonInclude;
-public class AdminMockVO {
+public class AdminMockDTO {
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)//只序列化非null值
     public static class routeResponse{

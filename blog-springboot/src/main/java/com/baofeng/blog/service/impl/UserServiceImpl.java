@@ -6,13 +6,13 @@ import com.baofeng.blog.mapper.RoleMapper;
 import com.baofeng.blog.mapper.PermissionMapper;
 import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.config.JwtPropertiesConfig;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminLoginResponseDTO;
+import com.baofeng.blog.dto.admin.AdminUserAuthDTO.*;
+import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
+import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
 import com.baofeng.blog.entity.User;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
-import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
-import com.baofeng.blog.vo.common.User.LoginRequest;
-import com.baofeng.blog.vo.common.User.UserInfoResponse;
-import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
 import com.baofeng.blog.util.JwtTokenProvider;
 import com.baofeng.blog.entity.Role;
 import com.baofeng.blog.enums.GenderEnum;
@@ -110,8 +110,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<AdminLoginResponseVO> loginUserAdmin(LoginRequest loginDTO) {
-        return login(loginDTO, AdminLoginResponseVO.class);
+    public ApiResponse<AdminLoginResponseDTO> loginUserAdmin(LoginRequest loginDTO) {
+        return login(loginDTO, AdminLoginResponseDTO.class);
     }
 
     private <T> ApiResponse<T> login(LoginRequest loginDTO, Class<T> clazz) {
@@ -162,8 +162,8 @@ public class UserServiceImpl implements UserService {
                 roles
             );
             response = new FrontLoginResponseVO(accessToken, refreshToken, userInfo);
-        } else if (clazz == AdminLoginResponseVO.class) {
-            AdminLoginResponseVO.User userInfo = new AdminLoginResponseVO.User(
+        } else if (clazz == AdminLoginResponseDTO.class) {
+            AdminLoginResponseDTO.User userInfo = new AdminLoginResponseDTO.User(
                 user.getId(),
                 user.getAvatarUrl(),
                 user.getUsername(),
@@ -171,7 +171,7 @@ public class UserServiceImpl implements UserService {
                 roles,
                 permissions
             );
-            response = new AdminLoginResponseVO(accessToken, refreshToken, userInfo);
+            response = new AdminLoginResponseDTO(accessToken, refreshToken, userInfo);
         } else {
             logger.error("不支持的登录类型: {}", clazz.getName());
             throw new IllegalArgumentException("不支持的登录类型");

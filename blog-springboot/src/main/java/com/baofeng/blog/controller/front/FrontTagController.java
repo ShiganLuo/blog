@@ -1,8 +1,8 @@
 package com.baofeng.blog.controller.front;
 
 import com.baofeng.blog.service.TagService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.common.Tag.TagDictionaryResponse;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.common.TagDTO.TagDictionaryResponse;
 import com.baofeng.blog.entity.Tag;
 
 import lombok.RequiredArgsConstructor;

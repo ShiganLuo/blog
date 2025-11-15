@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import com.baofeng.blog.service.ImageService;
 import com.baofeng.blog.service.MinioService;
 import com.baofeng.blog.mapper.ImageMapper;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.front.FrontImageVO.AlbumResponse;
 import com.baofeng.blog.util.ImageFileUtil;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.front.FrontImageDTO.AlbumResponse;
 import com.baofeng.blog.entity.Image;
 import com.baofeng.blog.enums.ResultCodeEnum;
 

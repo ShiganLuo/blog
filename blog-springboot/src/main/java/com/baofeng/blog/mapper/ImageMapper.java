@@ -6,8 +6,8 @@ import org.apache.ibatis.annotations.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.baofeng.blog.dto.front.FrontImageDTO.AlbumResponse;
 import com.baofeng.blog.entity.Image;
-import com.baofeng.blog.vo.front.FrontImageVO.AlbumResponse;
 
 @Mapper
 public interface ImageMapper {

@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminDashBoradDTO.*;
 import com.baofeng.blog.service.DashBoardService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminDashBoradVO.*;
 
 
 @RestController

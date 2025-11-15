@@ -1,7 +1,7 @@
 package com.baofeng.blog.controller.admin;
 
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminPermissionVO.*;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminPermissionDTO.*;
 import com.baofeng.blog.service.PermissionService;
 
 import lombok.RequiredArgsConstructor;

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.baofeng.blog.vo.ApiResponse;
+import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.service.NoneTableService;
 
 @RestController

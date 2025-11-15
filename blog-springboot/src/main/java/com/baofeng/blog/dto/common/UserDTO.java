@@ -1,4 +1,4 @@
-package com.baofeng.blog.vo.common;
+package com.baofeng.blog.dto.common;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 
-public class User {
+public class UserDTO {
     // 登录请求
     public record LoginRequest(
         @NotBlank(message = "账号不能为空")

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.front.FrontImageVO.AlbumResponse;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.front.FrontImageDTO.AlbumResponse;
 
 public interface ImageService {
 

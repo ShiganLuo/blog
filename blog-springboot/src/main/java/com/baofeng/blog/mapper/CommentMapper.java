@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import com.baofeng.blog.dto.front.FrontCommentDTO.*;
 import com.baofeng.blog.entity.Comment;
-import com.baofeng.blog.vo.front.FrontCommentVO.*;
 
 
 @Mapper

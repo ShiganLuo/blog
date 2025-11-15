@@ -66,7 +66,7 @@
     </select>
     
     <!--获取用户通知-->
-    <resultMap id="NotifyPageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$NotifyResponse">
+    <resultMap id="NotifyPageResultMap" type="com.baofeng.blog.dto.front.FrontCommentDTO$NotifyResponse">
         <id property="id" column="id"/>
         <result property="isView" column="status"/>
         <result property="message" column="content"/>
@@ -81,7 +81,7 @@
     </select>
 
     <!--分页获取评论-->
-    <resultMap id="CommentPageResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$ArticleCommentResponse">
+    <resultMap id="CommentPageResultMap" type="com.baofeng.blog.dto.front.FrontCommentDTO$ArticleCommentResponse">
         <id property="id" column="id"/>
         <result property="from_id" column="from_id"/>
         <result property="from_name" column="from_name"/>
@@ -197,7 +197,7 @@
         ORDER BY created_at ASC
     </select>
 
-    <resultMap id="AllMessageTalkResultMap" type="com.baofeng.blog.vo.front.FrontCommentVO$MessageResponse">
+    <resultMap id="AllMessageTalkResultMap" type="com.baofeng.blog.dto.front.FrontCommentDTO$MessageResponse">
         <id property="id" column="id"/>
         <result property="avatar" column="avatar_url"/>
         <result property="from_id" column="from_id"/>

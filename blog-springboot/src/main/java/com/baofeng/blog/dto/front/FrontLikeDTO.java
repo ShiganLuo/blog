@@ -1,9 +1,9 @@
-package com.baofeng.blog.vo.front;
+package com.baofeng.blog.dto.front;
 
 import jakarta.validation.constraints.NotNull;
 // import lombok.Data;
 
-public class FrontLikeVO {
+public class FrontLikeDTO {
 
     /**
      * 文章点赞

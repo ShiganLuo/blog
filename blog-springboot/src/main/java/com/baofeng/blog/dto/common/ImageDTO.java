@@ -1,9 +1,9 @@
-package com.baofeng.blog.vo.common;
+package com.baofeng.blog.dto.common;
 
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.constraints.*;
 // import lombok.Data;
-public class Image {
+public class ImageDTO {
     public record UploadImage(
         @NotNull(message = "图片不能为空")
         MultipartFile file,

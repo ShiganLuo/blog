@@ -46,7 +46,7 @@
 
     <!--为角色分配权限-->
     <insert id="insertRolePermission">
-        INSERT INTO role_permissions (role_id, permissionId)
+        INSERT INTO role_permissions (role_id, permission_id)
         VALUES (#{roleId}, #{permissionId})
     </insert>
 

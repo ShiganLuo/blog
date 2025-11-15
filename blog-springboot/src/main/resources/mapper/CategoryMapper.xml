@@ -14,7 +14,7 @@
     </resultMap>
 
     <!-- 分类分页查询的结果映射 -->
-    <resultMap id="CategoryPageResultMap" type="com.baofeng.blog.vo.admin.AdminCategoryPageVO$CategoryVO">
+    <resultMap id="CategoryPageResultMap" type="com.baofeng.blog.dto.admin.AdminCategoryPageDTO$CategoryVO">
         <id property="id" column="id"/>
         <result property="categoryName" column="name"/>
         <result property="articleCount" column="article_count"/>
@@ -109,7 +109,7 @@
         DELETE FROM categories WHERE id = #{id}
     </delete>
 
-    <resultMap id="CategoryDictionaryResultMap" type="com.baofeng.blog.vo.common.Category$CategoryDictionaryResponse">
+    <resultMap id="CategoryDictionaryResultMap" type="com.baofeng.blog.dto.common.CategoryDTO$CategoryDictionaryResponse">
         <id property="id" column="id"/>
         <result property="categoryName" column="name"/>
     </resultMap>

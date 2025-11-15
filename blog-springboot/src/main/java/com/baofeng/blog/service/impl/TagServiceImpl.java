@@ -1,11 +1,11 @@
 package com.baofeng.blog.service.impl;
 
-import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
-import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
-import com.baofeng.blog.vo.admin.AdminTagPageVO.TagVO;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
-import com.baofeng.blog.vo.common.Tag.TagDictionaryResponse;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminTagPageDTO.CreateTagRequest;
+import com.baofeng.blog.dto.admin.AdminTagPageDTO.TagPageRequestVO;
+import com.baofeng.blog.dto.admin.AdminTagPageDTO.TagPageResponseVO;
+import com.baofeng.blog.dto.admin.AdminTagPageDTO.TagVO;
+import com.baofeng.blog.dto.common.TagDTO.TagDictionaryResponse;
 import com.baofeng.blog.entity.Tag;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.mapper.TagMapper;

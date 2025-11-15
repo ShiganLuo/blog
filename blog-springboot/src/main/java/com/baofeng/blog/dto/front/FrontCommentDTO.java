@@ -1,10 +1,10 @@
-package com.baofeng.blog.vo.front;
+package com.baofeng.blog.dto.front;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
 
-public class FrontCommentVO {
+public class FrontCommentDTO {
 
     /*
      * 创建评论请求体

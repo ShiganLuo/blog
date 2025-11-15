@@ -1,4 +1,4 @@
-package com.baofeng.blog.vo.admin;
+package com.baofeng.blog.dto.admin;
 
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -7,19 +7,21 @@ import java.util.List;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public class AdminTagPageVO {
+public class AdminCategoryPageDTO {
+
     /**
-     * 创建标签请求参数
+     * 创建分类请求参数
      */
-    public record CreateTagRequest(
-        @NotNull(message = "标签名称不能为空")
-        String name         // 标签名称
+    public record CreateCategoryRequest(
+        @NotNull(message = "分类名称不能为空")
+        String name,         // 分类名称
+        String description   // 分类描述
     ) {}
 
     /**
-     * 标签分页请求参数
+     * 分类分页请求参数
      */
-    public record TagPageRequestVO(
+    public record CategoryPageRequestVO(
         @NotNull(message = "页码不能为空")
         @Min(value = 1, message = "页码必须大于等于1")
         Integer pageNum,     // 当前页码
@@ -31,24 +33,30 @@ public class AdminTagPageVO {
     ) {}
 
     /**
-     * 标签分页响应数据
+     * 分类分页响应数据
      */
     @Data
-    public static class TagPageResponseVO {
+    public static class CategoryPageResponseVO {
         private long total;          // 总记录数
         private int pages;           // 总页数
-        private List<TagVO> list;    // 标签列表
+        private List<CategoryVO> list; // 分类列表
     }
 
     /**
-     * 标签信息
+     * 分类信息
      */
     @Data
-    public static class TagVO {
+    public static class CategoryVO {
         private Long id;
-        private String tagName;         // 标签名称
+        private String categoryName;         // 分类名称
         private Integer articleCount; // 文章数量
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private LocalDateTime createTime;
+        private LocalDateTime updateTime;
+    }
+
+    @Data
+    public static class CategoryDictionaryResponse {
+        private long id;
+        private String categoryName;
     }
 } 

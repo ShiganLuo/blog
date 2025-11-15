@@ -1,12 +1,12 @@
 package com.baofeng.blog.service;
 
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminLoginResponseDTO;
+import com.baofeng.blog.dto.admin.AdminUserAuthDTO.*;
+import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
+import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
 import com.baofeng.blog.entity.User;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
-import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
-import com.baofeng.blog.vo.common.User.LoginRequest;
-import com.baofeng.blog.vo.front.FrontUserVO.FrontLoginResponseVO;
-import com.baofeng.blog.vo.common.User.UserInfoResponse;
 
 
 
@@ -29,7 +29,7 @@ public interface UserService {
      * @param loginDTO
      * @return
      */
-    public ApiResponse<AdminLoginResponseVO> loginUserAdmin(LoginRequest loginDTO);
+    public ApiResponse<AdminLoginResponseDTO> loginUserAdmin(LoginRequest loginDTO);
 
     /**
      * 刷新token

@@ -1,12 +1,12 @@
 package com.baofeng.blog.service;
 
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.common.Category.CategoryDictionaryResponse;
-import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageRequestVO;
-import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageResponseVO;
-import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CreateCategoryRequest;
-
 import java.util.List;
+
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminCategoryPageDTO.CategoryPageRequestVO;
+import com.baofeng.blog.dto.admin.AdminCategoryPageDTO.CategoryPageResponseVO;
+import com.baofeng.blog.dto.admin.AdminCategoryPageDTO.CreateCategoryRequest;
+import com.baofeng.blog.dto.common.CategoryDTO.CategoryDictionaryResponse;
 public interface CategoryService {
     /**
      * 分页查询分类列表

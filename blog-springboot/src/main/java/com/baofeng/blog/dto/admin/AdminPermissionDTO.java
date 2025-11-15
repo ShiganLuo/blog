@@ -1,8 +1,8 @@
-package com.baofeng.blog.vo.admin;
+package com.baofeng.blog.dto.admin;
 
 import lombok.Data;
 
-public class AdminPermissionVO {
+public class AdminPermissionDTO {
 
     public record AssignPermissionRequest (
         String roleName,

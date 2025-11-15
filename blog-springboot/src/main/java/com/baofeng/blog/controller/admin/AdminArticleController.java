@@ -1,7 +1,7 @@
 package com.baofeng.blog.controller.admin;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminArticleVO.*;
-import com.baofeng.blog.vo.common.Image.UploadImage;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminArticleDTO.*;
+import com.baofeng.blog.dto.common.ImageDTO.UploadImage;
 import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.service.ArticleService;
 

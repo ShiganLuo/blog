@@ -1,8 +1,9 @@
 package com.baofeng.blog.service;
 
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminDashBoradVO.*;
 import java.util.List;
+
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminDashBoradDTO.*;
 public interface DashBoardService {
 
     /**

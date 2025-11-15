@@ -3,9 +3,9 @@ package com.baofeng.blog.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.AddFriendLinkRequest;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkResponse;
 import com.baofeng.blog.entity.BlogSetting;
-import com.baofeng.blog.vo.front.FrontBlogSettinVO.AddFriendLinkRequest;
-import com.baofeng.blog.vo.front.FrontBlogSettinVO.FriendLinkResponse;
 
 @Mapper
 public interface BlogSettingMapper {

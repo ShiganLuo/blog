@@ -1,13 +1,13 @@
 package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.service.TagService;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminArticleDTO.TagRequest;
+import com.baofeng.blog.dto.admin.AdminTagPageDTO.CreateTagRequest;
+import com.baofeng.blog.dto.admin.AdminTagPageDTO.TagPageRequestVO;
+import com.baofeng.blog.dto.admin.AdminTagPageDTO.TagPageResponseVO;
+import com.baofeng.blog.dto.common.TagDTO.TagDictionaryResponse;
 import com.baofeng.blog.service.ArticleService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageRequestVO;
-import com.baofeng.blog.vo.admin.AdminTagPageVO.TagPageResponseVO;
-import com.baofeng.blog.vo.admin.AdminArticleVO.TagRequest;
-import com.baofeng.blog.vo.admin.AdminTagPageVO.CreateTagRequest;
-import com.baofeng.blog.vo.common.Tag.TagDictionaryResponse;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

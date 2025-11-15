@@ -1,8 +1,8 @@
 package com.baofeng.blog.mapper;
 
-import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryVO;
-import com.baofeng.blog.vo.common.Category.CategoryDictionaryResponse;
-import com.baofeng.blog.vo.admin.AdminCategoryPageVO.CategoryPageRequestVO;
+import com.baofeng.blog.dto.admin.AdminCategoryPageDTO.CategoryPageRequestVO;
+import com.baofeng.blog.dto.admin.AdminCategoryPageDTO.CategoryVO;
+import com.baofeng.blog.dto.common.CategoryDTO.CategoryDictionaryResponse;
 import com.baofeng.blog.entity.ArticleCategory;
 import com.baofeng.blog.entity.Category;
 

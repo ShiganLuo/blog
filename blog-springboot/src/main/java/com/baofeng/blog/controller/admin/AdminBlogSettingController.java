@@ -1,10 +1,10 @@
 package com.baofeng.blog.controller.admin;
 
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminBlogSettingDTO;
+import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.configDetail;
 import com.baofeng.blog.service.BlogSettingService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminBlogSettingVO;
-import com.baofeng.blog.vo.admin.AdminBlogSettingVO.SystemSettingDictResponse;
-import com.baofeng.blog.vo.front.FrontBlogSettinVO.configDetail;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ public class AdminBlogSettingController {
     
     private final BlogSettingService blogSettingService;
     @PostMapping("/initSetting")
-    public ApiResponse<String> initSetting(@RequestBody AdminBlogSettingVO.InitSettingRequest request){
+    public ApiResponse<String> initSetting(@RequestBody AdminBlogSettingDTO.InitSettingRequest request){
         return blogSettingService.initSetting(request);
 
     }
@@ -29,7 +29,7 @@ public class AdminBlogSettingController {
     }
 
     @PostMapping("/changeSetting")
-    public ApiResponse<String> changeSetting(@RequestBody AdminBlogSettingVO.InitSettingRequest request){
+    public ApiResponse<String> changeSetting(@RequestBody AdminBlogSettingDTO.InitSettingRequest request){
         return blogSettingService.updateSettingById(request);
     }
 

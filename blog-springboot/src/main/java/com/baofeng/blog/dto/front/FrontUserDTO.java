@@ -1,4 +1,4 @@
-package com.baofeng.blog.vo.front;
+package com.baofeng.blog.dto.front;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
-public class FrontUserVO {
+public class FrontUserDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

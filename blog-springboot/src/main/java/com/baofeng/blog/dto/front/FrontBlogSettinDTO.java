@@ -1,9 +1,9 @@
-package com.baofeng.blog.vo.front;
+package com.baofeng.blog.dto.front;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class FrontBlogSettinVO {
+public class FrontBlogSettinDTO {
     public record updateSettingRequest(
         String siteTitle,
         String siteDescription,

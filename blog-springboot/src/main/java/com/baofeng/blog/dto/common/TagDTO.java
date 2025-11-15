@@ -1,8 +1,8 @@
-package com.baofeng.blog.vo.common;
+package com.baofeng.blog.dto.common;
 
 import lombok.Data;
 
-public class Tag {
+public class TagDTO {
     @Data
     public static class TagDictionaryResponse{
         private Long id;

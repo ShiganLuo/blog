@@ -1,12 +1,12 @@
 package com.baofeng.blog.controller.admin;
 
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminLoginResponseDTO;
+import com.baofeng.blog.dto.admin.AdminUserAuthDTO.*;
+import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
+import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.service.UserService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminLoginResponseVO;
-import com.baofeng.blog.vo.admin.AdminUserAuthVO.*;
-import com.baofeng.blog.vo.common.User.LoginRequest;
-import com.baofeng.blog.vo.common.User.UserInfoResponse;
 
 import java.util.Map;
 
@@ -35,7 +35,7 @@ public class AdminUserController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<AdminLoginResponseVO> login(@RequestBody @Valid LoginRequest loginDTO) {
+    public ApiResponse<AdminLoginResponseDTO> login(@RequestBody @Valid LoginRequest loginDTO) {
         return userService.loginUserAdmin(loginDTO);
     }
 

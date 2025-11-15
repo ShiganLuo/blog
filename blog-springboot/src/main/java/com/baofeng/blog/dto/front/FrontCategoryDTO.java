@@ -1,7 +1,7 @@
-package com.baofeng.blog.vo.front;
+package com.baofeng.blog.dto.front;
 
 import lombok.Data;
-public class FrontCategoryVO {
+public class FrontCategoryDTO {
     @Data
     public static class CategoryDictionaryResponse {
         private long id;

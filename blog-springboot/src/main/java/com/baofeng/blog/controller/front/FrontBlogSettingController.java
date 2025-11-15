@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.AddFriendLinkRequest;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkPackResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkRequest;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.configDetail;
 import com.baofeng.blog.service.BlogSettingService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.front.FrontBlogSettinVO.AddFriendLinkRequest;
-import com.baofeng.blog.vo.front.FrontBlogSettinVO.FriendLinkPackResponse;
-import com.baofeng.blog.vo.front.FrontBlogSettinVO.FriendLinkRequest;
-import com.baofeng.blog.vo.front.FrontBlogSettinVO.configDetail;
 
 
 

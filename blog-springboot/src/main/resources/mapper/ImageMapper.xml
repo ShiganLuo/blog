@@ -71,7 +71,7 @@
     </delete>
 
     <!--图片摘要-->
-    <resultMap id="AlbumImageMap" type="com.baofeng.blog.vo.front.FrontImageVO$AlbumResponse">
+    <resultMap id="AlbumImageMap" type="com.baofeng.blog.dto.front.FrontImageDTO$AlbumResponse">
         <id property="id" column="id"/>
         <result property="album_name" column="file_name"/>
         <result property="album_cover" column="file_path"/>

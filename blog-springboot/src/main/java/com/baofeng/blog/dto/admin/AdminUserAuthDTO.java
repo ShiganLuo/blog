@@ -1,9 +1,9 @@
-package com.baofeng.blog.vo.admin;
+package com.baofeng.blog.dto.admin;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
-public class AdminUserAuthVO {
+public class AdminUserAuthDTO {
 
     // 注册请求
     public record RegisterRequest(

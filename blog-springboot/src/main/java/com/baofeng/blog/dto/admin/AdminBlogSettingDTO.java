@@ -1,9 +1,9 @@
-package com.baofeng.blog.vo.admin;
+package com.baofeng.blog.dto.admin;
 
 import java.util.List;
 import lombok.Data;
 
-public class AdminBlogSettingVO {
+public class AdminBlogSettingDTO {
     public record InitSettingRequest(
         String siteTitle,
         String siteDescription,

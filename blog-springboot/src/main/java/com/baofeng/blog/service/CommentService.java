@@ -1,7 +1,7 @@
 package com.baofeng.blog.service;
 
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.front.FrontCommentVO.*;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.front.FrontCommentDTO.*;
 import com.baofeng.blog.entity.Comment;
 
 import java.util.List;

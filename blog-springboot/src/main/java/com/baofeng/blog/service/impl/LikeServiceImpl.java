@@ -10,10 +10,10 @@ import com.baofeng.blog.service.LikeService;
 import com.baofeng.blog.mapper.ArticleMapper;
 import com.baofeng.blog.mapper.CommentMapper;
 import com.baofeng.blog.mapper.LikeMapper;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.front.FrontLikeDTO.LikeRequest;
 import com.baofeng.blog.entity.Like;
 import com.baofeng.blog.enums.ResultCodeEnum;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.front.FrontLikeVO.LikeRequest;
 
 @Service
 // 替代@Autowerid显示注入

@@ -1,7 +1,7 @@
 package com.baofeng.blog.mapper;
+import com.baofeng.blog.dto.admin.AdminArticleDTO.*;
+import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 import com.baofeng.blog.entity.Article;
-import com.baofeng.blog.vo.admin.AdminArticleVO.*;
-import com.baofeng.blog.vo.front.FrontArticleVO.*;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

@@ -3,7 +3,7 @@ package com.baofeng.blog.util;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.baofeng.blog.vo.front.FrontCommentVO.*;
+import com.baofeng.blog.dto.front.FrontCommentDTO.*;
 
 public class CommentConvert {
 

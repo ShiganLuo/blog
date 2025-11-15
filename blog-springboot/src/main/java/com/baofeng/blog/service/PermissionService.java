@@ -1,7 +1,7 @@
 package com.baofeng.blog.service;
 
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminPermissionVO.*;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminPermissionDTO.*;
 
 public interface PermissionService {
 

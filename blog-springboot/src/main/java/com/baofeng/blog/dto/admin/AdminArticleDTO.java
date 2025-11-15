@@ -1,4 +1,4 @@
-package com.baofeng.blog.vo.admin;
+package com.baofeng.blog.dto.admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 
-public class AdminArticleVO {
+public class AdminArticleDTO {
     public record CreateArticleRequest(
         String title,
         String content,

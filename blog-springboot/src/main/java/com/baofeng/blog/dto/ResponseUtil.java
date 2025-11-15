@@ -1,4 +1,4 @@
-package com.baofeng.blog.vo;
+package com.baofeng.blog.dto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import jakarta.servlet.http.HttpServletResponse;

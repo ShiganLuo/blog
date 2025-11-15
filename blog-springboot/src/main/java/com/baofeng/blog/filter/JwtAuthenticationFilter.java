@@ -2,7 +2,7 @@ package com.baofeng.blog.filter;
 
 import com.baofeng.blog.service.CustomUserDetailsService;
 import com.baofeng.blog.util.JwtTokenProvider;
-import com.baofeng.blog.vo.ResponseUtil;
+import com.baofeng.blog.dto.ResponseUtil;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

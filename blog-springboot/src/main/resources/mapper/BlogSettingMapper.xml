@@ -88,7 +88,7 @@
         WHERE id = #{id}
     </update>
 
-    <resultMap id="FriendLinkResultMap" type="com.baofeng.blog.vo.front.FrontBlogSettinVO$FriendLinkResponse">
+    <resultMap id="FriendLinkResultMap" type="com.baofeng.blog.dto.front.FrontBlogSettinDTO$FriendLinkResponse">
         <id property="id" column="id"/>
         <result property="site_avatar" column="site_logo"/>
         <result property="site_name" column="site_title"/>

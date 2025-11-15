@@ -13,7 +13,7 @@
     </resultMap>
 
     <!-- 标签分页查询的结果映射 -->
-    <resultMap id="TagPageResultMap" type="com.baofeng.blog.vo.admin.AdminTagPageVO$TagVO">
+    <resultMap id="TagPageResultMap" type="com.baofeng.blog.dto.admin.AdminTagPageDTO$TagVO">
         <id property="id" column="id"/>
         <result property="tagName" column="name"/>
         <result property="articleCount" column="article_count"/>

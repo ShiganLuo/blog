@@ -128,7 +128,7 @@
     </select>
 
     <!--文章分页查询-->
-    <resultMap id="ArticlePageResultMap" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleVO">
+    <resultMap id="ArticlePageResultMap" type="com.baofeng.blog.dto.front.FrontArticleDTO$ArticleVO">
         <id property="id" column="id"/>
         <result property="articleTitle" column="title"/>
         <result property="articleDescription" column="summary"/>
@@ -147,7 +147,7 @@
         <result property="isFeatured" column="is_featured"/>
 
         <!-- 作者信息映射；一对多关系，不需要分步查询 -->
-        <association property="author" javaType="com.baofeng.blog.vo.front.FrontArticleVO$AuthorVO">
+        <association property="author" javaType="com.baofeng.blog.dto.front.FrontArticleDTO$AuthorVO">
             <id property="authorId" column="author_id"/>
             <result property="authorName" column="author_name"/>
             <result property="authorNickname" column="author_nickname"/>
@@ -194,7 +194,7 @@
     </select>
 
     <!--文章分页查询1-->
-    <resultMap id="AdminArticlePageResultMap" type="com.baofeng.blog.vo.admin.AdminArticleVO$AdminArticle">
+    <resultMap id="AdminArticlePageResultMap" type="com.baofeng.blog.dto.admin.AdminArticleDTO$AdminArticle">
         <id property="id" column="id"/>
         <result property="authorName" column="username"/>
         <result property="articleCover" column="cover_image"/>
@@ -341,7 +341,7 @@
         LIMIT #{limit}
     </select>
 
-    <resultMap id="ArticleAbstractMap" type="com.baofeng.blog.vo.front.FrontArticleVO$ArticleAbstractResponse">
+    <resultMap id="ArticleAbstractMap" type="com.baofeng.blog.dto.front.FrontArticleDTO$ArticleAbstractResponse">
     <id property="id" column="id"/>
     <result property="articleTitle" column="title"/>
     <result property="articleCover" column="cover_image"/>

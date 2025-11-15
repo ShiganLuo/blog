@@ -1,7 +1,7 @@
-package com.baofeng.blog.vo.common;
+package com.baofeng.blog.dto.common;
 
 import lombok.Data;
-public class Util {
+public class UtilDTO {
     @Data
     public static class CaptchaResponse {
         private boolean captchaEnabled;

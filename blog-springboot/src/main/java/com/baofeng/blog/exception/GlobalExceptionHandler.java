@@ -6,7 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.baofeng.blog.vo.ApiResponse;
+import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.fasterxml.jackson.databind.JsonMappingException;
 

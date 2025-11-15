@@ -1,12 +1,12 @@
 package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.service.DashBoardService;
-import com.baofeng.blog.vo.ApiResponse;
-import com.baofeng.blog.vo.admin.AdminDashBoradVO.ArticleAddInThisYearResponse;
-import com.baofeng.blog.vo.admin.AdminDashBoradVO.BlogDetailNumberResponse;
-import com.baofeng.blog.vo.admin.AdminDashBoradVO.DictTemplateResponse;
-import com.baofeng.blog.vo.admin.AdminDashBoradVO.UserAddInLastWeekResponse;
 import com.baofeng.blog.mapper.UserMapper;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.admin.AdminDashBoradDTO.ArticleAddInThisYearResponse;
+import com.baofeng.blog.dto.admin.AdminDashBoradDTO.BlogDetailNumberResponse;
+import com.baofeng.blog.dto.admin.AdminDashBoradDTO.DictTemplateResponse;
+import com.baofeng.blog.dto.admin.AdminDashBoradDTO.UserAddInLastWeekResponse;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.mapper.ArticleMapper;
 import com.baofeng.blog.mapper.CategoryMapper;
