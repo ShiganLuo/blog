@@ -15,15 +15,12 @@ import com.github.pagehelper.PageInfo;
 
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
-    private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
     @Override
     public ApiResponse<CategoryPageResponseVO> getCategoryPage(CategoryPageRequestVO request) {
         // 参数校验
