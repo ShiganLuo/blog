@@ -1,6 +1,5 @@
 package com.baofeng.blog.dto.admin;
 
-import lombok.Data;
 
 public class AdminPermissionDTO {
 

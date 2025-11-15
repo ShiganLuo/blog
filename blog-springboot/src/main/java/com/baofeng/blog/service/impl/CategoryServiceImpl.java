@@ -9,7 +9,6 @@ import com.baofeng.blog.dto.common.CategoryDTO.CategoryDictionaryResponse;
 import com.baofeng.blog.entity.Category;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.mapper.CategoryMapper;
-import com.baofeng.blog.service.ArticleService;
 import com.baofeng.blog.service.CategoryService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
