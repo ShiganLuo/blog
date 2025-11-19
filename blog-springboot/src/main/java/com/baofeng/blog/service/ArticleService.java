@@ -4,7 +4,6 @@ import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminArticleDTO.*;
 import com.baofeng.blog.dto.common.ImageDTO.UploadImage;
 import com.baofeng.blog.dto.front.FrontArticleDTO.*;
-import com.baofeng.blog.entity.Article;
 
 import java.io.IOException;
 
@@ -40,6 +39,13 @@ public interface ArticleService {
      */
     public ApiResponse<String> deleteArticle(Long id);
 
+    /**
+     * 批量逻辑删除文章
+     * @param deleteArticlesLogicallyRequest
+     * @return
+     */
+    public ApiResponse<String> deleteArticlesLogically(DeleteArticlesLogicallyRequest deleteArticlesLogicallyRequest);
+    
     /**
      * 根据id获取文章
      * @param id

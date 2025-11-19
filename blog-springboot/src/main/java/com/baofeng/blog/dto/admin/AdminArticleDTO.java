@@ -4,10 +4,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 public class AdminArticleDTO {
-    public record CreateArticleRequest(
+    public static record CreateArticleRequest(
         String title,
         String content,
         String summary,
@@ -16,7 +17,7 @@ public class AdminArticleDTO {
     /**
      * 文章分页请求参数
      */
-    public record ArticlePageRequest(
+    public static record ArticlePageRequest(
         @NotNull(message = "页码不能为空")
         @Min(value = 1, message = "页码必须大于等于1")
         Integer pageNum,     // 当前页码
@@ -48,7 +49,7 @@ public class AdminArticleDTO {
         private Long articleId;
     }
 
-    public record CreateAdminArticlePageRequest(
+    public static record CreateAdminArticlePageRequest(
         Integer current,
         Integer size,
         String keyword,
@@ -57,16 +58,7 @@ public class AdminArticleDTO {
         String type,
         String status,
         Boolean deleted
-    ) {
-        public CreateAdminArticlePageRequest {
-            if (current == null || current < 1) {
-                throw new IllegalArgumentException("页码必须大于等于1");
-            }
-            if (size == null || size < 1) {
-                throw new IllegalArgumentException("每页显示条数必须大于等于1");
-            }
-        }
-    }
+    ) {    }
 
 
     @Data
@@ -84,7 +76,7 @@ public class AdminArticleDTO {
         private Integer viewsCount;
         private String status;
         private Integer type;
-        private String originalUrl;
+        private String originUrl;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private List<String> tagNameList;
@@ -96,8 +88,8 @@ public class AdminArticleDTO {
         private Long total;
     }
 
-    public record UpdateArticleRequest(
-        Long id,
+    public static record UpdateArticleRequest(
+        @NotEmpty Long id,
         String articleTitle,
         String articleContent,
         String articleAbstract,
@@ -108,14 +100,13 @@ public class AdminArticleDTO {
         Boolean isFeatured,
         Integer type,
         String status,
-        String originalUrl
-    ){
-        public UpdateArticleRequest {
-            if (id == null || id <= 0 ) {
-                throw new IllegalArgumentException("id必须大于0");
-            }
-        }
-    }
+        String originUrl
+    ){    }
+
+    public static record DeleteArticlesLogicallyRequest(
+        @NotEmpty List<Long> ids,
+        @NotNull Boolean isDeleted
+    ) {}
 
 
     

@@ -24,10 +24,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 
@@ -95,6 +93,18 @@ public class ArticleServiceImpl implements ArticleService {
         return rowsDeleted > 0 
             ? ApiResponse.success()
             : ApiResponse.error(ResultCodeEnum.NOT_FOUND,"文章未找到");
+    }
+
+    @Override
+    public ApiResponse<String> deleteArticlesLogically(DeleteArticlesLogicallyRequest deleteArticlesLogicallyRequest) {
+        for (Long id: deleteArticlesLogicallyRequest.ids()) {
+            int rowsUpdated = articleMapper.delteArticleLogically(id, deleteArticlesLogicallyRequest.isDeleted());
+            if (rowsUpdated == 0) {
+                logger.info("文章" + id + "更新失败");
+                return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"文章" + id + "更新失败");
+            }
+        }
+        return ApiResponse.success("文章逻辑删除成功");
     }
 
     @Override
@@ -168,7 +178,7 @@ public class ArticleServiceImpl implements ArticleService {
         .isTop(updateArticleRequest.isTop())
         .isFeatured(updateArticleRequest.isFeatured())
         .isTop(updateArticleRequest.isTop())
-        .originUrl(updateArticleRequest.originalUrl())
+        .originUrl(updateArticleRequest.originUrl())
         .type(updateArticleRequest.type())
         .build();
 

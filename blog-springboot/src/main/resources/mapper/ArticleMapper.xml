@@ -116,9 +116,17 @@
         WHERE id = #{id}
     </update>
 
+    <!--删除文章-->
     <delete id="deleteArticle">
         DELETE FROM articles WHERE id = #{id}
     </delete>
+
+    <!--逻辑删除或恢复文章-->
+    <update id="delteArticleLogically">
+        UPDATE articles SET
+        is_deleted = #{isDeleted}
+        WHERE id = #{id}
+    </update>
 
     <!--文章标题是否重复-->
     <select id="isTitleExist" resultType="boolean">

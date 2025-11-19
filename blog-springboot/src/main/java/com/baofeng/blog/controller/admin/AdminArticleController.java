@@ -2,13 +2,13 @@ package com.baofeng.blog.controller.admin;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminArticleDTO.*;
 import com.baofeng.blog.dto.common.ImageDTO.UploadImage;
-import com.baofeng.blog.entity.Article;
 import com.baofeng.blog.service.ArticleService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import com.fasterxml.jackson.databind.JsonNode;
+
 
 @RestController
 @RequestMapping("/api/admin/articles")
@@ -49,6 +49,15 @@ public class AdminArticleController {
     }
 
     /**
+     * 批量逻辑删除文章
+     * @param deleteArticlesLogicallyRequest
+     * @return
+     */
+    @PostMapping("/updateArticlesDeletedStatus")
+    public ApiResponse<String> updateArticlesDeletedStatus(@RequestBody DeleteArticlesLogicallyRequest deleteArticlesLogicallyRequest) {
+        return articleService.deleteArticlesLogically(deleteArticlesLogicallyRequest);
+    }
+    /**
      * 根据id获取文章
      * @param id 文章id
      * @return 分页结果
@@ -65,7 +74,6 @@ public class AdminArticleController {
      */
     @PostMapping("/update")
     public ApiResponse<String> updateArticleSelective(@RequestBody UpdateArticleRequest updateArticleRequest){
-
         return articleService.updateArticleSelective(updateArticleRequest);
 
     }

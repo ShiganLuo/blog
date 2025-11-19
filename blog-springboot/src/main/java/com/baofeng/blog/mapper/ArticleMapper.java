@@ -80,11 +80,42 @@ public interface ArticleMapper {
      */
     int decreaseLikeById(Long id);
 
+    /**
+     * 获取文章
+     * @param id
+     * @return
+     */
     Article getArticleById(Long id);
-    
+
+    /**
+     * 新建文章
+     * @param article
+     * @return
+     */
     int insertArticle(Article article);
+
+    /**
+     * 更新文章
+     * @param article
+     * @return
+     */
     int updateArticle(Article article);
+
+    /**
+     * 删除文章
+     * @param id
+     * @return
+     */
     int deleteArticle(Long id);
+
+    /**
+     * 逻辑删除文章
+     * @param id
+     * @param isDeleted
+     * @return
+     */
+    int delteArticleLogically(Long id, Boolean isDeleted);
+
     /**
      * 选择性更新文章
      * @param article
@@ -92,8 +123,24 @@ public interface ArticleMapper {
      */
     int updateArticleSelective(Article article);
 
+    /**
+     * 获取文章作者id
+     * @param articleId
+     * @return
+     */
     Long getAuthorIdById(Long articleId);
+
+    /**
+     * 判断文章标题是否存在
+     * @param title
+     * @return
+     */
     boolean isTitleExist(String title);
+
+    /**
+     * 获取文章总数
+     * @return
+     */
     Long countAllArticles();
 
     /**
