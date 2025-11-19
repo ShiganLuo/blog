@@ -12,7 +12,7 @@ public class AdminCategoryPageDTO {
     /**
      * 创建分类请求参数
      */
-    public record CreateCategoryRequest(
+    public static record CreateCategoryRequest(
         @NotNull(message = "分类名称不能为空")
         String name,         // 分类名称
         String description   // 分类描述
@@ -21,7 +21,7 @@ public class AdminCategoryPageDTO {
     /**
      * 分类分页请求参数
      */
-    public record CategoryPageRequestVO(
+    public static record CategoryPageRequestVO(
         @NotNull(message = "页码不能为空")
         @Min(value = 1, message = "页码必须大于等于1")
         Integer pageNum,     // 当前页码

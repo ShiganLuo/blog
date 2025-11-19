@@ -11,7 +11,7 @@ public class AdminTagPageDTO {
     /**
      * 创建标签请求参数
      */
-    public record CreateTagRequest(
+    public static record CreateTagRequest(
         @NotNull(message = "标签名称不能为空")
         String name         // 标签名称
     ) {}

@@ -66,7 +66,7 @@ public class FrontArticleDTO {
         private List<ArticleAbstractResponse> list;
     }
 
-    public record CategoryOrTagRequest(
+    public static record CategoryOrTagRequest(
         Integer current,
         Integer size,
         Long id

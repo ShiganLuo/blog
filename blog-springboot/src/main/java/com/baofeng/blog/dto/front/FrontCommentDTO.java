@@ -3,41 +3,31 @@ package com.baofeng.blog.dto.front;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
-
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 public class FrontCommentDTO {
 
     /*
      * 创建评论请求体
      */
     public record CreateCommentRequest(
-        Long from_id,
-        String content,
+        @NotNull Long from_id,
+        @NotBlank String content,
         Long for_id,
         Long to_id,
-        String type,
+        @NotBlank String type,
         Long author_id,
         Long root_id,
         String tag
-    ) {
-        public CreateCommentRequest {
-            if (from_id == null) {
-                throw new IllegalArgumentException("from_id不能为空");
-            }
-            if (type == null) {
-                throw new IllegalArgumentException("type不能为空");
-            }
-            if (content == null) {
-                throw new IllegalArgumentException("content不能为空");
-            }
-
-        }
-    }
+    ) {}
 
 
     /*
      * 用户通知请求体
      */
-    public record NotifyPageRequest(
+    public static record NotifyPageRequest(
         Integer current,
         Integer size,
         Long userId
@@ -68,35 +58,27 @@ public class FrontCommentDTO {
     /*
      * 评论分页请求体
      */
-    public record CommentPageRequest(
+    public static record CommentPageRequest(
+
+        @NotNull(message = "当前页不能为空")
+        @Min(value = 1, message = "当前页必须大于等于 1")
         Integer current,
+
+        @NotNull(message = "每页数量不能为空")
+        @Min(value = 1, message = "每页数量必须大于等于 1")
         Integer size,
+
         List<String> type,
         Long for_id,
-        String order, // new or hot
+
+        // order 可选，但如果写了必须是 new 或 hot
+        @Pattern(regexp = "^(new|hot)?$", message = "order 参数只能是 'new' 或 'hot'")
+        String order,
+
         Long rootId,
         Long user_id
-    ) {
-        public CommentPageRequest {
-            if (current == null) {
-                throw new IllegalArgumentException("当前页不能为空");
-            }
-            if (size == null) {
-                throw new IllegalArgumentException("每页数量不能为空");
-            }
-            if (current < 1) {
-                throw new IllegalArgumentException("当前页必须大于等于 1");
-            }
-            if (size < 1) {
-                throw new IllegalArgumentException("每页数量必须大于等于 1");
-            }
-            if (order != null && !order.isEmpty()) {
-                if (!order.equals("new") && !order.equals("hot")) {
-                    throw new IllegalArgumentException("order 参数只能是 'new' 或 'hot'");
-                }
-            }
-        }
-    }
+
+    ) {}
 
     /**
      * 评论分页响应体
@@ -141,30 +123,19 @@ public class FrontCommentDTO {
         private Boolean is_like;
     }
 
-    public record MessageTalkPageRequest(
+    public static record MessageTalkPageRequest(
+        @NotNull(message = "当前页不能为空")
+        @Min(value = 1, message = "当前页必须大于等于 1")
         Integer current,
+
+        @NotNull(message = "每页数量不能为空")
+        @Min(value = 1, message = "当前页必须大于等于 1")
         Integer size,
+
+        @NotBlank
         String type,
         Long user_id
-    ){
-        public MessageTalkPageRequest {
-            if (current == null) {
-                throw new IllegalArgumentException("当前页不能为空");
-            }
-            if (size == null) {
-                throw new IllegalArgumentException("每页数量不能为空");
-            }
-            if (type == null) {
-                throw new IllegalArgumentException("类型不能为空");
-            }
-            if (current < 1) {
-                throw new IllegalArgumentException("当前页必须大于等于 1");
-            }
-            if (size < 1) {
-                throw new IllegalArgumentException("每页数量必须大于等于 1");
-            }
-        }
-    }
+    ){    }
     @Data
     public static class MessagePageResponse {
         private Long total;

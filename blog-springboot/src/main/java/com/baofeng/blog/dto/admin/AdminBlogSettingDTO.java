@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.Data;
 
 public class AdminBlogSettingDTO {
-    public record InitSettingRequest(
+    public static record InitSettingRequest(
         String siteTitle,
         String siteDescription,
         String siteLogo,

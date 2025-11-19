@@ -8,7 +8,7 @@ import lombok.Data;
 
 public class UserDTO {
     // 登录请求
-    public record LoginRequest(
+    public static record LoginRequest(
         @NotBlank(message = "账号不能为空")
         String username,
         

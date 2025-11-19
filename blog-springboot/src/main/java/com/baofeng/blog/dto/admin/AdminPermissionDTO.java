@@ -1,35 +1,19 @@
 package com.baofeng.blog.dto.admin;
 
-
+import jakarta.validation.constraints.NotEmpty;
 public class AdminPermissionDTO {
 
-    public record AssignPermissionRequest (
-        String roleName,
-        String permission
+    public static record AssignPermissionRequest (
+        @NotEmpty String roleName,
+        @NotEmpty String permission
     ){
-        public AssignPermissionRequest {
-            if (roleName == null || roleName.isEmpty()) {
-                throw new IllegalArgumentException("roleName不能为空");
-            }
-            if (permission == null || permission.isEmpty()) {
-                throw new IllegalArgumentException("permission不能为空");
-            };
-        }
     }
-    public record AddNewPermissionRequest(
+    public static record AddNewPermissionRequest(
         String name,
-        String permission,
-        String type,
+        @NotEmpty String permission,
+        @NotEmpty String type,
         Long parentId,
         String path
     ){
-        public AddNewPermissionRequest {
-            if (permission == null || permission.isEmpty()) {
-                throw new IllegalArgumentException("permission不能为空");
-            }
-            if (name == null || name.isEmpty()) {
-                throw new IllegalArgumentException("name不能为空");
-            }
-        }
     }
 }

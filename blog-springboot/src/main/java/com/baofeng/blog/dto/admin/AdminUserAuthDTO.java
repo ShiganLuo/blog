@@ -6,7 +6,7 @@ import java.util.List;
 public class AdminUserAuthDTO {
 
     // 注册请求
-    public record RegisterRequest(
+    public static record RegisterRequest(
         @NotBlank(message = "用户名不能为空")
         @Size(min = 5, max = 16, message = "用户名长度5-20个字符")
         String username,
@@ -42,7 +42,7 @@ public class AdminUserAuthDTO {
         // ... 其他需要返回的用户字段
     }
 
-    public record UpdateUserRoleRequest(
+    public static record UpdateUserRoleRequest(
         Long userId,
         List<String> roles
     ) { 
@@ -56,7 +56,7 @@ public class AdminUserAuthDTO {
         }
     }
 
-    public record UpdateUserInfo (
+    public static record UpdateUserInfo (
         Long id,
         String username,
         String nickName,

@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.constraints.*;
 // import lombok.Data;
 public class ImageDTO {
-    public record UploadImage(
+    public static record UploadImage(
         @NotNull(message = "图片不能为空")
         MultipartFile file,
         @NotBlank(message = "实体类型不能为空")

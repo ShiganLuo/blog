@@ -2,9 +2,9 @@ package com.baofeng.blog.dto.front;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import jakarta.validation.constraints.NotNull;
 public class FrontBlogSettinDTO {
-    public record updateSettingRequest(
+    public static record updateSettingRequest(
         String siteTitle,
         String siteDescription,
         String siteLogo,
@@ -47,19 +47,11 @@ public class FrontBlogSettinDTO {
         
     }
 
-    public record FriendLinkRequest(
-        Integer current,
-        Integer size
-    ) {
-        public FriendLinkRequest {
-            if (current == null) {
-                throw new IllegalArgumentException("current不能为空");
-            }
-            if (size == null) {
-                throw new IllegalArgumentException("size不能为空");
-            }
-        }
-    }
+    public static record FriendLinkRequest(
+        @NotNull Integer current,
+        @NotNull Integer size
+    ) {    }
+
     @Data
     public static class FriendLinkPackResponse {
         private List<FriendLinkResponse> list;
@@ -76,18 +68,12 @@ public class FrontBlogSettinDTO {
         private Long user_id;
     }
 
-    public record AddFriendLinkRequest(
+    public static record AddFriendLinkRequest(
         Long id,
         String site_name,
         String site_desc,
         String site_url,
         String site_avatar,
-        Long user_id
-    ) {
-        public AddFriendLinkRequest {
-            if (user_id == null) {
-                throw new IllegalArgumentException("user_id不能为空");
-            }
-        }
-    }
+        @NotNull Long user_id
+    ) { }
 }
