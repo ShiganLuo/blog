@@ -72,9 +72,9 @@ public class AdminArticleController {
      * @param article 文章
      * @return 分页结果
      */
-    @PostMapping("/update")
-    public ApiResponse<String> updateArticleSelective(@RequestBody UpdateArticleRequest updateArticleRequest){
-        return articleService.updateArticleSelective(updateArticleRequest);
+    @PostMapping("/updateArticlesSelective")
+    public ApiResponse<String> updateArticleSelective(@RequestBody UpdateArticlesRequest updateArticlesRequest){
+        return articleService.updateArticlesSelective(updateArticlesRequest);
 
     }
 

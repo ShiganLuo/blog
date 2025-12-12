@@ -337,7 +337,7 @@
       `是否确认${deleteBut.value ? ' （彻底） ' : ''}删除文章编号为"${_ids}"的数据项？`
     )
     if (Tr && !deleteBut.value) {
-      const res = await ArticleService.updateArticle({ ids: _ids, isDeleted: 1 })
+      const res = await ArticleService.updateArticles({ ids: _ids, isDeleted: 1 })
       if (res.code === 200) {
         getList()
         ElMessage.success(res.message)
@@ -357,7 +357,7 @@
     const _ids = row.id ? [row.id] : ids.value
     const Tr = await ElMessageBox.confirm('是否确认恢复文章编号为"' + _ids + '"的数据项？')
     if (Tr) {
-      const res = await ArticleService.updateArticle({ ids: _ids, isDeleted: 0 })
+      const res = await ArticleService.updateArticles({ ids: _ids, isDeleted: 0 })
       if (res.code === 200) {
         getList()
         ElMessage.success(res.message)

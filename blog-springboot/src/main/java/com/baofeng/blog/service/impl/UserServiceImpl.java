@@ -83,8 +83,8 @@ public class UserServiceImpl implements UserService {
             role = new Role();
             role.setRoleName(RoleTypeEnum.USER.getRole()); // 默认分配USER权限
             role.setRoleDesc(RoleTypeEnum.USER.getDescription());
-            Role newRole = roleMapper.insertRole(role);
-            if (newRole == null) {
+            int rowUpdated = roleMapper.insertRole(role);
+            if (rowUpdated > 0) {
                 logger.error("USER角色创建失败");
                 return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户创建失败");
             }
@@ -227,8 +227,8 @@ public class UserServiceImpl implements UserService {
                 role = new Role();
                 role.setRoleName(RoleTypeEnum.valueOf(roleName).getRole());
                 role.setRoleDesc(RoleTypeEnum.valueOf(roleName).getDescription());
-                Role newRole = roleMapper.insertRole(role);
-                if (newRole == null) {
+                int rowUpdated = roleMapper.insertRole(role);
+                if (rowUpdated > 0) {
                     logger.error("角色创建失败: " + roleName);
                 }
             }

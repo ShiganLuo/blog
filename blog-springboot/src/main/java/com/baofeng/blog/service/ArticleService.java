@@ -58,7 +58,7 @@ public interface ArticleService {
      * @param article
      * @return
      */
-    public ApiResponse<String> updateArticleSelective(UpdateArticleRequest updateArticleRequest);
+    public ApiResponse<String> updateArticlesSelective(UpdateArticlesRequest updateArticlesRequest);
 
     /**
      * 更新文章置顶状态

@@ -45,7 +45,7 @@ public interface TagMapper {
      * @param tag 标签信息
      * @return 影响的行数
      */
-    Tag createTag(Tag tag);
+    int createTag(Tag tag);
 
     /**
      * 删除标签

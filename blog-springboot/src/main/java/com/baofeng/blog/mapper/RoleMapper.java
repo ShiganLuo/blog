@@ -19,7 +19,7 @@ public interface RoleMapper {
      * @param role
      * @return
      */
-    Role insertRole(Role role);
+    int insertRole(Role role);
 
     /**
      * 根据ID删除角色

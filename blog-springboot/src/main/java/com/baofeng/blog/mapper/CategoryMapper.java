@@ -33,7 +33,7 @@ public interface CategoryMapper {
      * @param category 分类信息
      * @return 影响的行数
      */
-    Category createCategory(Category category);
+    int createCategory(Category category);
 
     /**
      * 根据名称查询分类

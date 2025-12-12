@@ -56,9 +56,9 @@ public class TagServiceImpl implements TagService {
         // 创建标签
         Tag tag = new Tag();
         tag.setName(request.name());
-        Tag newTag = tagMapper.createTag(tag);
+        int rowUpdated = tagMapper.createTag(tag);
         // 保存标签
-        return newTag != null
+        return rowUpdated > 0
             ? ApiResponse.success()
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"标签创建失败");
     }

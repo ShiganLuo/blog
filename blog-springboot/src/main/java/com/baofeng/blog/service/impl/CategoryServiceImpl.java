@@ -55,9 +55,9 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         category.setName(request.name());
         category.setDescription(request.description());
-        Category newCategory = categoryMapper.createCategory(category);
+        int rowUpdated = categoryMapper.createCategory(category);
 
-        return newCategory != null
+        return rowUpdated > 0
             ? ApiResponse.success()
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"分类创建失败");
     }

@@ -241,7 +241,8 @@
   let { accessToken } = userStore
 
   // 上传路径
-  const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/blog/article/admin/articles/images`
+  const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/api/admin/image/uploadImage`
+ 
   // 传递 token
   const uploadHeaders = { Authorization: accessToken }
 
@@ -255,7 +256,7 @@
 
   // 上传成功后的处理函数
   const onSuccess = (response: any) => {
-    form.articleCover = response.msg
+    form.articleCover = response.result
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
@@ -413,7 +414,7 @@
       return
     }
     form.articleContent = delCodeTrim(form.articleContent)
-    const res = await ArticleService.addOrUpdateArticle(form)
+    const res = await ArticleService.updateArticles(form)
     if (res.code === 200) {
       ElMessage.success(`${res.message} ${EmojiText[200]}`)
       goBack()

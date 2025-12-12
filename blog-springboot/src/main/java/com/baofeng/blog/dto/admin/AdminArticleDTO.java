@@ -88,8 +88,9 @@ public class AdminArticleDTO {
         private Long total;
     }
 
-    public static record UpdateArticleRequest(
+    public static record UpdateArticlesRequest(
         @NotEmpty List<Long> ids,
+        Long id,
         String articleTitle,
         String articleContent,
         String articleAbstract,

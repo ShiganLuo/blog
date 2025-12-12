@@ -117,14 +117,20 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ApiResponse<String> updateArticleSelective(UpdateArticleRequest updateArticleRequest){
-        List<Long> ids = updateArticleRequest.ids(); // 改成 ids
+    public ApiResponse<String> updateArticlesSelective(UpdateArticlesRequest updateArticlesRequest){
+        List<Long> ids = updateArticlesRequest.ids(); // 改成 ids
 
+        if ((ids == null || ids.isEmpty()) && updateArticlesRequest.id() != null) {
+            Long singleId = updateArticlesRequest.id();            
+            ids = List.of(singleId); 
+        } else {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"id不能为空");
+        }
         // 目录名列表
-        List<String> categoryNameList = updateArticleRequest.categoryNameList();
+        List<String> categoryNameList = updateArticlesRequest.categoryNameList();
 
         // 标签名列表
-        List<String> tagNameList = updateArticleRequest.tagNameList();
+        List<String> tagNameList = updateArticlesRequest.tagNameList();
 
         boolean allSuccess = true;
 
@@ -140,8 +146,8 @@ public class ArticleServiceImpl implements ArticleService {
                 if (categoryId == null) {
                     Category category = new Category();
                     category.setName(categoryName);
-                    Category newCategory = categoryMapper.createCategory(category);
-                    categoryId = newCategory.getId();
+                    categoryMapper.createCategory(category);
+                    categoryId = category.getId();
                 }
 
                 ArticleCategory articleCategory = new ArticleCategory();
@@ -166,8 +172,8 @@ public class ArticleServiceImpl implements ArticleService {
                 if (tagId == null) {
                     Tag tag = new Tag();
                     tag.setName(tagName);
-                    Tag newTag = tagMapper.createTag(tag);
-                    tagId = newTag.getId();
+                    tagMapper.createTag(tag);
+                    tagId = tag.getId();
                 }
 
                 ArticleTag articleTag = new ArticleTag();
@@ -184,14 +190,14 @@ public class ArticleServiceImpl implements ArticleService {
             // ---- 更新文章 ----
             Article article = Article.builder()
                 .id(articleId)
-                .title(updateArticleRequest.articleTitle())
-                .content(updateArticleRequest.articleContent())
-                .coverImage(updateArticleRequest.articleCover())
-                .isFeatured(updateArticleRequest.isFeatured())
-                .isTop(updateArticleRequest.isTop())
-                .originUrl(updateArticleRequest.originUrl())
-                .type(updateArticleRequest.type())
-                .isDeleted(updateArticleRequest.isDeleted())
+                .title(updateArticlesRequest.articleTitle())
+                .content(updateArticlesRequest.articleContent())
+                .coverImage(updateArticlesRequest.articleCover())
+                .isFeatured(updateArticlesRequest.isFeatured())
+                .isTop(updateArticlesRequest.isTop())
+                .originUrl(updateArticlesRequest.originUrl())
+                .type(updateArticlesRequest.type())
+                .isDeleted(updateArticlesRequest.isDeleted())
                 .build();
 
             int rowsUpdated = articleMapper.updateArticleSelective(article);
@@ -357,11 +363,13 @@ public class ArticleServiceImpl implements ArticleService {
         }
         boolean flag = categoryMapper.checkExactName(categoryName);
         if ( !flag ) {
-            Category category = categoryMapper.createCategory(newCategory);
-            Long newCategoryId = newCategory.getId();
+            Category category = new Category();
+            category.setName(categoryName);
+            categoryMapper.createCategory(category);
+            Long categoryId = category.getId();
             ArticleCategory articleCategory = new ArticleCategory();
             articleCategory.setArticleId(articleId);
-            articleCategory.setCategoryId(newCategoryId);
+            articleCategory.setCategoryId(categoryId);
             int rowsInserted1 = categoryMapper.insertArticleCategory(articleCategory);
             return rowsInserted1 > 0  && category != null
                 ? ApiResponse.success()

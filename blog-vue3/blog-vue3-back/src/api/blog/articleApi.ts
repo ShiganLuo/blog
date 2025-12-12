@@ -26,10 +26,10 @@ export class ArticleService {
     })
   }
 
-  // 逻辑删除或恢复文章
-  static updateArticle(data: any) {
+  // 选择更新批量文章
+  static updateArticles(data: any) {
     return request.post({
-      url: '/api/admin/articles/update',
+      url: '/api/admin/articles/updateArticlesSelective',
       data: data
     })
   }
@@ -64,6 +64,14 @@ export class ArticleService {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       responseType: 'blob',
+      data: data
+    })
+  }
+
+  // 上传文章封面
+  static uploadCover(data:any) {
+    return request.post({
+      url: '/api/admin/articles/uploadCover',
       data: data
     })
   }

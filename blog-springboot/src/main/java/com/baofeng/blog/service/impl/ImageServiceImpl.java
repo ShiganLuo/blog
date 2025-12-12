@@ -80,7 +80,7 @@ public class ImageServiceImpl implements ImageService {
                 : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
 
         } catch (Exception e) {
-            logger.warn("minio存储文件失败");
+            logger.warn("minio存储文件失败" + e.getMessage());
             return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "文件存储失败");
         }
 
