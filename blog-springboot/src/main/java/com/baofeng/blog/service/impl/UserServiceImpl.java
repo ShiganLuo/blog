@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
         User newUser = new User();
         newUser.setUsername(registerDTO.username());
         newUser.setPassword(passwordEncoder.encode(registerDTO.password()));
-        newUser.setStatus(UserStatusEnum.ACTIVE.name());
+        newUser.setStatus(UserStatusEnum.ACTIVE.getStatus());
         newUser.setNickName(registerDTO.username());
         int rowUpdated1 = userMapper.insertUser(newUser);
 
@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
             userMapper.incrementLoginAttempts(user.getId());
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "密码错误");
         }
-        if (user.getStatus() == UserStatusEnum.BANNED.name()) {
+        if (user.getStatus() == UserStatusEnum.BANNED.getStatus()) {
             return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "账户被锁定");
         }
 

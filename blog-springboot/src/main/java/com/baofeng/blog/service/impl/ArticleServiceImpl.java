@@ -7,6 +7,7 @@ import com.baofeng.blog.dto.common.ImageDTO.UploadImage;
 import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 import com.baofeng.blog.entity.*;
 import com.baofeng.blog.enums.ResultCodeEnum;
+import com.baofeng.blog.enums.ArticleStatusEnum;
 import com.baofeng.blog.mapper.*;
 import com.baofeng.blog.util.ImageFileUtil;
 import com.baofeng.blog.service.ArticleService;
@@ -73,7 +74,7 @@ public class ArticleServiceImpl implements ArticleService {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
         }
         article.setAuthorId(authorId);
-        article.setStatus(Article.ArticleStatus.DRAFT);
+        article.setStatus(ArticleStatusEnum.PUBLIC.getCode());
         LocalDateTime now = LocalDateTime.now();
         article.setCreatedAt(now);
         int rowsInserted = articleMapper.insertArticle(article);
@@ -117,76 +118,93 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ApiResponse<String> updateArticleSelective(UpdateArticleRequest updateArticleRequest){
+        List<Long> ids = updateArticleRequest.ids(); // 改成 ids
+
         // 目录名列表
         List<String> categoryNameList = updateArticleRequest.categoryNameList();
-        List<String> existCategoryNameList = categoryMapper.getCategoryNamesByArticleId(updateArticleRequest.id());
-        Map<String, List<String>> categoryDiff = ListDiffUtil.diffList(existCategoryNameList, categoryNameList);
-        List<String> categoriesToAdd = categoryDiff.get("toAdd");
-        List<String> categoriesToRemove = categoryDiff.get("toRemove");
-        
-        for (String categoryName : categoriesToAdd) {
-            Long id = categoryMapper.JudgeIsCategoryExistByCategoryName(categoryName);
-            if (id == null) {
-                Category category = new Category();
-                category.setName(categoryName);
-                Category newCategory = categoryMapper.createCategory(category);
-                id = newCategory.getId();
-            }
-
-            ArticleCategory articleCategory = new ArticleCategory();
-            articleCategory.setArticleId(updateArticleRequest.id());
-            articleCategory.setCategoryId(id);
-            categoryMapper.insertArticleCategory(articleCategory);
-        }
-
-        for (String categoryName : categoriesToRemove) {
-            categoryMapper.deleteCategoryByCategoryName(categoryName);
-            // 级联删除不需要删除articleCategory
-        }
 
         // 标签名列表
         List<String> tagNameList = updateArticleRequest.tagNameList();
-        List<String> existTagNameList = tagMapper.getTagNamesByArticleId(updateArticleRequest.id());
-        Map<String, List<String>> tagDiff = ListDiffUtil.diffList(existTagNameList, tagNameList);
-        List<String> tagsToAdd = tagDiff.get("toAdd");
-        List<String> tagsToRemove = tagDiff.get("toRemove");
 
-        for (String tagName : tagsToAdd) {
-            Long id = tagMapper.JudegIsTagExistByTagName(tagName);
-            if (id == null) {
-                Tag tag = new Tag();
-                tag.setName(tagName);
-                Tag newTag = tagMapper.createTag(tag);
-                id = newTag.getId();
+        boolean allSuccess = true;
+
+        for (Long articleId : ids) {
+            // ---- 分类 ----
+            List<String> existCategoryNameList = categoryMapper.getCategoryNamesByArticleId(articleId);
+            Map<String, List<String>> categoryDiff = ListDiffUtil.diffList(existCategoryNameList, categoryNameList);
+            List<String> categoriesToAdd = categoryDiff.get("toAdd");
+            List<String> categoriesToRemove = categoryDiff.get("toRemove");
+
+            for (String categoryName : categoriesToAdd) {
+                Long categoryId = categoryMapper.JudgeIsCategoryExistByCategoryName(categoryName);
+                if (categoryId == null) {
+                    Category category = new Category();
+                    category.setName(categoryName);
+                    Category newCategory = categoryMapper.createCategory(category);
+                    categoryId = newCategory.getId();
+                }
+
+                ArticleCategory articleCategory = new ArticleCategory();
+                articleCategory.setArticleId(articleId);
+                articleCategory.setCategoryId(categoryId);
+                categoryMapper.insertArticleCategory(articleCategory);
             }
-            ArticleTag articleTag = new ArticleTag();
-            articleTag.setArticleId(updateArticleRequest.id());
-            articleTag.setTagId(id);
-            tagMapper.insertArticleTag(articleTag);
+
+            for (String categoryName : categoriesToRemove) {
+                categoryMapper.deleteCategoryByCategoryName(categoryName);
+                // 级联删除不需要删除articleCategory
+            }
+
+            // ---- 标签 ----
+            List<String> existTagNameList = tagMapper.getTagNamesByArticleId(articleId);
+            Map<String, List<String>> tagDiff = ListDiffUtil.diffList(existTagNameList, tagNameList);
+            List<String> tagsToAdd = tagDiff.get("toAdd");
+            List<String> tagsToRemove = tagDiff.get("toRemove");
+
+            for (String tagName : tagsToAdd) {
+                Long tagId = tagMapper.JudegIsTagExistByTagName(tagName);
+                if (tagId == null) {
+                    Tag tag = new Tag();
+                    tag.setName(tagName);
+                    Tag newTag = tagMapper.createTag(tag);
+                    tagId = newTag.getId();
+                }
+
+                ArticleTag articleTag = new ArticleTag();
+                articleTag.setArticleId(articleId);
+                articleTag.setTagId(tagId);
+                tagMapper.insertArticleTag(articleTag);
+            }
+
+            for (String tagName : tagsToRemove) {
+                tagMapper.delteTagByTagName(tagName);
+                // 级联删除不需要删除articleTag
+            }
+
+            // ---- 更新文章 ----
+            Article article = Article.builder()
+                .id(articleId)
+                .title(updateArticleRequest.articleTitle())
+                .content(updateArticleRequest.articleContent())
+                .coverImage(updateArticleRequest.articleCover())
+                .isFeatured(updateArticleRequest.isFeatured())
+                .isTop(updateArticleRequest.isTop())
+                .originUrl(updateArticleRequest.originUrl())
+                .type(updateArticleRequest.type())
+                .isDeleted(updateArticleRequest.isDeleted())
+                .build();
+
+            int rowsUpdated = articleMapper.updateArticleSelective(article);
+            if (rowsUpdated <= 0) {
+                allSuccess = false;
+            }
         }
 
-        for (String tagName : tagsToRemove) {
-            tagMapper.delteTagByTagName(tagName);
-            // 级联删除不需要删除articleTag
-        }
-        Article article = Article.builder()
-        .id(updateArticleRequest.id())
-        .title(updateArticleRequest.articleTitle())
-        .content(updateArticleRequest.articleContent())
-        .coverImage(updateArticleRequest.articleCover())
-        .isFeatured(updateArticleRequest.isFeatured())
-        .isTop(updateArticleRequest.isTop())
-        .isFeatured(updateArticleRequest.isFeatured())
-        .isTop(updateArticleRequest.isTop())
-        .originUrl(updateArticleRequest.originUrl())
-        .type(updateArticleRequest.type())
-        .build();
-
-        int rowsUpdated = articleMapper.updateArticleSelective(article);
-        return rowsUpdated > 0 
+        return allSuccess 
             ? ApiResponse.success()
             : ApiResponse.error(ResultCodeEnum.BAD_REQUEST);
     }
+
 
     @Override
     public ApiResponse<String> updatePinStaus(Long id,boolean isPinned){
@@ -234,7 +252,7 @@ public class ArticleServiceImpl implements ArticleService {
         if ( articleAuthorId == authorId ) {
             Article article = new Article();
             article.setId(articleId);
-            article.setStatus(Article.ArticleStatus.PUBLISHED);
+            article.setStatus(ArticleStatusEnum.PUBLIC.getCode());
             article.setPublishedAt(LocalDateTime.now());
             int rowsUpdated = articleMapper.updateArticleSelective(article);
             return rowsUpdated > 0

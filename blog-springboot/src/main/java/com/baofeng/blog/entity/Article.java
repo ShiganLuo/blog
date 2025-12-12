@@ -23,14 +23,11 @@ public class Article {
     private Boolean isTop;
     private Boolean isDeleted;
     private Integer type;
-    private ArticleStatus status;
+    private Integer status;
     private String originUrl;
     private LocalDateTime publishedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    public enum ArticleStatus {
-        DRAFT, PUBLISHED, DELETED;
-    }
     public Boolean getIsDeleted() {
         return isDeleted;
     }
@@ -46,7 +43,7 @@ public class Article {
         this.isFeatured = false;
         this.isTop = false;
         this.isDeleted = false;
-        this.status = ArticleStatus.DRAFT;
+        this.status = 1;
         this.type = 0;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

@@ -28,8 +28,8 @@ export class ArticleService {
 
   // 逻辑删除或恢复文章
   static updateArticle(data: any) {
-    return request.put({
-      url: '/blog/article/admin',
+    return request.post({
+      url: '/api/admin/articles/update',
       data: data
     })
   }

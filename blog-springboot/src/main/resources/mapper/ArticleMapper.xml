@@ -346,8 +346,8 @@
             <if test="status != null and status !=''">
                 AND a.status = #{status}
             </if>
-            <if test="deleted != null">
-                AND a.is_deleted = #{deleted}
+            <if test="isDeleted != null">
+                AND a.is_deleted = #{isDeleted}
             </if>
         </where>
         ORDER BY created_at DESC

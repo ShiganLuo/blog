@@ -57,7 +57,7 @@ public class AdminArticleDTO {
         Long tagId,
         String type,
         String status,
-        Boolean deleted
+        Boolean isDeleted
     ) {    }
 
 
@@ -89,7 +89,7 @@ public class AdminArticleDTO {
     }
 
     public static record UpdateArticleRequest(
-        @NotEmpty Long id,
+        @NotEmpty List<Long> ids,
         String articleTitle,
         String articleContent,
         String articleAbstract,
@@ -99,6 +99,7 @@ public class AdminArticleDTO {
         Boolean isTop,
         Boolean isFeatured,
         Integer type,
+        Boolean isDeleted,
         String status,
         String originUrl
     ){    }
