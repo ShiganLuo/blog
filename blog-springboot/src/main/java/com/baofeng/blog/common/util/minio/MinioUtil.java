@@ -1,4 +1,4 @@
-package com.baofeng.blog.service;
+package com.baofeng.blog.common.util.minio;
 
 import io.minio.*;
 import io.minio.http.Method;
@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class MinioService {
+public class MinioUtil {
 
     private final MinioClient minioClient;
 
@@ -19,7 +19,7 @@ public class MinioService {
     @Value("${minio.endpoint}")
     private String endpoint;
 
-    public MinioService(MinioClient minioClient) {
+    public MinioUtil(MinioClient minioClient) {
         this.minioClient = minioClient;
     }
 

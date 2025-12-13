@@ -1,4 +1,4 @@
-package com.baofeng.blog.util;
+package com.baofeng.blog.common.util;
 
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;

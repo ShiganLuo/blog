@@ -9,9 +9,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import java.util.List;
 
+import com.baofeng.blog.common.util.JwtTokenProviderUtil;
 import com.baofeng.blog.filter.JwtAuthenticationFilter;
 import com.baofeng.blog.service.CustomUserDetailsService;
-import com.baofeng.blog.util.JwtTokenProviderUtil;
 
 
 

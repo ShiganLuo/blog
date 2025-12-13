@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.baofeng.blog.service.ImageService;
-import com.baofeng.blog.service.MinioService;
 import com.baofeng.blog.mapper.ImageMapper;
-import com.baofeng.blog.util.ImageFileUtil;
+import com.baofeng.blog.common.util.ImageFileUtil;
+import com.baofeng.blog.common.util.minio.MinioUtil;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontImageDTO.AlbumResponse;
 import com.baofeng.blog.entity.Image;
@@ -23,7 +23,7 @@ import com.baofeng.blog.enums.ResultCodeEnum;
 public class ImageServiceImpl implements ImageService {
 
     private final ImageMapper imageMapper;
-    private final MinioService minioService;
+    private final MinioUtil minioService;
     private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
 
     @Override

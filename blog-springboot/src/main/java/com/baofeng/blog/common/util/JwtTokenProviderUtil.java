@@ -1,4 +1,4 @@
-package com.baofeng.blog.util;
+package com.baofeng.blog.common.util;
 
 import com.baofeng.blog.config.JwtPropertiesConfig;
 import com.baofeng.blog.entity.User;

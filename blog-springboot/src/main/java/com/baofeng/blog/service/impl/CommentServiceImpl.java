@@ -4,12 +4,12 @@ package com.baofeng.blog.service.impl;
 import com.baofeng.blog.mapper.CommentMapper;
 import com.baofeng.blog.mapper.LikeMapper;
 import com.baofeng.blog.service.CommentService;
+import com.baofeng.blog.common.util.CommentConvertUtil;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontCommentDTO.*;
 import com.baofeng.blog.entity.Comment;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.baofeng.blog.util.CommentConvertUtil;
 
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;

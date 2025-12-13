@@ -1,6 +1,9 @@
 package com.baofeng.blog.service.impl;
 
-import com.baofeng.blog.util.ArticleConvertUtil;
+import com.baofeng.blog.common.util.ArticleConvertUtil;
+import com.baofeng.blog.common.util.ImageFileUtil;
+import com.baofeng.blog.common.util.ListDiffUtil;
+import com.baofeng.blog.common.util.minio.MinioUtil;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminArticleDTO.*;
 import com.baofeng.blog.dto.common.ImageDTO.UploadImage;
@@ -9,14 +12,9 @@ import com.baofeng.blog.entity.*;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.enums.ArticleStatusEnum;
 import com.baofeng.blog.mapper.*;
-import com.baofeng.blog.util.ImageFileUtil;
 import com.baofeng.blog.service.ArticleService;
-import com.baofeng.blog.service.MinioService;
-import com.baofeng.blog.util.ListDiffUtil;
-
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 
 
 
@@ -38,14 +38,10 @@ public class ArticleServiceImpl implements ArticleService {
     private final CategoryMapper categoryMapper;
     private final TagMapper tagMapper;
     private final EntityImageMapper entityImageMapper;
-    private final MinioService minioService;
+    private final MinioUtil minioService;
     private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
-    @Value("${app.upload.dir}")
-    private String uploadDir;
-    @Value("${app.upload.ipPrefix}")
-    private String ipPrefix;
 
-    public ArticleServiceImpl(MinioService minioService,
+    public ArticleServiceImpl(MinioUtil minioService,
                               ArticleMapper articleMapper,
                               ImageMapper imageMapper,
                               UserMapper userMapper,
@@ -119,12 +115,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ApiResponse<String> updateArticlesSelective(UpdateArticlesRequest updateArticlesRequest){
         List<Long> ids = updateArticlesRequest.ids(); // 改成 ids
-
-        if ((ids == null || ids.isEmpty()) && updateArticlesRequest.id() != null) {
-            Long singleId = updateArticlesRequest.id();            
-            ids = List.of(singleId); 
-        } else {
-            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"id不能为空");
+        if (ids == null || ids.isEmpty()) {
+            ids = Optional.ofNullable(updateArticlesRequest.id())
+                    .map(List::of)
+                    .orElseThrow(() ->
+                        new IllegalArgumentException("id 或 ids 不能为空")
+                    );
         }
         // 目录名列表
         List<String> categoryNameList = updateArticlesRequest.categoryNameList();
@@ -307,11 +303,9 @@ public class ArticleServiceImpl implements ArticleService {
                     imageFile.getContentType()
             );
 
-            String imagePath = minioService.getPermanentFileUrl(uniqueFilename);
-
             Article article = new Article();
             article.setId(articleId);
-            article.setCoverImage(imagePath);
+            article.setCoverImage(uniqueFilename);
             int rowsUpdated = articleMapper.updateArticleSelective(article);
 
             Image image = new Image();
@@ -325,13 +319,13 @@ public class ArticleServiceImpl implements ArticleService {
                 username = authentication.getName();
             }
 
-            image.setFilePath(imagePath);
+            image.setFilePath(uniqueFilename);
             image.setFileName(uniqueFilename);
             image.setFileSize(kilobytes);
             image.setMimeType(contentType);
             image.setCreatedBy(username);
             int rowsUpdated1 = imageMapper.insertImage(image);
-            Long imageId = imageMapper.getImageIdByfilePath(imagePath);
+            Long imageId = imageMapper.getImageIdByfilePath(uniqueFilename);
 
             EntityImage articleImage = new EntityImage();
             articleImage.setEntityType(entityType);
@@ -340,6 +334,7 @@ public class ArticleServiceImpl implements ArticleService {
             articleImage.setUsageType(usageType);
             int rowsUpdated2 = entityImageMapper.insertEntityImage(articleImage);
 
+            String imagePath = minioService.getPermanentFileUrl(uniqueFilename);
             return rowsUpdated > 0 && rowsUpdated1 > 0 && rowsUpdated2 > 0
                     ? ApiResponse.success(imagePath)
                     : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "文件存储失败");

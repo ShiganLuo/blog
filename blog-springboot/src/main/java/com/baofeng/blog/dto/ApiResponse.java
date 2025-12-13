@@ -1,6 +1,5 @@
 package com.baofeng.blog.dto;
 import com.baofeng.blog.enums.ResultCodeEnum;
-
 /**
  * 通用响应封装类，包含状态码、消息和数据体。
  *

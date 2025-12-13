@@ -2,6 +2,8 @@ package com.baofeng.blog.dto.front;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
+import com.baofeng.blog.common.annotation.MinioFile;
+import com.baofeng.blog.common.annotation.MinioScan;
 public class FrontArticleDTO {
     /**
      * 取消文章点赞
@@ -23,6 +25,7 @@ public class FrontArticleDTO {
         private Integer thumbsUpTimes;
         private Long authorId;
         private String articleContent;
+        @MinioFile
         private String articleCover;
         private String articleTitle;
         private Integer viewTimes;
@@ -36,6 +39,7 @@ public class FrontArticleDTO {
      * 推荐文章以及前后发布文章返回对象
      */
     @Data
+    @MinioScan(maxDepth = 2)
     public static class ArticleRecommendResponse {
         private ArticleDetailResponse previous;
         private ArticleDetailResponse next;
@@ -43,6 +47,7 @@ public class FrontArticleDTO {
     }
 
     @Data
+    @MinioScan(maxDepth = 2)
     public static class ArticleDetailResponsePair {
         private ArticleDetailResponse previous;
         private ArticleDetailResponse next;
@@ -57,10 +62,12 @@ public class FrontArticleDTO {
     public static class ArticleAbstractResponse {
         private Long id;
         private String articleTitle;
+        @MinioFile
         private String articleCover;
         private LocalDateTime createdAt;
     }
     @Data
+    @MinioScan(maxDepth = 2)
     public static class ArticleAbstractsResponse {
         private Long total;
         private List<ArticleAbstractResponse> list;
@@ -76,6 +83,7 @@ public class FrontArticleDTO {
      * 文章分页响应数据
      */
     @Data
+    @MinioScan(maxDepth = 2)
     public static class FrontArticlePageResponse {
 
         private long total;          // 总记录数
@@ -99,16 +107,14 @@ public class FrontArticleDTO {
         private String originUrl;
         private LocalDateTime  createdAt;
         private LocalDateTime updatedAt;
-        private ArticleStatus status;
+        private Integer status;
+        @MinioFile
         private String articleCover;
         private Boolean isTop;
         private Boolean isFeatured;
         private AuthorVO author;
         private List<String> categoryNameList;
         private List<String> tagNameList;
-    }
-    public enum ArticleStatus {
-        DRAFT, PUBLISHED, DELETED;
     }
 
     /**

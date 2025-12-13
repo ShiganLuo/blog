@@ -6,7 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-
+import com.baofeng.blog.common.annotation.MinioFile;
+import com.baofeng.blog.common.annotation.MinioScan;
 public class AdminArticleDTO {
     public static record CreateArticleRequest(
         String title,
@@ -56,7 +57,7 @@ public class AdminArticleDTO {
         Long categoryId,
         Long tagId,
         String type,
-        String status,
+        Integer status,
         Boolean isDeleted
     ) {    }
 
@@ -65,6 +66,7 @@ public class AdminArticleDTO {
     public static class AdminArticle {
         private Long id;
         private String authorName;
+        @MinioFile
         private String articleCover;
         private String articleTitle;
         private List<String> categoryNameList;
@@ -74,7 +76,7 @@ public class AdminArticleDTO {
         private Integer isFeatured;
         private Integer isDelted;
         private Integer viewsCount;
-        private String status;
+        private Integer status;
         private Integer type;
         private String originUrl;
         private LocalDateTime createdAt;
@@ -83,6 +85,7 @@ public class AdminArticleDTO {
     }
 
     @Data
+    @MinioScan(maxDepth = 2)
     public static class AdminArticlePageVO {
         private List<AdminArticle> list;
         private Long total;
@@ -101,7 +104,7 @@ public class AdminArticleDTO {
         Boolean isFeatured,
         Integer type,
         Boolean isDeleted,
-        String status,
+        Integer status,
         String originUrl
     ){    }
 
