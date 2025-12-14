@@ -47,8 +47,8 @@ export class ArticleService {
 
   // 置顶或推荐文章
   static updateTopOrFeatured(data: any) {
-    return request.put({
-      url: '/blog/article/admin/topAndFeatured',
+    return request.post({
+      url: '/api/admin/articles/updateArticlesSelective',
       headers: {
         'Content-Type': 'application/json'
       },

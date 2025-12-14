@@ -25,7 +25,7 @@ export interface ArticleInfo {
   categoryNameList?: string[];
   tagNameList?: string[];
   viewTimes?: number;
-  is_top: number;
+  is_top: boolean;
 }
 
 export type ArticleInfoListResponse = {

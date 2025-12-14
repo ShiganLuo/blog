@@ -185,7 +185,7 @@
                 OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
             </if>
         </where>
-        ORDER BY a.created_at DESC
+        ORDER BY is_top DESC, a.created_at DESC
     </select>
 
     <select id="getFrontArticleById" resultMap="FrontArticlePageResultMap">
@@ -268,7 +268,7 @@
             JOIN article_tags at2 ON at1.tag_id = at2.tag_id
             WHERE at1.article_id = #{articleId}
         )
-        ORDER BY a.created_at DESC
+        ORDER BY is_top DESC, a.created_at DESC
         LIMIT #{limit}
     </select>
 
@@ -348,7 +348,7 @@
                 AND a.is_deleted = #{isDeleted}
             </if>
         </where>
-        ORDER BY created_at DESC
+        ORDER BY is_top DESC, created_at DESC
     </select>
 
 

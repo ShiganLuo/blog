@@ -14,10 +14,11 @@ export enum RoutesAlias {
   GenEdit = '/tool/gen/edit-table', // 代码生成器
   DictData = '/system/dict/data', // 字典数据
   AuthRole = '/system/user/authRole', // 用户授权角色
+  RoleManage = '/system/user/index',
   JobLog = '/monitor/job/log', // 调度日志
   OutsideIframe = '/outside/iframe', // 外部iframe
   ArticlePublish = '/blog/article/publish', // 文章发布
-  ArticleIndex = '/blog/article/index', // 文章统计
+  ArticleManage = '/blog/article/index', // 文章统计
   Photo = '/photo/photo', // 照片管理
   PhotoDelete = '/photo/delete', // 照片回收站
   PhotoIndex = '/photo/index' // 照片统计

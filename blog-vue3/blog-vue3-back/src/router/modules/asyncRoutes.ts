@@ -106,7 +106,7 @@ export const asyncRoutes: MenuListType[] = [
     name: 'UserAuth',
     component: RoutesAlias.Home,
     meta: {
-      title: '分配角色',
+      title: '角色管理',
       icon: '&#xe608',
       keepAlive: false,
       isHide: false
@@ -114,20 +114,27 @@ export const asyncRoutes: MenuListType[] = [
     children: [
       {
         id: uuid(),
+        path: 'role/index',
+        component: RoutesAlias.RoleManage,
+        name: "list",
+        meta: {title: '角色列表', keepAlive: false }
+      },
+      {
+        id: uuid(),
         path: 'role/authRole/:userId(\\d+)?',
         component: RoutesAlias.AuthRole,
         name: 'AuthRole',
-        meta: { title: '分配角色', keepAlive: false }
+        meta: { title: '角色编辑', keepAlive: false }
       }
     ]
   },
   {
     id: uuid(),
-    path: '/blog/article-publish',
-    name: 'ArticlePublish',
+    path: '/blog/article',
+    name: 'article',
     component: RoutesAlias.Home,
     meta: {
-      title: '文章发布',
+      title: '文章管理',
       icon: '&#xe7ae',
       keepAlive: false,
       isHide: false
@@ -135,18 +142,19 @@ export const asyncRoutes: MenuListType[] = [
     children: [
       {
         id: uuid(),
-        path: 'index/:articleId(\\d+)?',
-        component: RoutesAlias.ArticlePublish,
-        name: 'ArticlePublishIndex',
-        meta: { title: '文章发布', keepAlive: false }
+        path: 'list',
+        component: RoutesAlias.ArticleManage,
+        name: 'ArticleManage',
+        meta: {title: '文章列表', keepAlive: false}
       },
       {
         id: uuid(),
-        path: 'statistic',
-        component: RoutesAlias.ArticleIndex,
-        name: 'ArticleStatistic',
-        meta: {title: '文章统计', keepAlive: false}
+        path: 'index/:articleId(\\d+)?',
+        component: RoutesAlias.ArticlePublish,
+        name: 'ArticlePublishIndex',
+        meta: { title: '文章编辑', keepAlive: false }
       }
+
     ]
   },
   {

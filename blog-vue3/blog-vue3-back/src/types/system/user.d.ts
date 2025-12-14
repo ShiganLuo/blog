@@ -108,7 +108,12 @@ export interface UserInfoResult{
   roleIds: number[]
 }
 
+export interface UserInfoSimple {
+  nickName:string
+  userName:string
+  userId:number
+}
 export interface AuthRolesResult{
   roles: RoleType[]
-  user: LoginUserResult
+  user: UserInfoSimple
 }
