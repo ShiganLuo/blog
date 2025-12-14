@@ -55,4 +55,11 @@ public interface ImageMapper {
      * @return
      */
     long selectImageCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
+
+    /**
+     * 根据图片名获取图片id，图片名是唯一的
+     * @param fileName
+     * @return
+     */
+    Long getImageIdByFileName(String fileName);
 }

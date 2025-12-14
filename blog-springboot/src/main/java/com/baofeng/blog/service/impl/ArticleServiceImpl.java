@@ -6,6 +6,7 @@ import com.baofeng.blog.common.util.ListDiffUtil;
 import com.baofeng.blog.common.util.minio.MinioUtil;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminArticleDTO.*;
+import com.baofeng.blog.dto.admin.AdminEntityImageDTO.UpdateImageIdEntity;
 import com.baofeng.blog.dto.common.ImageDTO.UploadImage;
 import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 import com.baofeng.blog.entity.*;
@@ -15,6 +16,9 @@ import com.baofeng.blog.mapper.*;
 import com.baofeng.blog.service.ArticleService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -40,7 +44,11 @@ public class ArticleServiceImpl implements ArticleService {
     private final EntityImageMapper entityImageMapper;
     private final MinioUtil minioService;
     private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
+    @Value("${minio.endpoint}")
+    private String endpoint;
 
+    @Value("${minio.bucket}")
+    private String bucket;
     public ArticleServiceImpl(MinioUtil minioService,
                               ArticleMapper articleMapper,
                               ImageMapper imageMapper,
@@ -183,12 +191,36 @@ public class ArticleServiceImpl implements ArticleService {
                 // 级联删除不需要删除articleTag
             }
 
+            // 图片-文章关系表
+            String articleCover = updateArticlesRequest.articleCover();
+            String prefix = endpoint + "/" + bucket + "/";
+            if (articleCover != null && articleCover.startsWith(prefix)) {
+                articleCover = articleCover.substring(prefix.length());
+                Long imageId = imageMapper.getImageIdByFileName(articleCover);
+                UpdateImageIdEntity updateImageIdEntity = new UpdateImageIdEntity();
+                
+                updateImageIdEntity.setImageId(imageId);
+                updateImageIdEntity.setEntityType("article");
+                updateImageIdEntity.setEntityId(articleId);
+                updateImageIdEntity.setUsageType("cover");
+                updateImageIdEntity.setSortOrder(0);
+                try {
+                   entityImageMapper.upsertEntityImage(updateImageIdEntity);
+                }catch (DataIntegrityViolationException e) {
+                    logger.error(
+                        "entity_image upsert 失败，entityType={}, entityId={}, usageType={}, sortOrder={}",
+                        "article",articleId,"cover",0,e
+                    );
+                    throw e;
+                }
+            }
+
             // ---- 更新文章 ----
             Article article = Article.builder()
                 .id(articleId)
                 .title(updateArticlesRequest.articleTitle())
                 .content(updateArticlesRequest.articleContent())
-                .coverImage(updateArticlesRequest.articleCover())
+                .coverImage(articleCover)
                 .isFeatured(updateArticlesRequest.isFeatured())
                 .isTop(updateArticlesRequest.isTop())
                 .originUrl(updateArticlesRequest.originUrl())

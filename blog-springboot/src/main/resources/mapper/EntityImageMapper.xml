@@ -21,5 +21,28 @@
             #{entityType}, #{entityId}, #{imageId}, #{usageType}, #{sortOrder}, NOW(), NOW()
         )
     </insert>
+    <update id="updateImageId">
+        UPDATE entity_images SET image_id = #{imageId}
+        WHERE entity_type = #{entityType} AND entity_id = #{entityId} AND usage_type = #{usageType} AND sort_order = #{sortOrder}
+    </update>
+    <!--更新图片id，记录不存在则新建记录-->
+    <insert id="upsertEntityImage">
+        INSERT INTO entity_images (
+            entity_type,
+            entity_id,
+            usage_type,
+            sort_order,
+            image_id
+        ) VALUES (
+            #{entityType},
+            #{entityId},
+            #{usageType},
+            #{sortOrder},
+            #{imageId}
+        )
+        ON DUPLICATE KEY UPDATE
+            image_id = VALUES(image_id)
+    </insert>
+
 
 </mapper>

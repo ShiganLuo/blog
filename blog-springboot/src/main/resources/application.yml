@@ -59,7 +59,8 @@ app:
     dir: /home/luosg/uploads  # 顶层属性,全路径
     ipPrefix: http://localhost
 minio:
-  endpoint: http://127.0.0.1:9000   # MinIO服务地址
+  endpoint: http://127.0.0.1:9000   # MinIO API地址
+  consolePonint: http://127.0.0.1:9001 # Web console地址
   accessKey: admin             # 账号
   secretKey: 12345678            # 密码
   bucket: my-bucket                 # 默认存储桶
