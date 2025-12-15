@@ -30,23 +30,22 @@ export interface EditProfileAvatarResult {
 
 export interface UserResult {
   userId: string
-  deptId: string
   userName: string
   nickName: string
   userType: string
   email: string
-  phonenumber: string
+  phoneNumber: string
   sex: string
-  avatar: string
+  avatarUrl: string
   password: string
   status: string
   delFlag: string
   loginIp: string
   loginDate: string
   createBy: string
-  createTime: string
+  createdAt: string
   updateBy: string
-  updateTime: string
+  updatedAt: string
   remark: string
 }
 

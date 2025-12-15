@@ -16,7 +16,6 @@ import '@icons/system/iconfont.css'                 // 系统图标
 import '@styles/el-light.scss'                      // Element 自定义主题（亮色）
 import '@styles/el-dark.scss'                       // Element 自定义主题（暗色）
 import '@styles/dark.scss'                          // 系统主题
-import '@utils/console.ts'                          // 控制台输出内容
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { setupGlobDirectives } from './directives'
 import language from './language'

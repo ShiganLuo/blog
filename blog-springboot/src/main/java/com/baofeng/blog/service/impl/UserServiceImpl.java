@@ -241,26 +241,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<userPageResponse> getUserList(userPageRequest param) {
-        int offset = (param.getCurrent() - 1) * param.getSize();
-        int pageSize = param.getSize();
+    public ApiResponse<UserPageResponse> getUserList(UserPageRequest userPageRequest) {
+        int offset = (userPageRequest.getCurrent() - 1) * userPageRequest.getSize();
+        int pageSize = userPageRequest.getSize();
         // 先查询 User 列表
         List<User> userslist = userMapper.selectByPage(offset, pageSize);
         int total = userslist.size();
         // 手动转换为 UserVO
-        List<userPageVO> voList = userslist.stream()
+        List<UserPageVO> voList = userslist.stream()
             .map(user -> {
-                userPageVO vo = new userPageVO();
-                vo.setUsername(user.getUsername());
+                UserPageVO vo = new UserPageVO();
+                vo.setUserId(user.getId());
+                vo.setUserName(user.getUsername());
                 vo.setNickName(user.getNickName());
+                vo.setEmail(user.getEmail());
+                vo.setPhoneNumber(user.getPhoneNumber());
+                vo.setSex(user.getGender());
+                vo.setStatus(user.getStatus());
                 vo.setAvatarUrl(user.getAvatarUrl());
+                vo.setLoginDate(user.getLastLogin());
                 vo.setCreatedAt(user.getCreatedAt());
                 vo.setUpdatedAt(user.getUpdatedAt());
                 return vo;
             })
             .collect(Collectors.toList());
         
-        userPageResponse result = new userPageResponse();
+        UserPageResponse result = new UserPageResponse();
         result.setList(voList);
         result.setTotal(total);
         return ApiResponse.success(result);

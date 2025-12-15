@@ -18,25 +18,30 @@ public class AdminUserAuthDTO {
     ) {}
 
     @Data
-    public static class userPageRequest {
+    public static class UserPageRequest {
         private Integer current = 1;    // 当前页码
         private Integer size = 10;      // 每页大小
     }
     
     @Data
-    public static class userPageResponse {
-        private List<userPageVO> list;      // 数据列表
+    public static class UserPageResponse {
+        private List<UserPageVO> list;      // 数据列表
         private int total;             // 总记录数
     }
     
     @Data
-    public static class userPageVO {
-        private String username;
+    public static class UserPageVO {
+        private Long userId;
+        private String userName;
         private String nickName;
+        private String email;
+        private String phoneNumber;
+        private Integer sex;
+        private String status;
         private String avatarUrl;
         private String role;
         private LocalDateTime createdAt;
-        
+        private LocalDateTime loginDate;
         // 数据库字段 updated_at
         private LocalDateTime updatedAt;
         // ... 其他需要返回的用户字段

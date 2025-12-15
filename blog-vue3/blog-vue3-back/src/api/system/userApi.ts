@@ -13,10 +13,10 @@ import { parseStrEmpty } from '@/utils/utils'
 // 用户
 export class UserService {
   // 查询用户信息列表
-  static listUser(query: any) {
-    return request.get<UserListPageResult>({
-      url: '/system/user/list',
-      params: query
+  static listUser(data: any) {
+    return request.post<UserListPageResult>({
+      url: '/api/admin/users/getUsersList',
+      data: data
     })
   }
 

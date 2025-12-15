@@ -58,7 +58,7 @@ public interface UserService {
      * @param param
      * @return
      */
-    public ApiResponse<userPageResponse> getUserList(userPageRequest param);
+    public ApiResponse<UserPageResponse> getUserList(UserPageRequest userPageRequest);
 
     /**
      * 根据token获取用户信息

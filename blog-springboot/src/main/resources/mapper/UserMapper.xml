@@ -88,7 +88,7 @@
 
     <!-- 分页查询 -->
     <select id="selectByPage" resultMap="userResultMap">
-        SELECT username,  nick_name, avatar_url, created_at, updated_at FROM users
+        SELECT id, username, nick_name, email, phone_number, gender, avatar_url, status, last_login, created_at, updated_at FROM users
         ORDER BY id DESC
         LIMIT #{pageSize} OFFSET #{offset}
     </select>

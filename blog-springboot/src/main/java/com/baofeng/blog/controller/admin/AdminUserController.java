@@ -80,8 +80,8 @@ public class AdminUserController {
     }
 
     @PostMapping("/getUsersList")
-    public ApiResponse<userPageResponse> getUserList(@RequestBody userPageRequest request) {
-        return userService.getUserList(request);
+    public ApiResponse<UserPageResponse> getUserList(@RequestBody UserPageRequest userPageRequest) {
+        return userService.getUserList(userPageRequest);
     }
 
     @GetMapping("/getUserInfoByToken")

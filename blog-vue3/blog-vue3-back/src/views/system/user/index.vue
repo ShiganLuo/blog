@@ -18,8 +18,8 @@
             />
             <form-input
               label="手机号码"
-              prop="phonenumber"
-              v-model="queryParams.phonenumber"
+              prop="phoneNumber"
+              v-model="queryParams.phoneNumber"
               @keyup.enter="handleQuery"
             />
             <form-select
@@ -28,18 +28,6 @@
               v-model="queryParams.status"
               :options="sysNormalDisable"
             />
-            <el-col :xs="24" :sm="12" :lg="6">
-              <el-form-item label="部门" prop="deptId">
-                <el-tree-select
-                  v-model="queryParams.deptId"
-                  :data="deptOptions"
-                  :props="{ value: 'id', label: 'label', children: 'children' }"
-                  value-key="id"
-                  placeholder="请选择"
-                  check-strictly
-                />
-              </el-form-item>
-            </el-col>
             <el-col :xs="24" :sm="12" :lg="6">
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -85,37 +73,28 @@
       <template #default>
         <el-table-column label="用户ID" align="center" prop="userId" v-if="columns[0].show" />
         <el-table-column label="用户账号" align="center" prop="userName" v-if="columns[1].show" />
-        <el-table-column label="用户名" prop="avatar" #default="scope" v-if="columns[2].show">
+        <el-table-column label="用户头像" align="center" prop="avatarUrl" #default="scope" v-if="columns[2].show" >
           <div class="user" style="display: flex; align-items: center">
-            <img class="avatar" :src="AvatarImga(scope.row.avatar) || defaultAvatar" />
-            <div>
-              <p class="user-name">{{ scope.row.nickName }}</p>
-              <p class="email">{{ scope.row.email }}</p>
-            </div>
+            <img class="avatar" :src="AvatarImga(scope.row.avatarUrl) || defaultAvatar" />
           </div>
         </el-table-column>
-        <el-table-column label="部门ID" align="center" prop="deptId" v-if="columns[3].show" />
-        <el-table-column label="用户昵称" align="center" prop="nickName" v-if="columns[4].show" />
-        <el-table-column label="用户类型" align="center" prop="userType" v-if="columns[5].show" />
-        <el-table-column label="用户邮箱" align="center" prop="email" v-if="columns[6].show" />
+        <el-table-column label="用户名" align="center" prop="nickName" v-if="columns[3].show">
+        </el-table-column>
+        <el-table-column label="用户类型" align="center" prop="userType" v-if="columns[4].show" />
+        <el-table-column label="用户邮箱" align="center" prop="email" v-if="columns[5].show" />
         <el-table-column
           label="手机号码"
           align="center"
-          prop="phonenumber"
-          v-if="columns[7].show"
+          prop="phoneNumber"
+          v-if="columns[6].show"
         />
-        <el-table-column label="用户性别" align="center" prop="sex" v-if="columns[8].show">
+        <el-table-column label="用户性别" align="center" prop="sex" v-if="columns[7].show">
           <template #default="scope">
             <dict-tag :options="sysUserSex" :value="scope.row.sex" />
           </template>
         </el-table-column>
-        <el-table-column label="头像地址" align="center" prop="avatar" v-if="columns[9].show">
-          <template #default="scope">
-            <img :src="AvatarImga(scope.row.avatar)" alt="" width="50" />
-          </template>
-        </el-table-column>
-        <el-table-column label="密码" align="center" prop="password" v-if="columns[10].show" />
-        <el-table-column label="帐号状态" align="center" prop="status" v-if="columns[11].show">
+        <el-table-column label="密码" align="center" prop="password" v-if="columns[8].show" />
+        <el-table-column label="帐号状态" align="center" prop="status" v-if="columns[9].show">
           <template #default="scope">
             <dict-tag
               :options="sysNormalDisable"
@@ -129,23 +108,23 @@
           label="创建时间"
           sortable
           align="center"
-          prop="createTime"
+          prop="createdAt"
           width="180"
-          v-if="columns[12].show"
+          v-if="columns[10].show"
         />
-        <el-table-column label="最后登录IP" align="center" prop="loginIp" v-if="columns[13].show" />
+        <el-table-column label="最后登录IP" align="center" prop="loginIp" v-if="columns[11].show" />
         <el-table-column
           label="最后登录时间"
           align="center"
           prop="loginDate"
           width="180"
-          v-if="columns[14].show"
+          v-if="columns[12].show"
         >
           <template #default="scope">
             {{ parseTime(scope.row.loginDate) }}
           </template>
         </el-table-column>
-        <el-table-column label="备注" align="center" prop="remark" v-if="columns[15].show" />
+        <el-table-column label="备注" align="center" prop="remark" v-if="columns[13].show" />
         <el-table-column label="操作" align="center" width="220px">
           <template #default="scope">
             <button-table
@@ -184,23 +163,11 @@
               <el-input v-model="form.nickName" placeholder="请输入用户昵称" maxlength="30" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
-              <el-tree-select
-                v-model="form.deptId"
-                :data="deptOptions"
-                :props="{ value: 'id', label: 'label', children: 'children' }"
-                value-key="id"
-                placeholder="请选择归属部门"
-                check-strictly
-              />
-            </el-form-item>
-          </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="手机号码" prop="phonenumber">
-              <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
+            <el-form-item label="手机号码" prop="phoneNumber">
+              <el-input v-model="form.phoneNumber" placeholder="请输入手机号码" maxlength="11" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -247,34 +214,6 @@
                   dict.label
                 }}</el-radio>
               </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="岗位">
-              <el-select v-model="form.postIds" multiple placeholder="请选择">
-                <el-option
-                  v-for="item in postOptions"
-                  :key="item.postId"
-                  :label="item.postName"
-                  :value="item.postId"
-                  :disabled="item.status == '1'"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择">
-                <el-option
-                  v-for="item in roleOptions"
-                  :key="item.roleId"
-                  :label="item.roleName"
-                  :value="item.roleId"
-                  :disabled="item.status == '1'"
-                ></el-option>
-              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -360,26 +299,22 @@
   // 定义初始表单状态
   const initialFormState = {
     userId: null,
-    deptId: null,
     userName: null,
     nickName: null,
     userType: null,
     email: null,
-    phonenumber: null,
+    phoneNumber: null,
     sex: '0',
-    avatar: null,
+    avatarUrl: null,
     password: null,
     status: '0',
-    delFlag: null,
     loginIp: null,
     loginDate: '',
     createBy: null,
-    createTime: null,
+    createdAt: null,
     updateBy: null,
-    updateTime: null,
-    remark: null,
-    postIds: [] as number[],
-    roleIds: [] as number[]
+    updatedAt: null,
+    remark: null
   }
   const form = reactive({ ...initialFormState })
   const queryParams = reactive({
@@ -387,7 +322,7 @@
     pageSize: 10,
     deptId: '',
     userName: '',
-    phonenumber: '',
+    phoneNumber: '',
     status: ''
   })
   const rules = reactive({
@@ -484,16 +419,6 @@
     }
   }
 
-  import { DeptOptionType } from '@/types/system/user'
-  const deptOptions = ref<DeptOptionType[]>([])
-  // 获取部门列表
-  const getDeptList = async () => {
-    const res = await UserService.deptTreeSelect()
-    if (res.code === 200) {
-      deptOptions.value = res.result
-    }
-  }
-
   // 查询用户信息详细
   const getUser = async (id: any): Promise<UserInfoResult> => {
     const res = await UserService.getUser(id)
@@ -510,15 +435,13 @@
 
   const columns = reactive([
     { name: '用户ID', show: true },
+    { name: '用户头像', show: true },
     { name: '用户账号', show: true },
     { name: '用户名', show: true },
-    { name: '部门ID', show: false },
-    { name: '用户昵称', show: false },
     { name: '用户类型', show: false },
     { name: '用户邮箱', show: false },
     { name: '手机号码', show: true },
     { name: '用户性别', show: true },
-    { name: '头像地址', show: false },
     { name: '密码', show: false },
     { name: '帐号状态', show: true },
     { name: '创建时间', show: true },
@@ -584,18 +507,12 @@
     reset()
     const _userId = row.userId || ids.value
     getUser(_userId).then((res) => {
-      const { posts, roles, data, postIds, roleIds } = res
+      const { posts, roles, data } = res
       postOptions.value = posts
       roleOptions.value = roles
       Object.assign(form, { ...data })
       open.value = true
       title.value = '修改用户信息'
-      nextTick(() => {
-        setTimeout(() => {
-          form.postIds = postIds
-          form.roleIds = roleIds
-        }, 150)
-      })
     })
   }
 
@@ -669,16 +586,15 @@
   const sysNormalDisable = ref<DictType[]>([]) // 状态字典数据
   const sysUserSex = ref<DictType[]>([]) // 性别字典数据
   const getuseDict = async () => {
-    const { sys_normal_disable } = await useDict('sys_normal_disable')
-    sysNormalDisable.value = sys_normal_disable
-    const { sys_user_sex } = await useDict('sys_user_sex')
-    sysUserSex.value = sys_user_sex
+    const { userStatus } = await useDict('userStatus')
+    sysNormalDisable.value = userStatus
+    const { gender } = await useDict('gender')
+    sysUserSex.value = gender
   }
 
   // 初始化
   onMounted(() => {
     getuseDict()
-    getDeptList()
     getList()
   })
 </script>
@@ -694,13 +610,9 @@
         border-radius: 6px;
       }
 
-      > div {
-        margin-left: 10px;
-
-        .user-name {
-          font-weight: 500;
-          color: var(--art-text-gray-800);
-        }
+      .user-name {
+        font-weight: 500;
+        color: var(--art-text-gray-800);
       }
     }
 

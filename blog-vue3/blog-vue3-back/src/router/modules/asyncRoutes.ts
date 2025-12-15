@@ -117,7 +117,7 @@ export const asyncRoutes: MenuListType[] = [
         path: 'role/index',
         component: RoutesAlias.RoleManage,
         name: "list",
-        meta: {title: '角色列表', keepAlive: false }
+        meta: {title: '用户列表', keepAlive: false }
       },
       {
         id: uuid(),
