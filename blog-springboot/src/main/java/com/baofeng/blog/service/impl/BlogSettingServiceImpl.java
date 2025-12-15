@@ -224,8 +224,8 @@ public class BlogSettingServiceImpl implements BlogSettingService {
                                             SystemSettingDict dict = new SystemSettingDict();
                                             dict.setDictLabel(roleTypeEnum.getDescription());
                                             dict.setDictValue(roleTypeEnum.getRole());
-                                            dict.setListClass("role-type-tag");
-                                            dict.setCssClass("info");
+                                            dict.setCssClass("role-type-tag");
+                                            dict.setListClass("info");
                                             return dict;
                                         })
                                         .collect(Collectors.toList());
@@ -236,8 +236,8 @@ public class BlogSettingServiceImpl implements BlogSettingService {
                                             SystemSettingDict dict = new SystemSettingDict();
                                             dict.setDictLabel(userStatusEnum.getDescription());
                                             dict.setDictValue(userStatusEnum.getStatus());
-                                            dict.setListClass("userStatus-type-tag");
-                                            dict.setCssClass("info");
+                                            dict.setCssClass("userStatus-type-tag");
+                                            dict.setListClass("info");
                                             return dict;
                                         })
                                         .collect(Collectors.toList());

@@ -51,7 +51,6 @@
       default: ','
     }
   })
-
   const values = computed(() => {
     if (props.value === null || typeof props.value === 'undefined' || props.value === '') return []
     return Array.isArray(props.value)

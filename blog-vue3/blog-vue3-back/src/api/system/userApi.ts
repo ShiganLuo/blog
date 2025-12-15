@@ -23,7 +23,7 @@ export class UserService {
   // 查询用户信息详细
   static getUser(userId: any) {
     return request.get<UserInfoResult>({
-      url: '/system/user/' + parseStrEmpty(userId)
+      url: '/api/admin/users/getUserInfoById/' + parseStrEmpty(userId)
     })
   }
 
