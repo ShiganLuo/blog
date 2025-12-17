@@ -73,7 +73,7 @@ public interface UserService {
      * @param newPassword
      * @return
      */
-    public ApiResponse<String> updatePassword(String username,String newPassword);
+    public ApiResponse<String> updatePassword(UpdatePasswordRequest updatePasswordRequest);
 
     /**
      * 更新用户信息
@@ -81,4 +81,11 @@ public interface UserService {
      * @return
      */
     public ApiResponse<String> updateUserInfo(UpdateUserInfo updateUserInfo);
+
+    /**
+     * 删除用户
+     * @param userId
+     * @return
+     */
+    public ApiResponse<String> deleteUser(Long userId);
 } 

@@ -3,6 +3,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
+
 public class AdminUserAuthDTO {
 
     // 注册请求
@@ -70,6 +71,11 @@ public class AdminUserAuthDTO {
         Integer gender
     ) {}
 
-
+    public static record UpdatePasswordRequest(
+        @NotNull
+        String userName,
+        @NotNull
+        String newPassword
+    ) {}
 
 } 

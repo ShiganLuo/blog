@@ -272,9 +272,9 @@ public class UserServiceImpl implements UserService {
         return ApiResponse.success(result);
     }
     @Override
-    public ApiResponse<String> updatePassword(String username,String newPassword){
+    public ApiResponse<String> updatePassword(UpdatePasswordRequest updatePasswordRequest){
 
-        int result = userMapper.updatePassword(username, passwordEncoder.encode(newPassword));
+        int result = userMapper.updatePassword(updatePasswordRequest.userName(), passwordEncoder.encode(updatePasswordRequest.newPassword()));
         return result > 0
             ? ApiResponse.success()
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"密码更新失败");
@@ -376,5 +376,12 @@ public class UserServiceImpl implements UserService {
             ? ApiResponse.success("用户信息更新成功")
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户信息更新失败");
 
+    }
+
+    public ApiResponse<String> deleteUser(Long userId) {
+        int rowsDeleted = userMapper.deleteUserById(userId);
+        return rowsDeleted > 0 
+            ?  ApiResponse.success("用户删除成功")
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户删除失败");
     }
 } 

@@ -90,15 +90,18 @@ public class AdminUserController {
     }
 
     @PostMapping("/passwordUpdate")
-    public ApiResponse<String> updatePassword(@RequestBody JsonNode requestBody){
-        String username = requestBody.get("username").asText(); // 从请求体中提取用户名
-        String newPassword = requestBody.get("newPassword").asText(); // 提取新密码
-        return userService.updatePassword(username, newPassword);
+    public ApiResponse<String> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest){
+        return userService.updatePassword(updatePasswordRequest);
     }
 
     @PostMapping("/updateUserInfo")
     public ApiResponse<String> updateUserInfo(@RequestBody UpdateUserInfo updateUserInfo) {
         return userService.updateUserInfo(updateUserInfo);
+    }
+
+    @DeleteMapping("/deleteUser/{userId}")
+    public ApiResponse<String> deleteUser(@PathVariable("userId") Long userId) {
+        return userService.deleteUser(userId);
     }
 
 } 

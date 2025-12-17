@@ -112,6 +112,11 @@
         WHERE id = #{id}
     </update>
 
+    <!--删除用户-->
+    <delete id="deleteUserById">
+        DELETE FROM users WHERE id = #{userId}
+    </delete>
+
     <update id="incrementLoginAttempts">
         UPDATE users SET
             login_attempts = login_attempts + 1

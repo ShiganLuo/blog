@@ -46,7 +46,7 @@ export class UserService {
   // 删除用户信息
   static deleteUser(userId: any) {
     return request.del({
-      url: '/system/user/' + userId
+      url: '/api/admin/users/deleteUser/' + userId
     })
   }
 
@@ -60,8 +60,8 @@ export class UserService {
 
   // 重置用户密码
   static resetUserPwd(data: any) {
-    return request.put({
-      url: '/system/user/resetPwd',
+    return request.post({
+      url: '/api/admin/users/passwordUpdate',
       data: data
     })
   }

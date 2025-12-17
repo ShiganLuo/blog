@@ -40,6 +40,7 @@ public interface UserMapper {
     
     int updatePassword(String username,@Param("password") String newPassword);
     //@Param("username")必须指定，因为resultmap定义好了映射java对象password
+
     /**
      * 根据用户名查询用户id
      */
@@ -58,4 +59,11 @@ public interface UserMapper {
      * @return
      */
     long selectUserCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
+
+    /**
+     * 删除用户
+     * @param userId
+     * @return
+     */
+    int deleteUserById(Long userId);
 } 

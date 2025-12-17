@@ -106,7 +106,7 @@ export const asyncRoutes: MenuListType[] = [
     name: 'UserAuth',
     component: RoutesAlias.Home,
     meta: {
-      title: '角色管理',
+      title: '用户管理',
       icon: '&#xe608',
       keepAlive: false,
       isHide: false

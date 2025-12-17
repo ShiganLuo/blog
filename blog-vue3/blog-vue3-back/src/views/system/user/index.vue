@@ -41,6 +41,9 @@
                 ></el-date-picker>
               </el-form-item>
             </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="&nbsp;" />
+            </el-col>
           </el-row>
         </el-form>
       </template>
@@ -304,7 +307,7 @@
     userType: null,
     email: null,
     phoneNumber: null,
-    sex: '0',
+    sex: null,
     avatarUrl: null,
     password: null,
     status: '0',
@@ -393,8 +396,8 @@
       closeOnClickModal: false,
       inputPattern: /^.{5,20}$/,
       inputErrorMessage: '用户密码长度必须介于 5 和 20 之间'
-    }).then((value: any) => {
-      UserService.resetUserPwd({ userId: row.userId, password: value }).then((response) =>
+    }).then((item: any) => {
+      UserService.resetUserPwd({ userName: row.userName, newPassword: item.value }).then((response) =>
         ElMessage.success(response.message)
       )
     })
@@ -405,7 +408,7 @@
   /** 跳转角色分配 */
   const handleAuthRole = (row: any) => {
     const userId = row.userId
-    router.push('/system/user-auth/role/' + userId)
+    router.push('/system/user-auth/role/authRole/' + userId)
   }
 
   /** 查询用户信息列表 */
@@ -507,9 +510,7 @@
     reset()
     const _userId = row.userId || ids.value
     getUser(_userId).then((res) => {
-      const { posts, roles, data } = res
-      postOptions.value = posts
-      roleOptions.value = roles
+      const { data } = res
       Object.assign(form, { ...data })
       open.value = true
       title.value = '修改用户信息'

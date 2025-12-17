@@ -39,7 +39,6 @@ export interface UserResult {
   avatarUrl: string
   password: string
   status: string
-  delFlag: string
   loginIp: string
   loginDate: string
   createBy: string
