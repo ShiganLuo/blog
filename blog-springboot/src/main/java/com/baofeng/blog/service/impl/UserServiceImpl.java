@@ -328,14 +328,14 @@ public class UserServiceImpl implements UserService {
 
         GenderEnum genderEnum = GenderEnum.fromCode(user.getGender());
         return UserInfoResponse.builder()
-        .id(user.getId())
-        .username(user.getUsername())
+        .userId(user.getId())
+        .userName(user.getUsername())
         .email(user.getEmail())
         .avatarUrl(user.getAvatarUrl())
         .bio(user.getBio())
         .nickName(user.getNickName())
         .phoneNumber(user.getPhoneNumber())
-        .gender(genderEnum.getGender())
+        .sex(genderEnum.getCode())
         .status(user.getStatus())
         .createdAt(user.getCreatedAt())
         .updatedAt(user.getUpdatedAt())
@@ -351,26 +351,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse<String> updateUserInfo(UpdateUserInfo updateUserInfo) {
         
-        if (updateUserInfo.id() == null) {
+        if (updateUserInfo.userId() == null) {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户id不能为空");
         }
-        User isUser = userMapper.selectUserById(updateUserInfo.id());
+        User isUser = userMapper.selectUserById(updateUserInfo.userId());
         if (isUser == null) {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
         }
         User user = new User();
-        Integer gender = updateUserInfo.gender();
+        Integer gender = updateUserInfo.sex();
         
         if (GenderEnum.isCodeExit(gender)) {
-            user.setGender(updateUserInfo.gender());
+            user.setGender(updateUserInfo.sex());
         } else {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"不支持的性别");
         }
-        user.setId(updateUserInfo.id());
-        user.setUsername(updateUserInfo.username());
+        user.setId(updateUserInfo.userId());
+        user.setUsername(updateUserInfo.userName());
         user.setNickName(updateUserInfo.nickName());
         user.setEmail(updateUserInfo.email());
         user.setPhoneNumber(updateUserInfo.phoneNumber());
+        user.setAvatarUrl(updateUserInfo.avatarUrl());
+        user.setPassword(updateUserInfo.password());
+        user.setBio(updateUserInfo.bio());
+        user.setStatus(updateUserInfo.status());
         int rowUpdated = userMapper.updateUserSelective(user);
         return rowUpdated > 0
             ? ApiResponse.success("用户信息更新成功")

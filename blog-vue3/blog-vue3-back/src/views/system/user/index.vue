@@ -83,21 +83,20 @@
         </el-table-column>
         <el-table-column label="用户名" align="center" prop="nickName" v-if="columns[3].show">
         </el-table-column>
-        <el-table-column label="用户类型" align="center" prop="userType" v-if="columns[4].show" />
-        <el-table-column label="用户邮箱" align="center" prop="email" v-if="columns[5].show" />
+        <el-table-column label="用户邮箱" align="center" prop="email" v-if="columns[4].show" />
         <el-table-column
           label="手机号码"
           align="center"
           prop="phoneNumber"
-          v-if="columns[6].show"
+          v-if="columns[5].show"
         />
-        <el-table-column label="用户性别" align="center" prop="sex" v-if="columns[7].show">
+        <el-table-column label="用户性别" align="center" prop="sex" v-if="columns[6].show">
           <template #default="scope">
             <dict-tag :options="sysUserSex" :value="scope.row.sex" />
           </template>
         </el-table-column>
-        <el-table-column label="密码" align="center" prop="password" v-if="columns[8].show" />
-        <el-table-column label="帐号状态" align="center" prop="status" v-if="columns[9].show">
+        <el-table-column label="密码" align="center" prop="password" v-if="columns[7].show" />
+        <el-table-column label="帐号状态" align="center" prop="status" v-if="columns[8].show">
           <template #default="scope">
             <dict-tag
               :options="sysNormalDisable"
@@ -113,21 +112,21 @@
           align="center"
           prop="createdAt"
           width="180"
-          v-if="columns[10].show"
+          v-if="columns[9].show"
         />
-        <el-table-column label="最后登录IP" align="center" prop="loginIp" v-if="columns[11].show" />
+        <el-table-column label="最后登录IP" align="center" prop="loginIp" v-if="columns[10].show" />
         <el-table-column
           label="最后登录时间"
           align="center"
           prop="loginDate"
           width="180"
-          v-if="columns[12].show"
+          v-if="columns[11].show"
         >
           <template #default="scope">
             {{ parseTime(scope.row.loginDate) }}
           </template>
         </el-table-column>
-        <el-table-column label="备注" align="center" prop="remark" v-if="columns[13].show" />
+        <el-table-column label="备注" align="center" prop="bio" v-if="columns[12].show" />
         <el-table-column label="操作" align="center" width="220px">
           <template #default="scope">
             <button-table
@@ -222,8 +221,8 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="备注">
-              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+            <el-form-item label="格言">
+              <el-input v-model="form.bio" type="textarea" placeholder="请输入内容"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -296,15 +295,12 @@
   const queryRef = ref()
   const userRef = ref<FormInstance>()
   const dateRange = ref([])
-  const postOptions = ref<PostType[]>([])
-  const roleOptions = ref<RoleType[]>([])
   const uploadRef = ref()
   // 定义初始表单状态
   const initialFormState = {
     userId: null,
     userName: null,
     nickName: null,
-    userType: null,
     email: null,
     phoneNumber: null,
     sex: null,
@@ -317,7 +313,7 @@
     createdAt: null,
     updateBy: null,
     updatedAt: null,
-    remark: null
+    bio: null
   }
   const form = reactive({ ...initialFormState })
   const queryParams = reactive({
@@ -423,7 +419,7 @@
   }
 
   // 查询用户信息详细
-  const getUser = async (id: any): Promise<UserInfoResult> => {
+  const getUser = async (id: any): Promise<UserResult> => {
     const res = await UserService.getUser(id)
     if (res.code === 200) {
       return res.result
@@ -441,7 +437,6 @@
     { name: '用户头像', show: true },
     { name: '用户账号', show: true },
     { name: '用户名', show: true },
-    { name: '用户类型', show: false },
     { name: '用户邮箱', show: false },
     { name: '手机号码', show: true },
     { name: '用户性别', show: true },
@@ -497,9 +492,7 @@
   const handleAdd = () => {
     reset()
     getUser(null).then((res) => {
-      const { posts, roles } = res
-      postOptions.value = posts
-      roleOptions.value = roles
+      // pass
     })
     open.value = true
     title.value = '添加用户信息'
@@ -510,7 +503,7 @@
     reset()
     const _userId = row.userId || ids.value
     getUser(_userId).then((res) => {
-      const { data } = res
+      const data  = res
       Object.assign(form, { ...data })
       open.value = true
       title.value = '修改用户信息'

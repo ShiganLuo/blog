@@ -63,12 +63,17 @@ public class AdminUserAuthDTO {
     }
 
     public static record UpdateUserInfo (
-        Long id,
-        String username,
+        Long userId,
+        String userName,
         String nickName,
         String email,
         String phoneNumber,
-        Integer gender
+        Integer sex,
+        String userType,
+        String avatarUrl,
+        String password,
+        String status,
+        String bio
     ) {}
 
     public static record UpdatePasswordRequest(
@@ -77,5 +82,7 @@ public class AdminUserAuthDTO {
         @NotNull
         String newPassword
     ) {}
+
+
 
 } 

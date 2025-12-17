@@ -19,15 +19,15 @@ public class UserDTO {
     @Data
     @Builder
     public static class UserInfoResponse {
-        private Long id;
-        private String username;
+        private Long userId;
+        private String userName;
         private String email;
         private String password;
         private String avatarUrl;
         private String bio;
         private String nickName;
         private String phoneNumber;
-        private String gender;
+        private Integer sex;
         private List<String> roles;
         private String status; 
         private LocalDateTime createdAt;

@@ -45,7 +45,7 @@ export interface UserResult {
   createdAt: string
   updateBy: string
   updatedAt: string
-  remark: string
+  bio: string
 }
 
 export type UserListPageResult = {

@@ -1,7 +1,7 @@
 import {
   EditProfileAvatarResult,
   LoginUserResult,
-  UserInfoResult,
+  UserResult,
   UserListPageResult,
   DeptOptionListResult,
   AuthRolesResult
@@ -22,7 +22,7 @@ export class UserService {
 
   // 查询用户信息详细
   static getUser(userId: any) {
-    return request.get<UserInfoResult>({
+    return request.get<UserResult>({
       url: '/api/admin/users/getUserInfoById/' + parseStrEmpty(userId)
     })
   }
@@ -37,8 +37,8 @@ export class UserService {
 
   // 修改用户信息
   static updateUser(data: any) {
-    return request.put({
-      url: '/system/user',
+    return request.post({
+      url: '/api/admin/users/updateUserInfo',
       data: data
     })
   }

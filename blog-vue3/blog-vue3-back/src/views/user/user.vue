@@ -5,7 +5,7 @@
         <div class="user-wrap box-style">
           <img class="bg" src="@imgs/avatar/bg.png" />
           <img class="avatar" :src="avatarUrl" @click="handleClickAvatar" />
-          <h2 class="name">{{ userInfo.nickname }}</h2>
+          <h2 class="name">{{ userInfo.nickName }}</h2>
 
           <div class="outer-info">
             <div>
@@ -301,7 +301,7 @@
     await pwdFormRef.value.validate(async (valid) => {
       if (valid) {
         const res = await UserService.editProfilePwd({
-          username: userInfo.value.username,
+          username: userInfo.value.userName,
           newPassword: pwdForm.newPassword
         })
         if (res.code === 200) {
