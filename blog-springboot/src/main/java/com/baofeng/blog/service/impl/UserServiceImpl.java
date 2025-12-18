@@ -204,7 +204,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse<String> updateUserRole(UpdateUserRoleRequest updateUserRoleRequest) {
         Long userId = updateUserRoleRequest.userId();
-        List<String> roles = updateUserRoleRequest.roles();
+        List<String> roleNames = updateUserRoleRequest.roleNames();
         List<String> validRoles = List.of(RoleTypeEnum.USER.getRole(), RoleTypeEnum.ADMIN.getRole());
         // 检查用户是否存在
         User user = userMapper.selectUserById(userId);
@@ -212,7 +212,7 @@ public class UserServiceImpl implements UserService {
             return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "用户不存在");
         }
 
-        for (String roleName : roles) {
+        for (String roleName : roleNames) {
             if (!validRoles.contains(roleName)) {
                 return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "无效的角色: " + roleName);
             }
@@ -220,7 +220,7 @@ public class UserServiceImpl implements UserService {
         // 删除用户现有角色
         roleMapper.deleteUserRolesByUserId(userId);
         // 为用户分配新角色
-        for (String roleName : roles) {
+        for (String roleName : roleNames) {
             Role role = roleMapper.selectRoleByRoleName(roleName);
             if (role == null) {
                 // 如果角色不存在，创建新角色
@@ -308,7 +308,7 @@ public class UserServiceImpl implements UserService {
         String username = jwtTokenProvider.getUserNameFromToken(token);
 
         if (username == null) {
-            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "无效的 token");
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "无效的 token");
         }
         // 根据用户名查询数据库返回用户信息
         User user = userMapper.selectByUsernameOrEmail(username);

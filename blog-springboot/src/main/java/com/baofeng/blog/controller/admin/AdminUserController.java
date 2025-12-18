@@ -2,7 +2,6 @@ package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminLoginResponseDTO;
-import com.baofeng.blog.dto.admin.AdminPermissionDTO.AuthRoleResponse;
 import com.baofeng.blog.dto.admin.AdminUserAuthDTO.*;
 import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;

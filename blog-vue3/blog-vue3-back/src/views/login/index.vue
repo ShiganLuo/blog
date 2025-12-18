@@ -252,8 +252,8 @@
           userStore.setToken(res.result.accessToken, res.result.refreshToken)
           userStore.setUserInfo({
             id: res.result.id,
-            username: res.result.username,
-            nickname: res.result.nickName,
+            userName: res.result.userName,
+            nickName: res.result.nickName,
             avatar: res.result.avatar,
             roles: res.result.roles,
             permissions: res.result.permissions

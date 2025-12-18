@@ -24,22 +24,31 @@
         INSERT INTO user_roles (user_id, role_id, created_at, updated_at)
         VALUES (#{userId}, #{roleId}, NOW(), NOW())
     </insert>
+
     <!-- 删除用户角色关联 -->
     <delete id="deleteUserRolesByUserId">
         DELETE FROM user_roles WHERE user_id = #{userId}
     </delete>
+
     <!--插入角色-->
     <insert id="insertRole" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO roles (role_name, role_desc, created_at, updated_at)
         VALUES (#{roleName}, #{roleDesc}, NOW(), NOW())
     </insert>
+
     <!--删除角色-->
     <delete id="deleteRoleById">
         DELETE FROM roles WHERE id = #{roleId}
     </delete>
+
     <!--判断角色是否存在-->
     <select id="selectRoleByRoleName">
         SELECT * FROM roles WHERE role_name = #{roleName}
+    </select>
+
+    <!--查询所有角色-->
+    <select id="getAllRoles">
+        SELECT * FROM roles
     </select>
 
     <resultMap id="UserRoleResultMap" type="com.baofeng.blog.entity.UserRole">

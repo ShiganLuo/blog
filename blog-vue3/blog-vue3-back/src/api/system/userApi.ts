@@ -127,9 +127,9 @@ export class UserService {
 
   // 保存授权角色
   static updateAuthRole(data: any) {
-    return request.put({
-      url: '/system/user/authRole',
-      params: data
+    return request.post({
+      url: '/api/admin/users/updateUserRoles',
+      data: data
     })
   }
 

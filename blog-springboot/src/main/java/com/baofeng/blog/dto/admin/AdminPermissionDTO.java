@@ -43,5 +43,6 @@ public class AdminPermissionDTO {
         Long userId;
         String nickName;
         String userName;
+        List<String> roles;
     }
 }

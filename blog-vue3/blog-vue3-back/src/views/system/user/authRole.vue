@@ -14,6 +14,17 @@
               <el-input v-model="form.userName" disabled />
             </el-form-item>
           </el-col>
+          <el-col :span="20" :offset="2">
+            <el-form-item label="角色信息">
+              <el-tag
+                v-for="(role, index) in form.roles"
+                :key="index"
+                style="margin-right: 8px"
+              >
+                {{ role }}
+              </el-tag>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
     </div>
@@ -35,7 +46,7 @@
       >
         <el-table-column label="角色名称" prop="roleName" align="center" />
         <el-table-column label="角色描述" prop="roleDesc" align="center" />
-        <el-table-column label="权限" prop="roleKey" align="center" />
+        <el-table-column label="权限" prop="permissions" align="center" />
         <el-table-column label="创建时间" prop="createdAt" align="center" />
       </art-table>
     </div>
@@ -60,18 +71,19 @@
   const total = ref(0)
   const pageNum = ref(1)
   const pageSize = ref(10)
-  const roleIds = ref([])
+  const roleNames = ref<string[]>([])
   const roles = ref<RoleType[]>([])
   const roleRef = ref()
   const form = ref({
     nickName: '',
     userName: '',
-    userId: 0
+    userId: 0,
+    roles: []
   })
 
   /** 关闭按钮 */
   const close = () => {
-    router.push({ path: '/system/user' })
+    router.push({ path: '/system/user-auth/role/index'})
   }
 
   /** 每页条数改变 */
@@ -86,14 +98,14 @@
 
   // 多选框选中数据
   const handleSelectionChange = (selection: any) => {
-    roleIds.value = selection.map((item: any) => item.roleId)
+     roleNames.value = selection.map((item: any) => item.roleName)
   }
 
   /** 提交按钮 */
   const submitForm = async () => {
     const userId = form.value.userId
-    const rIds = roleIds.value.join(',')
-    const res = await UserService.updateAuthRole({ userId: userId, roleIds: rIds })
+    console.log(roleNames.value)
+    const res = await UserService.updateAuthRole({ userId: userId, roleNames: roleNames.value })
     if (res.code === 200) {
       ElMessage.success(res.message)
       close()

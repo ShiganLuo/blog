@@ -49,18 +49,11 @@ public class AdminUserAuthDTO {
     }
 
     public static record UpdateUserRoleRequest(
+        @NotNull
         Long userId,
-        List<String> roles
-    ) { 
-        public UpdateUserRoleRequest {
-            if (userId == null) {
-                throw new IllegalArgumentException("userId不能为空");
-            }
-            if (roles == null || roles.isEmpty()) {
-                throw new IllegalArgumentException("roles不能为空");
-            }
-        }
-    }
+        @NotEmpty
+        List<String> roleNames
+    ) {    }
 
     public static record UpdateUserInfo (
         Long userId,

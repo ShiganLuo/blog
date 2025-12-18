@@ -320,13 +320,13 @@
   const router = useRouter()
   /** 新增按钮操作 */
   const handleAdd = () => {
-    router.push({ path: '/blog/article-publish/index/0', query: { current: queryParams.current } })
+    router.push({ path: '/blog/article/index/0', query: { current: queryParams.current } })
   }
 
   /** 修改按钮操作 */
   const handleUpdate = async (row: any) => {
     router.push({
-      path: '/blog/article-publish/index/' + row.id
+      path: '/blog/article/index/' + row.id
     })
   }
 

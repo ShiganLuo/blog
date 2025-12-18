@@ -111,7 +111,11 @@ public class PermissionServiceImpl implements PermissionService{
         userInfo.setNickName(user.getNickName());
         userInfo.setUserName(user.getUsername());
         userInfo.setUserId(userId);
-        List<Role> roles = roleMapper.selectRolesByUserId(userId);
+        List<String> user_roles = roleMapper.selectRolesByUserId(userId).stream()
+            .map(Role::getRoleName)
+            .collect(Collectors.toList());
+        userInfo.setRoles(user_roles);
+        List<Role> roles = roleMapper.getAllRoles();
         List<RoleType> roleTypes = roles.stream()
             .map( role -> {
                     RoleType roleType = new RoleType();

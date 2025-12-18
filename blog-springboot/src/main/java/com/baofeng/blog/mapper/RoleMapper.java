@@ -49,4 +49,10 @@ public interface RoleMapper {
      * @return
      */
     Role selectRoleByRoleName(String roleName);
+
+    /**
+     * 查询所有角色
+     * @return
+     */
+    List<Role> getAllRoles();
 }

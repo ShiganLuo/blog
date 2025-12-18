@@ -65,7 +65,6 @@ export type DeptOptionListResult = DeptOptionType[]
 export interface RoleType {
   roleId: number
   roleName: string
-  roleKey: string
   roleSort: number
   dataScope: string
   menuCheckStrictly: boolean
@@ -106,6 +105,7 @@ export interface UserInfoSimple {
   nickName:string
   userName:string
   userId:number
+  roles:[]
 }
 export interface AuthRolesResult{
   roles: RoleType[]
