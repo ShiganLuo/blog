@@ -23,6 +23,12 @@
         </foreach>
     </select>
 
+    <!--根据permissionId获取权限标识-->
+    <select id="getPermissionTagByPermissionId">
+        SELECT permission FROM permissions WHERE id = #{permissionId}
+    </select>
+
+
     <!--新建权限-->
     <insert id="insertPermission">
         INSERT INTO permissions (name, permission, type, parent_id, path)
@@ -49,6 +55,11 @@
         INSERT INTO role_permissions (role_id, permission_id)
         VALUES (#{roleId}, #{permissionId})
     </insert>
+
+    <!--查询角色拥有权限-->
+    <select id="getPermissionIdsByRoleId">
+        SELECT permission_id FROM role_permissions WHERE role_id = #{roleId}
+    </select>
 
     <!--查询角色权限是否存在-->
     <select id="selectRolePermission">

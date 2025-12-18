@@ -50,5 +50,4 @@
         <result property="updated_at" column="updated_at"/>
     </resultMap>
 
-
 </mapper>

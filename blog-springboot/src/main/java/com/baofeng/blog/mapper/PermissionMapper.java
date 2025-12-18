@@ -43,4 +43,19 @@ public interface PermissionMapper {
      * @return
      */
     RolePermission selectRolePermission(Long roleId, Long permissionId);
+
+    /**
+     * 根据角色id获取权限标识
+     * @param permissionId
+     * @return
+     */
+    String getPermissionTagByPermissionId(Long permissionId);
+
+    /**
+     * 查询用户所有权限
+     * @param roleId
+     * @return
+     */
+    List<Long> getPermissionIdsByRoleId(Long roleId);
+    
 }

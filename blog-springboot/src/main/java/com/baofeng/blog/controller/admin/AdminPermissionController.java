@@ -27,4 +27,9 @@ public class AdminPermissionController {
     public ApiResponse<String> AddNewPermission(@RequestBody AddNewPermissionRequest addNewPermissionRequest) {
         return permissionService.addNewPermission(addNewPermissionRequest);
     }
+
+    @GetMapping("/getAuthRole/{userId}")
+    public ApiResponse<AuthRoleResponse> getAuthRole(@PathVariable("userId") Long userId) {
+        return permissionService.getAuthRole(userId);
+    }
 }

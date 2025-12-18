@@ -74,14 +74,10 @@ export interface RoleType {
   delFlag: string
   flag: boolean
   menuIds: number[]
-  deptIds: number[]
   permissions: string[]
-  createBy: string
-  createTime: string
-  updateBy: string
-  admin: boolean
+  createdAt: string
+  updatedAt: string
   remark: string
-  updateTime: string
 }
 
 export interface PostType {

@@ -18,4 +18,11 @@ public interface PermissionService {
      * @return
      */
     public ApiResponse<String> addNewPermission(AddNewPermissionRequest addNewPermissionRequest);
+
+    /**
+     * 获取用户权限信息
+     * @param userId
+     * @return
+     */
+    public ApiResponse<AuthRoleResponse> getAuthRole(Long userId);
 }

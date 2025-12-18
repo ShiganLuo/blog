@@ -121,7 +121,7 @@ export class UserService {
   // 查询授权角色
   static getAuthRole(userId: any) {
     return request.get<AuthRolesResult>({
-      url: '/system/user/authRole/' + userId
+      url: '/api/admin/permission/getAuthRole/' + userId
     })
   }
 

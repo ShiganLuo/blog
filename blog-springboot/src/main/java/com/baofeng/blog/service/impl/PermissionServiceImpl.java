@@ -2,33 +2,46 @@ package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.service.PermissionService;
 import com.baofeng.blog.entity.Role;
+import com.baofeng.blog.entity.User;
 import com.baofeng.blog.entity.RolePermission;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminPermissionDTO.AddNewPermissionRequest;
 import com.baofeng.blog.dto.admin.AdminPermissionDTO.AssignPermissionRequest;
+import com.baofeng.blog.dto.admin.AdminPermissionDTO.AuthRoleResponse;
+import com.baofeng.blog.dto.admin.AdminPermissionDTO.RoleType;
+import com.baofeng.blog.dto.admin.AdminPermissionDTO.UserInfo;
 import com.baofeng.blog.entity.Permission;
 import com.baofeng.blog.mapper.PermissionMapper;
 import com.baofeng.blog.mapper.RoleMapper;
-
+import com.baofeng.blog.mapper.UserMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class PermissionServiceImpl implements PermissionService{
     private final PermissionMapper permissionMapper;
     private final RoleMapper roleMapper;
+    private final UserMapper userMapper;
     private static final Logger logger = LoggerFactory.getLogger(PermissionService.class);
     public PermissionServiceImpl (
         PermissionMapper permissionMapper,
-        RoleMapper roleMapper
+        RoleMapper roleMapper,
+        UserMapper userMapper
     ) {
         this.permissionMapper = permissionMapper;
         this.roleMapper = roleMapper;
+        this.userMapper = userMapper;
     }
 
+    @Override
     public ApiResponse<String> assignPermissionForRole(AssignPermissionRequest assignPermissionRequest) {
         String roleName = assignPermissionRequest.roleName();
         String permissionName = assignPermissionRequest.permission();
@@ -72,6 +85,7 @@ public class PermissionServiceImpl implements PermissionService{
         }
     }
 
+    @Override
     public ApiResponse<String> addNewPermission(AddNewPermissionRequest addNewPermissionRequest) {
         Permission permission = Permission.builder()
         .name(addNewPermissionRequest.name())
@@ -87,5 +101,43 @@ public class PermissionServiceImpl implements PermissionService{
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"权限新建失败");
     }
 
+    @Override
+    public ApiResponse<AuthRoleResponse> getAuthRole(Long userId) {
+        UserInfo userInfo = new UserInfo();
+        User user = userMapper.selectUserById(userId);
+        if (user == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
+        }
+        userInfo.setNickName(user.getNickName());
+        userInfo.setUserName(user.getUsername());
+        userInfo.setUserId(userId);
+        List<Role> roles = roleMapper.selectRolesByUserId(userId);
+        List<RoleType> roleTypes = roles.stream()
+            .map( role -> {
+                    RoleType roleType = new RoleType();
+                    roleType.setRoleId(role.getId());
+                    roleType.setRoleName(role.getRoleName());
+                    roleType.setRoleDesc(role.getRoleDesc());
+                    roleType.setCreatedAt(role.getCreatedAt());
+                    roleType.setUpdatedAt(role.getUpdatedAt());
+                    List<Long> permissionIds = permissionMapper.getPermissionIdsByRoleId(role.getId());
+                    List<String> permissions = permissionIds.stream()
+                        .map(
+                            permissionId -> {
+                                String permission = permissionMapper.getPermissionTagByPermissionId(permissionId);
+                                return permission;
+                            }
+                        )
+                        .collect(Collectors.toList());
+                    
+                    roleType.setPermissions(permissions);
+                    return roleType;
+                } 
+            )
+            .collect(Collectors.toList());
+
+        AuthRoleResponse authRoleResponse = new AuthRoleResponse(roleTypes, userInfo);
+        return ApiResponse.success(authRoleResponse);
+    }
 
 }
