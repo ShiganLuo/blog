@@ -12,9 +12,9 @@ export interface DictDataResult {
   isDefault: string
   status: string
   createBy: string
-  createTime: string
+  createdAt: string
   updateBy: string
-  updateTime: string
+  updatedAt: string
   remark: string
 }
 
@@ -34,9 +34,9 @@ export interface DictTypeResult {
   dictType: string
   status: string
   createBy: string
-  createTime: string
+  createdAt: string
   updateBy: string
-  updateTime: string
+  updatedAt: string
   remark: string
 }
 

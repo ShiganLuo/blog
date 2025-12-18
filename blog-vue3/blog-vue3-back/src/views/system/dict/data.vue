@@ -338,8 +338,8 @@
   import { useDict, DictType } from '@/utils/dict'
   const sysNormalDisable = ref<DictType[]>([]) // 状态字典数据
   const getuseDict = async () => {
-    const { sys_normal_disable } = await useDict('sys_normal_disable')
-    sysNormalDisable.value = sys_normal_disable
+    const { userStatus } = await useDict('userStatus')
+    sysNormalDisable.value = userStatus
   }
 
   import { useRoute, useRouter } from 'vue-router'

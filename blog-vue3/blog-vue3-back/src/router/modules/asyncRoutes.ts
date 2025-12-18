@@ -35,69 +35,6 @@ export const asyncRoutes: MenuListType[] = [
           keepAlive: true
         }
       },
-      {
-        id: uuid(),
-        path: 'analysis',
-        name: 'Analysis',
-        component: RoutesAlias.Analysis,
-        meta: {
-          title: 'menus.dashboard.analysis',
-          keepAlive: true
-        }
-      },
-      {
-        id: uuid(),
-        path: 'ecommerce',
-        name: 'Ecommerce',
-        component: RoutesAlias.Ecommerce,
-        meta: {
-          title: 'menus.dashboard.ecommerce',
-          keepAlive: true,
-          showTextBadge: 'new'
-        }
-      }
-    ]
-  },
-  {
-    id: uuid(),
-    path: '/tool/gen-edit',
-    name: 'GenEdit',
-    component: RoutesAlias.Home,
-    meta: {
-      title: '修改生成配置',
-      icon: '&#xe755',
-      keepAlive: false,
-      isHide: false
-    },
-    children: [
-      {
-        id: uuid(),
-        path: 'index/:tableId(\\d+)?',
-        component: RoutesAlias.GenEdit,
-        name: 'GenEditIndex',
-        meta: { title: '修改生成配置', keepAlive: false }
-      }
-    ]
-  },
-  {
-    id: uuid(),
-    path: '/system/dict-data',
-    name: 'DictData',
-    component: RoutesAlias.Home,
-    meta: {
-      title: '字典数据',
-      icon: '&#xe6d9',
-      keepAlive: false,
-      isHide: false
-    },
-    children: [
-      {
-        id: uuid(),
-        path: 'index/:dictId(\\d+)?',
-        component: RoutesAlias.DictData,
-        name: 'DictDataIndex',
-        meta: { title: '字典数据', keepAlive: false }
-      }
     ]
   },
   {
@@ -157,44 +94,44 @@ export const asyncRoutes: MenuListType[] = [
 
     ]
   },
-  {
-    id: uuid(),
-    path: '/photo',
-    name: 'PhotoList',
-    component: RoutesAlias.Home,
-    meta: {
-      title: '照片管理',
-      icon: '&#xe6ee',
-      keepAlive: false,
-      isHide: false
-    },
-    children: [
-      {
-        id: uuid(),
-        path: 'photo/:albumId(\\d+)?',
-        component: RoutesAlias.Photo,
-        name: 'PhotoManagement',
-        meta: { title: '照片管理', keepAlive: false }
-      },
-      {
-        id: uuid(),
-        path: 'index',
-        component: RoutesAlias.PhotoIndex,
-        name: 'PhotoIndex',
-        meta: { title: '照片统计', keepAlive: false}
-      }
-    ]
-  },
-  {
-    id: uuid(),
-    path: '/photo-delete',
-    name: 'PhotoDelete',
-    component: RoutesAlias.PhotoDelete,
-    meta: {
-      title: '照片回收站',
-      keepAlive: false,
-      isHide: false,
-      isInMainContainer: true
-    }
-  }
+  // {
+  //   id: uuid(),
+  //   path: '/photo',
+  //   name: 'PhotoList',
+  //   component: RoutesAlias.Home,
+  //   meta: {
+  //     title: '照片管理',
+  //     icon: '&#xe6ee',
+  //     keepAlive: false,
+  //     isHide: false
+  //   },
+  //   children: [
+  //     {
+  //       id: uuid(),
+  //       path: 'photo/:albumId(\\d+)?',
+  //       component: RoutesAlias.Photo,
+  //       name: 'PhotoManagement',
+  //       meta: { title: '照片管理', keepAlive: false }
+  //     },
+  //     {
+  //       id: uuid(),
+  //       path: 'index',
+  //       component: RoutesAlias.PhotoIndex,
+  //       name: 'PhotoIndex',
+  //       meta: { title: '照片统计', keepAlive: false}
+  //     }
+  //   ]
+  // },
+  // {
+  //   id: uuid(),
+  //   path: '/photo-delete',
+  //   name: 'PhotoDelete',
+  //   component: RoutesAlias.PhotoDelete,
+  //   meta: {
+  //     title: '照片回收站',
+  //     keepAlive: false,
+  //     isHide: false,
+  //     isInMainContainer: true
+  //   }
+  // }
 ]
