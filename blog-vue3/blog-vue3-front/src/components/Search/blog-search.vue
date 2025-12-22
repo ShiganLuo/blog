@@ -13,9 +13,21 @@ const router = useRouter();
 const isClick = ref<boolean>(false);
 const searchShow = ref<boolean>(false);
 const input = ref<string>(""); // 搜索内容
-const searchResult = ref<ArticleSearch[]>([]); // 搜索结果
 
-const hotSearchList = ref<ArticleInfo[]>([]);
+interface SearchResultItem  {
+  id: number,
+  article_title: string,
+  highlight_content: string,
+  rest_content: string,
+}
+const searchResult = ref<SearchResultItem[]>([]); // 搜索结果
+
+interface HostSearchItem {
+  id: number;
+  articleTitle: string;
+  icon: string // 根据你 numberList 存的内容决定
+}
+const hotSearchList = ref<HostSearchItem[]>([]);
 
 const historySearchList = ref<string[]>([]);
 
@@ -30,7 +42,7 @@ const clickSearchIcon = async (): Promise<void> => {
   if (res.code === 200) {
     hotSearchList.value = res.result.map((r: ArticleInfo, index: number) => ({
       id: r.id,
-      article_title: r.article_title,
+      articleTitle: r.articleTitle ?? "",
       icon: numberList[index],
     }));
   }
@@ -60,14 +72,14 @@ const clickHistoryTag = (val: string): void => {
 const getArticleList = async (): Promise<void> => {
   const res = await ArticleService.getArticleByContent({value: input.value});
   if (res.code === 200) {
-    searchResult.value =
-      res.result.length &&
-      res.result.map((r: ArticleSearch) => ({
-        id: r.id,
-        article_title: r.article_title,
-        highlight_content: input.value,
-        rest_content: r.article_content?.substring(input.value.length) || "",
-      }));
+    searchResult.value = res.result.length > 0 
+      ? res.result.map((r: ArticleSearch) => ({
+          id: r.id,
+          article_title: r.article_title,
+          highlight_content: input.value,
+          rest_content: r.article_content?.substring(input.value.length) || "",
+        }))
+  : []; // 明确返回空数组，而不是数字 0
     if (historySearchList.value.length > 10) {
       historySearchList.value.shift();
     }
@@ -166,10 +178,10 @@ const goToArticle = (id: number): void => {
                     v-for="hot in hotSearchList"
                     :key="hot.id"
                   >
-                    <span :title="hot.article_title" class="title" @click="goToArticle(hot.id)">
+                    <span :title="hot.articleTitle" class="title" @click="goToArticle(hot.id)">
                       <span v-html="hot.icon" class="number-icon"></span>
-                      <span :title="hot.article_title" class="article-title text_overflow">{{
-                        hot.article_title
+                      <span :title="hot.articleTitle" class="article-title text_overflow">{{
+                        hot.articleTitle
                       }}</span>
                     </span>
                   </div>

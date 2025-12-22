@@ -16,6 +16,11 @@ export interface CommentItem {
   [key: string]: any;
 }
 
+export interface CommentPage {
+    list: CommentItem[],
+    total: number
+}
+
 export interface CommentParams {
   current: number;
   size: number;

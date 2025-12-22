@@ -72,7 +72,7 @@ const toPersonal = () => {
 };
 
 const logOut = () => {
-  userStore.clearUserInfo();
+  userStore.logOut();
   if (route.path === "/userCenter") {
     router.push("/home");
   }

@@ -7,7 +7,7 @@ export interface Album {
 
 export type AlbumList = Album[]
 
-interface Photo {
+export interface Photo {
   id: number;
   url: string;
 }

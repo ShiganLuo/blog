@@ -154,8 +154,9 @@
   import { ElMessage } from 'element-plus'
   import { ref, onMounted } from 'vue'
   import { CacheNameResult } from '@/types/monitor/cache'
+  import {type CacheNameListResult } from '@/types/monitor/cache'
 
-  const cacheNames = ref([])
+  const cacheNames = ref<CacheNameListResult>()
   const cacheKeys = ref<string[]>()
   const cacheForm = ref<CacheNameResult>({
     cacheName: '',

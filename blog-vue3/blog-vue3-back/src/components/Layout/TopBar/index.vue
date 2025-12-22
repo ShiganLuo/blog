@@ -145,7 +145,7 @@
                 <div class="user-head">
                   <img class="cover" :src="userInfo.avatar || defaultAvatar" style="float: left" />
                   <div class="user-wrap">
-                    <span class="name">{{ userInfo.name }}</span>
+                    <span class="name">{{ userInfo.nickName }}</span>
                   </div>
                 </div>
                 <ul class="user-menu">

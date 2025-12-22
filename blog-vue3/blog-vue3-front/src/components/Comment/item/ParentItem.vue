@@ -6,7 +6,7 @@ import { LikeService } from "@/api/likeApi";
 import Loading from "@/components/Loading/index.vue";
 import { useUserStore } from "@/stores/index";
 import { ElMessageBox, ElNotification } from "element-plus";
-import type { CommentType, CommentItem, CommentParams } from "./Comment";
+import type { CommentType, CommentItem, CommentParams } from "@/types/comment";
 import ChildrenItem from "./ChildrenItem.vue";
 import CommentInput from "./CommentInput.vue"; // 引入你提供的评论输入组件
 

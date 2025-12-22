@@ -2,84 +2,106 @@ CREATE DATABASE IF NOT EXISTS `blog` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8m
 USE `blog`;
 
 DROP TABLE IF EXISTS `users`;
-CREATE TABLE users (
-  `id` BIGINT AUTO_INCREMENT PRIMARY KEY,       -- 用户ID，主键，自增
-  `username` VARCHAR(50) NOT NULL UNIQUE,     -- 用户名，必须唯一
-  `email` VARCHAR(100) UNIQUE,       -- 邮箱，必须唯一
-  `password` VARCHAR(255) NOT NULL,           -- 密码（经过加密存储）
-  `avatar_url` VARCHAR(255) DEFAULT NULL,     -- 用户头像URL（可选）
-  `bio` TEXT DEFAULT NULL,                    -- 用户简介（可选）
-  `role` ENUM('USER', 'ADMIN') DEFAULT 'USER', -- 用户角色（USER：普通用户，ADMIN：管理员）
-  `status` ENUM('ACTIVE', 'INACTIVE', 'BANNED') DEFAULT 'ACTIVE', -- 用户状态（ACTIVE：激活，INACTIVE：未激活，BANNED：禁用）
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 用户注册时间，自动生成
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 用户信息更新时间
-  `last_login` TIMESTAMP DEFAULT NULL,        -- 最后登录时间
-  `login_attempts` INT DEFAULT 0,             -- 登录失败次数（防止暴力破解）
-  `is_email_verified` BOOLEAN DEFAULT FALSE,  -- 邮箱是否已验证
-  `is_active` BOOLEAN DEFAULT TRUE,            -- 账户是否启用（用于禁用账户）
-  `nick_name` VARCHAR(50) DEFAULT NULL      -- 用户设置昵称
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `users` (
+  `id` BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键，自增，唯一标识用户',
+  `username` VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名，唯一且不允许为空',
+  `email` VARCHAR(100) NOT NULL UNIQUE COMMENT '用户邮箱，唯一且不允许为空',
+  `password` VARCHAR(255) NOT NULL COMMENT '加密后的密码',
+  `avatar_url` VARCHAR(255) DEFAULT NULL COMMENT '用户头像 URL',
+  `bio` TEXT DEFAULT NULL COMMENT '用户简介',
+  `status` VARCHAR(15) NOT NULL DEFAULT 'ACTIVE' COMMENT '账户状态：ACTIVE/INACTIVE/DISABLED',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '用户注册时间',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
+  `last_login` TIMESTAMP NULL DEFAULT NULL COMMENT '最后登录时间',
+  `login_attempts` BIGINT NOT NULL DEFAULT 0 COMMENT '登录失败次数',
+  `is_email_verified` TINYINT(1) NOT NULL DEFAULT FALSE COMMENT '邮箱是否已验证',
+  `is_active` TINYINT(1) NOT NULL DEFAULT TRUE COMMENT '账户是否启用',
+  `nick_name` VARCHAR(50) DEFAULT NULL COMMENT '昵称',
+  `phone_number` VARCHAR(32) DEFAULT NULL COMMENT '电话号码',
+  `gender` TINYINT UNSIGNED DEFAULT 9 COMMENT '性别：1=男，2=女，9=未知',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE `roles` (
+	`id`     BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '角色ID',
+    `role_name`   VARCHAR(50) NOT NULL UNIQUE COMMENT '角色名称，如 admin, user',
+    `role_desc`   VARCHAR(255) COMMENT '角色描述',
+	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '用户注册时间，自动生成',
+	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '用户信息更新时间'
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色表';
+
+DROP TABLE IF EXISTS `permissions`;
+CREATE TABLE `permissions` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '权限ID',
+    `name` VARCHAR(100) NOT NULL COMMENT '权限名称',
+    `permission` VARCHAR(100) NOT NULL UNIQUE COMMENT '权限标识，如 blog:article:view',
+    `type` VARCHAR(20) DEFAULT 'button' COMMENT '权限类型(menu, api, button)',
+    `parent_id` BIGINT DEFAULT NULL COMMENT '父权限ID（用于树结构）',
+    `path` VARCHAR(100) DEFAULT NULL COMMENT '对应路由或接口路径',
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限表';
 
 DROP TABLE IF EXISTS `articles`;
-CREATE TABLE articles (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL,
-    summary VARCHAR(500),
-    cover_image VARCHAR(255),
-    author_id BIGINT NOT NULL,
-    status ENUM('DRAFT', 'PUBLISHED', 'DELETED') DEFAULT 'DRAFT',
-    views INT  NOT NULL DEFAULT 0,
-    likes INT  NOT NULL DEFAULT 0,
-    comments_count INT DEFAULT 0,
-    is_featured BOOLEAN DEFAULT FALSE,
-    published_at TIMESTAMP NULL DEFAULT NULL,
-    type INT ,
-    origin_url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+CREATE TABLE `articles` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '文章ID',
+    `title` VARCHAR(255) NOT NULL COMMENT '文章标题',
+    `content` TEXT NOT NULL COMMENT '文章正文，支持 Markdown 或 HTML',
+    `summary` VARCHAR(500) COMMENT '文章摘要',
+    `cover_image` VARCHAR(255) COMMENT '封面图片 URL',
+    `author_id` BIGINT NOT NULL COMMENT '文章作者',
+    `status` INT NOT NULL DEFAULT 1 COMMENT '文章状态',
+    `views` INT  NOT NULL DEFAULT 0 COMMENT '文章浏览量',
+    `likes` INT  NOT NULL DEFAULT 0 COMMENT '点赞数',
+    `comments_count` INT DEFAULT 0 COMMENT '评论数量',
+    `is_top` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否置顶',
+    `is_featured` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否推荐',
+    `published_at` TIMESTAMP NOT NULL COMMENT '文章发布时间，第一次设为PUBLISHED状态',
+    `type` INT NOT NULL 1 COMMENT '文章类型（1:原创,2:转载,3:翻译……）',
+    `origin_url` VARCHAR(255) COMMENT '非原创文章原文链接',
+    `is_deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标志'
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章表';
 
 DROP TABLE IF EXISTS `comments`;
-CREATE TABLE comments (
-  id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '评论ID',
-
-  from_id BIGINT NOT NULL COMMENT '评论者用户ID',
-
-  content TEXT NOT NULL COMMENT '评论内容',
-
-  for_id BIGINT NOT NULL COMMENT '评论目标ID：文章或评论ID',
-  type VARCHAR(32) NOT NULL DEFAULT 'post' COMMENT '类型：post=文章评论，comment=回复评论',
-
-  author_id BIGINT NOT NULL COMMENT '被评论对象的作者ID（用于通知）',
-
-  likes INT DEFAULT 0 COMMENT '点赞数',
-
-  is_deleted TINYINT DEFAULT 0 COMMENT '是否逻辑删除：0=否，1=是',
-  status TINYINT DEFAULT 1 COMMENT '审核状态：0=待审，1=通过，2=拒绝',
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+CREATE TABLE `comments` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '评论ID',
+  `root_id` BIGINT  DEFAULT NULL COMMENT '根评论ID，可以为null，方便维护文章评论树',
+  `from_id` BIGINT NOT NULL COMMENT '评论者用户ID',
+  `content` TEXT NOT NULL COMMENT '评论内容',
+  `for_id` BIGINT DEFAULT NULL COMMENT '评论目标ID：文章或评论ID',
+  `type` VARCHAR(32) NOT NULL DEFAULT 'post' COMMENT '类型：post=文章评论，comment=回复评论',
+  `author_id` BIGINT DEFAULT NULL COMMENT '被评论对象的作者ID（用于通知）',
+  `to_id` BIGINT DEFAULT NULL COMMENT '被评论用户ID',
+  `likes` INT NOT NULL DEFAULT 0 COMMENT '点赞数',
+  `ip_address` VARCHAR(45) DEFAULT NULL COMMENT '用户评论时ip',
+  `is_deleted` TINYINT(1) DEFAULT 0 COMMENT '是否逻辑删除：0=否，1=是',
+  `status` TINYINT DEFAULT 0 COMMENT '审核状态：0=待审，1=通过，2=拒绝',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   CONSTRAINT fk_comments_author_user FOREIGN KEY (author_id) REFERENCES users(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评论表';
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论表';
 
 DROP TABLE IF EXISTS `categories`;
-CREATE TABLE categories (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,  -- 分类唯一标识符
-    name VARCHAR(100) NOT NULL UNIQUE,           -- 分类名称
-    description TEXT,                      -- 分类描述
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 创建时间
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- 更新时间
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `categories` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '分类ID',
+    `name` VARCHAR(100) NOT NULL UNIQUE COMMENT '分类名称',
+    `description` VARCHAR(250) NOT NULL COMMENT '分类描述',
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='目录表';
 
 DROP TABLE IF EXISTS `tags`;
 CREATE TABLE tags (
-	id BIGINT PRIMARY KEY AUTO_INCREMENT, -- '标签唯一标识符',
-	name VARCHAR(50) NOT NULL UNIQUE, -- '标签名称',
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- '标签创建时间',
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- '标签更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+	`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '标签ID',
+	`name` VARCHAR(50) NOT NULL UNIQUE COMMENT '标签名称',
+	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='标签表';
 
 DROP TABLE IF EXISTS `images`;
 CREATE TABLE `images` (
@@ -89,120 +111,142 @@ CREATE TABLE `images` (
   `file_size` BIGINT NOT NULL COMMENT '文件大小(字节)',
   `mime_type` VARCHAR(100) NOT NULL COMMENT '文件类型',
   `created_by` VARCHAR(50) NOT NULL COMMENT '上传人',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='图片表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='图片表';
 
 DROP TABLE IF EXISTS `blog_settings`;
-CREATE TABLE blog_settings (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    site_title VARCHAR(255),
-    site_description TEXT,
-    site_logo VARCHAR(500),
-    blog_notice VARCHAR(500),
-    personal_say VARCHAR(255),
-    gitee_link VARCHAR(255),
-    bilibili_link VARCHAR(255),
-    github_link VARCHAR(255),
-    qq_group VARCHAR(100),
-    qq_link VARCHAR(255),
-    wechat_group VARCHAR(100),
-    wechat_link VARCHAR(255),
-    ali_pay VARCHAR(500),
-    wechat_pay VARCHAR(500),
-    enable_comments BOOLEAN DEFAULT TRUE,
-    visit_count BIGINT DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `blog_settings` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `site_title` VARCHAR(255) NOT NULL COMMENT '网站名称',
+    `site_description` TEXT NOT NULL COMMENT '网站描述',
+    `site_logo` VARCHAR(500) NOT NULL COMMENT '博客logo',
+    `blog_notice` VARCHAR(500) DEFAULT NULL COMMENT '博客公告',
+    `personal_say` VARCHAR(255) DEFAULT NULL COMMENT '人生格言',
+    `gitee_link` VARCHAR(255) DEFAULT NULL COMMENT 'giteee主页',
+    `bilibili_link` VARCHAR(255) DEFAULT NULL COMMENT '哔哩哔哩主页',
+    `github_link` VARCHAR(255) DEFAULT NULL COMMENT 'github主页',
+    `qq_group` VARCHAR(100) DEFAULT NULL COMMENT 'QQ群聊',
+    `qq_link` VARCHAR(255) DEFAULT NULL COMMENT 'QQ名片',
+    `wechat_group` VARCHAR(100) DEFAULT NULL COMMENT '微信群聊',
+    `wechat_link` VARCHAR(255) DEFAULT NULL COMMENT '微信名片',
+    `ali_pay` VARCHAR(500) DEFAULT NULL COMMENT '支付宝付款码',
+    `wechat_pay` VARCHAR(500) DEFAULT NULL COMMENT '微信付款码',
+    `enable_comments` TINYINT(1) DEFAULT 1 COMMENT '是否开启评论功能',
+    `visit_count` BIGINT DEFAULT 0 COMMENT '网站访问次数',
+    `user_id` BIGINT NOT NULL COMMENT '站点所属用户id' ,
+    `site_url` VARCHAR(45) NOT NULL COMMENT '站点地址',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+    CONSTRAINT fk_user_id_blogSetting FOREIGN KEY (user_id) REFERENCES users(id)  ON DELETE NO ACTION ON UPDATE NO ACTION
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='博客设置表';
 
 DROP TABLE IF EXISTS `likes`;
 CREATE TABLE `likes` (
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键 ID',
+    `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '主键 ID',
     `user_id` BIGINT UNSIGNED NOT NULL COMMENT '点赞用户 ID',
     `target_type` VARCHAR(32) NOT NULL COMMENT '点赞对象类型，如 post, comment',
     `target_id` BIGINT UNSIGNED NOT NULL COMMENT '点赞对象 ID',
     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '是否有效，1 为点赞，0 为取消',
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '点赞时间',
-    PRIMARY KEY (`id`),
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     UNIQUE KEY `uniq_user_target` (`user_id`, `target_type`, `target_id`),
     INDEX `idx_target` (`target_type`, `target_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户点赞表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='点赞表';
 
 DROP TABLE IF EXISTS `routes`;
-CREATE TABLE routes (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  parent_id INT NULL,
-  path VARCHAR(255) NOT NULL,
-  name VARCHAR(255) NOT NULL UNIQUE,
-  redirect VARCHAR(255),
-  component VARCHAR(255),
-  
+CREATE TABLE `routes` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '路由ID',
+  `parent_id` BIGINT DEFAULT NULL COMMENT '父路由ID',
+  `path` VARCHAR(255) NOT NULL COMMENT '路由路径',
+  `name` VARCHAR(255) NOT NULL UNIQUE COMMENT '路由名称',
+  `redirect` VARCHAR(255) DEFAULT NULL COMMENT '路由重定向',
+  `component` VARCHAR(255) NOT NULL COMMENT '路由组件',
   /* meta信息 */
-  title VARCHAR(255) NOT NULL,
-  icon VARCHAR(255),
-  extra_icon VARCHAR(255),
-  show_link BOOLEAN DEFAULT TRUE,
-  show_parent BOOLEAN DEFAULT TRUE,
-  ranks INT,
-  
+  `title` VARCHAR(255) NOT NULL,
+  `icon` VARCHAR(255) DEFAULT NULL COMMENT '路由icon',
+  `extra_icon` VARCHAR(255) DEFAULT NULL COMMENT '路由备用icon',
+  `show_link` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否展示link',
+  `show_parent` TINYINT(1) DEFAULT 1 COMMENT '是否展示父路由',
+  `ranks` INT DEFAULT NULL COMMENT '路由排名',
   /* 权限相关 */
-  roles JSON,
-  auths JSON,
-  
+  `roles` JSON DEFAULT NULL COMMENT '可访问路由角色',
+  `auths` JSON DEFAULT NULL COMMENT '权限',
   /* 页面缓存和性能 */
-  keep_alive BOOLEAN DEFAULT FALSE,
-  
+  `keep_alive` BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否允许页面缓存',
   /* iframe相关 */
-  frame_src VARCHAR(255),
-  frame_loading BOOLEAN DEFAULT FALSE,
-  
+  `frame_src` VARCHAR(255) DEFAULT NULL COMMENT 'frame路径',
+  `frame_loading` BOOLEAN DEFAULT FALSE COMMENT '是否允许frame加载',
   /* 动画相关 */
-  transition_name VARCHAR(255),
-  enter_transition VARCHAR(255),
-  leave_transition VARCHAR(255),
-  
+  `transition_name` VARCHAR(255) DEFAULT NULL COMMENT '过渡动画名称',
+  `enter_transition` VARCHAR(255) DEFAULT NULL COMMENT '进入动画',
+  `leave_transition` VARCHAR(255) DEFAULT NULL COMMENT '离开动画',
   /* 标签页相关 */
-  hidden_tag BOOLEAN DEFAULT FALSE,
-  dynamic_level INT,
-  active_path VARCHAR(255),
-  
+  `hidden_tag` TINYINT(1) NOT NULL DEFAULT FALSE COMMENT '是否隐藏标签',
+  `dynamic_level` INT DEFAULT NULL COMMENT '标签水平',
+  `active_path` VARCHAR(255) DEFAULT NULL COMMENT '激活路径',
   FOREIGN KEY (parent_id) REFERENCES routes(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='路由表';
+
+DROP TABLE IF EXISTS `user_roles`;
+CREATE TABLE `user_roles` (
+    `id`       BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '唯一标识符',
+    `user_id`  BIGINT NOT NULL COMMENT '用户ID（外键，关联user表）',
+    `role_id`  BIGINT NOT NULL COMMENT '角色ID（外键，关联role表）',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    UNIQUE (user_id, role_id),
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id),
+    CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户-角色关系表';
 
 DROP TABLE IF EXISTS `article_tags`;
-CREATE TABLE article_tags (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT, --  '唯一标识符'
-    article_id BIGINT NOT NULL , -- '文章 ID（关联 Articles.id）'
-    tag_id BIGINT NOT NULL , -- '标签 ID（关联 Tags.id）'
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- '创建时间'
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- COMMENT '更新时间'
+CREATE TABLE `article_tags` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '唯一标识符',
+    `article_id` BIGINT NOT NULL COMMENT '文章 ID（关联 Articles.id）',
+    `tag_id` BIGINT NOT NULL COMMENT '标签 ID（关联 Tags.id）', 
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     CONSTRAINT fk_article FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
     CONSTRAINT fk_tag FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE,
     UNIQUE KEY uk_article_tag (article_id, tag_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章-标签关系表';
 
-DROP TABLE IF EXISTS `article_images`;
-CREATE TABLE article_images (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT, --  '唯一标识符'
-    article_id BIGINT NOT NULL , -- '文章 ID（关联 articles.id）'
-    image_id BIGINT NOT NULL , -- '标签 ID（关联 images.id）'
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- '创建时间'
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- COMMENT '更新时间'
-    CONSTRAINT fk_article1 FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
-    CONSTRAINT fk_image FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE CASCADE,
-    UNIQUE KEY uk_article_tag (article_id, image_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+DROP TABLE IF EXISTS `entity_images`;
+CREATE TABLE entity_images (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    entity_type VARCHAR(50) NOT NULL COMMENT '表名',
+    entity_id BIGINT NOT NULL COMMENT '对于表主键id',
+    image_id BIGINT NOT NULL COMMENT '引言图片id',
+    usage_type VARCHAR(50) NOT NULL DEFAULT "logo" COMMENT '图片用途',
+    sort_order INT NOT NULL DEFAULT 0 COMMENT "图片顺序",
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    UNIQUE KEY uq_entity_image (entity_type, entity_id,usage_type,sort_order),
+    CONSTRAINT fk_entity_image_image FOREIGN KEY (image_id) REFERENCES images(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='实体-图片关系表';
 
 DROP TABLE IF EXISTS `article_categories`;
-CREATE TABLE article_categories (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT, --  '唯一标识符'
-    article_id BIGINT NOT NULL , -- '文章 ID（关联 articles.id）'
-    category_id BIGINT NOT NULL , -- '标签 ID（关联 categories.id）'
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- '创建时间'
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- COMMENT '更新时间'
+CREATE TABLE `article_categories` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '唯一标识符',
+    `article_id` BIGINT NOT NULL COMMENT '文章 ID（关联 articles.id）',
+    `category_id` BIGINT NOT NULL COMMENT '标签 ID（关联 categories.id）',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     CONSTRAINT fk_article2 FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
     CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
     UNIQUE KEY uk_article_tag (article_id, category_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章-目录关系表';
+
+DROP TABLE IF EXISTS `role_permissions`;
+CREATE TABLE `role_permissions` (
+	`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '唯一标识符',
+    `role_id` BIGINT NOT NULL COMMENT '角色ID',
+    `permission_id` BIGINT NOT NULL COMMENT '权限ID',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+    FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色-权限关系表';
+

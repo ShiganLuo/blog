@@ -4,7 +4,7 @@ import { useUserStore } from "@/stores/index";
 import { containHTML } from "@/utils/tool";
 import TextOverflow from "@/components/TextOverflow/index.vue";
 import CommentInput from "./CommentInput.vue";
-import type { CommentItem, CommentType } from "./Comment";
+import type { CommentItem, CommentType } from "@/types/comment";
 
 const userStore = useUserStore();
 const showApplyInput = ref(false);

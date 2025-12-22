@@ -98,7 +98,7 @@ watch(
                 lazy
                 preview-teleported
                 :initial-index="index"
-                :preview-src-list="photoList.map((v) => v.url)"
+                :preview-src-list="photoList.map((v: Photo) => v.url)"
               >
                 <template #error>
                   <div class="w-[100%] h-[100%] grid place-items-center">

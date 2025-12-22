@@ -1,5 +1,5 @@
 import request from "@/utils/http/index";
-
+import {type CommentPage} from "@/types/comment"
 // import { }
 export class CommentSerivce {
   static addComment(data?: object) {
@@ -16,7 +16,7 @@ export class CommentSerivce {
   }
 
   static frontGetComment(data?: object) {
-    return request.post({
+    return request.post<CommentPage>({
       url: '/api/front/comments/getCommentPage',
       data
     })

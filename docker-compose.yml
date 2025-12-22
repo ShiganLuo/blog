@@ -1,8 +1,9 @@
-version: '3.8'
 services:
   # 数据库
   db:
     image: mysql:8.0.33
+    volumes:
+      - ./blog-springboot/blog.sql:/docker-entrypoint-initdb.d/blog.sql
     restart: always
     environment:
       MYSQL_DATABASE: blog
@@ -10,16 +11,35 @@ services:
     ports:
       - "3307:3306"
 
+  # 对象存储 MinIO
+  minio:
+    image: minio/minio
+    restart: always
+    ports:
+      - "9000:9000"       # API 端口（后端上传用）
+      - "9001:9001"       # 管理界面端口（浏览器访问用）
+    environment:
+      MINIO_ROOT_USER: admin              # 管理员账号
+      MINIO_ROOT_PASSWORD: password123    # 管理员密码（建议修改）
+    volumes:
+      - ./minio/data:/data                # 文件存储路径持久化
+    command: server /data --console-address ":9001"
+
   # 后端服务
   backend:
     build: ./blog-springboot
     restart: always
     depends_on:
       - db
+      - minio
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/blog_db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/blog
+      # 如果后端代码里用环境变量读取 MinIO 地址，可以加在这里
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=admin
+      - MINIO_SECRET_KEY=password123
 
   # 博客前台
   blog-web:
@@ -35,6 +55,6 @@ services:
     build: ./blog-vue3/blog-vue3-back
     restart: always
     ports:
-      - "8081:80" # 映射到 8081 端口
+      - "8081:80" 
     depends_on:
       - backend

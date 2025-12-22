@@ -74,12 +74,12 @@ const goToArticle = (article: Article) => {
           <div class="flex_r_start timeline">
             <div 
                 class="timeline-cover scale" 
-                v-image="article.article_cover"
+                v-image="article.articleCover"
                 >
                 <el-image
                     class="cover-img"
                     fit="cover"
-                    :src="article.article_cover"
+                    :src="article.articleCover"
                     @click="goToArticle(article)"
                 >
                     <template #error>
@@ -90,7 +90,7 @@ const goToArticle = (article: Article) => {
 
             <div class="timeline-info" @click="goToArticle(article)">
               <div class="timeline-info__title">
-                {{ article.article_title }}
+                {{ article.articleTitle }}
               </div>
               <div class="timeline-info__time">
                 {{ article.createdAt }}
