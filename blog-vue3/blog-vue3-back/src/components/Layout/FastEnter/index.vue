@@ -81,20 +81,20 @@
       iconColor: '#377dff',
       path: RoutesAlias.Dashboard
     },
-    {
-      name: '官方文档',
-      description: '使用指南与开发文档',
-      icon: '&#xe788;',
-      iconColor: '#ffb100',
-      path: WEB_LINKS.GITHUB
-    },
-    {
-      name: '技术支持',
-      description: '技术支持与问题反馈',
-      icon: '&#xe86e;',
-      iconColor: '#ff6b6b',
-      path: WEB_LINKS.GITHUB_HOME
-    }
+    // {
+    //   name: '官方文档',
+    //   description: '使用指南与开发文档',
+    //   icon: '&#xe788;',
+    //   iconColor: '#ffb100',
+    //   path: WEB_LINKS.GITHUB
+    // },
+    // {
+    //   name: '技术支持',
+    //   description: '技术支持与问题反馈',
+    //   icon: '&#xe86e;',
+    //   iconColor: '#ff6b6b',
+    //   path: WEB_LINKS.GITHUB_HOME
+    // }
   ]
 
   const quickLinks: QuickLink[] = [
