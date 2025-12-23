@@ -10,7 +10,7 @@ export class LoginService {
   // 登录方法
   static login(data: any) {
     return request.post<UserLoginResponse>({
-      url: '/admin/users/login',
+      url: '/admin/users/captchaLogin',
       data
     })
   }

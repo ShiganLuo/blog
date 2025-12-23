@@ -1,10 +1,12 @@
 package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.service.UtilService;
-import com.github.benmanes.caffeine.cache.Cache;
+
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.entity.Role;
 import com.baofeng.blog.entity.User;
+import com.baofeng.blog.dto.admin.AdminLoginResponseDTO;
+import com.baofeng.blog.dto.admin.AdminUserAuthDTO.CaptchaAuthLonginRequest;
 import com.baofeng.blog.dto.admin.AdminUserAuthDTO.EmailAuthRequest;
 import com.baofeng.blog.dto.common.UtilDTO.CaptchaResponse;
 import com.baofeng.blog.enums.UserStatusEnum;
@@ -13,14 +15,21 @@ import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.enums.RoleTypeEnum;
 import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.mapper.RoleMapper;
+import com.baofeng.blog.mapper.PermissionMapper;
+import com.baofeng.blog.common.util.JwtTokenProviderUtil;
+import com.baofeng.blog.config.JwtPropertiesConfig;
 
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import java.awt.image.BufferedImage;
 import java.util.UUID;
 import java.io.ByteArrayOutputStream;
 import javax.imageio.ImageIO;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,36 +37,49 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 @Service
 public class UtilServiceImpl implements UtilService {
     // 与登录接口集成待完成
     private final DefaultKaptcha captchaProducer;
-    private Cache<String, String> emailCodeCache;
-    private JavaMailSender mailSender;
-    private UserMapper userMapper;
-    private RoleMapper roleMapper;
+    private final Cache<String, String> codeCache;
+    private final JavaMailSender mailSender;
+    private final UserMapper userMapper;
+    private final RoleMapper roleMapper;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtTokenProviderUtil jwtTokenProvider;
+    private final long accessTokenExpiration;
+    private final long refreshTokenExpiration;
+    private final PermissionMapper permissionMapper;
     private static final Logger logger = LoggerFactory.getLogger(UtilServiceImpl.class);
 
     public UtilServiceImpl(
         DefaultKaptcha captchaProducer, 
-        Cache<String,String> emailCodeCache, 
+        Cache<String,String> codeCache, 
         JavaMailSender mailSender,
         UserMapper userMapper,
         BCryptPasswordEncoder passwordEncoder,
-        RoleMapper roleMapper) {
+        RoleMapper roleMapper,
+        JwtTokenProviderUtil jwtTokenProvider,
+        JwtPropertiesConfig jwtProperties,
+        PermissionMapper permissionMapper) {
         this.captchaProducer = captchaProducer;
-        this.emailCodeCache = emailCodeCache;
+        this.codeCache = codeCache;
         this.mailSender = mailSender;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.roleMapper = roleMapper;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.accessTokenExpiration = jwtProperties.getAccessTokenExpiration();
+        this.refreshTokenExpiration = jwtProperties.getRefreshTokenExpiration();
+        this.permissionMapper = permissionMapper;
     }
     @Override
     public ApiResponse<CaptchaResponse> getCaptcha() {
         String text = captchaProducer.createText();
         BufferedImage image = captchaProducer.createImage(text);
         String uuid = UUID.randomUUID().toString();
+        codeCache.put("IMG:" + uuid, text);
         CaptchaResponse captchaResponse = new CaptchaResponse();
         captchaResponse.setCaptchaEnabled(true);
         captchaResponse.setUuid(uuid);
@@ -74,6 +96,68 @@ public class UtilServiceImpl implements UtilService {
         captchaResponse.setImg("data:image/jpg;base64," + imgBase64);
         return ApiResponse.success(captchaResponse);
     }
+
+    @Override
+    public ApiResponse<AdminLoginResponseDTO> captechaLogin(CaptchaAuthLonginRequest captchaAuthLonginRequest) {
+        String uuid = captchaAuthLonginRequest.uuid();
+        String verifyText = captchaAuthLonginRequest.verifyText();
+        String realText = codeCache.getIfPresent("IMG:" + uuid);
+        String username = captchaAuthLonginRequest.username();
+        String password = captchaAuthLonginRequest.password();
+        if (realText != null && realText.equals(verifyText)) {
+            codeCache.invalidate("IMG:" + uuid);
+        } else {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"图形验证码错误");
+        }
+
+        User user = userMapper.selectByUsernameOrEmail(username);
+        if (user == null) {
+            return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "用户不存在");
+        }
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            userMapper.incrementLoginAttempts(user.getId());
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "密码错误");
+        }
+        if (user.getStatus() == UserStatusEnum.BANNED.getStatus()) {
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "账户被锁定");
+        }
+
+         // 更新登录信息
+        userMapper.updateLoginInfo(user.getId());
+
+        // 生成 token
+        String accessToken = jwtTokenProvider.generateToken(user, accessTokenExpiration, false);
+        String refreshToken = jwtTokenProvider.generateToken(user, refreshTokenExpiration, true);
+
+        // 获取角色
+        List<Role> roleList = roleMapper.selectRolesByUserId(user.getId());
+        List<String> roles = new ArrayList<>(roleList.size());
+        List<Long> roleIds = new ArrayList<>(roleList.size());
+        for (Role role : roleList) {
+            roles.add(role.getRoleName());
+            roleIds.add(role.getId());
+        }
+        List<String> permissions;
+        if (roleIds.isEmpty()) {
+            // 如果用户没有角色，则权限列表为空
+            permissions = Collections.emptyList();
+        } else {
+            // 调用批量查询方法
+            permissions = permissionMapper.selectPermissionsByRoleIds(roleIds);
+        }
+
+        AdminLoginResponseDTO.User userInfo = new AdminLoginResponseDTO.User(
+            user.getId(),
+            user.getAvatarUrl(),
+            user.getUsername(),
+            user.getNickName(),
+            roles,
+            permissions
+        );
+        AdminLoginResponseDTO adminLoginResponseDTO = new AdminLoginResponseDTO(accessToken, refreshToken, userInfo);
+        return ApiResponse.success(adminLoginResponseDTO);
+    }
+
     @Override
     public ApiResponse<String> EmailCodeSend(String email){
 
@@ -90,7 +174,7 @@ public class UtilServiceImpl implements UtilService {
     }
 
     @Override
-    public ApiResponse<String> EmailAuth(EmailAuthRequest emailAuthRequest) {
+    public ApiResponse<String> EmailAuthRegister(EmailAuthRequest emailAuthRequest) {
         String email = emailAuthRequest.email();
         String username = emailAuthRequest.username();
         User user1 = userMapper.selectByUsernameOrEmail(username);
@@ -104,9 +188,9 @@ public class UtilServiceImpl implements UtilService {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"该邮箱已经注册过用户");
         }
         String verifyCode = emailAuthRequest.verifyCode();
-        String realCode = emailCodeCache.getIfPresent(email);
+        String realCode = codeCache.getIfPresent("MAIL:" + email);
         if (realCode != null && realCode.equals(verifyCode)) {
-            emailCodeCache.invalidate(email); // 校验成功立即删除
+            codeCache.invalidate("MAIL:" + email); // 校验成功立即删除
         } else {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"验证码错误");
         }
@@ -152,7 +236,7 @@ public class UtilServiceImpl implements UtilService {
         String code = String.valueOf((int)((Math.random() * 9 + 1) * 100000));
 
         // 2. 存入 Caffeine 缓存 (5分钟自动过期)
-        emailCodeCache.put(email, code);
+        codeCache.put("MAIL:" + email, code);
 
         // 3. 构造邮件内容
         SimpleMailMessage message = new SimpleMailMessage();

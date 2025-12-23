@@ -5,7 +5,6 @@ import com.baofeng.blog.dto.admin.AdminLoginResponseDTO;
 import com.baofeng.blog.dto.admin.AdminUserAuthDTO.*;
 import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
-import com.baofeng.blog.dto.admin.AdminUserAuthDTO.EmailAuthRequest;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.service.UtilService;
@@ -114,7 +113,12 @@ public class AdminUserController {
 
     @PostMapping("/emailRegister")
     public ApiResponse<String> emailRegister(@RequestBody EmailAuthRequest emailAuthRequest) {
-        return utilService.EmailAuth(emailAuthRequest);
+        return utilService.EmailAuthRegister(emailAuthRequest);
+    }
+
+    @PostMapping("/captchaLogin")
+    public ApiResponse<AdminLoginResponseDTO> captchaLogin(@RequestBody CaptchaAuthLonginRequest captchaAuthLonginRequest) {
+        return utilService.captechaLogin(captchaAuthLonginRequest);
     }
 
 } 

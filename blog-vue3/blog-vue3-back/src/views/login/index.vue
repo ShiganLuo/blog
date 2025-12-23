@@ -244,7 +244,7 @@
           const res = await LoginService.login({
             username: formData.username,
             password: formData.password,
-            code: formData.code,
+            verifyText: formData.code,
             uuid: formData.uuid
           })
           if (res.code === ApiStatus.success) {

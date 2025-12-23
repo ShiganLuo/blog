@@ -47,6 +47,20 @@ public class AdminUserAuthDTO {
     ) {
     }
 
+    public static record CaptchaAuthLonginRequest(
+        @NotBlank(message = "账号不能为空")
+        String username,
+        
+        @NotBlank(message = "密码不能为空")
+        String password,
+
+        @NotBlank(message = "uuid不能为空")
+        String uuid,
+        @NotBlank(message = "图形验证码不能为空")
+        String verifyText
+    ) {
+    }
+
     @Data
     public static class UserPageRequest {
         private Integer current = 1;    // 当前页码

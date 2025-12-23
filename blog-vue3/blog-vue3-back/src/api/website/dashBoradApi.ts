@@ -4,37 +4,37 @@ import { CountToObjectList,WeekChartObject,FiledCountList,MonthChartObject } fro
 export class dashBoardService {
   static getBlogDetailNumber() {
     return request.get<CountToObjectList>({
-      url: '/api/admin/dashBoard/getBlogDetailNumber'
+      url: '/admin/dashBoard/getBlogDetailNumber'
     })
   }
   
   static getUserAddInLastWeek() {
     return request.get<WeekChartObject>({
-      url: '/api/admin/dashBoard/getUserAddInLastWeek'
+      url: '/admin/dashBoard/getUserAddInLastWeek'
     })
   }
 
   static getUserAddComparedToLastWeek() {
     return request.get<string>({
-      url: '/api/admin/dashBoard/getUserAddComparedToLastWeek'
+      url: '/admin/dashBoard/getUserAddComparedToLastWeek'
     })
   }
 
   static getAccessAndUserCondition() {
     return request.get<FiledCountList>({
-      url: '/api/admin/dashBoard/getAccessAndUserCondition'
+      url: '/admin/dashBoard/getAccessAndUserCondition'
     })
   }
   
   static getArticleAddInThisYear() {
     return request.get<MonthChartObject>({
-      url: '/api/admin/dashBoard/getArticleAddInThisYear'
+      url: '/admin/dashBoard/getArticleAddInThisYear'
     })
   }
 
   static getArticleAddCompareToLastWeek() {
     return request.get<string>({
-      url: '/api/admin/dashBoard/getArticleAddCompareToLastWeek'
+      url: '/admin/dashBoard/getArticleAddCompareToLastWeek'
     })
   }
 }
