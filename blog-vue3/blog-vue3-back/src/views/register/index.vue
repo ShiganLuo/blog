@@ -148,7 +148,7 @@
 
   const getVerifyCode = async () => {
     try {
-      const res = await LoginService.sendEmailCode({ mailAddress: formData.email })
+      const res = await LoginService.sendEmailCode(formData.email)
       if (res.code === 200) {
         ElMessage.success(t('register.verifyCodeSent'))
         startCooldown()
@@ -217,7 +217,6 @@
       const res = await LoginService.register({
         username: formData.username,
         password: formData.password,
-        confirmPassword: formData.confirmPassword,
         email: formData.email,
         verifyCode: formData.verifyCode
       })

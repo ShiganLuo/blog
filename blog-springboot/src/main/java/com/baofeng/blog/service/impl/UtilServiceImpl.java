@@ -103,9 +103,9 @@ public class UtilServiceImpl implements UtilService {
         if (user2 != null ) {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"该邮箱已经注册过用户");
         }
-        String code = emailAuthRequest.code();
+        String verifyCode = emailAuthRequest.verifyCode();
         String realCode = emailCodeCache.getIfPresent(email);
-        if (realCode != null && realCode.equals(code)) {
+        if (realCode != null && realCode.equals(verifyCode)) {
             emailCodeCache.invalidate(email); // 校验成功立即删除
         } else {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"验证码错误");

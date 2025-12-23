@@ -3,6 +3,7 @@ import { BaseResult,UserLoginResponse } from '@/types/axios'
 import { CaptchaResult, loginFunctionEnabledResult, LoginResult } from '@/types/login'
 import { LoginUserResult } from '@/types/system/user'
 import { MenuListType } from '@/types/menu'
+import { parseStrEmpty } from '@/utils/utils'
 
 // 登陆
 export class LoginService {
@@ -22,7 +23,7 @@ export class LoginService {
   // 注册方法
   static register(data: any) {
     return request.post<BaseResult>({
-      url: '/register',
+      url: '/api/admin/users/emailRegister',
       data
     })
   }
@@ -49,10 +50,9 @@ export class LoginService {
     })
   }
   // 发送邮箱验证码
-  static sendEmailCode(data: { mailAddress: string }) {
+  static sendEmailCode(email:string) {
     return request.get<BaseResult>({
-      url: '/mailCode',
-      params: data
+      url: '/api/admin/users/getEmailCode/' + parseStrEmpty(email),
     })
   }
   // 重置密码

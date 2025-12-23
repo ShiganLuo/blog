@@ -6,7 +6,6 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.baofeng.blog.entity.Role;
 public class AdminPermissionDTO {
 
     public static record AssignPermissionRequest (
