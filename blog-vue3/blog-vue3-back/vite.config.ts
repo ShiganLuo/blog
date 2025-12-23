@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig, loadEnv, type ConfigEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import viteCompression from 'vite-plugin-compression'
@@ -7,7 +7,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { fileURLToPath } from 'url'
 
-export default ({ mode }) => {
+export default ({ mode }: ConfigEnv) => {
   const root = process.cwd()
   const env = loadEnv(mode, root)
   const { VITE_VERSION, VITE_PORT, VITE_BASE_URL, VITE_API_URL } = env
@@ -28,6 +28,11 @@ export default ({ mode }) => {
           target: VITE_API_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/dev-api/, '')
+        },
+        '/api': {
+          // 生产环境
+          changeOrigin: true,
+          // rewrite: (path) => path.replace(/^\/api/, '')
         }
       },
       host: true
@@ -254,6 +259,6 @@ export default ({ mode }) => {
   })
 }
 
-function resolvePath(paths) {
+function resolvePath(paths: string) {
   return path.resolve(__dirname, paths)
 }

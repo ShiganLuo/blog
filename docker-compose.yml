@@ -9,18 +9,18 @@ services:
       MYSQL_DATABASE: blog
       MYSQL_ROOT_PASSWORD: 123456
     ports:
-      - "3307:3306"
+      - "3308:3306"
 
   # 对象存储 MinIO
   minio:
     image: minio/minio
     restart: always
     ports:
-      - "9000:9000"       # API 端口（后端上传用）
-      - "9001:9001"       # 管理界面端口（浏览器访问用）
+      - "9002:9000"       # API 端口（后端上传用）
+      - "9003:9001"       # 管理界面端口（浏览器访问用）
     environment:
       MINIO_ROOT_USER: admin              # 管理员账号
-      MINIO_ROOT_PASSWORD: password123    # 管理员密码（建议修改）
+      MINIO_ROOT_PASSWORD: 12345678    # 管理员密码（建议修改）
     volumes:
       - ./minio/data:/data                # 文件存储路径持久化
     command: server /data --console-address ":9001"
@@ -42,16 +42,16 @@ services:
       - MINIO_SECRET_KEY=password123
 
   # 博客前台
-  blog-web:
+  web:
     build: ./blog-vue3/blog-vue3-front
     restart: always
     ports:
-      - "80:80"
+      - "81:80"
     depends_on:
       - backend
 
   # 博客管理后台
-  blog-admin:
+  admin:
     build: ./blog-vue3/blog-vue3-back
     restart: always
     ports:
