@@ -4,48 +4,48 @@ import { type UserResult, type RefreshTokenResult } from "@/types/user"
 export class UserService {
   static login(data?: object) {
     return request.post({
-      url: "/api/admin/users/login",
+      url: "/admin/users/login",
       data: data 
     })
   }
 
   static refreshTokenApi(data?: object) {
     return request.post<RefreshTokenResult>({
-      url: "/api/admin/users/refreshToken",
+      url: "/admin/users/refreshToken",
       data: data     
     })
   }
 
   static register(data?: object) {
     return request.post({
-      url: "/api/admin/users/register",
+      url: "/admin/users/register",
       data: data
     })
   }
 
   static getUserInfoById(id?: string | number) {
     return request.get({
-      url: `/api/front/users/getUserInfoById/${id}`
+      url: `/front/users/getUserInfoById/${id}`
     })
   }
 
   static reqLogin(data?: object) {
     return request.post<UserResult>({
-      url: "/api/front/users/login",
+      url: "/front/users/login",
       data: data
     })
   }
 
   static reqRegister(data?: object) {
     return request.post({
-      url: "/api/admin/users/register",
+      url: "/admin/users/register",
       data: data      
     })
   }
 
   static imgUpload(data?: object) {
     return request.post<string>({
-      url: "/api/front/images/uploadImage",
+      url: "/front/images/uploadImage",
       data: data      
     })
   }

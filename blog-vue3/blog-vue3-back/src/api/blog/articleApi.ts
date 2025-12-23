@@ -6,7 +6,7 @@ export class ArticleService {
   // 查询文章列表
   static listArticle(query: any) {
     return request.post<ArticleRecordResult>({
-      url: '/api/admin/articles/getArticleList',
+      url: '/admin/articles/getArticleList',
       data: query
     })
   }
@@ -14,7 +14,7 @@ export class ArticleService {
   // 查询文章详细
   static getArticleById(id: any) {
     return request.get<ArticleResult>({
-      url: '/api/admin/articles/getArticleById/' + id
+      url: '/admin/articles/getArticleById/' + id
     })
   }
 
@@ -29,7 +29,7 @@ export class ArticleService {
   // 选择更新批量文章
   static updateArticles(data: any) {
     return request.post({
-      url: '/api/admin/articles/updateArticlesSelective',
+      url: '/admin/articles/updateArticlesSelective',
       data: data
     })
   }
@@ -48,7 +48,7 @@ export class ArticleService {
   // 置顶或推荐文章
   static updateTopOrFeatured(data: any) {
     return request.post({
-      url: '/api/admin/articles/updateArticlesSelective',
+      url: '/admin/articles/updateArticlesSelective',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -71,7 +71,7 @@ export class ArticleService {
   // 上传文章封面
   static uploadCover(data:any) {
     return request.post({
-      url: '/api/admin/articles/uploadCover',
+      url: '/admin/articles/uploadCover',
       data: data
     })
   }

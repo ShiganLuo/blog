@@ -10,15 +10,9 @@ import { fileURLToPath } from 'url'
 export default ({ mode }: ConfigEnv) => {
   const root = process.cwd()
   const env = loadEnv(mode, root)
-  const { VITE_VERSION, VITE_PORT, VITE_BASE_URL, VITE_API_URL } = env
-
-  console.log(`🚀 API_URL = ${VITE_API_URL}`)
-  console.log(`🚀 VERSION = ${VITE_VERSION}`)
+  const { VITE_PORT, VITE_BASE_URL, VITE_API_URL } = env
 
   return defineConfig({
-    define: {
-      __APP_VERSION__: JSON.stringify(VITE_VERSION)
-    },
     base: VITE_BASE_URL,
     server: {
       port: parseInt(VITE_PORT),
@@ -27,13 +21,13 @@ export default ({ mode }: ConfigEnv) => {
           // 开发环境
           target: VITE_API_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/dev-api/, '')
+          rewrite: (path) => path.replace(/^\/dev-api/, '/api')
         },
         '/api': {
           // 生产环境
           target: VITE_API_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, '')
+          rewrite: (path) => path.replace(/^\/api/, '/api')
         }
       },
       host: true

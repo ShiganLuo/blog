@@ -29,7 +29,7 @@ COPY --from=build-stage /app/dist /usr/share/nginx/html
 # 重要：对于 Vue/React 项目，如果不开启 try_files，
 # 刷新页面会出现 404（尤其是在使用 history 模式路由时）
 # 建议你创建一个简单的 nginx.conf 并取消下面这行的注释
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

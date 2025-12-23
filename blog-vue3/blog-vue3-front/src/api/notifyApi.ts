@@ -3,7 +3,7 @@ import { type MessageCompoentItemListResponse } from "@/types/message";
 export class NotifyService {
     static getNotifylist(data?: object) {
         return request.post<MessageCompoentItemListResponse>({
-            url: '/api/front/comments/getNotifyPage',
+            url: '/front/comments/getNotifyPage',
             data:data
         })
     }

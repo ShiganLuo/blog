@@ -155,7 +155,7 @@
 
   const getVerifyCode = async () => {
     try {
-      const res = await LoginService.sendEmailCode({ mailAddress: form.email })
+      const res = await LoginService.sendEmailCode(form.email)
       if (res.code === 200) {
         ElMessage.success(t('forgetPassword.codeSent'))
         startCooldown()

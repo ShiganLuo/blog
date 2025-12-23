@@ -15,7 +15,7 @@ export class UserService {
   // 查询用户信息列表
   static listUser(data: any) {
     return request.post<UserListPageResult>({
-      url: '/api/admin/users/getUsersList',
+      url: '/admin/users/getUsersList',
       data: data
     })
   }
@@ -23,7 +23,7 @@ export class UserService {
   // 查询用户信息详细
   static getUser(userId: any) {
     return request.get<UserResult>({
-      url: '/api/admin/users/getUserInfoById/' + parseStrEmpty(userId)
+      url: '/admin/users/getUserInfoById/' + parseStrEmpty(userId)
     })
   }
 
@@ -38,7 +38,7 @@ export class UserService {
   // 修改用户信息
   static updateUser(data: any) {
     return request.post({
-      url: '/api/admin/users/updateUserInfo',
+      url: '/admin/users/updateUserInfo',
       data: data
     })
   }
@@ -46,7 +46,7 @@ export class UserService {
   // 删除用户信息
   static deleteUser(userId: any) {
     return request.del({
-      url: '/api/admin/users/deleteUser/' + userId
+      url: '/admin/users/deleteUser/' + userId
     })
   }
 
@@ -61,7 +61,7 @@ export class UserService {
   // 重置用户密码
   static resetUserPwd(data: any) {
     return request.post({
-      url: '/api/admin/users/passwordUpdate',
+      url: '/admin/users/passwordUpdate',
       data: data
     })
   }
@@ -89,14 +89,14 @@ export class UserService {
   // 获取个人信息
   static getProfile() {
     return request.get<LoginUserResult>({
-      url: '/api/admin/users/getUserInfoByToken'
+      url: '/admin/users/getUserInfoByToken'
     })
   }
 
   // 修改个人信息
   static editProfile(data: object) {
     return request.post<string>({
-      url: '/api/admin/users/updateUserInfo',
+      url: '/admin/users/updateUserInfo',
       data
     })
   }
@@ -104,7 +104,7 @@ export class UserService {
   // 修改个人信息密码
   static editProfilePwd(data: object) {
     return request.post<BaseResult>({
-      url: '/api/admin/users/passwordUpdate',
+      url: '/admin/users/passwordUpdate',
       data
     })
   }
@@ -121,14 +121,14 @@ export class UserService {
   // 查询授权角色
   static getAuthRole(userId: any) {
     return request.get<AuthRolesResult>({
-      url: '/api/admin/permission/getAuthRole/' + userId
+      url: '/admin/permission/getAuthRole/' + userId
     })
   }
 
   // 保存授权角色
   static updateAuthRole(data: any) {
     return request.post({
-      url: '/api/admin/users/updateUserRoles',
+      url: '/admin/users/updateUserRoles',
       data: data
     })
   }

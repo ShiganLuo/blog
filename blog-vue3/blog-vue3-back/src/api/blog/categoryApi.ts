@@ -42,7 +42,7 @@ export class CategoryService {
   // 搜索分类
   static searchCategories(keywords: string) {
     return request.get<CategoryListResult>({
-      url: '/api/admin/categories/getCategoryDictionary',
+      url: '/admin/categories/getCategoryDictionary',
       params: keywords
     })
   }

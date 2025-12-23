@@ -7,7 +7,7 @@ export class DictDataService {
   // 查询字典数据列表
   static listData(type: any) {
     return request.get<DictDataListPageResult>({
-      url: `/api/admin/settings/getDictSetting/${type}`,
+      url: `/admin/settings/getDictSetting/${type}`,
     })
   }
 

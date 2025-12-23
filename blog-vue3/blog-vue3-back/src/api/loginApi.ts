@@ -10,20 +10,20 @@ export class LoginService {
   // 登录方法
   static login(data: any) {
     return request.post<UserLoginResponse>({
-      url: '/api/admin/users/login',
+      url: '/admin/users/login',
       data
     })
   }
   // 获取登录功能开关
   static getLoginFunctionEnabled() {
     return request.get<loginFunctionEnabledResult>({
-      url: '/api/admin/mock/loginFunctionEnabled'
+      url: '/admin/mock/loginFunctionEnabled'
     })
   }
   // 注册方法
   static register(data: any) {
     return request.post<BaseResult>({
-      url: '/api/admin/users/emailRegister',
+      url: '/admin/users/emailRegister',
       data
     })
   }
@@ -42,7 +42,7 @@ export class LoginService {
   // 获取验证码
   static getCodeImg() {
     return request.get<CaptchaResult>({
-      url: '/api/admin/util/get-captcha',
+      url: '/admin/util/get-captcha',
       headers: {
         isToken: false
       },
@@ -52,7 +52,7 @@ export class LoginService {
   // 发送邮箱验证码
   static sendEmailCode(email:string) {
     return request.get<BaseResult>({
-      url: '/api/admin/users/getEmailCode/' + parseStrEmpty(email),
+      url: '/admin/users/getEmailCode/' + parseStrEmpty(email),
     })
   }
   // 重置密码
@@ -66,7 +66,7 @@ export class LoginService {
   // 获取路由信息
   static getRouters() {
     return request.get<MenuListType>({
-      url: '/api/admin/mock/get-async-routes'
+      url: '/admin/mock/get-async-routes'
     })
   }
 }

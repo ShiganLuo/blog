@@ -11,7 +11,7 @@ export class ArticleService {
 
   static homeGetArticleList(data?: object) {
     return request.post<ArticleInfoListResponse>({
-        url: '/api/front/articles/getArticleList',
+        url: '/front/articles/getArticleList',
         data
     })
   }
@@ -35,33 +35,33 @@ export class ArticleService {
       throw new Error('getArticleById: id is required')
     }
     return request.get<ArticleInfo>({
-      url: `/api/front/articles/getArticleById/${id}`,
+      url: `/front/articles/getArticleById/${id}`,
     })
   }
 
   static getArticleListByTagId(data?: object) {
     return request.post<ArticleListResponse>({
-      url: '/api/front/articles/getArticlesByTagId',
+      url: '/front/articles/getArticlesByTagId',
       data
     })
   }
 
   static getArticleListByCategoryId(data?: object) {
     return request.post<ArticleListResponse>({
-      url: '/api/front/articles/getArticlesByCategoryId',
+      url: '/front/articles/getArticlesByCategoryId',
       data
     })
   }
 
   static getRecommendArticleById(id?: string | number) {
     return request.get<recommendArticles>({
-      url: `/api/front/articles/getRecommendArticleById/${id}`,
+      url: `/front/articles/getRecommendArticleById/${id}`,
     })
   }
 
   static blogTimelineGetArticleList(data?: object) {
     return request.post<ArticleListResponse>({
-      url: '/api/front/articles/getTimeLineArticle',
+      url: '/front/articles/getTimeLineArticle',
       data
     })
   }

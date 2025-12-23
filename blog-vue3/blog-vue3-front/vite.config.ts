@@ -49,8 +49,8 @@ export default defineConfig(({ mode }: ConfigEnv) => {
 
     server: {
       // 如果环境变量没定义，默认 3000
-      port: VITE_PORT ? Number(VITE_PORT) : 3000,
-      host: "0.0.0.0",
+      port: Number(VITE_PORT),
+      host: true, // 监听所有网卡
       open: true,
       hmr: {
         overlay: false
@@ -61,13 +61,13 @@ export default defineConfig(({ mode }: ConfigEnv) => {
           // 开发环境
           target: VITE_API_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/dev-api/, '')
+          rewrite: (path) => path.replace(/^\/dev-api/, '/api')
         },
         '/api': {
           // 生产环境
           target: VITE_API_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, '')
+          rewrite: (path) => path.replace(/^\/api/, '/api')
         }
       },
     },

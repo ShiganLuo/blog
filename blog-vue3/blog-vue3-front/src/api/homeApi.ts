@@ -9,7 +9,7 @@ export class HomeService {
     }
     static getOneStentence() {
         return request.get<string>({
-            url: '/api/front/utils/oneSentence'
+            url: '/front/utils/oneSentence'
         })
     }
 }

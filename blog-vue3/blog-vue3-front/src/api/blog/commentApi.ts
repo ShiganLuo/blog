@@ -4,20 +4,20 @@ import {type CommentPage} from "@/types/comment"
 export class CommentSerivce {
   static addComment(data?: object) {
     return request.post({
-      url: '/api/front/comments/addComment',
+      url: '/front/comments/addComment',
       data
     })
   }
 
   static frontGetCommentTotal(id: number | string) {
     return request.get({
-      url: `/api/front/comments/getCommentTotal/${id}`
+      url: `/front/comments/getCommentTotal/${id}`
     })
   }
 
   static frontGetComment(data?: object) {
     return request.post<CommentPage>({
-      url: '/api/front/comments/getCommentPage',
+      url: '/front/comments/getCommentPage',
       data
     })
   }
@@ -31,7 +31,7 @@ export class CommentSerivce {
 
   static deleteComment(id?: number | string) {
     return request.get({
-      url: `/api/front/comments/deleteCommentById/${id}`
+      url: `/front/comments/deleteCommentById/${id}`
     })
   }
 }

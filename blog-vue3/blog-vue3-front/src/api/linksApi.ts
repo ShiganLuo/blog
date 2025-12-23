@@ -3,21 +3,21 @@ import { type FriendLinkListResponse } from "@/types/link"
 export class LinkService {
   static getFriendLinks(data?: object){
     return request.post<FriendLinkListResponse>({
-      url: '/api/front/settings/getAllFriendLink',
+      url: '/front/settings/getAllFriendLink',
       data: data
     })
   }
 
   static addFriendLinks(data?: object) {
     return request.post({
-      url: '/api/front/settings/addFriendLink',
+      url: '/front/settings/addFriendLink',
       data: data
     })
   }
 
   static updateFriendLinks(data?: object) {
     return request.post({
-      url: '/api/front/settings/updateFriendLink',
+      url: '/front/settings/updateFriendLink',
       data: data      
     })
   }

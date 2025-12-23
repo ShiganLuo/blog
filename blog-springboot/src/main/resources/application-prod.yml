@@ -8,6 +8,22 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: blog
+  mail:
+      host: smtp.163.com
+      port: 465
+      username: geleihugh@163.com # 你的邮箱
+      password: KZdD8ckDsuQgXSEz   # 16位授权码
+      properties:
+        mail:
+          smtp:
+            auth: true
+            ssl:
+              enable: true
+            # 阿里/腾讯云等环境建议加上这个，防止 Socket 工厂类报错
+            socketFactory:
+              port: 465
+              class: javax.net.ssl.SSLSocketFactory
+              fallback: false
 ##mybatis属于第三方库，需要位于配置文件的顶层
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml  # 设置 MyBatis Mapper 文件的位置
