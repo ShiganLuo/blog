@@ -31,8 +31,9 @@ export default ({ mode }: ConfigEnv) => {
         },
         '/api': {
           // 生产环境
+          target: VITE_API_URL,
           changeOrigin: true,
-          // rewrite: (path) => path.replace(/^\/api/, '')
+          rewrite: (path) => path.replace(/^\/api/, '')
         }
       },
       host: true

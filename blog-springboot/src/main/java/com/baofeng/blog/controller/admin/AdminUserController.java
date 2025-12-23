@@ -5,8 +5,10 @@ import com.baofeng.blog.dto.admin.AdminLoginResponseDTO;
 import com.baofeng.blog.dto.admin.AdminUserAuthDTO.*;
 import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
+import com.baofeng.blog.dto.admin.AdminUserAuthDTO.EmailAuthRequest;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.service.UserService;
+import com.baofeng.blog.service.UtilService;
 
 import java.util.Map;
 
@@ -21,9 +23,11 @@ import jakarta.validation.Valid;
 public class AdminUserController {
     
     private final UserService userService;
+    private final UtilService utilService;
     
-    public AdminUserController(UserService userService) {
+    public AdminUserController(UserService userService, UtilService utilService) {
         this.userService = userService;
+        this.utilService = utilService;
     }
 
     @PostMapping("/register")
@@ -101,6 +105,16 @@ public class AdminUserController {
     @DeleteMapping("/deleteUser/{userId}")
     public ApiResponse<String> deleteUser(@PathVariable("userId") Long userId) {
         return userService.deleteUser(userId);
+    }
+
+    @GetMapping("/getEmailCode/{email}")
+    public ApiResponse<String> getEmailCode(@PathVariable("email") String email) {
+        return utilService.EmailCodeSend(email);
+    }
+
+    @PostMapping("/emailRegister")
+    public ApiResponse<String> emailRegister(@RequestBody EmailAuthRequest emailAuthRequest) {
+        return utilService.EmailAuth(emailAuthRequest);
     }
 
 } 

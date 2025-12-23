@@ -57,14 +57,19 @@ export default defineConfig(({ mode }: ConfigEnv) => {
       },
       // 设置代理
       proxy: {
-        '/api': {
-          // 动态读取环境变量中的后端地址
-          target: VITE_API_URL || 'http://127.0.0.1:8080',
+        '/dev-api': {
+          // 开发环境
+          target: VITE_API_URL,
           changeOrigin: true,
-          secure: false,
-          // rewrite: (path) => path.replace(/^\/api/, "")
+          rewrite: (path) => path.replace(/^\/dev-api/, '')
+        },
+        '/api': {
+          // 生产环境
+          target: VITE_API_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '')
         }
-      }
+      },
     },
     
     // 生产环境打包优化

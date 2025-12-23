@@ -2,28 +2,12 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3307/blog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3308/blog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: blog
-  mail:
-    host: smtp.163.com
-    port: 465
-    username: geleihugh@163.com # 你的邮箱
-    password: KZdD8ckDsuQgXSEz   # 16位授权码
-    properties:
-      mail:
-        smtp:
-          auth: true
-          ssl:
-            enable: true
-          # 阿里/腾讯云等环境建议加上这个，防止 Socket 工厂类报错
-          socketFactory:
-            port: 465
-            class: javax.net.ssl.SSLSocketFactory
-            fallback: false
 ##mybatis属于第三方库，需要位于配置文件的顶层
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml  # 设置 MyBatis Mapper 文件的位置
@@ -75,8 +59,8 @@ app:
     dir: /home/luosg/uploads  # 顶层属性,全路径
     ipPrefix: http://localhost
 minio:
-  endpoint: http://127.0.0.1:9000   # MinIO API地址
-  consolePonint: http://127.0.0.1:9001 # Web console地址
+  endpoint: http://127.0.0.1:9002   # MinIO API地址
+  consolePonint: http://127.0.0.1:9003 # Web console地址
   accessKey: admin             # 账号
   secretKey: 12345678            # 密码
   bucket: my-bucket                 # 默认存储桶

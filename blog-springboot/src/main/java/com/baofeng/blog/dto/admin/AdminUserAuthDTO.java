@@ -15,8 +15,37 @@ public class AdminUserAuthDTO {
         @NotBlank(message = "密码不能为空")
         @Pattern(regexp = "^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)]|[()])+$)(?!^.*[\u4E00-\u9FA5].*$)([^(0-9a-zA-Z)]|[()]|[a-z]|[A-Z]|[0-9]){6,18}$",
                  message = "密码格式应为6-18位数字、字母、符号的任意两种组合")
-        String password
+        String password,
+        @NotBlank(message = "邮箱不能为空")
+        @Pattern(
+        regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+        message = "邮箱格式不正确"
+        )
+        String email
     ) {}
+
+    public static record EmailAuthRequest(
+        @NotBlank(message = "用户名不能为空")
+        @Size(min = 5, max = 16, message = "用户名长度5-20个字符")
+        String username,
+        
+        @NotBlank(message = "邮箱不能为空")
+        @Pattern(
+        regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+        message = "邮箱格式不正确"
+        )
+        String email,
+
+        @NotBlank(message = "验证码不能为空")
+        String code,
+
+        @NotBlank(message = "密码不能为空")
+        @Pattern(regexp = "^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)]|[()])+$)(?!^.*[\u4E00-\u9FA5].*$)([^(0-9a-zA-Z)]|[()]|[a-z]|[A-Z]|[0-9]){6,18}$",
+                 message = "密码格式应为6-18位数字、字母、符号的任意两种组合")
+        String password
+
+    ) {
+    }
 
     @Data
     public static class UserPageRequest {

@@ -70,6 +70,7 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(passwordEncoder.encode(registerDTO.password()));
         newUser.setStatus(UserStatusEnum.ACTIVE.getStatus());
         newUser.setNickName(registerDTO.username());
+        newUser.setEmail(registerDTO.email());
         int rowUpdated1 = userMapper.insertUser(newUser);
 
         if (rowUpdated1 == 0) {

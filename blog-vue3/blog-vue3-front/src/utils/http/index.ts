@@ -13,6 +13,7 @@ import EmojiText from '../emojo'
 import { tansParams } from '@/utils/tool'
 const axiosInstance : AxiosInstance = axios.create({
   timeout: 10000,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     Accept: 'application/json, text/plain, */*',
     'Content-Type': 'application/json',
