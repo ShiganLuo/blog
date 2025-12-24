@@ -106,8 +106,8 @@ public class AdminUserController {
         return userService.deleteUser(userId);
     }
 
-    @GetMapping("/getEmailCode/{email}")
-    public ApiResponse<String> getEmailCode(@PathVariable("email") String email) {
+    @GetMapping("/getEmailCode/email")
+    public ApiResponse<String> getEmailCode(@RequestParam(value = "email",required = true) String email) {
         return utilService.EmailCodeSend(email);
     }
 

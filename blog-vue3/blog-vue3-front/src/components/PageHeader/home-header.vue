@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 <template>
   <div id="home">
     <el-image class="bg full-size" fit="cover" :src="getBgCover"></el-image>
-    <div class="font">时敢的个人博客</div>
+    <div class="font">生活日志</div>
     <TypeWriter class="type-writer" size="1.2em" :typeList="saying" :timeSpace="200" :wordPrintTime="100" color="#ffffff"/>
     <Waves />
     <div v-if="showScrollBottom" class="scroll-bottom">

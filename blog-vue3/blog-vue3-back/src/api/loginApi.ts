@@ -52,7 +52,8 @@ export class LoginService {
   // 发送邮箱验证码
   static sendEmailCode(email:string) {
     return request.get<BaseResult>({
-      url: '/admin/users/getEmailCode/' + parseStrEmpty(email),
+      url: '/admin/users/getEmailCode/email',
+      params: {email}
     })
   }
   // 重置密码

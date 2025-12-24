@@ -9,10 +9,10 @@ spring:
   application:
     name: blog
   mail:
-      host: smtp.163.com
+      host: smtpdm.aliyun.com
       port: 465
-      username: geleihugh@163.com # 你的邮箱
-      password: KZdD8ckDsuQgXSEz   # 16位授权码
+      username: blog@mail.shiganluo.top # 你的邮箱
+      password: VXtawdr6AxbF9Xe   # 16位授权码
       properties:
         mail:
           smtp:
