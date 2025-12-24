@@ -9,8 +9,8 @@ export-api2md
 openapi.json
 export-api2md.sh
 
-
-**/application*yml
+**/application-dev.yml
+**/application-prod.yml
 
 ### VS Code ###
 .vscode/
