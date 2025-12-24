@@ -3,7 +3,6 @@ target/
 .mvn/
 !**/src/main/**/target/
 !**/src/test/**/target/
-
 ### api md
 api-docs.md
 export-api2md
@@ -11,6 +10,7 @@ openapi.json
 export-api2md.sh
 
 
+**/application*yml
 
 ### VS Code ###
 .vscode/
