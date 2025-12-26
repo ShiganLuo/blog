@@ -31,12 +31,15 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class UtilServiceImpl implements UtilService {
@@ -52,6 +55,9 @@ public class UtilServiceImpl implements UtilService {
     private final long refreshTokenExpiration;
     private final PermissionMapper permissionMapper;
     private static final Logger logger = LoggerFactory.getLogger(UtilServiceImpl.class);
+
+    @Value("${spring.mail.username}")
+    private String eamilUsername;
 
     public UtilServiceImpl(
         DefaultKaptcha captchaProducer, 
@@ -203,6 +209,9 @@ public class UtilServiceImpl implements UtilService {
         user.setIsEmailVerified(true);
         user.setStatus(UserStatusEnum.ACTIVE.getStatus());
         user.setGender(GenderEnum.UNKONWN.getCode());
+        user.setLoginAttempts(0);
+        LocalDateTime now = LocalDateTime.now();
+        user.setLastLogin(now);
         int rowUpdated1 = userMapper.insertUser(user);
 
         if (rowUpdated1 == 0) {
@@ -217,7 +226,7 @@ public class UtilServiceImpl implements UtilService {
             role.setRoleName(RoleTypeEnum.USER.getRole()); // 默认分配USER权限
             role.setRoleDesc(RoleTypeEnum.USER.getDescription());
             int rowUpdated = roleMapper.insertRole(role);
-            if (rowUpdated > 0) {
+            if (rowUpdated == 0) {
                 logger.error("USER角色创建失败");
                 return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户创建失败");
             }
@@ -240,7 +249,7 @@ public class UtilServiceImpl implements UtilService {
 
         // 3. 构造邮件内容
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("geleihugh@163.com"); // 必须和配置中的 username 一致
+        message.setFrom(eamilUsername); // 必须和配置中的 username 一致
         message.setTo(email);
         message.setSubject("登录验证码");
         message.setText("您好！您的登录验证码是：" + code + "。有效期5分钟，请勿泄露。");

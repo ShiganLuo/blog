@@ -20,5 +20,4 @@ public class User {
     private LocalDateTime lastLogin;   
     private Integer loginAttempts;    
     private Boolean isEmailVerified;
-    private Boolean isActive;
 }

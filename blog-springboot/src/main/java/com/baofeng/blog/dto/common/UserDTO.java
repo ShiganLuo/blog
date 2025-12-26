@@ -35,6 +35,5 @@ public class UserDTO {
         private LocalDateTime lastLogin;
         private Integer loginAttempts;
         private Boolean isEmailVerified;
-        private Boolean isActive;
     }
 }

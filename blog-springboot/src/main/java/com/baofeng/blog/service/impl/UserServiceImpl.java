@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,6 +72,10 @@ public class UserServiceImpl implements UserService {
         newUser.setStatus(UserStatusEnum.ACTIVE.getStatus());
         newUser.setNickName(registerDTO.username());
         newUser.setEmail(registerDTO.email());
+        newUser.setIsEmailVerified(false);
+        newUser.setLoginAttempts(0);
+        LocalDateTime now = LocalDateTime.now();
+        newUser.setLastLogin(now);
         int rowUpdated1 = userMapper.insertUser(newUser);
 
         if (rowUpdated1 == 0) {
@@ -85,7 +90,7 @@ public class UserServiceImpl implements UserService {
             role.setRoleName(RoleTypeEnum.USER.getRole()); // 默认分配USER权限
             role.setRoleDesc(RoleTypeEnum.USER.getDescription());
             int rowUpdated = roleMapper.insertRole(role);
-            if (rowUpdated > 0) {
+            if (rowUpdated == 0) {
                 logger.error("USER角色创建失败");
                 return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户创建失败");
             }
@@ -129,7 +134,7 @@ public class UserServiceImpl implements UserService {
             return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "账户被锁定");
         }
 
-        // 更新登录信息
+        // 更新最近一次登录记录，归零登录尝试次数
         userMapper.updateLoginInfo(user.getId());
 
         // 生成 token
@@ -343,7 +348,6 @@ public class UserServiceImpl implements UserService {
         .lastLogin(user.getLastLogin())
         .loginAttempts(user.getLoginAttempts())
         .isEmailVerified(user.getIsEmailVerified())
-        .isActive(user.getIsActive())
         .roles(roles)
         .password(null)
         .build();

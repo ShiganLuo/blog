@@ -17,7 +17,6 @@
         <result property="lastLogin" column="last_login"/>
         <result property="loginAttempts" column="login_attempts"/>
         <result property="isEmailVerified" column="is_email_verified"/>
-        <result property="isActive" column="is_active"/>
         <result property="nickName" column="nick_name"/>
         <result property="phoneNumber" column="phone_number"/>
         <result property="gender" column="gender"/>
@@ -27,11 +26,11 @@
     <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO users (
             username, email, password, avatar_url, bio, status,
-            last_login, login_attempts, is_email_verified, is_active,nick_name,phone_number,gender
+            last_login, login_attempts, is_email_verified,nick_name,phone_number,gender
         ) VALUES (
             #{username}, #{email}, #{password}, #{avatarUrl}, #{bio}, 
             #{status}, #{lastLogin}, #{loginAttempts}, 
-            #{isEmailVerified}, #{isActive}, #{nickName}, #{phoneNumber}, #{gender}
+            #{isEmailVerified}, #{nickName}, #{phoneNumber}, #{gender}
         )
     </insert>
 
@@ -46,7 +45,6 @@
             last_login = #{lastLogin},
             login_attempts = #{loginAttempts},
             is_email_verified = #{isEmailVerified},
-            is_active = #{isActive},
             nick_name = #{nickName},
             phone_number = #{phoneNumber},
             gender = #{gender}
@@ -141,7 +139,6 @@
             <if test="lastLogin != null">last_login = #{lastLogin},</if>
             <if test="loginAttempts != null">login_attempts = #{loginAttempts},</if>
             <if test="isEmailVerified != null">is_email_verified = #{isEmailVerified},</if>
-            <if test="isActive != null">is_active = #{isActive},</if>
             <if test="nickName != null">nick_name = #{nickName},</if>
             <if test="phoneNumber != null">phone_number = #{phoneNumber},</if>
             <if test="gender != null">gender = #{gender},</if> 
