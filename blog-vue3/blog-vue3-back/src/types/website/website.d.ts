@@ -1,16 +1,19 @@
 import { BaseArrayResult, BaseObjectResult, BasePageResult } from '../axios'
 
 export interface WebsiteResult {
+    websiteTitle: string
     name: string
+    logo: string
+    notice: string
+    ICPFilingNumber: string
+    PSBFilingNumber: string
     englishName: string
     author: string
     authorAvatar: string
     authorIntro: string
-    logo: string
+    userAvatar: string
     multiLanguage: number
-    notice: string
     websiteCreateTime: string
-    beianNumber: string
     qqLogin: number
     github: string
     gitee: string
@@ -23,15 +26,12 @@ export interface WebsiteResult {
     twitter: string
     stackoverflow: string
     touristAvatar: string
-    userAvatar: string
     isCommentReview: number
     isEmailNotice: number
     isReward: number
     weiXinQRCode: string
     alipayQRCode: string
     favicon: string
-    websiteTitle: string
-    gonganBeianNumber: string
 }
 
 export type WebsiteListPageResult = BasePageResult<WebsiteResult>

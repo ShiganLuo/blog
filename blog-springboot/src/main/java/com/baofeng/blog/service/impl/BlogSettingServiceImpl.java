@@ -104,25 +104,26 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     }
 
     @Override
-    public ApiResponse<configDetail> getSettingById(Long id) {
+    public ApiResponse<ConfigDetail> getSettingById(Long id) {
         BlogSetting blogSetting = blogSettingMapper.getSettingById(id);
         Long articleCount = articleMapper.countAllArticles();
         Long tagCount = tagMapper.countAllTags();
         Long categoryCount = categoryMapper.countAllCategories();
         Long userCount = userMapper.countAllUsers();
-        configDetail detail = new configDetail();
-        detail.setBlog_name(blogSetting.getSiteTitle());
-        detail.setBlog_avatar(blogSetting.getSiteDescription());
-        detail.setAvatar_bg(blogSetting.getSiteLogo());
-        detail.setBlog_notice(blogSetting.getBlogNotice());
+        ConfigDetail detail = new ConfigDetail();
+        detail.setWebsiteTitle(blogSetting.getSiteTitle());
+        detail.setLogo(blogSetting.getSiteLogo());
+        detail.setBlog_intro(blogSetting.getSiteDescription());
+        detail.setFrontHeadBackground(blogSetting.getSiteLogo());
+        detail.setNotice(blogSetting.getBlogNotice());
         detail.setPersonal_say(blogSetting.getPersonalSay());
-        detail.setGit_ee_link(blogSetting.getGiteeLink());
-        detail.setBilibili_link(blogSetting.getBilibiliLink());
-        detail.setGithub_link(blogSetting.getGithubLink());
+        detail.setGitee(blogSetting.getGiteeLink());
+        detail.setBilibili(blogSetting.getBilibiliLink());
+        detail.setGithub(blogSetting.getGithubLink());
         detail.setQq_group(blogSetting.getQqGroup());
-        detail.setQq_link(blogSetting.getQqLink());
+        detail.setQq(blogSetting.getQqLink());
         detail.setWe_chat_group(blogSetting.getWechatGroup());
-        detail.setWe_chat_link(blogSetting.getWechatLink());
+        detail.setWeChat(blogSetting.getWechatLink());
         detail.setAli_pay(blogSetting.getAliPay());
         detail.setArticleCount(articleCount);
         detail.setWe_chat_pay(blogSetting.getWechatPay());

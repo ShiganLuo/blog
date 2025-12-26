@@ -98,13 +98,13 @@
           </el-col>
           <form-input
             label="工信部备案号"
-            prop="beianNumber"
-            v-model="websiteConfigForm.beianNumber"
+            prop="ICPFilingNumber"
+            v-model="websiteConfigForm.ICPFilingNumber"
           />
           <form-input
             label="公安部备案号"
-            prop="gonganBeianNumber"
-            v-model="websiteConfigForm.gonganBeianNumber"
+            prop="PSBFilingNumber"
+            v-model="websiteConfigForm.PSBFilingNumber"
           />
           <el-form-item label="qq登录">
             <el-radio-group v-model="websiteConfigForm.qqLogin">
@@ -260,7 +260,7 @@
     multiLanguage: 0,
     notice: '',
     websiteCreateTime: '',
-    beianNumber: '',
+    ICPFilingNumber: '',
     qqLogin: 0,
     github: '',
     gitee: '',
@@ -281,7 +281,7 @@
     alipayQRCode: '',
     favicon: '',
     websiteTitle: '',
-    gonganBeianNumber: ''
+    PSBFilingNumber: ''
   })
   const activeName = ref('info')
   const userStore = useUserStore()

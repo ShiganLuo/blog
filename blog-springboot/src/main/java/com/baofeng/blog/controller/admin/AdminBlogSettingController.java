@@ -3,7 +3,7 @@ package com.baofeng.blog.controller.admin;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.configDetail;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.ConfigDetail;
 import com.baofeng.blog.service.BlogSettingService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,13 +28,13 @@ public class AdminBlogSettingController {
         return blogSettingService.addViews();
     }
 
-    @PostMapping("/changeSetting")
-    public ApiResponse<String> changeSetting(@RequestBody AdminBlogSettingDTO.InitSettingRequest request){
+    @PostMapping("/updateWebsiteInfo")
+    public ApiResponse<String> updateWebsiteInfo(@RequestBody AdminBlogSettingDTO.InitSettingRequest request){
         return blogSettingService.updateSettingById(request);
     }
 
     @GetMapping("/getBlogConfig")
-    public ApiResponse<configDetail> getBlogConfig() {
+    public ApiResponse<ConfigDetail> getBlogConfig() {
         return blogSettingService.getSettingById((long) 1);
     }
 

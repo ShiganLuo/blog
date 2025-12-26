@@ -93,7 +93,41 @@ export const asyncRoutes: MenuListType[] = [
       }
 
     ]
-  },
+  }, {
+    id: uuid(),
+    path: '/website',
+    name: 'website',
+    component: RoutesAlias.Home,
+    meta: {
+      title: '网站管理',
+      icon: '&#xe7ee',
+      keepAlive: false,
+      isHide: false
+    },
+    children: [
+      {
+        id: uuid(),
+        path: '/website/about',
+        component: RoutesAlias.WebsiteAbout,
+        name: 'WebsiteAbout',
+        meta: {title: "网站介绍", keepAlive: false}
+      },
+      {
+        id: uuid(),
+        path: '/website/info',
+        component: RoutesAlias.WebsiteInfo,
+        name: 'WebsiteInfo',
+        meta: {title: "网站管理", keepAlive: false }
+      },
+      {
+        id: uuid(),
+        path: '/website/link',
+        component: RoutesAlias.WebsiteLink,
+        name: 'WebsiteLink',
+        meta: {title: "友链管理", keepAlive: false}
+      }
+    ]
+  }
   // {
   //   id: uuid(),
   //   path: '/photo',

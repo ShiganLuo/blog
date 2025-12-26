@@ -23,12 +23,15 @@ public class FrontBlogSettinDTO {
     ) {}
 
     @Data
-    public static class configDetail {
-        private String blog_name;
-        private String avatar_bg;
+    public static class ConfigDetail {
+        private String websiteTitle;
+        private String FrontHeadBackground;
         private String personal_say;
-        private String blog_notice;
-        private String blog_avatar;
+        private String notice;
+        private String logo;
+        private String ICPFilingNumber;
+        private String PSBFilingNumber;
+        private String blog_intro;
         private String qq_group;
         private String we_chat_group;
         private String ali_pay;
@@ -38,11 +41,11 @@ public class FrontBlogSettinDTO {
         private Long categoryCount;
         private Long tagCount;
         private Long userCount;
-        private String git_ee_link;
-        private String bilibili_link;
-        private String github_link;
-        private String we_chat_link;
-        private String qq_link;
+        private String gitee;
+        private String bilibili;
+        private String github;
+        private String weChat;
+        private String qq;
         private LocalDateTime createdAt;
         
     }

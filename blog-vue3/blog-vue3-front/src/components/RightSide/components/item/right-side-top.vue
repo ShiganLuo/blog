@@ -11,17 +11,17 @@ import SvgIcon from "@/components/SvgIcon/index.vue";
 // 严格类型定义
 interface BlogConfig {
   avatar_bg?: string;
-  blog_avatar?: string;
-  blog_name?: string;
+  logo?: string;
+  websiteTitle?: string;
   personal_say?: string;
   articleCount?: number;
   categoryCount?: number;
   tagCount?: number;
-  git_ee_link?: string;
-  bilibili_link?: string;
-  github_link?: string;
-  we_chat_link?: string;
-  qq_link?: string;
+  gitee?: string;
+  bilibili?: string;
+  github?: string;
+  weChat?: string;
+  qq?: string;
 }
 
 const router = useRouter();
@@ -32,7 +32,7 @@ defineProps({
     type: Object as PropType<BlogConfig>,
     default: () => ({
       avatar_bg: "",
-      blog_name: "",
+      websiteTitle: "",
       personal_say: "",
       articleCount: 0,
       categoryCount: 0,
@@ -88,9 +88,9 @@ const operate = (op: OperationType, val?: string): void => {
   <!-- 头像区域 -->
   <div class="info-avatar">
     <router-link to="/">
-      <ElAvatar :src="configDetail.blog_avatar || avatar" />
+      <ElAvatar :src="configDetail.logo || avatar" />
     </router-link>
-    <span class="blog-name">{{ configDetail.blog_name }}</span>
+    <span class="blog-name">{{ configDetail.websiteTitle }}</span>
   </div>
 
   <!-- 个人签名 -->
@@ -122,7 +122,7 @@ const operate = (op: OperationType, val?: string): void => {
   <div class="git-ee flex_r_around">
     <span
       class="git-ee__item button-animated"
-      @click="operate('openLink', configDetail.git_ee_link ?? '#')"
+      @click="operate('openLink', configDetail.gitee ?? '#')"
     >
       <i class="iconfont icon-gitee2"></i>
       <span class="git-ee__item-text"> My Gitee</span>
@@ -133,17 +133,17 @@ const operate = (op: OperationType, val?: string): void => {
   <div class="personal-link flex_r_around">
     <i
       class="iconfont icon-bilibili-line to_pointer"
-      @click="operate('openLink', configDetail.bilibili_link ?? '#')"
+      @click="operate('openLink', configDetail.bilibili ?? '#')"
     ></i>
     <i
       class="iconfont icon-github-fill to_pointer"
-      @click="operate('openLink', configDetail.github_link ?? '#')"
+      @click="operate('openLink', configDetail.github ?? '#')"
     ></i>
 
     <ElPopover placement="top" trigger="hover">
       <ElImage
         style="width: 100%; height: 100%"
-        :src="configDetail.we_chat_link ?? ''"
+        :src="configDetail.weChat ?? ''"
       />
       <template #reference>
         <i class="iconfont icon-weixin1 to_pointer"></i>
@@ -153,7 +153,7 @@ const operate = (op: OperationType, val?: string): void => {
     <ElPopover placement="top" trigger="hover">
       <ElImage
         style="width: 100%; height: 100%"
-        :src="configDetail.qq_link ?? ''"
+        :src="configDetail.qq ?? ''"
       />
       <template #reference>
         <i class="iconfont icon-QQ1 to_pointer"></i>

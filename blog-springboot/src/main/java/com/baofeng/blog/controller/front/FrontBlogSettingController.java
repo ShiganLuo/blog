@@ -8,7 +8,7 @@ import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.AddFriendLinkRequest;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkPackResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkRequest;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.configDetail;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.ConfigDetail;
 import com.baofeng.blog.service.BlogSettingService;
 
 
@@ -28,7 +28,7 @@ public class FrontBlogSettingController {
 
 
     @GetMapping("/getBlogConfig")
-    public ApiResponse<configDetail> getBlogConfig() {
+    public ApiResponse<ConfigDetail> getBlogConfig() {
         return blogSettingService.getSettingById((long) 1);
     }
 

@@ -17,7 +17,7 @@ class AboutService {
   // 修改关于
   static updateAbout(data: any) {
     return request.put({
-      url: '/blog/website/admin/about',
+      url: '/admin/settings/updateWebsiteInfo',
       data
     })
   }

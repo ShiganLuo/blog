@@ -106,7 +106,7 @@ const applyLinks = (): void => {
 const getConfigDetail = async (): Promise<void> => {
   let res = await ConfigService.homeGetConfig();
   if (res.code === 200 && res.result) {
-    blogName.value = res.result.blog_name || " ";
+    blogName.value = res.result.websiteTitle || " ";
   }
 };
 

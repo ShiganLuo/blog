@@ -30,7 +30,7 @@ public interface BlogSettingService {
      * @param id
      * @return
      */
-    public ApiResponse<configDetail> getSettingById(Long id);
+    public ApiResponse<ConfigDetail> getSettingById(Long id);
 
     /**
      * 获取所有友链

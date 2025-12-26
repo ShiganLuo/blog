@@ -78,7 +78,7 @@ const getConfigDetail = async (): Promise<void> => {
     const res = await ConfigService.homeGetConfig();
     if (res.code === 200 && typeof res.result !== "string") {
       configDetail.value = res.result as ConfigDetail;
-      userStore.setBlogAvatar(res.result.blog_avatar || '');
+      userStore.setBlogAvatar(res.result.logo || '');
       calcRuntimeDays(configDetail.value.createdAt || '');
     }
   } finally {
