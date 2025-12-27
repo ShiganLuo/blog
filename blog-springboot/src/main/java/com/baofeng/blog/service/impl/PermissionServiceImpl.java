@@ -25,10 +25,12 @@ import java.util.List;
 
 @Service
 public class PermissionServiceImpl implements PermissionService{
+
     private final PermissionMapper permissionMapper;
     private final RoleMapper roleMapper;
     private final UserMapper userMapper;
     private static final Logger logger = LoggerFactory.getLogger(PermissionService.class);
+    
     public PermissionServiceImpl (
         PermissionMapper permissionMapper,
         RoleMapper roleMapper,

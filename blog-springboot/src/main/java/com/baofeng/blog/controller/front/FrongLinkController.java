@@ -1,9 +1,5 @@
 package com.baofeng.blog.controller.front;
 
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.AddFriendLinkRequest;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkPackResponse;
@@ -11,13 +7,18 @@ import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkRequest;
 import com.baofeng.blog.service.FriendLinkService;
 
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/front/link")
-@RequiredArgsConstructor
 @Validated
 public class FrongLinkController {
     private final FriendLinkService friendLinkService;
+    public FrongLinkController (
+        FriendLinkService friendLinkService
+    ) {
+        this.friendLinkService = friendLinkService;
+    }
 
     @PostMapping("/getAllFriendLink")
     public ApiResponse<FriendLinkPackResponse> getAllFriendLink(@RequestBody FriendLinkRequest request) {

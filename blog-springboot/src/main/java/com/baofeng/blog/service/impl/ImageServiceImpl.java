@@ -4,7 +4,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import lombok.RequiredArgsConstructor;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +18,19 @@ import com.baofeng.blog.entity.Image;
 import com.baofeng.blog.enums.ResultCodeEnum;
 
 @Service
-@RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
     private final ImageMapper imageMapper;
     private final MinioUtil minioService;
     private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
+
+    public ImageServiceImpl (
+        ImageMapper imageMapper,
+        MinioUtil minioService
+    ) {
+        this.imageMapper = imageMapper;
+        this.minioService = minioService;
+    }
 
     @Override
     public ApiResponse<List<AlbumResponse>> getAllAlbum() {

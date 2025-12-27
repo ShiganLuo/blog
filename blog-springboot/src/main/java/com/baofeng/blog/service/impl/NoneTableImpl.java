@@ -1,25 +1,18 @@
 package com.baofeng.blog.service.impl;
 
-
+import org.springframework.web.client.RestTemplate;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.common.OneSentenceDTO;
+import com.baofeng.blog.service.NoneTableService;
 
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.web.client.RestTemplate;
-
-import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.common.OneSentenceDTO;
-import com.baofeng.blog.service.NoneTableService;
-
-
 @Service
-
-@RequiredArgsConstructor // 替代@Autowerid属性注入
 public class NoneTableImpl implements NoneTableService {
     private final RestTemplate restTemplate = new RestTemplate();
     private static final Logger logger = LoggerFactory.getLogger(NoneTableService.class);

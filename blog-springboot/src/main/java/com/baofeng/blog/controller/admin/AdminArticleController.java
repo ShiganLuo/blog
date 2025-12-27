@@ -4,7 +4,6 @@ import com.baofeng.blog.dto.admin.AdminArticleDTO.*;
 import com.baofeng.blog.dto.common.ImageDTO.UploadImage;
 import com.baofeng.blog.service.ArticleService;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,11 +11,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
 @RequestMapping("/api/admin/articles")
-@RequiredArgsConstructor
 @Validated
 public class AdminArticleController {
-
     private final ArticleService articleService;
+
+    public AdminArticleController (
+        ArticleService articleService
+    ) {
+        this.articleService = articleService;
+    }
+    
     /**
      * 发表文章
      * @param articleRequest 文章

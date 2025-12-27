@@ -6,18 +6,21 @@ import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 import com.baofeng.blog.service.ArticleService;
 
 import org.springframework.web.bind.annotation.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
 
 
 @RestController
 @RequestMapping("/api/front/articles")
-@RequiredArgsConstructor
 @Validated
 public class FrontArticleController {
     
     private final ArticleService articleService;
+    public FrontArticleController (
+        ArticleService articleService
+    ) {
+        this.articleService = articleService;
+    }
 
     /**
      * 分页查询文章列表

@@ -14,13 +14,18 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
+
     private final CategoryMapper categoryMapper;
+
+    public CategoryServiceImpl (
+        CategoryMapper categoryMapper
+    ) {
+        this.categoryMapper = categoryMapper;
+    }
     @Override
     public ApiResponse<CategoryPageResponseVO> getCategoryPage(CategoryPageRequestVO request) {
         // 参数校验

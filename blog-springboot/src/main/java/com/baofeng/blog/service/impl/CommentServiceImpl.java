@@ -12,8 +12,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,10 +21,18 @@ import java.util.Objects;
 
 
 @Service
-@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
+  
   private final CommentMapper commentMapper;
   private final LikeMapper likeMapper;
+
+  public CommentServiceImpl (
+    CommentMapper commentMapper,
+    LikeMapper likeMapper
+  ) {
+    this.commentMapper = commentMapper;
+    this.likeMapper = likeMapper;
+  }
 
   @Override
   public ApiResponse<String> CreateComment(CreateCommentRequest createCommentRequest) {

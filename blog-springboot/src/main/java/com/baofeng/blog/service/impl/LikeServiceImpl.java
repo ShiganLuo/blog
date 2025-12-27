@@ -1,11 +1,5 @@
 package com.baofeng.blog.service.impl;
 
-import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDateTime;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
-
 import com.baofeng.blog.service.LikeService;
 import com.baofeng.blog.mapper.ArticleMapper;
 import com.baofeng.blog.mapper.CommentMapper;
@@ -15,14 +9,26 @@ import com.baofeng.blog.dto.front.FrontLikeDTO.LikeRequest;
 import com.baofeng.blog.entity.Like;
 import com.baofeng.blog.enums.ResultCodeEnum;
 
+import java.time.LocalDateTime;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
+
 @Service
-// 替代@Autowerid显示注入
-@RequiredArgsConstructor
 public class LikeServiceImpl implements LikeService{
 
     private final ArticleMapper articleMapper;
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
+
+    public LikeServiceImpl (
+        ArticleMapper articleMapper,
+        CommentMapper commentMapper,
+        LikeMapper likeMapper
+    ) {
+        this.articleMapper = articleMapper;
+        this.commentMapper = commentMapper;
+        this.likeMapper = likeMapper;
+    }
 
     @Override
     public ApiResponse<Boolean> getIsLikeByLikeRequest(LikeRequest request) {

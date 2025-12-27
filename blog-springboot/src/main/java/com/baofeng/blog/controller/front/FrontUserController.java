@@ -7,15 +7,13 @@ import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
 import com.baofeng.blog.service.UserService;
 
 import org.springframework.web.bind.annotation.*;
-
-
 import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/front/users")
 @Validated
-
 public class FrontUserController {
+    
     private final UserService userService;
 
     public FrontUserController(UserService userService) {

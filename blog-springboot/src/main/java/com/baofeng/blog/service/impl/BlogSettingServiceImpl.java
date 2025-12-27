@@ -8,37 +8,44 @@ import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.mapper.CategoryMapper;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetail;
-import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.InitSettingRequest;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDict;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.*;
 import com.baofeng.blog.entity.BlogSetting;
 import com.baofeng.blog.service.BlogSettingService;
-import com.baofeng.blog.entity.User;
 import com.baofeng.blog.enums.*;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
 
+import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
-@RequiredArgsConstructor
 public class BlogSettingServiceImpl implements BlogSettingService {
+
     private final BlogSettingMapper blogSettingMapper;
     private final ArticleMapper articleMapper;
     private final TagMapper tagMapper;
     private final CategoryMapper categoryMapper;
     private final UserMapper userMapper;
     private static final Logger logger = LoggerFactory.getLogger(BlogSettingService.class);
-    
+
+    public BlogSettingServiceImpl (
+        BlogSettingMapper blogSettingMapper,
+        ArticleMapper articleMapper,
+        TagMapper tagMapper,
+        CategoryMapper categoryMapper,
+        UserMapper userMapper
+    ) {
+        this.blogSettingMapper = blogSettingMapper;
+        this.articleMapper = articleMapper;
+        this.tagMapper = tagMapper;
+        this.categoryMapper = categoryMapper;
+        this.userMapper = userMapper;
+    }
     @Override
     public ApiResponse<String> addViews(){
         //id默认为1,指第一次初始化

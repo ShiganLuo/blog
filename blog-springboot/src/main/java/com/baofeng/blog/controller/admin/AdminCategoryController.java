@@ -9,18 +9,24 @@ import com.baofeng.blog.dto.admin.AdminCategoryPageDTO.CreateCategoryRequest;
 import com.baofeng.blog.dto.common.CategoryDTO.CategoryDictionaryResponse;
 import com.baofeng.blog.service.ArticleService;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import java.util.List;
 @RestController
 @RequestMapping("/api/admin/categories")
-@RequiredArgsConstructor
 @Validated
 public class AdminCategoryController {
     
     private final CategoryService categoryService;
     private final ArticleService articleService;
+
+    public AdminCategoryController (
+        CategoryService categoryService,
+        ArticleService articleService
+    ) {
+        this.categoryService = categoryService;
+        this.articleService = articleService;
+    }
     /**
      * 创建分类
      * @param request 创建分类请求

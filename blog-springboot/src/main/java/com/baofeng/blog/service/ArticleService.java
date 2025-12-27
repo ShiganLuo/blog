@@ -7,7 +7,6 @@ import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 
 import java.io.IOException;
 
-
 public interface ArticleService {
     
     /**

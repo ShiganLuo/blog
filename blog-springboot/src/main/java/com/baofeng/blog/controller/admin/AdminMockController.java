@@ -1,6 +1,5 @@
 package com.baofeng.blog.controller.admin;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import com.baofeng.blog.dto.ApiResponse;
@@ -13,7 +12,6 @@ import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/admin/mock")
-@RequiredArgsConstructor
 public class AdminMockController {
 
     @GetMapping("/get-async-routes")

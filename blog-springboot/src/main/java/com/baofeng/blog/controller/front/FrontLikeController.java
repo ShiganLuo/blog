@@ -1,21 +1,24 @@
 package com.baofeng.blog.controller.front;
 
-
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import lombok.RequiredArgsConstructor;
-
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontLikeDTO.*;
 import com.baofeng.blog.service.LikeService;
 
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api/front/likes")
-@RequiredArgsConstructor
 @Validated
 public class FrontLikeController {
 
     private final LikeService likeService;
+
+    public FrontLikeController (
+        LikeService likeService
+    ) {
+        this.likeService = likeService;
+    }
 
     @PostMapping("/addLike")
     public ApiResponse<String> addLike(@Validated @RequestBody LikeRequest request) {

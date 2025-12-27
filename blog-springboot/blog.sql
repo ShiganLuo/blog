@@ -115,29 +115,93 @@ CREATE TABLE `images` (
 
 DROP TABLE IF EXISTS `blog_settings`;
 CREATE TABLE `blog_settings` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `site_title` VARCHAR(255) NOT NULL COMMENT '网站名称',
-    `site_description` TEXT NOT NULL COMMENT '网站描述',
-    `site_logo` VARCHAR(500) NOT NULL COMMENT '博客logo',
-    `blog_notice` VARCHAR(500) DEFAULT NULL COMMENT '博客公告',
-    `personal_say` VARCHAR(255) DEFAULT NULL COMMENT '人生格言',
-    `gitee_link` VARCHAR(255) DEFAULT NULL COMMENT 'giteee主页',
-    `bilibili_link` VARCHAR(255) DEFAULT NULL COMMENT '哔哩哔哩主页',
-    `github_link` VARCHAR(255) DEFAULT NULL COMMENT 'github主页',
-    `qq_group` VARCHAR(100) DEFAULT NULL COMMENT 'QQ群聊',
-    `qq_link` VARCHAR(255) DEFAULT NULL COMMENT 'QQ名片',
-    `wechat_group` VARCHAR(100) DEFAULT NULL COMMENT '微信群聊',
-    `wechat_link` VARCHAR(255) DEFAULT NULL COMMENT '微信名片',
-    `ali_pay` VARCHAR(500) DEFAULT NULL COMMENT '支付宝付款码',
-    `wechat_pay` VARCHAR(500) DEFAULT NULL COMMENT '微信付款码',
-    `enable_comments` TINYINT(1) DEFAULT 1 COMMENT '是否开启评论功能',
-    `visit_count` BIGINT DEFAULT 0 COMMENT '网站访问次数',
-    `user_id` BIGINT NOT NULL COMMENT '站点所属用户id' ,
-    `site_url` VARCHAR(45) NOT NULL COMMENT '站点地址',
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键，固定仅一条记录',
+
+    -- =====================
+    -- 1. 网站基础信息
+    -- =====================
+    `website_chinese_name` VARCHAR(100) NOT NULL COMMENT '网站中文名称',
+    `website_english_name` VARCHAR(100) DEFAULT NULL COMMENT '网站英文名称',
+    `website_title` VARCHAR(255) NOT NULL COMMENT '网站标题（浏览器 title）',
+    `website_create_time` DATETIME DEFAULT NULL COMMENT '网站创建时间',
+    `logo` VARCHAR(500) NOT NULL COMMENT '网站 Logo',
+    `favicon` VARCHAR(500) DEFAULT NULL COMMENT '网站 Favicon',
+    `notice` VARCHAR(500) DEFAULT NULL COMMENT '网站公告',
+
+    -- =====================
+    -- 2. 备案 / 作者信息
+    -- =====================
+    `icp_filing_number` VARCHAR(100) DEFAULT NULL COMMENT 'ICP备案号',
+    `psb_filing_number` VARCHAR(100) DEFAULT NULL COMMENT '公安备案号',
+    `author` VARCHAR(100) DEFAULT NULL COMMENT '作者名称',
+    `author_avatar` VARCHAR(500) DEFAULT NULL COMMENT '作者头像',
+    `author_intro` VARCHAR(500) DEFAULT NULL COMMENT '作者简介',
+	`author_personal_say` VARCHAR(500) DEFAULT NULL COMMENT '作者人生格言',
+
+    -- =====================
+    -- 3. 用户 / 游客头像
+    -- =====================
+    `user_avatar` VARCHAR(500) DEFAULT NULL COMMENT '用户默认头像',
+    `tourist_avatar` VARCHAR(500) DEFAULT NULL COMMENT '游客头像',
+
+    -- =====================
+    -- 4. 社交账号
+    -- =====================
+    `github` VARCHAR(255) DEFAULT NULL COMMENT 'GitHub 地址',
+    `gitee` VARCHAR(255) DEFAULT NULL COMMENT 'Gitee 地址',
+    `bilibili` VARCHAR(255) DEFAULT NULL COMMENT 'Bilibili 地址',
+    `qq` VARCHAR(50) DEFAULT NULL COMMENT 'QQ 号',
+    `qq_group` VARCHAR(100) DEFAULT NULL COMMENT 'QQ群',
+    `wechat` VARCHAR(50) DEFAULT NULL COMMENT '微信号',
+    `wechat_group` VARCHAR(100) DEFAULT NULL COMMENT '微信群',
+    `weibo` VARCHAR(255) DEFAULT NULL COMMENT '微博地址',
+    `csdn` VARCHAR(255) DEFAULT NULL COMMENT 'CSDN 地址',
+    `zhihu` VARCHAR(255) DEFAULT NULL COMMENT '知乎地址',
+    `juejin` VARCHAR(255) DEFAULT NULL COMMENT '掘金地址',
+    `twitter` VARCHAR(255) DEFAULT NULL COMMENT 'Twitter 地址',
+    `stackoverflow` VARCHAR(255) DEFAULT NULL COMMENT 'StackOverflow 地址',
+
+    -- =====================
+    -- 5. 功能开关
+    -- =====================
+    `multi_language` TINYINT(1) DEFAULT 0 COMMENT '是否开启多语言：0 否 1 是',
+    `is_comment_review` TINYINT(1) DEFAULT 1 COMMENT '评论是否需要审核',
+    `is_email_notice` TINYINT(1) DEFAULT 0 COMMENT '是否开启邮件通知',
+
+    -- =====================
+    -- 6. 支付二维码
+    -- =====================
+    `wechat_qrcode` VARCHAR(500) DEFAULT NULL COMMENT '微信收款二维码',
+    `alipay_qrcode` VARCHAR(500) DEFAULT NULL COMMENT '支付宝收款二维码',
+
+    -- =====================
+    -- 7. 审计字段
+    -- =====================
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    CONSTRAINT fk_user_id_blogSetting FOREIGN KEY (user_id) REFERENCES users(id)  ON DELETE NO ACTION ON UPDATE NO ACTION
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='博客设置表';
+UNIQUE KEY uk_single_site (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='博客站点全局配置表（单站点单记录）';
+
+DROP TABLE IF EXISTS `friend_link`;
+CREATE TABLE `friend_link` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键，友链唯一标识',
+    `site_title` VARCHAR(255) NOT NULL COMMENT '友链网站名称',
+    `site_desc` VARCHAR(500) DEFAULT NULL COMMENT '友链网站描述',
+    `site_logo` VARCHAR(500) DEFAULT NULL COMMENT '友链网站 Logo',
+    `site_url` VARCHAR(255) NOT NULL COMMENT '友链网站地址',
+    `user_id` BIGINT NOT NULL COMMENT '友链提交用户 ID',
+    `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '状态：0 待审核，1 已通过，2 已禁用',
+    `sort_order` INT NOT NULL DEFAULT 0 COMMENT '排序权重（越小越靠前）',
+    `is_visible` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否展示：0 否，1 是',
+    `apply_message` VARCHAR(500) DEFAULT NULL COMMENT '申请友链时的备注',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    CONSTRAINT fk_friend_link_user
+        FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+        ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='博客友链表';
+
 
 DROP TABLE IF EXISTS `likes`;
 CREATE TABLE `likes` (

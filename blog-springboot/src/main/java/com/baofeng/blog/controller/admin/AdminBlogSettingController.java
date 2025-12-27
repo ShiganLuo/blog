@@ -6,18 +6,22 @@ import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
 import com.baofeng.blog.entity.BlogSetting;
 import com.baofeng.blog.service.BlogSettingService;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 
 
 @RestController
 @RequestMapping("/api/admin/settings")
-@RequiredArgsConstructor
 @Validated
 public class AdminBlogSettingController {
     
     private final BlogSettingService blogSettingService;
+
+    public AdminBlogSettingController (
+        BlogSettingService blogSettingService
+    ) {
+        this.blogSettingService = blogSettingService;
+    }
     @PostMapping("/initSetting")
     public ApiResponse<String> initSetting(@RequestBody BlogSetting blogSetting){
         return blogSettingService.initSetting(blogSetting);

@@ -1,20 +1,25 @@
 package com.baofeng.blog.controller.front;
 
-import lombok.RequiredArgsConstructor;
+import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.common.CategoryDTO.CategoryDictionaryResponse;
+import com.baofeng.blog.service.CategoryService;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
-import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.common.CategoryDTO.CategoryDictionaryResponse;
-import com.baofeng.blog.service.CategoryService;
 @RestController
 @RequestMapping("/api/front/categories")
-@RequiredArgsConstructor
 @Validated
 public class FrontCategoryController {
 
     private final CategoryService categoryService;
+
+    public FrontCategoryController (
+        CategoryService categoryService
+    ) {
+        this.categoryService = categoryService;
+    }
 
     @GetMapping("/getAllcategories")
     public ApiResponse<List<CategoryDictionaryResponse>> getAllcategories(){

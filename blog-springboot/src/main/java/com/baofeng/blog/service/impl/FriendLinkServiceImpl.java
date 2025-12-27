@@ -27,6 +27,7 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     private final FriendLinkMapper friendLinkMapper;
     private final UserMapper userMapper;
     private static final Logger logger = LoggerFactory.getLogger(FriendLinkService.class);
+    
     public FriendLinkServiceImpl (
         FriendLinkMapper friendLinkMapper,
         UserMapper userMapper

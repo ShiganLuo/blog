@@ -13,15 +13,20 @@ import com.baofeng.blog.service.TagService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
+
     private final TagMapper tagMapper;
+
+    public TagServiceImpl (
+        TagMapper tagMapper
+    ) {
+        this.tagMapper = tagMapper;
+    }
+
 
     @Override
     public ApiResponse<TagPageResponseVO> getTagPage(TagPageRequestVO request) {

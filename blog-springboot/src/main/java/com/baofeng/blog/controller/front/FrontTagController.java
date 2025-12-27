@@ -5,17 +5,20 @@ import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.common.TagDTO.TagDictionaryResponse;
 import com.baofeng.blog.entity.Tag;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/front/tags")
-@RequiredArgsConstructor
 public class FrontTagController {
     
     private final TagService tagService;
+
+    public FrontTagController (
+        TagService tagService
+    ) {
+        this.tagService = tagService;
+    }
 
     /**
      * 获取所有标签

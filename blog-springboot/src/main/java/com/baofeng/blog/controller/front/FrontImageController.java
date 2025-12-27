@@ -1,22 +1,25 @@
 package com.baofeng.blog.controller.front;
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
-import java.util.List;
-
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontImageDTO.AlbumResponse;
 import com.baofeng.blog.service.ImageService;
 
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.validation.annotation.Validated;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/front/images")
-@RequiredArgsConstructor
 @Validated
 public class FrontImageController {
     private final ImageService imageService;
+
+    public FrontImageController (
+        ImageService imageService
+    ) {
+        this.imageService = imageService;
+    }
 
     /**
      * 获取所有相册信息

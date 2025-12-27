@@ -1,27 +1,27 @@
 package com.baofeng.blog.controller.front;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import org.springframework.validation.annotation.Validated;
-
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontCommentDTO.*;
 import com.baofeng.blog.entity.Comment;
 import com.baofeng.blog.service.CommentService;
 
-
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/front/comments")
-@RequiredArgsConstructor
 @Validated
 
 public class FrontCommentController {
 
     private final CommentService commentService;
+
+    public FrontCommentController (
+        CommentService commentService
+    ) {
+        this.commentService = commentService;
+    }
 
     /**
      * 添加评论

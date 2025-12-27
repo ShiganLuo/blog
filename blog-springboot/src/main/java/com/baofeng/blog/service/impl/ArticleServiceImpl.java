@@ -36,6 +36,7 @@ import java.util.Optional;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
+
     private final ArticleMapper articleMapper;
     private final ImageMapper imageMapper;
     private final UserMapper userMapper;
@@ -44,11 +45,13 @@ public class ArticleServiceImpl implements ArticleService {
     private final EntityImageMapper entityImageMapper;
     private final MinioUtil minioService;
     private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
+
     @Value("${minio.endpoint}")
     private String endpoint;
 
     @Value("${minio.bucket}")
     private String bucket;
+    
     public ArticleServiceImpl(MinioUtil minioService,
                               ArticleMapper articleMapper,
                               ImageMapper imageMapper,

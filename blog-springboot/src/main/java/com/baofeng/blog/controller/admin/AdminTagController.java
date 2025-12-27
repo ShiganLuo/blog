@@ -9,7 +9,6 @@ import com.baofeng.blog.dto.admin.AdminTagPageDTO.TagPageResponseVO;
 import com.baofeng.blog.dto.common.TagDTO.TagDictionaryResponse;
 import com.baofeng.blog.service.ArticleService;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +17,19 @@ import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/admin/tags")
-@RequiredArgsConstructor
 @Validated
 public class AdminTagController {
     
     private final TagService tagService;
     private final ArticleService articleService;
 
+    public AdminTagController (
+        TagService tagService,
+        ArticleService articleService
+    ) {
+        this.tagService = tagService;
+        this.articleService = articleService;
+    }
     /**
      * 创建标签
      * @param request 创建标签请求

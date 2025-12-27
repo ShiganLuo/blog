@@ -4,14 +4,17 @@ import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminPermissionDTO.*;
 import com.baofeng.blog.service.PermissionService;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin/permission")
-@RequiredArgsConstructor
 public class AdminPermissionController {
     private final PermissionService permissionService;
+    public AdminPermissionController (
+        PermissionService permissionService
+    ) {
+        this.permissionService = permissionService;
+    }
 
     /**
      * 为角色分配权限
