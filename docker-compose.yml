@@ -10,6 +10,16 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
     ports:
       - "3308:3306"
+  redis:
+    image: redis:7.0.10
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./database/redis/data:/data
+      - ./database/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
 
   # 对象存储 MinIO
   minio:
@@ -22,7 +32,7 @@ services:
       MINIO_ROOT_USER: admin              # 管理员账号
       MINIO_ROOT_PASSWORD: 12345678    # 管理员密码（建议修改）
     volumes:
-      - ./minio/data:/data                # 文件存储路径持久化
+      - ./database/minio/data:/data                # 文件存储路径持久化
     command: server /data --console-address ":9001"
 
   # 后端服务

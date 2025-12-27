@@ -34,8 +34,9 @@ public interface BlogSettingMapper {
      * @param setting 设置信息
      * @return 影响的行数
      */
-    int incrementVisitCount(long id);
+    int incrementVisitCountById(Long id, long count);
 
+    
     /**
      * 初始化网站信息
      * @param setting 设置信息

@@ -127,6 +127,7 @@ CREATE TABLE `blog_settings` (
     `logo` VARCHAR(500) NOT NULL COMMENT '网站 Logo',
     `favicon` VARCHAR(500) DEFAULT NULL COMMENT '网站 Favicon',
     `notice` VARCHAR(500) DEFAULT NULL COMMENT '网站公告',
+	`view_times` BIGINT DEFAULT NULL COMMENT '网站访问次数',
 
     -- =====================
     -- 2. 备案 / 作者信息
@@ -180,7 +181,7 @@ CREATE TABLE `blog_settings` (
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 UNIQUE KEY uk_single_site (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='博客站点全局配置表（单站点单记录）';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='博客站点全局配置表（单站点单记录）';
 
 DROP TABLE IF EXISTS `friend_link`;
 CREATE TABLE `friend_link` (

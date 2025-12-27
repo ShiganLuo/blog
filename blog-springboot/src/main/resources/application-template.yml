@@ -6,6 +6,12 @@ spring:
     username: xxxxx
     password: xxxxx
     driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: xxxxx
+      port: 6379
+      password: xxxxx
+      timeout: xxxxx
   application:
     name: blog
   mail:

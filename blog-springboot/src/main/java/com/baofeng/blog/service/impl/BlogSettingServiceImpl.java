@@ -14,6 +14,7 @@ import com.baofeng.blog.dto.front.FrontBlogSettinDTO.*;
 import com.baofeng.blog.entity.BlogSetting;
 import com.baofeng.blog.service.BlogSettingService;
 import com.baofeng.blog.enums.*;
+import com.baofeng.blog.service.redis.RedisVisitCounter;
 
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     private final TagMapper tagMapper;
     private final CategoryMapper categoryMapper;
     private final UserMapper userMapper;
+    private final RedisVisitCounter redisVisitCounter;
     private static final Logger logger = LoggerFactory.getLogger(BlogSettingService.class);
 
     public BlogSettingServiceImpl (
@@ -38,21 +40,20 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         ArticleMapper articleMapper,
         TagMapper tagMapper,
         CategoryMapper categoryMapper,
-        UserMapper userMapper
+        UserMapper userMapper,
+        RedisVisitCounter redisVisitCounter
     ) {
         this.blogSettingMapper = blogSettingMapper;
         this.articleMapper = articleMapper;
         this.tagMapper = tagMapper;
         this.categoryMapper = categoryMapper;
         this.userMapper = userMapper;
+        this.redisVisitCounter = redisVisitCounter;
     }
     @Override
     public ApiResponse<String> addViews(){
-        //id默认为1,指第一次初始化
-        int success = blogSettingMapper.incrementVisitCount(1);
-        return success > 0
-            ? ApiResponse.success("访问量增加成功")
-            : ApiResponse.error(400, "访问量增加失败");
+        redisVisitCounter.incrSiteVisit();
+        return ApiResponse.success("访问量增加成功");    
     }
     @Override
     public ApiResponse<String> initSetting(BlogSetting blogSetting){
@@ -71,7 +72,13 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     @Override
     public ApiResponse<String> updateSetting(BlogSetting blogSetting) {
         blogSetting.setId(1L);
-        int success = blogSettingMapper.updateSettingById(blogSetting);
+        BlogSetting blogsetting2 = blogSettingMapper.getSettingById(1L);
+        int success = 0;
+        if (blogsetting2 == null) {
+            success = blogSettingMapper.insertSetting(blogSetting);
+        } else {
+            success = blogSettingMapper.updateSettingById(blogSetting);
+        }
         return success > 0
             ? ApiResponse.success("网站设置更新成功")
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "网站设置更新失败");
@@ -113,19 +120,42 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     public ApiResponse<AdminConfigDetail> getSettingByIdAdmin(Long id) {
         BlogSetting blogSetting = blogSettingMapper.getSettingById(id);
         AdminConfigDetail detail = new AdminConfigDetail();
+        detail.setWebsiteChineseName(blogSetting.getWebsiteChineseName());
+        detail.setWebsiteEnglishName(blogSetting.getWebsiteEnglishName());
         detail.setWebsiteTitle(blogSetting.getWebsiteTitle());
+        detail.setWebsiteCreateTime(blogSetting.getWebsiteCreateTime());
+
         detail.setLogo(blogSetting.getLogo());
         detail.setNotice(blogSetting.getNotice());
+        detail.setFavicon(blogSetting.getFavicon());
+        detail.setIcpFilingNumber(blogSetting.getIcpFilingNumber());
+        detail.setPsbFilingNumber(blogSetting.getPsbFilingNumber());
+
+        detail.setAuthor(blogSetting.getAuthor());
+        detail.setAuthorAvatar(blogSetting.getAuthorAvatar());
+        detail.setAuthorIntro(blogSetting.getAuthorIntro());
+        detail.setAuthroPersonalSay(blogSetting.getAuthorPersonalSay());
+        detail.setUserAvatar(blogSetting.getUserAvatar());
+        detail.setTouristAvatar(blogSetting.getTouristAvatar());
+
+        detail.setGithub(blogSetting.getGithub());
         detail.setGitee(blogSetting.getGitee());
         detail.setBilibili(blogSetting.getBilibili());
-        detail.setGithub(blogSetting.getGithub());
-        detail.setQqGroup(blogSetting.getQqGroup());
         detail.setQq(blogSetting.getQq());
-        detail.setWechatGroup(blogSetting.getWechatGroup());
+        detail.setQqGroup(blogSetting.getQqGroup());
         detail.setWechat(blogSetting.getWechat());
+        detail.setWechatGroup(blogSetting.getWechatGroup());
+        detail.setWeibo(blogSetting.getWeibo());
+        detail.setCsdn(blogSetting.getCsdn());
+        detail.setZhihu(blogSetting.getZhihu());
+        detail.setJuejin(blogSetting.getJuejin());
+        detail.setTwitter(blogSetting.getTwitter());
+        detail.setStackoverflow(blogSetting.getStackoverflow());
+
+        detail.setIsCommentReview(blogSetting.getIsCommentReview());
+        detail.setIsEmailNotice(blogSetting.getIsEmailNotice());
         detail.setAlipayQRCode(blogSetting.getAlipayQrCode());
         detail.setWeiXinQRCode(blogSetting.getWechatQrCode());
-        detail.setWebsiteCreaDateTime(blogSetting.getCreatedAt());
         return ApiResponse.success(detail);
     }
    

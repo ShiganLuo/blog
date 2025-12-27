@@ -13,8 +13,8 @@ public class AdminBlogSettingDTO {
         String logo,
         String favicon,
         String notice,
-        String ICPFilingNumber,
-        String PSBFilingNumber,
+        String icpFilingNumber,
+        String psbFilingNumber,
         String author,
         String authorAvatar,
         String authorIntro,
@@ -59,15 +59,16 @@ public class AdminBlogSettingDTO {
         private String websiteChineseName;
         private String websiteEnglishName;
         private String websiteTitle;
-        private LocalDateTime websiteCreaDateTime;
+        private LocalDateTime websiteCreateTime;
         private String logo;
         private String favicon;
         private String notice;
-        private String ICPFilingNumber;
-        private String PSBFilingNumber;
+        private String icpFilingNumber;
+        private String psbFilingNumber;
         private String author;
         private String authorAvatar;
         private String authorIntro;
+        private String authroPersonalSay;
         private String userAvatar;
         private String github;
         private String gitee;

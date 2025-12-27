@@ -18,9 +18,9 @@ import com.baofeng.blog.mapper.RoleMapper;
 import com.baofeng.blog.mapper.PermissionMapper;
 import com.baofeng.blog.common.util.JwtTokenProviderUtil;
 import com.baofeng.blog.config.JwtPropertiesConfig;
+import com.baofeng.blog.service.redis.RedisCaptchaService;
+import com.baofeng.blog.service.redis.RedisEmailCaptchaService;
 
-
-import com.github.benmanes.caffeine.cache.Cache;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import java.awt.image.BufferedImage;
 import java.util.UUID;
@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
 import java.time.LocalDateTime;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
@@ -45,7 +44,6 @@ import org.springframework.beans.factory.annotation.Value;
 public class UtilServiceImpl implements UtilService {
     // 与登录接口集成待完成
     private final DefaultKaptcha captchaProducer;
-    private final Cache<String, String> codeCache;
     private final JavaMailSender mailSender;
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
@@ -54,23 +52,25 @@ public class UtilServiceImpl implements UtilService {
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
     private final PermissionMapper permissionMapper;
+    private final RedisCaptchaService redisCaptchaService;
+    private final RedisEmailCaptchaService redisEmailCaptchaService;
     private static final Logger logger = LoggerFactory.getLogger(UtilServiceImpl.class);
 
     @Value("${spring.mail.username}")
     private String eamilUsername;
 
     public UtilServiceImpl(
-        DefaultKaptcha captchaProducer, 
-        Cache<String,String> codeCache, 
-        JavaMailSender mailSender,
-        UserMapper userMapper,
-        BCryptPasswordEncoder passwordEncoder,
-        RoleMapper roleMapper,
-        JwtTokenProviderUtil jwtTokenProvider,
-        JwtPropertiesConfig jwtProperties,
-        PermissionMapper permissionMapper) {
+    DefaultKaptcha captchaProducer, 
+    JavaMailSender mailSender,
+    UserMapper userMapper,
+    BCryptPasswordEncoder passwordEncoder,
+    RoleMapper roleMapper,
+    JwtTokenProviderUtil jwtTokenProvider,
+    JwtPropertiesConfig jwtProperties,
+    PermissionMapper permissionMapper,
+    RedisCaptchaService redisCaptchaService,
+    RedisEmailCaptchaService redisEmailCaptchaService) {
         this.captchaProducer = captchaProducer;
-        this.codeCache = codeCache;
         this.mailSender = mailSender;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
@@ -79,91 +79,119 @@ public class UtilServiceImpl implements UtilService {
         this.accessTokenExpiration = jwtProperties.getAccessTokenExpiration();
         this.refreshTokenExpiration = jwtProperties.getRefreshTokenExpiration();
         this.permissionMapper = permissionMapper;
+        this.redisCaptchaService = redisCaptchaService;
+        this.redisEmailCaptchaService = redisEmailCaptchaService;
     }
+
     @Override
     public ApiResponse<CaptchaResponse> getCaptcha() {
+
         String text = captchaProducer.createText();
         BufferedImage image = captchaProducer.createImage(text);
+
         String uuid = UUID.randomUUID().toString();
-        codeCache.put("IMG:" + uuid, text);
+        redisCaptchaService.saveImageCaptcha(uuid, text);
+
         CaptchaResponse captchaResponse = new CaptchaResponse();
         captchaResponse.setCaptchaEnabled(true);
         captchaResponse.setUuid(uuid);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
+
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             ImageIO.write(image, "jpg", bos);
+
+            String imgBase64 = Base64.getEncoder().encodeToString(bos.toByteArray());
+            captchaResponse.setImg("data:image/jpg;base64," + imgBase64);
+
+            return ApiResponse.success(captchaResponse);
+
         } catch (IOException e) {
             logger.error("生成验证码失败", e);
-            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "生成验证码失败" );
+            return ApiResponse.error(
+                    ResultCodeEnum.INTERNAL_SERVER_ERROR,
+                    "生成验证码失败"
+            );
         }
-
-        // 转 Base64
-        String imgBase64 = Base64.getEncoder().encodeToString(bos.toByteArray());
-        captchaResponse.setImg("data:image/jpg;base64," + imgBase64);
-        return ApiResponse.success(captchaResponse);
     }
 
     @Override
-    public ApiResponse<AdminLoginResponseDTO> captechaLogin(CaptchaAuthLonginRequest captchaAuthLonginRequest) {
+    public ApiResponse<AdminLoginResponseDTO> captechaLogin(
+            CaptchaAuthLonginRequest captchaAuthLonginRequest
+    ) {
+
         String uuid = captchaAuthLonginRequest.uuid();
         String verifyText = captchaAuthLonginRequest.verifyText();
-        String realText = codeCache.getIfPresent("IMG:" + uuid);
+        boolean verifyStatus = redisCaptchaService.validateCaptcha(uuid, verifyText);
+        if (!verifyStatus) {
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"图形验证码错误或过期");
+        }
+
         String username = captchaAuthLonginRequest.username();
         String password = captchaAuthLonginRequest.password();
-        if (realText != null && realText.equals(verifyText)) {
-            codeCache.invalidate("IMG:" + uuid);
-        } else {
-            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"图形验证码错误");
-        }
 
         User user = userMapper.selectByUsernameOrEmail(username);
         if (user == null) {
             return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "用户不存在");
         }
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             userMapper.incrementLoginAttempts(user.getId());
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "密码错误");
         }
+
         if (user.getStatus() == UserStatusEnum.BANNED.getStatus()) {
             return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "账户被锁定");
         }
 
-         // 更新登录信息
         userMapper.updateLoginInfo(user.getId());
 
-        // 生成 token
-        String accessToken = jwtTokenProvider.generateToken(user, accessTokenExpiration, false);
-        String refreshToken = jwtTokenProvider.generateToken(user, refreshTokenExpiration, true);
+        String accessToken =
+                jwtTokenProvider.generateToken(user, accessTokenExpiration, false);
+        String refreshToken =
+                jwtTokenProvider.generateToken(user, refreshTokenExpiration, true);
 
-        // 获取角色
         List<Role> roleList = roleMapper.selectRolesByUserId(user.getId());
-        List<String> roles = new ArrayList<>(roleList.size());
-        List<Long> roleIds = new ArrayList<>(roleList.size());
+
+        List<String> roles = new ArrayList<>();
+        List<Long> roleIds = new ArrayList<>();
         for (Role role : roleList) {
             roles.add(role.getRoleName());
             roleIds.add(role.getId());
         }
-        List<String> permissions;
-        if (roleIds.isEmpty()) {
-            // 如果用户没有角色，则权限列表为空
-            permissions = Collections.emptyList();
-        } else {
-            // 调用批量查询方法
-            permissions = permissionMapper.selectPermissionsByRoleIds(roleIds);
-        }
 
-        AdminLoginResponseDTO.User userInfo = new AdminLoginResponseDTO.User(
-            user.getId(),
-            user.getAvatarUrl(),
-            user.getUsername(),
-            user.getNickName(),
-            roles,
-            permissions
+        List<String> permissions = roleIds.isEmpty()
+                ? Collections.emptyList()
+                : permissionMapper.selectPermissionsByRoleIds(roleIds);
+
+        AdminLoginResponseDTO.User userInfo =
+                new AdminLoginResponseDTO.User(
+                        user.getId(),
+                        user.getAvatarUrl(),
+                        user.getUsername(),
+                        user.getNickName(),
+                        roles,
+                        permissions
+                );
+
+        return ApiResponse.success(
+                new AdminLoginResponseDTO(accessToken, refreshToken, userInfo)
         );
-        AdminLoginResponseDTO adminLoginResponseDTO = new AdminLoginResponseDTO(accessToken, refreshToken, userInfo);
-        return ApiResponse.success(adminLoginResponseDTO);
     }
 
+        private void sendCode(String email){
+
+        String code = String.valueOf((int)((Math.random() * 9 + 1) * 100000));
+
+        redisEmailCaptchaService.saveEmailCaptcha(email, code);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(eamilUsername); // 必须和配置中的 username 一致
+        message.setTo(email);
+        message.setSubject("登录验证码");
+        message.setText("您好！您的登录验证码是：" + code + "。有效期5分钟，请勿泄露。");
+
+        mailSender.send(message);
+    }
+    
     @Override
     public ApiResponse<String> EmailCodeSend(String email){
 
@@ -194,11 +222,9 @@ public class UtilServiceImpl implements UtilService {
             return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"该邮箱已经注册过用户");
         }
         String verifyCode = emailAuthRequest.verifyCode();
-        String realCode = codeCache.getIfPresent("MAIL:" + email);
-        if (realCode != null && realCode.equals(verifyCode)) {
-            codeCache.invalidate("MAIL:" + email); // 校验成功立即删除
-        } else {
-            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"验证码错误");
+        boolean verifyStatus = redisEmailCaptchaService.validateEmailCaptcha(email, verifyCode);
+        if (!verifyStatus) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"邮箱验证码错误或过期");
         }
 
         User user = new User();
@@ -240,22 +266,6 @@ public class UtilServiceImpl implements UtilService {
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户创建失败");
         
     }
-    private void sendCode(String email){
-        // 1. 生成 6 位随机验证码
-        String code = String.valueOf((int)((Math.random() * 9 + 1) * 100000));
 
-        // 2. 存入 Caffeine 缓存 (5分钟自动过期)
-        codeCache.put("MAIL:" + email, code);
-
-        // 3. 构造邮件内容
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(eamilUsername); // 必须和配置中的 username 一致
-        message.setTo(email);
-        message.setSubject("登录验证码");
-        message.setText("您好！您的登录验证码是：" + code + "。有效期5分钟，请勿泄露。");
-
-        // 4. 发送
-        mailSender.send(message);
-    }
 
 }

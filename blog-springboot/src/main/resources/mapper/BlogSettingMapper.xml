@@ -16,6 +16,7 @@
         <result property="logo" column="logo"/>
         <result property="favicon" column="favicon"/>
         <result property="notice" column="notice"/>
+        <result property="visitCount" column="visit_count"/>
 
         <result property="icpFilingNumber" column="icp_filing_number"/>
         <result property="psbFilingNumber" column="psb_filing_number"/>
@@ -47,8 +48,8 @@
         <result property="isCommentReview" column="is_comment_review"/>
         <result property="isEmailNotice" column="is_email_notice"/>
 
-        <result property="wechatQrcode" column="wechat_qrcode"/>
-        <result property="alipayQrcode" column="alipay_qrcode"/>
+        <result property="wechatQrCode" column="wechat_qrcode"/>
+        <result property="alipayQrCode" column="alipay_qrcode"/>
 
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
@@ -74,6 +75,7 @@
             logo,
             favicon,
             notice,
+            visit_count,
             icp_filing_number,
             psb_filing_number,
             author,
@@ -110,6 +112,7 @@
             #{logo},
             #{favicon},
             #{notice},
+            #{visitCount},
             #{icpFilingNumber},
             #{psbFilingNumber},
             #{author},
@@ -134,8 +137,8 @@
             #{multiLanguage},
             #{isCommentReview},
             #{isEmailNotice},
-            #{wechatQrcode},
-            #{alipayQrcode},
+            #{wechatQrCode},
+            #{alipayQrCode},
             CURRENT_TIMESTAMP,
             CURRENT_TIMESTAMP
         )
@@ -155,6 +158,7 @@
             <if test="logo != null">logo = #{logo},</if>
             <if test="favicon != null">favicon = #{favicon},</if>
             <if test="notice != null">notice = #{notice},</if>
+             <if test="visitCount != null">visit_count = #{visitCount},</if>
 
             <if test="icpFilingNumber != null">icp_filing_number = #{icpFilingNumber},</if>
             <if test="psbFilingNumber != null">psb_filing_number = #{psbFilingNumber},</if>
@@ -186,12 +190,20 @@
             <if test="isCommentReview != null">is_comment_review = #{isCommentReview},</if>
             <if test="isEmailNotice != null">is_email_notice = #{isEmailNotice},</if>
 
-            <if test="wechatQrcode != null">wechat_qrcode = #{wechatQrcode},</if>
-            <if test="alipayQrcode != null">alipay_qrcode = #{alipayQrcode},</if>
+            <if test="wechatQrCode != null">wechat_qrcode = #{wechatQrCode},</if>
+            <if test="alipayQrCode != null">alipay_qrcode = #{alipayQrCode},</if>
 
             updated_at = CURRENT_TIMESTAMP
         </set>
         WHERE id = #{id}
     </update>
+
+    <update id="incrementVisitCountById">
+        UPDATE blog_settings
+        SET visit_count = visit_count + #{count}
+        WHERE id = #{id}
+    </update>
+
+
 
 </mapper> 

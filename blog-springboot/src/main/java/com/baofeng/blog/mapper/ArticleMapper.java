@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ArticleMapper {
@@ -181,4 +182,20 @@ public interface ArticleMapper {
      * @return
      */
     long selectArticleCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
+
+    /**
+     * 增加文章访问次数
+     * @param articleId
+     * @param count
+     * @return
+     */
+    int incrementVisitCountById(Long id, long count);
+
+    /**
+     * 批量增加文章访问量
+     * @param visitMap key: articleId, value: 增加的访问量
+     * @return 更新的行数
+     */
+    int batchIncrementVisitCount(@Param("visitMap") Map<Long, Long> visitMap);
+
 }

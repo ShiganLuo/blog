@@ -29,8 +29,8 @@ public class FrontBlogSettinDTO {
         private String personal_say;
         private String notice;
         private String logo;
-        private String ICPFilingNumber;
-        private String PSBFilingNumber;
+        private String icpFilingNumber;
+        private String psbFilingNumber;
         private String blog_intro;
         private String qq_group;
         private String we_chat_group;

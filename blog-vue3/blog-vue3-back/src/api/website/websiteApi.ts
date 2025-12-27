@@ -13,7 +13,7 @@ class WebsiteService {
 
   // 更新网站信息
   static updateWebsiteInfo(data: any) {
-    return request.put({
+    return request.post({
       url: '/admin/settings/updateWebsiteInfo',
       data
     })

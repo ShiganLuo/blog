@@ -11,6 +11,7 @@
         <result property="content" column="content"/>
         <result property="summary" column="summary"/>
         <result property="coverImage" column="cover_image"/>
+        <result property="visitCount" column="visit_count"/>
         <result property="authorId" column="author_id"/>
         <result property="views" column="views"/>
         <result property="likes" column="likes"/>
@@ -403,5 +404,18 @@
         ORDER BY a.created_at DESC
     </select>
 
+    <update id="incrementVisitCountById">
+        UPDATE articles
+        SET visit_count = visit_count + #{count}
+        WHERE id = #{id}
+    </update>
+
+    <update id="batchIncrementVisitCount">
+        <foreach collection="visitMap" item="count" index="articleId" separator=";">
+            UPDATE article
+            SET visit_count = visit_count + #{count}
+            WHERE id = #{articleId}
+        </foreach>
+    </update>
 
 </mapper>

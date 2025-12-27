@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/front/link")
 @Validated
-public class FrongLinkController {
+public class FrontFriendLinkController {
     private final FriendLinkService friendLinkService;
-    public FrongLinkController (
+    public FrontFriendLinkController (
         FriendLinkService friendLinkService
     ) {
         this.friendLinkService = friendLinkService;

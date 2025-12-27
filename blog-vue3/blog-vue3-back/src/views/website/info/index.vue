@@ -98,13 +98,13 @@
           </el-col>
           <form-input
             label="工信部备案号"
-            prop="ICPFilingNumber"
-            v-model="websiteConfigForm.ICPFilingNumber"
+            prop="icpFilingNumber"
+            v-model="websiteConfigForm.icpFilingNumber"
           />
           <form-input
             label="公安部备案号"
-            prop="PSBFilingNumber"
-            v-model="websiteConfigForm.PSBFilingNumber"
+            prop="psbFilingNumber"
+            v-model="websiteConfigForm.psbFilingNumber"
           />
           <el-button type="primary" style="margin-left: 6.3rem" @click="updateWebsiteConfig">
             修改
@@ -251,8 +251,8 @@
     websiteCreateTime: '',
     logo: '',
     notice: '',
-    ICPFilingNumber: '',
-    PSBFilingNumber: '',
+    icpFilingNumber: '',
+    psbFilingNumber: '',
     author: '',
     authorAvatar: '',
     authorIntro: '',
@@ -281,7 +281,7 @@
   let { accessToken } = userStore
   const headers = { Authorization: accessToken }
 
-  const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/blog/website/admin/config/images`
+  const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/admin/image/uploadImage`
 
   const getWebsiteConfig = async () => {
     const res = await WebsiteService.getWebsiteInfo()

@@ -6,8 +6,8 @@ export interface WebsiteResult {
     websiteTitle: string
     logo: string
     notice: string
-    ICPFilingNumber: string
-    PSBFilingNumber: string
+    icpFilingNumber: string
+    psbFilingNumber: string
     author: string
     authorAvatar: string
     authorIntro: string

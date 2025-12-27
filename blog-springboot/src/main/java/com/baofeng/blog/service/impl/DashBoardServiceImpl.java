@@ -46,7 +46,6 @@ public class DashBoardServiceImpl implements DashBoardService{
     private final ImageMapper imageMapper;
     private final LikeMapper likeMapper;
     private final CommentMapper commentMapper;
-    private final BlogSettingMapper blogSettingMapper;
     private static final Logger logger = LoggerFactory.getLogger(DashBoardService.class);
 
     public DashBoardServiceImpl(UserMapper userMapper,
@@ -64,7 +63,6 @@ public class DashBoardServiceImpl implements DashBoardService{
         this.imageMapper = imageMapper;
         this.likeMapper = likeMapper;
         this.commentMapper = commentMapper;
-        this.blogSettingMapper = blogSettingMapper;
     }
 
     @Override

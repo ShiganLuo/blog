@@ -12,12 +12,12 @@ public class BlogSetting {
     private String websiteTitle;
     private String websiteIntro;
     private String frontHeaderBacoground;
-    private String websiteCreateTime;
+    private LocalDateTime websiteCreateTime;
     private String logo;
     private String favicon;
     private String notice;
-    private String ICPFilingNumber;
-    private String PSBFilingNumber;
+    private String icpFilingNumber;
+    private String psbFilingNumber;
     private String author;
     private String authorAvatar; // 网站作者头像
     private String authorIntro;
@@ -38,10 +38,11 @@ public class BlogSetting {
     private String twitter;
     private String stackoverflow;
     private String multiLanguage;
-    private String isCommentReview;
-    private String isEmailNotice;
+    private Boolean isCommentReview;
+    private Boolean isEmailNotice;
     private String wechatQrCode;
     private String alipayQrCode;
+    private Long visitCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 } 
