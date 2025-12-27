@@ -2,6 +2,7 @@ services:
   # 数据库
   db:
     image: mysql:8.0.33
+    container_name: blog_mysql
     volumes:
       - ./blog-springboot/blog.sql:/docker-entrypoint-initdb.d/blog.sql
     restart: always
@@ -12,7 +13,7 @@ services:
       - "3308:3306"
   redis:
     image: redis:7.0.10
-    container_name: redis
+    container_name: blog_redis
     restart: always
     ports:
       - "6379:6379"
@@ -24,6 +25,7 @@ services:
   # 对象存储 MinIO
   minio:
     image: minio/minio
+    container_name: blog_minio
     restart: always
     ports:
       - "9002:9000"       # API 端口（后端上传用）
@@ -38,6 +40,7 @@ services:
   # 后端服务
   backend:
     build: ./blog-springboot
+    container_name: blog_backend
     restart: always
     depends_on:
       - db
@@ -55,6 +58,7 @@ services:
   # 博客前台
   web:
     build: ./blog-vue3/blog-vue3-front
+    container_name: blog_web
     restart: always
     ports:
       - "80:80"
@@ -64,6 +68,7 @@ services:
   # 博客管理后台
   admin:
     build: ./blog-vue3/blog-vue3-back
+    container_name: blog_admin
     restart: always
     ports:
       - "8081:80" 

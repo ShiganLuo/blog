@@ -89,7 +89,7 @@ onMounted(() => {
             </template>
             <template #default>
               <RightSideItem icon="icon-gonggao" title="公告" color="#f00">
-                <div class="notice-text">{{ configDetail.blog_notice }}</div>
+                <div class="notice-text">{{ configDetail.notice }}</div>
               </RightSideItem>
             </template>
           </el-skeleton>
