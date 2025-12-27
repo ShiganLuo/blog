@@ -1,20 +1,19 @@
 import { BaseArrayResult, BaseObjectResult, BasePageResult } from '../axios'
 
 export interface WebsiteResult {
+    websiteChineseName: string
+    websiteEnglishName: string
     websiteTitle: string
-    name: string
     logo: string
     notice: string
     ICPFilingNumber: string
     PSBFilingNumber: string
-    englishName: string
     author: string
     authorAvatar: string
     authorIntro: string
     userAvatar: string
     multiLanguage: number
     websiteCreateTime: string
-    qqLogin: number
     github: string
     gitee: string
     qq: string

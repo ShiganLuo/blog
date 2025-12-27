@@ -1,9 +1,9 @@
 package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.admin.AdminBlogSettingDTO;
+import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetail;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.ConfigDetail;
+import com.baofeng.blog.entity.BlogSetting;
 import com.baofeng.blog.service.BlogSettingService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,8 @@ public class AdminBlogSettingController {
     
     private final BlogSettingService blogSettingService;
     @PostMapping("/initSetting")
-    public ApiResponse<String> initSetting(@RequestBody AdminBlogSettingDTO.InitSettingRequest request){
-        return blogSettingService.initSetting(request);
+    public ApiResponse<String> initSetting(@RequestBody BlogSetting blogSetting){
+        return blogSettingService.initSetting(blogSetting);
 
     }
     @PutMapping("/addView")
@@ -29,13 +29,13 @@ public class AdminBlogSettingController {
     }
 
     @PostMapping("/updateWebsiteInfo")
-    public ApiResponse<String> updateWebsiteInfo(@RequestBody AdminBlogSettingDTO.InitSettingRequest request){
-        return blogSettingService.updateSettingById(request);
+    public ApiResponse<String> updateWebsiteInfo(@RequestBody BlogSetting blogSetting){
+        return blogSettingService.updateSetting(blogSetting);
     }
 
     @GetMapping("/getBlogConfig")
-    public ApiResponse<ConfigDetail> getBlogConfig() {
-        return blogSettingService.getSettingById((long) 1);
+    public ApiResponse<AdminConfigDetail> getBlogConfig() {
+        return blogSettingService.getSettingByIdAdmin((long) 1);
     }
 
     @GetMapping("/getDictSetting/{type}")

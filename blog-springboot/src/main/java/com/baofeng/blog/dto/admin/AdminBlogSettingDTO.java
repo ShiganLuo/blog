@@ -1,25 +1,43 @@
 package com.baofeng.blog.dto.admin;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
 
 public class AdminBlogSettingDTO {
     public static record InitSettingRequest(
-        String siteTitle,
-        String siteDescription,
-        String siteLogo,
-        String blogNotice,
-        String personalSay,
-        String giteeLink,
-        String bilibiliLink,
-        String githubLink,
+        String websiteChineseName,
+        String websiteEnglishName,
+        String websiteTitle,
+        LocalDateTime websiteCreaDateTime,
+        String logo,
+        String favicon,
+        String notice,
+        String ICPFilingNumber,
+        String PSBFilingNumber,
+        String author,
+        String authorAvatar,
+        String authorIntro,
+        String userAvatar,
+        String github,
+        String gitee,
+        String bilibili,
+        String qq,
         String qqGroup,
-        String qqLink,
+        String wechat,
         String wechatGroup,
-        String wechatLink,
-        String aliPay,
-        String wechatPay,
-        boolean enableComments
+        String weibo,
+        String csdn,
+        String zhihu,
+        String juejin,
+        String twitter,
+        String stackoverflow,
+        String touristAvatar,
+        Integer multiLanguage,
+        Boolean isCommentReview,
+        Boolean isEmailNotice,
+        String weiXinQRCode,
+        String alipayQRCode
     ) {}
     
     @Data
@@ -34,5 +52,41 @@ public class AdminBlogSettingDTO {
     public static class SystemSettingDictResponse {
         Integer total;
         List<SystemSettingDict> list;
+    }
+
+    @Data
+    public static class AdminConfigDetail {
+        private String websiteChineseName;
+        private String websiteEnglishName;
+        private String websiteTitle;
+        private LocalDateTime websiteCreaDateTime;
+        private String logo;
+        private String favicon;
+        private String notice;
+        private String ICPFilingNumber;
+        private String PSBFilingNumber;
+        private String author;
+        private String authorAvatar;
+        private String authorIntro;
+        private String userAvatar;
+        private String github;
+        private String gitee;
+        private String bilibili;
+        private String qq;
+        private String qqGroup;
+        private String wechat;
+        private String wechatGroup;
+        private String weibo;
+        private String csdn;
+        private String zhihu;
+        private String juejin;
+        private String twitter;
+        private String stackoverflow;
+        private String touristAvatar;
+        private Integer multiLanguage;
+        private Boolean isCommentReview;
+        private Boolean isEmailNotice;
+        private String weiXinQRCode;
+        private String alipayQRCode;
     }
 }

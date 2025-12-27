@@ -3,8 +3,6 @@ package com.baofeng.blog.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.AddFriendLinkRequest;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkResponse;
 import com.baofeng.blog.entity.BlogSetting;
 
 @Mapper
@@ -22,12 +20,6 @@ public interface BlogSettingMapper {
      */
     BlogSetting getSettingById(long id);
 
-    /**
-     * 删除网站设置信息
-     * @param id 网站id
-     * @return 设置信息
-     */
-    int deleteSettingById(long id);
     
     /**
      * 选择性更新设置
@@ -35,6 +27,8 @@ public interface BlogSettingMapper {
      * @return 影响的行数
      */
     int updateSettingById(BlogSetting setting);
+
+
     /**
      * 增加网站访问次数
      * @param setting 设置信息
@@ -54,33 +48,6 @@ public interface BlogSettingMapper {
      * @return BlogSetting
      */
     BlogSetting getSettingById(Long id);
-
-    /**
-     * 获取所有友链信息
-     * @return
-     */
-    List<FriendLinkResponse> selectAllFriendLinks();
-
-    /**
-     * 增加友链
-     * @param addFriendLinkRequest
-     * @return
-     */
-    int insertFriendLink(AddFriendLinkRequest addFriendLinkRequest);
-
-    /**
-     * 更新友链信息
-     * @param addFriendLinkRequest
-     * @return
-     */
-    int updateFriendLinkById(AddFriendLinkRequest addFriendLinkRequest);
-
-    /**
-     * 根据id获取网站总访问量
-     * @param id
-     * @return
-     */
-    Long selectvisitCountById(Long id);
      
 
 }

@@ -8,7 +8,7 @@ import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.AddFriendLinkRequest;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkPackResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkRequest;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.ConfigDetail;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetail;
 import com.baofeng.blog.service.BlogSettingService;
 
 
@@ -28,27 +28,8 @@ public class FrontBlogSettingController {
 
 
     @GetMapping("/getBlogConfig")
-    public ApiResponse<ConfigDetail> getBlogConfig() {
-        return blogSettingService.getSettingById((long) 1);
+    public ApiResponse<FrontConfigDetail> getBlogConfig() {
+        return blogSettingService.getSettingByIdFront((long) 1);
     }
 
-    @PostMapping("/getAllFriendLink")
-    public ApiResponse<FriendLinkPackResponse> getAllFriendLink(@RequestBody FriendLinkRequest request) {
-        return blogSettingService.getAllFriendLink(request);
-    }
-
-    @PostMapping("/addFriendLink")
-    public ApiResponse<String> addFriendLink(@RequestBody AddFriendLinkRequest addFriendLinkRequest) {
-        return blogSettingService.addFriendLink(addFriendLinkRequest);
-    }
-
-    @PostMapping("/updateFriendLink")
-    public ApiResponse<String> updateFriendLink(@RequestBody AddFriendLinkRequest addFriendLinkRequest) {
-        return blogSettingService.updateFriendLink(addFriendLinkRequest);
-    }
-
-    @DeleteMapping("/delteFirendLink/{id}")
-    public ApiResponse<String> delteFrinedLink(@PathVariable Long id) {
-        return blogSettingService.deleteFriendLink(id);
-    }
 }

@@ -7,25 +7,41 @@ import java.time.LocalDateTime;
 @Data
 public class BlogSetting {
     private Long id;
-    private String siteTitle;
-    private String siteDescription;
-    private String siteLogo;
-    private String blogNotice;
-    private String personalSay;
-    private String giteeLink;
-    private String bilibiliLink;
-    private String githubLink;
+    private String websiteChineseName;
+    private String websiteEnglishName;
+    private String websiteTitle;
+    private String websiteIntro;
+    private String frontHeaderBacoground;
+    private String websiteCreateTime;
+    private String logo;
+    private String favicon;
+    private String notice;
+    private String ICPFilingNumber;
+    private String PSBFilingNumber;
+    private String author;
+    private String authorAvatar; // 网站作者头像
+    private String authorIntro;
+    private String authorPersonalSay;
+    private String userAvatar; // 用户默认头像
+    private String touristAvatar; // 游客默认头像
+    private String github;
+    private String gitee;
+    private String bilibili;
+    private String qq;
     private String qqGroup;
-    private String qqLink;
+    private String wechat;
     private String wechatGroup;
-    private String wechatLink;
-    private String aliPay;
-    private String wechatPay;
-    private boolean enableComments;
-    private long visitCount;
+    private String weibo;
+    private String csdn;
+    private String zhihu;
+    private String juejin;
+    private String twitter;
+    private String stackoverflow;
+    private String multiLanguage;
+    private String isCommentReview;
+    private String isEmailNotice;
+    private String wechatQrCode;
+    private String alipayQrCode;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Long user_id;
-    private String site_url;
-
 } 

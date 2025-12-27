@@ -51,11 +51,11 @@
               <img v-else :src="websiteConfigForm.favicon" class="avatar" />
             </el-upload>
           </el-form-item>
-          <form-input label="网站名称" prop="name" v-model="websiteConfigForm.name" />
+          <form-input label="网站名称" prop="name" v-model="websiteConfigForm.websiteChineseName" />
           <form-input
             label="网站英文名称"
             prop="englishName"
-            v-model="websiteConfigForm.englishName"
+            v-model="websiteConfigForm.websiteEnglishName"
           />
           <form-input label="网站作者" prop="author" v-model="websiteConfigForm.author" />
           <form-input
@@ -106,12 +106,6 @@
             prop="PSBFilingNumber"
             v-model="websiteConfigForm.PSBFilingNumber"
           />
-          <el-form-item label="qq登录">
-            <el-radio-group v-model="websiteConfigForm.qqLogin">
-              <el-radio :value="0">关闭</el-radio>
-              <el-radio :value="1">开启</el-radio>
-            </el-radio-group>
-          </el-form-item>
           <el-button type="primary" style="margin-left: 6.3rem" @click="updateWebsiteConfig">
             修改
           </el-button>
@@ -251,17 +245,18 @@
   import { WebsiteResult } from '@/types/website/website'
   import EmojiText from '@/utils/emojo'
   const websiteConfigForm = ref<WebsiteResult>({
-    name: '',
-    englishName: '',
+    websiteTitle: '',
+    websiteChineseName: '',
+    websiteEnglishName: '',
+    websiteCreateTime: '',
+    logo: '',
+    notice: '',
+    ICPFilingNumber: '',
+    PSBFilingNumber: '',
     author: '',
     authorAvatar: '',
     authorIntro: '',
-    logo: '',
-    multiLanguage: 0,
-    notice: '',
-    websiteCreateTime: '',
-    ICPFilingNumber: '',
-    qqLogin: 0,
+    userAvatar: '',
     github: '',
     gitee: '',
     qq: '',
@@ -273,15 +268,13 @@
     twitter: '',
     stackoverflow: '',
     touristAvatar: '',
-    userAvatar: '',
+    multiLanguage: 0,
     isCommentReview: 0,
     isEmailNotice: 0,
     isReward: 0,
     weiXinQRCode: '',
     alipayQRCode: '',
     favicon: '',
-    websiteTitle: '',
-    PSBFilingNumber: ''
   })
   const activeName = ref('info')
   const userStore = useUserStore()

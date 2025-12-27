@@ -1,8 +1,14 @@
 package com.baofeng.blog.service;
+
 import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.InitSettingRequest;
+import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetail;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.*;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.AddFriendLinkRequest;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkPackResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FriendLinkRequest;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetail;
+import com.baofeng.blog.entity.BlogSetting;
+
 public interface BlogSettingService {
 
     /**
@@ -16,50 +22,30 @@ public interface BlogSettingService {
      * @param request
      * @return
      */
-    public ApiResponse<String> initSetting(InitSettingRequest initSettingRequest);
+    public ApiResponse<String> initSetting(BlogSetting blogSetting);
 
     /**
      * 更新网站设置
      * @param request
      * @return
      */
-    public ApiResponse<String> updateSettingById(InitSettingRequest initSettingRequest);
+    public ApiResponse<String> updateSetting(BlogSetting blogSetting);
 
     /**
-     * 获取网站设置
+     * 获取网站设置前台展示
      * @param id
      * @return
      */
-    public ApiResponse<ConfigDetail> getSettingById(Long id);
+    public ApiResponse<FrontConfigDetail> getSettingByIdFront(Long id);
 
     /**
-     * 获取所有友链
-     * @param request
-     * @return
-     */
-    public ApiResponse<FriendLinkPackResponse> getAllFriendLink(FriendLinkRequest request);
-
-    /**
-     * 增加友链
-     * @param addFriendLinkRequest
-     * @return
-     */
-    public ApiResponse<String> addFriendLink(AddFriendLinkRequest addFriendLinkRequest);
-
-    /**
-     * 更新友链信息
-     * @param addFriendLinkRequest
-     * @return
-     */
-    public ApiResponse<String> updateFriendLink(AddFriendLinkRequest addFriendLinkRequest);
-
-    /**
-     * 删除友链
+     * 获取网站设置后台展示
      * @param id
      * @return
      */
-    public ApiResponse<String> deleteFriendLink(Long id);
+    public ApiResponse<AdminConfigDetail> getSettingByIdAdmin(Long id);
 
+    
     /**
      * 获取系统字典配置
      * @param type

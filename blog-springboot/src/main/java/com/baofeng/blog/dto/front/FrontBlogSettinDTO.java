@@ -23,7 +23,7 @@ public class FrontBlogSettinDTO {
     ) {}
 
     @Data
-    public static class ConfigDetail {
+    public static class FrontConfigDetail {
         private String websiteTitle;
         private String FrontHeadBackground;
         private String personal_say;

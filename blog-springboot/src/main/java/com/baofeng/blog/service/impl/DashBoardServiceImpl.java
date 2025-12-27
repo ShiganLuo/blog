@@ -238,7 +238,7 @@ public class DashBoardServiceImpl implements DashBoardService{
         String weekChange = calculatePercentage(endVal, weekStart);
         String monthChange = calculatePercentage(endVal, monthStart);
         String yearChange = calculatePercentage(endVal, yearStart);
-        Long visitCount = blogSettingMapper.selectvisitCountById((long) 1); //默认第一个网站设置为本博客
+        Long visitCount = 0L;
         List<DictTemplateResponse> dicts = new ArrayList<>();
         dicts.add(new DictTemplateResponse("周增长", weekChange));
         dicts.add(new DictTemplateResponse("月增长", monthChange));

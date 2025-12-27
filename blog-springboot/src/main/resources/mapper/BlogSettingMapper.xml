@@ -4,129 +4,194 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.baofeng.blog.mapper.BlogSettingMapper">
-    <!-- 基础结果映射 -->
+
     <resultMap id="BaseResultMap" type="com.baofeng.blog.entity.BlogSetting">
         <id property="id" column="id"/>
-        <result property="siteTitle" column="site_title"/>
-        <result property="siteDescription" column="site_description"/>
-        <result property="siteLogo" column="site_logo"/>
-        <result property="blogNotice" column="blog_notice"/>
-        <result property="personalSay" column="personal_say"/>
-        <result property="giteeLink" column="gitee_link"/>
-        <result property="bilibiliLink" column="bilibili_link"/>
-        <result property="githubLink" column="github_link"/>
+
+        <result property="websiteChineseName" column="website_chinese_name"/>
+        <result property="websiteEnglishName" column="website_english_name"/>
+        <result property="websiteTitle" column="website_title"/>
+        <result property="websiteCreateTime" column="website_create_time"/>
+
+        <result property="logo" column="logo"/>
+        <result property="favicon" column="favicon"/>
+        <result property="notice" column="notice"/>
+
+        <result property="icpFilingNumber" column="icp_filing_number"/>
+        <result property="psbFilingNumber" column="psb_filing_number"/>
+
+        <result property="author" column="author"/>
+        <result property="authorAvatar" column="author_avatar"/>
+        <result property="authorIntro" column="author_intro"/>
+        <result property="authorPersonalSay" column="author_personal_say"/>
+
+        <result property="userAvatar" column="user_avatar"/>
+        <result property="touristAvatar" column="tourist_avatar"/>
+
+        <result property="github" column="github"/>
+        <result property="gitee" column="gitee"/>
+        <result property="bilibili" column="bilibili"/>
+        <result property="qq" column="qq"/>
         <result property="qqGroup" column="qq_group"/>
-        <result property="qqLink" column="qq_link"/>
+        <result property="wechat" column="wechat"/>
         <result property="wechatGroup" column="wechat_group"/>
-        <result property="wechatLink" column="wechat_link"/>
-        <result property="aliPay" column="ali_pay"/>
-        <result property="wechatPay" column="wechat_pay"/>
-        <result property="enableComments" column="enable_comments"/>
-        <result property="visitCount" column="visit_count"/>
+
+        <result property="weibo" column="weibo"/>
+        <result property="csdn" column="csdn"/>
+        <result property="zhihu" column="zhihu"/>
+        <result property="juejin" column="juejin"/>
+        <result property="twitter" column="twitter"/>
+        <result property="stackoverflow" column="stackoverflow"/>
+
+        <result property="multiLanguage" column="multi_language"/>
+        <result property="isCommentReview" column="is_comment_review"/>
+        <result property="isEmailNotice" column="is_email_notice"/>
+
+        <result property="wechatQrcode" column="wechat_qrcode"/>
+        <result property="alipayQrcode" column="alipay_qrcode"/>
+
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
-        <result property="user_id" column="user_id"/>
-        <result property="site_url" column="site_url"/>
     </resultMap>
 
-    <!-- 获取所有设置 -->
+    <!-- 获取网站配置（单站点，通常 id = 1） -->
+    <select id="getSettingById" resultMap="BaseResultMap">
+        SELECT * FROM blog_settings WHERE id = #{id}
+    </select>
+
+    <!-- 获取全部配置（理论上只有一条） -->
     <select id="getAllSettings" resultMap="BaseResultMap">
         SELECT * FROM blog_settings
     </select>
 
-
+    <!--新建博客配置-->
     <insert id="insertSetting" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO blog_settings (site_title, site_description, site_logo, blog_notice, personal_say, gitee_link, bilibili_link, github_link,
-        qq_group, qq_link, wechat_group, wechat_link, ali_pay, wechat_pay, enable_comments, visit_count, created_at, updated_at)
-        VALUES (#{siteTitle}, #{siteDescription}, #{siteLogo}, #{blogNotice}, #{personalSay}, #{giteeLink}, #{bilibiliLink}, #{githubLink},
-        #{qqGroup}, #{qqLink}, #{wechatGroup}, #{wechatLink}, #{aliPay}, #{wechatPay}, #{enableComments}, #{visitCount}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO blog_settings (
+            website_chinese_name,
+            website_english_name,
+            website_title,
+            website_create_time,
+            logo,
+            favicon,
+            notice,
+            icp_filing_number,
+            psb_filing_number,
+            author,
+            author_avatar,
+            author_intro,
+            author_personal_say,
+            user_avatar,
+            tourist_avatar,
+            github,
+            gitee,
+            bilibili,
+            qq,
+            qq_group,
+            wechat,
+            wechat_group,
+            weibo,
+            csdn,
+            zhihu,
+            juejin,
+            twitter,
+            stackoverflow,
+            multi_language,
+            is_comment_review,
+            is_email_notice,
+            wechat_qrcode,
+            alipay_qrcode,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{websiteChineseName},
+            #{websiteEnglishName},
+            #{websiteTitle},
+            #{websiteCreateTime},
+            #{logo},
+            #{favicon},
+            #{notice},
+            #{icpFilingNumber},
+            #{psbFilingNumber},
+            #{author},
+            #{authorAvatar},
+            #{authorIntro},
+            #{authorPersonalSay},
+            #{userAvatar},
+            #{touristAvatar},
+            #{github},
+            #{gitee},
+            #{bilibili},
+            #{qq},
+            #{qqGroup},
+            #{wechat},
+            #{wechatGroup},
+            #{weibo},
+            #{csdn},
+            #{zhihu},
+            #{juejin},
+            #{twitter},
+            #{stackoverflow},
+            #{multiLanguage},
+            #{isCommentReview},
+            #{isEmailNotice},
+            #{wechatQrcode},
+            #{alipayQrcode},
+            CURRENT_TIMESTAMP,
+            CURRENT_TIMESTAMP
+        )
     </insert>
 
-
-    <!-- 根据 ID 查询博客设置 -->
-    <select id="getSettingById" resultMap="BaseResultMap">
-        SELECT * FROM blog_settings WHERE id = #{id}
-    </select>
-    
-    <!--获取网站总访问量-->
-    <select id="selectvisitCountById" resultType="java.lang.Long">
-        SELECT visit_count FROM blog_settings WHERE id = #{id}
-    </select>
-    <!-- 根据 ID 选择性更新所有设置 -->
+    <!-- ========================= -->
+    <!-- 更新（选择性） -->
+    <!-- ========================= -->
     <update id="updateSettingById">
         UPDATE blog_settings
         <set>
-            <if test="siteTitle != null">site_title = #{siteTitle},</if>
-            <if test="siteDescription != null">site_description = #{siteDescription},</if>
-            <if test="siteLogo != null">site_logo = #{siteLogo},</if>
-            <if test="personalSay != null">personal_say = #{personalSay},</if>
-            <if test="giteeLink != null">gitee_link = #{giteeLink},</if>
-            <if test="bilibiliLink != null">bilibili_link = #{bilibiliLink},</if>
-            <if test="githubLink != null">github_link = #{githubLink},</if>
+            <if test="websiteChineseName != null">website_chinese_name = #{websiteChineseName},</if>
+            <if test="websiteEnglishName != null">website_english_name = #{websiteEnglishName},</if>
+            <if test="websiteTitle != null">website_title = #{websiteTitle},</if>
+            <if test="websiteCreateTime != null">website_create_time = #{websiteCreateTime},</if>
+
+            <if test="logo != null">logo = #{logo},</if>
+            <if test="favicon != null">favicon = #{favicon},</if>
+            <if test="notice != null">notice = #{notice},</if>
+
+            <if test="icpFilingNumber != null">icp_filing_number = #{icpFilingNumber},</if>
+            <if test="psbFilingNumber != null">psb_filing_number = #{psbFilingNumber},</if>
+
+            <if test="author != null">author = #{author},</if>
+            <if test="authorAvatar != null">author_avatar = #{authorAvatar},</if>
+            <if test="authorIntro != null">author_intro = #{authorIntro},</if>
+            <if test="authorPersonalSay != null">author_personal_say = #{authorPersonalSay},</if>
+
+            <if test="userAvatar != null">user_avatar = #{userAvatar},</if>
+            <if test="touristAvatar != null">tourist_avatar = #{touristAvatar},</if>
+
+            <if test="github != null">github = #{github},</if>
+            <if test="gitee != null">gitee = #{gitee},</if>
+            <if test="bilibili != null">bilibili = #{bilibili},</if>
+            <if test="qq != null">qq = #{qq},</if>
             <if test="qqGroup != null">qq_group = #{qqGroup},</if>
-            <if test="qqLink != null">qq_link = #{qqLink},</if>
+            <if test="wechat != null">wechat = #{wechat},</if>
             <if test="wechatGroup != null">wechat_group = #{wechatGroup},</if>
-            <if test="wechatLink != null">wechat_link = #{wechatLink},</if>
-            <if test="aliPay != null">ali_pay = #{aliPay},</if>
-            <if test="wechatPay != null">wechat_pay = #{wechatPay},</if>
-            <if test="enableComments != null">enable_comments = #{enableComments},</if>
-            <if test="visitCount != null">visit_count = #{visitCount},</if>
+
+            <if test="weibo != null">weibo = #{weibo},</if>
+            <if test="csdn != null">csdn = #{csdn},</if>
+            <if test="zhihu != null">zhihu = #{zhihu},</if>
+            <if test="juejin != null">juejin = #{juejin},</if>
+            <if test="twitter != null">twitter = #{twitter},</if>
+            <if test="stackoverflow != null">stackoverflow = #{stackoverflow},</if>
+
+            <if test="multiLanguage != null">multi_language = #{multiLanguage},</if>
+            <if test="isCommentReview != null">is_comment_review = #{isCommentReview},</if>
+            <if test="isEmailNotice != null">is_email_notice = #{isEmailNotice},</if>
+
+            <if test="wechatQrcode != null">wechat_qrcode = #{wechatQrcode},</if>
+            <if test="alipayQrcode != null">alipay_qrcode = #{alipayQrcode},</if>
+
             updated_at = CURRENT_TIMESTAMP
         </set>
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteSettingById" >
-        DELETE FROM blog_settings WHERE id = #{id}
-    </delete>
-
-    <!-- 增加网站访问次数 -->
-    <update id="incrementVisitCount">
-        UPDATE blog_settings
-        SET visit_count = visit_count + 1,
-            updated_at = CURRENT_TIMESTAMP
-        WHERE id = #{id}
-    </update>
-
-    <resultMap id="FriendLinkResultMap" type="com.baofeng.blog.dto.front.FrontBlogSettinDTO$FriendLinkResponse">
-        <id property="id" column="id"/>
-        <result property="site_avatar" column="site_logo"/>
-        <result property="site_name" column="site_title"/>
-        <result property="site_desc" column="site_description"/>
-        <result property="site_url" column="site_url"/>
-        <result property="user_id" column="user_id"/>
-    </resultMap>
-    <!--获取友联信息-->
-    <select id="selectAllFriendLinks" resultMap="FriendLinkResultMap">
-        SELECT
-            id,
-            site_logo,
-            site_title,
-            site_description,
-            site_url,
-            user_id
-        FROM blog_settings
-        WHERE id != 1
-        ORDER BY created_at DESC
-    </select>
-
-    <!--增加友链-->
-    <insert id="insertFriendLink">
-        INSERT INTO blog_settings 
-        (site_title, site_description, site_url, site_logo, user_id)
-        VALUES (#{site_name}, #{site_desc}, #{site_url}, #{site_avatar}, #{user_id})
-    </insert>
-    <!--更新友链信息-->
-    <update id="updateFriendLinkById">
-        UPDATE blog_settings
-        <set>
-            <if test="site_name!= null">site_title = #{site_name},</if>
-            <if test="site_desc != null">site_description = #{site_desc},</if>
-            <if test="site_url != null">site_url = #{site_url},</if>
-            <if test="site_avatar != null">site_logo = #{site_avatar},</if>
-            <if test="user_id != null">user_id = #{user_id},</if>
-            updated_at = CURRENT_TIMESTAMP
-        </set>
-        WHERE id = #{id}
-    </update>
 </mapper> 
