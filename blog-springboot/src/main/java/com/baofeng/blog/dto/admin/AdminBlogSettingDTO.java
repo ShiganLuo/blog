@@ -2,10 +2,6 @@ package com.baofeng.blog.dto.admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import com.baofeng.blog.common.advice.CustomLocalDateTimeDeserializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import lombok.Data;
 
 public class AdminBlogSettingDTO {
@@ -65,6 +61,7 @@ public class AdminBlogSettingDTO {
         private String websiteTitle;
         private String websiteIntro;
         private LocalDateTime websiteCreateTime;
+        private String frontHeadBackground;
         private String logo;
         private String favicon;
         private String notice;

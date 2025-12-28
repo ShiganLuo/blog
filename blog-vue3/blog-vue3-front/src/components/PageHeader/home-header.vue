@@ -22,7 +22,7 @@ interface SentenceResponse {
 // 页面头图类型
 interface PageHeader {
   route_name: string;
-  bg_url: string;
+  bgUrl: string;
 }
 
 const route = useRoute();
@@ -69,7 +69,7 @@ const getBgCover = computed(() => {
   const bgList: PageHeader[] = getPageHeaderList.value;
   const defaultUrl = "http://img.mrzym.top/FvmVKfygxBKoJbFVXJwzjgAASL9S";
   const index = bgList.findIndex((bg) => bg.route_name === route.name);
-  return index === -1 ? defaultUrl : bgList[index].bg_url;
+  return index === -1 ? defaultUrl : bgList[index].bgUrl;
 });
 
 onMounted(() => {

@@ -128,10 +128,8 @@ const leaveMessage = async () => {
 
   let res: ApiResponse<any>;
   if (form.id) {
-    console.log(form)
     res = await CommentSerivce.addComment(form);
   } else {
-    console.log(form)
     res = await MessageService.addMessage(form);
   }
 

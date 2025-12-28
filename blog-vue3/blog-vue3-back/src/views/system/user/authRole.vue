@@ -104,7 +104,6 @@
   /** 提交按钮 */
   const submitForm = async () => {
     const userId = form.value.userId
-    console.log(roleNames.value)
     const res = await UserService.updateAuthRole({ userId: userId, roleNames: roleNames.value })
     if (res.code === 200) {
       ElMessage.success(res.message)

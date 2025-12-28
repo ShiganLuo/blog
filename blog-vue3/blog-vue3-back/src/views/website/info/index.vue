@@ -51,6 +51,22 @@
               <img v-else :src="websiteConfigForm.favicon" class="avatar" />
             </el-upload>
           </el-form-item>
+          <el-form-item label="前台通用背景">
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadImageUrl"
+              :headers="headers"
+              :show-file-list="false"
+              :before-upload="beforeUpload"
+              :on-success="handleFrontHeadBackgroundSuccess"
+            >
+              <div v-if="!websiteConfigForm.frontHeadBackground" class="upload-placeholder">
+                <el-icon class="upload-icon"><Plus /></el-icon>
+                <div class="upload-text">点击上传图标</div>
+              </div>
+              <img v-else :src="websiteConfigForm.frontHeadBackground" class="avatar" />
+            </el-upload>
+          </el-form-item>
           <form-input label="网站名称" prop="name" v-model="websiteConfigForm.websiteChineseName" />
           <form-input
             label="网站英文名称"
@@ -258,6 +274,7 @@
     websiteEnglishName: '',
     websiteCreateTime: '',
     websiteIntro: '',
+    frontHeadBackground: '',
     logo: '',
     notice: '',
     icpFilingNumber: '',
@@ -300,37 +317,42 @@
   }
 
   const handleAuthorAvatarSuccess = (response: any) => {
-    websiteConfigForm.value.authorAvatar = response.msg
+    websiteConfigForm.value.authorAvatar = response.result
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
   const handleFaviconSuccess = (response: any) => {
-    websiteConfigForm.value.favicon = response.msg
+    websiteConfigForm.value.favicon = response.result
+    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+  }
+
+  const handleFrontHeadBackgroundSuccess = (response: any) => {
+    websiteConfigForm.value.frontHeadBackground = response.result
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
   const handleLogoSuccess = (response: any) => {
-    websiteConfigForm.value.logo = response.msg
+    websiteConfigForm.value.logo = response.result
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
   const handleUserAvatarSuccess = (response: any) => {
-    websiteConfigForm.value.userAvatar = response.msg
+    websiteConfigForm.value.userAvatar = response.result
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
   const handleTouristAvatarSuccess = (response: any) => {
-    websiteConfigForm.value.touristAvatar = response.msg
+    websiteConfigForm.value.touristAvatar = response.result
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
   const handleWeiXinSuccess = (response: any) => {
-    websiteConfigForm.value.weiXinQRCode = response.msg
+    websiteConfigForm.value.weiXinQRCode = response.result
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
   const handleAlipaySuccess = (response: any) => {
-    websiteConfigForm.value.alipayQRCode = response.msg
+    websiteConfigForm.value.alipayQRCode = response.result
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 

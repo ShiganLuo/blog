@@ -39,7 +39,8 @@ const props = withDefaults(defineProps<Props>(), {
   bgUrl: "",
   photoAlbumList: () => [],
 });
-
+console.log("----1----")
+console.log(props.bgUrl)
 // =====================
 // Store + 路由
 // =====================
@@ -104,7 +105,7 @@ watch(
 </script>
 
 <template>
-  <HomeHeader class="!w-[100%] !h-[100vh]" v-if="route.path == '/home'" />
+  <HomeHeader :bgUrl = "bgUrl" class="!w-[100%] !h-[100vh]" v-if="route.path == '/home'" />
 
   <div v-else class="page-header" :style="getBgCover">
     <div v-if="route.path == '/article'" class="article main-article">

@@ -254,7 +254,7 @@
 
     <select id="getRecommendedArticles" resultMap="FrontArticlePageResultMap">
         SELECT DISTINCT 
-            a.id, a.title, a.summary, a.content, a.views, a.comments_count, 
+            a.id, a.title, a.summary, a.content, a.views,a.is_top, a.comments_count, 
             a.likes, a.type, a.origin_url, a.created_at, a.updated_at, a.status, 
             a.cover_image, a.is_featured, a.author_id,
             u.username AS author_name,

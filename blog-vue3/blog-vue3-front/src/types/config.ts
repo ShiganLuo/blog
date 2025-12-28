@@ -7,8 +7,9 @@ export interface ConfigDetail {
   view_time?: number;
   qq_group?: string;
   we_chat_group?: string;
+  frontHeadBackground?: string;
   // 其他配置字段...
-  avatar_bg?: string;
+  authorAvatar?: string;
   personal_say?: string;
   categoryCount?: number;
   tagCount?: number;

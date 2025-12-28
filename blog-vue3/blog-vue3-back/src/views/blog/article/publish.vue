@@ -24,7 +24,7 @@
         </el-row>
 
         <!-- 富文本编辑器 -->
-        <Editor class="el-top" v-model="form.articleContent" />
+        <MarkdownEditor class="el-top" v-model="form.articleContent" :action="uploadImageUrl"/>
 
         <div class="form-wrap">
           <h2>发布设置</h2>

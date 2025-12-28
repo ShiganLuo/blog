@@ -16,7 +16,7 @@ import GsapCount from "@/components/GsapCount/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 
 // Props 类型定义
-defineProps({
+const props = defineProps({
   configDetail: {
     type: Object as PropType<ConfigDetail>,
     default: () => ({}),
@@ -34,7 +34,6 @@ defineProps({
     default: () => [],
   },
 });
-
 const router = useRouter();
 
 // 路由跳转函数
@@ -44,7 +43,7 @@ const goToArticleList = (item: ColoredTag) => {
     query: {
       id: item.id.toString(),
       type: "tag",
-      name: item.tag_name
+      name: item.tagName
     }
   });
 };
@@ -164,7 +163,7 @@ onMounted(() => {
                     :style="{ color: tag.color }"
                     @click="goToArticleList(tag)"
                   >
-                    {{ tag.tag_name }}{{ index === tags.length - 1 ? '' : '&nbsp;&nbsp;' }}
+                    {{ tag.tagName }}{{ index === tags.length - 1 ? '' : '&nbsp;&nbsp;' }}
                   </span>
                 </div>
               </RightSideItem>

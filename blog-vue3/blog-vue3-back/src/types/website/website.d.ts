@@ -5,6 +5,7 @@ export interface WebsiteResult {
     websiteEnglishName: string
     websiteTitle: string
     websiteIntro: string
+    frontHeadBackground: string
     logo: string
     notice: string
     icpFilingNumber: string

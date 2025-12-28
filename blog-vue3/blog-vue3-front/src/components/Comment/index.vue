@@ -53,7 +53,6 @@ const toLogin = (): void => {
 
 // 评论文章，由ParentItem触发
 const publish = async (): Promise<void> => {
-  console.log("这是index的publish")
   if (!userStore.getUserInfo.id) {
     ElNotification({
       offset: 60,
@@ -71,7 +70,6 @@ const publish = async (): Promise<void> => {
     author_id: props.authorId, // 文章作者的id用于消息推送
     root_id: props.id
   };
-  console.log(data)
   const res: any = await CommentSerivce.addComment(data);
   if (res.code === 200) {
     commentText.value = "";

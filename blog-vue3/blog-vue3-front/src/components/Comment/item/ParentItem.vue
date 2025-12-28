@@ -95,7 +95,6 @@ const handleDelete = (commentId: number | string) => {
 
 // 回复评论，由CommentItem触发
 const publish = async (data: { content: string, for_id?: number | string, to_id?: string }) => {
-  console.log("这是parent的publish", data)
   const commentData = {
     from_id: userStore.getUserInfo.id,
     content: data.content,
@@ -105,7 +104,6 @@ const publish = async (data: { content: string, for_id?: number | string, to_id?
     author_id: props.authorId,
     root_id: props.id
   };
-  console.log(commentData)
   const res = await CommentSerivce.addComment(commentData);
   if (res.code === 200) {
     ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "评论成功") });

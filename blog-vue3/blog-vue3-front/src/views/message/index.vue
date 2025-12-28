@@ -66,12 +66,9 @@ const toggle = (): void => {
 };
 
 const userAddMessage = (): void => {
-  console.log("-------1--------")
   if (getMessageTypeIsCard.value) {
-    console.log("-------2--------")
     router.push({ path: "/message/publish", query: { type: "add" } });
   } else {
-    console.log("-------3--------")
     if (!message.value) {
       ElNotification({
         offset: 60,
@@ -85,7 +82,6 @@ const userAddMessage = (): void => {
       });
       return;
     }
-    console.log(getUserInfo.value)
     const form: MessageForm = {
       id: 0,
       content: message.value,
@@ -100,7 +96,6 @@ const userAddMessage = (): void => {
       avatar: getUserInfo.value.avatar || "游客",
       isNew: true,
     };
-    console.log("form", form);
     // 保存弹幕
     MessageService.addMessage(form).then((res: AddMessageResponse) => {
       if (res.code === 200) {

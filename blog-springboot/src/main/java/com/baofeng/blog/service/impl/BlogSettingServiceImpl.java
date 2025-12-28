@@ -94,9 +94,10 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         Long userCount = userMapper.countAllUsers();
         FrontConfigDetail detail = new FrontConfigDetail();
         detail.setWebsiteTitle(blogSetting.getWebsiteTitle());
+        detail.setAuthorAvatar(blogSetting.getAuthorAvatar());
         detail.setLogo(blogSetting.getLogo());
         detail.setBlog_intro(blogSetting.getWebsiteIntro());
-        detail.setFrontHeadBackground(blogSetting.getFrontHeaderBacoground());
+        detail.setFrontHeadBackground(blogSetting.getFrontHeadBackground());
         detail.setNotice(blogSetting.getNotice());
         detail.setPersonal_say(blogSetting.getAuthorPersonalSay());
         detail.setGitee(blogSetting.getGitee());
@@ -130,6 +131,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         detail.setLogo(blogSetting.getLogo());
         detail.setNotice(blogSetting.getNotice());
         detail.setFavicon(blogSetting.getFavicon());
+        detail.setFrontHeadBackground(blogSetting.getFrontHeadBackground());
         detail.setIcpFilingNumber(blogSetting.getIcpFilingNumber());
         detail.setPsbFilingNumber(blogSetting.getPsbFilingNumber());
 

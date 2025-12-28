@@ -28,6 +28,7 @@ public class FrontBlogSettinDTO {
         private String FrontHeadBackground;
         private String personal_say;
         private String notice;
+        private String authorAvatar;
         private String logo;
         private String icpFilingNumber;
         private String psbFilingNumber;

@@ -16,6 +16,8 @@
 
         <result property="logo" column="logo"/>
         <result property="favicon" column="favicon"/>
+        <result property="frontHeadBackground" column="front_head_background"/>
+        
         <result property="notice" column="notice"/>
         <result property="visitCount" column="visit_count"/>
 
@@ -76,6 +78,7 @@
             website_intro,
             logo,
             favicon,
+            front_head_background,
             notice,
             visit_count,
             icp_filing_number,
@@ -114,6 +117,7 @@
             #{websiteIntro},
             #{logo},
             #{favicon},
+            #{frontHeadBackground},
             #{notice},
             #{visitCount},
             #{icpFilingNumber},
@@ -161,8 +165,9 @@
 
             <if test="logo != null">logo = #{logo},</if>
             <if test="favicon != null">favicon = #{favicon},</if>
+            <if test="frontHeadBackground != null">front_head_background = #{frontHeadBackground},</if>
             <if test="notice != null">notice = #{notice},</if>
-             <if test="visitCount != null">visit_count = #{visitCount},</if>
+            <if test="visitCount != null">visit_count = #{visitCount},</if>
 
             <if test="icpFilingNumber != null">icp_filing_number = #{icpFilingNumber},</if>
             <if test="psbFilingNumber != null">psb_filing_number = #{psbFilingNumber},</if>

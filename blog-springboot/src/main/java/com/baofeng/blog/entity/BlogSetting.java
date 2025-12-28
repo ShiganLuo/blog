@@ -14,7 +14,7 @@ public class BlogSetting {
     private String websiteEnglishName;
     private String websiteTitle;
     private String websiteIntro;
-    private String frontHeaderBacoground;
+    private String frontHeadBackground;
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     private LocalDateTime websiteCreateTime;
     private String logo;

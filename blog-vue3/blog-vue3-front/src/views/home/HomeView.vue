@@ -116,7 +116,6 @@ const calcRuntimeDays = (time: string): void => {
   }
 };
 
-
 const init = async (): Promise<void> => {
   param.loading = true;
   rightSizeLoading.value = true;
@@ -135,7 +134,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <PageHeader/>
+  <PageHeader
+  :bgUrl="configDetail.frontHeadBackground"/>
   <div class="home_center_box">
     <el-row>
       <el-col :xs="24" :sm="18">
@@ -145,8 +145,6 @@ onMounted(async () => {
           :article-total="articleTotal"
           @page-change="pagination"
         />
-
-
       </el-col>
 
       <el-col :xs="0" :sm="6">

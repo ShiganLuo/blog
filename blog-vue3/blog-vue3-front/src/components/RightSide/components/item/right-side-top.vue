@@ -10,7 +10,8 @@ import SvgIcon from "@/components/SvgIcon/index.vue";
 
 // 严格类型定义
 interface BlogConfig {
-  avatar_bg?: string;
+  frontHeadBackground?: string;
+  authorAvatar?: string;
   logo?: string;
   websiteTitle?: string;
   personal_say?: string;
@@ -27,11 +28,11 @@ interface BlogConfig {
 const router = useRouter();
 const avatar = ref<string>(blogAvatar);
 
-defineProps({
+const props = defineProps({
   configDetail: {
     type: Object as PropType<BlogConfig>,
     default: () => ({
-      avatar_bg: "",
+      frontHeadBackground: "",
       websiteTitle: "",
       personal_say: "",
       articleCount: 0,
@@ -69,13 +70,13 @@ const operate = (op: OperationType, val?: string): void => {
 
 <template>
   <!-- 背景图 -->
-  <div class="info-background" v-image="configDetail.avatar_bg">
+  <div class="info-background" v-image="configDetail.frontHeadBackground">
     <ElImage
       fit="cover"
       style="width: 100%; height: 100%"
-      :src="configDetail.avatar_bg"
+      :src="configDetail.frontHeadBackground"
       preview-teleported
-      :preview-src-list="[configDetail.avatar_bg || '']"
+      :preview-src-list="[configDetail.frontHeadBackground || '']"
     >
       <template #error>
         <div class="w-[100%] h-[100%] grid place-items-center">
@@ -88,7 +89,7 @@ const operate = (op: OperationType, val?: string): void => {
   <!-- 头像区域 -->
   <div class="info-avatar">
     <router-link to="/">
-      <ElAvatar :src="configDetail.logo || avatar" />
+      <ElAvatar :src="configDetail.authorAvatar || avatar" />
     </router-link>
     <span class="blog-name">{{ configDetail.websiteTitle }}</span>
   </div>
