@@ -3,6 +3,9 @@ package com.baofeng.blog.entity;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+import com.baofeng.blog.common.advice.CustomLocalDateTimeDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 
 @Data
 public class BlogSetting {
@@ -12,6 +15,7 @@ public class BlogSetting {
     private String websiteTitle;
     private String websiteIntro;
     private String frontHeaderBacoground;
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     private LocalDateTime websiteCreateTime;
     private String logo;
     private String favicon;

@@ -20,7 +20,6 @@ export enum RoutesAlias {
   ArticlePublish = '/blog/article/publish', // 文章发布
   ArticleManage = '/blog/article/index', // 文章统计
   WebsiteInfo = '/website/info/index', // 网站信息
-  WebsiteAbout = '/website/about/index', // 网站介绍
   WebsiteLink = '/website/link/index', // 友链
   Photo = '/photo/photo', // 照片管理
   PhotoDelete = '/photo/delete', // 照片回收站

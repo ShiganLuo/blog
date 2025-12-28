@@ -116,7 +116,7 @@
           <form-input label="Github" prop="github" v-model="websiteConfigForm.github" />
           <form-input label="Gitee" prop="gitee" v-model="websiteConfigForm.gitee" />
           <form-input label="QQ" prop="qq" v-model="websiteConfigForm.qq" />
-          <form-input label="WeChat" prop="weChat" v-model="websiteConfigForm.weChat" />
+          <form-input label="wechat" prop="wechat" v-model="websiteConfigForm.wechat" />
           <form-input label="微博" prop="weibo" v-model="websiteConfigForm.weibo" />
           <form-input label="CSDN" prop="csdn" v-model="websiteConfigForm.csdn" />
           <form-input label="知乎" prop="zhihu" v-model="websiteConfigForm.zhihu" />
@@ -234,6 +234,14 @@
           </el-button>
         </el-form>
       </el-tab-pane>
+      <el-tab-pane label="网站介绍" name="websiteIntro">
+        <div class="editor-wrap">
+          <Editor class="el-top" v-model="websiteConfigForm.websiteIntro" :action="uploadImageUrl" />
+          <div style="display: flex; justify-content: flex-end">
+            <el-button type="primary" @click="updateWebsiteConfig" style="width: 100px"> 修改 </el-button>
+          </div>
+        </div>
+      </el-tab-pane>
     </el-tabs>
   </el-card>
 </template>
@@ -249,6 +257,7 @@
     websiteChineseName: '',
     websiteEnglishName: '',
     websiteCreateTime: '',
+    websiteIntro: '',
     logo: '',
     notice: '',
     icpFilingNumber: '',
@@ -260,7 +269,7 @@
     github: '',
     gitee: '',
     qq: '',
-    weChat: '',
+    wechat: '',
     weibo: '',
     csdn: '',
     zhihu: '',
@@ -420,4 +429,22 @@
     border: 1px solid #ebeef5;
     border-radius: 8px;
   }
+  .editor-wrap {
+    padding: 20px;
+    border-radius: 8px;
+    .el-top {
+        max-height: 650px;
+        margin-bottom: 20px;
+        min-height: 300px;
+      }
+    .el-button {
+        background-color: #409eff;
+        border-color: #409eff;
+        color: #fff;
+        &:hover {
+          background-color: #66b1ff;
+          border-color: #66b1ff;
+        }
+      }
+    }
 </style>

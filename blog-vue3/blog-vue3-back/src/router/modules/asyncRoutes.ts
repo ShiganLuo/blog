@@ -107,13 +107,6 @@ export const asyncRoutes: MenuListType[] = [
     children: [
       {
         id: uuid(),
-        path: '/website/about',
-        component: RoutesAlias.WebsiteAbout,
-        name: 'WebsiteAbout',
-        meta: {title: "网站介绍", keepAlive: false}
-      },
-      {
-        id: uuid(),
         path: '/website/info',
         component: RoutesAlias.WebsiteInfo,
         name: 'WebsiteInfo',

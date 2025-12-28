@@ -1,6 +1,5 @@
 import request from '@/utils/http'
 import { WebsiteResult } from '@/types/website/website'
-import { CodeMsgResult } from '@/types/axios'
 
 // 网站
 class WebsiteService {

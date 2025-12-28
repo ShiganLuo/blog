@@ -4,6 +4,7 @@ export interface WebsiteResult {
     websiteChineseName: string
     websiteEnglishName: string
     websiteTitle: string
+    websiteIntro: string
     logo: string
     notice: string
     icpFilingNumber: string
@@ -17,7 +18,7 @@ export interface WebsiteResult {
     github: string
     gitee: string
     qq: string
-    weChat: string
+    wechat: string
     weibo: string
     csdn: string
     zhihu: string

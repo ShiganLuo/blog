@@ -12,6 +12,7 @@
         <result property="websiteEnglishName" column="website_english_name"/>
         <result property="websiteTitle" column="website_title"/>
         <result property="websiteCreateTime" column="website_create_time"/>
+        <result property="websiteIntro" column="website_intro"/>
 
         <result property="logo" column="logo"/>
         <result property="favicon" column="favicon"/>
@@ -72,6 +73,7 @@
             website_english_name,
             website_title,
             website_create_time,
+            website_intro,
             logo,
             favicon,
             notice,
@@ -109,6 +111,7 @@
             #{websiteEnglishName},
             #{websiteTitle},
             #{websiteCreateTime},
+            #{websiteIntro},
             #{logo},
             #{favicon},
             #{notice},
@@ -154,6 +157,7 @@
             <if test="websiteEnglishName != null">website_english_name = #{websiteEnglishName},</if>
             <if test="websiteTitle != null">website_title = #{websiteTitle},</if>
             <if test="websiteCreateTime != null">website_create_time = #{websiteCreateTime},</if>
+            <if test="websiteIntro != null">website_intro = #{websiteIntro},</if>
 
             <if test="logo != null">logo = #{logo},</if>
             <if test="favicon != null">favicon = #{favicon},</if>

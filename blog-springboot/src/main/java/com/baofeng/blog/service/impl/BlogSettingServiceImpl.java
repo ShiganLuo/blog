@@ -75,6 +75,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         BlogSetting blogsetting2 = blogSettingMapper.getSettingById(1L);
         int success = 0;
         if (blogsetting2 == null) {
+            blogSetting.setVisitCount(0L);
             success = blogSettingMapper.insertSetting(blogSetting);
         } else {
             success = blogSettingMapper.updateSettingById(blogSetting);
@@ -124,6 +125,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         detail.setWebsiteEnglishName(blogSetting.getWebsiteEnglishName());
         detail.setWebsiteTitle(blogSetting.getWebsiteTitle());
         detail.setWebsiteCreateTime(blogSetting.getWebsiteCreateTime());
+        detail.setWebsiteIntro(blogSetting.getWebsiteIntro());
 
         detail.setLogo(blogSetting.getLogo());
         detail.setNotice(blogSetting.getNotice());

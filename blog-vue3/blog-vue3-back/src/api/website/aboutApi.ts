@@ -1,22 +1,19 @@
 import request from '@/utils/http'
-import { CodeMsgResult, BaseObjectResult } from '@/types/axios'
+import { WebsiteResult } from '@/types/website/website'
 
-export interface About{
-  content: string
-}
 
 // 关于
 class AboutService {
   // 关于
   static getAbout() {
-    return request.get<About>({
-      url: '/blog/website/about'
+    return request.get<WebsiteResult>({
+      url: '/admin/settings/getBlogConfig'
     })
   }
 
   // 修改关于
   static updateAbout(data: any) {
-    return request.put({
+    return request.post({
       url: '/admin/settings/updateWebsiteInfo',
       data
     })
