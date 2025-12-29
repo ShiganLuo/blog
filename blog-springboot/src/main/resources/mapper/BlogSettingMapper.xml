@@ -63,6 +63,11 @@
         SELECT * FROM blog_settings WHERE id = #{id}
     </select>
 
+    <!--获取ICP备案号-->
+    <select id="getICPFilingNumberById">
+        SELECT icp_filing_number FROM blog_settings WHERE id = #{id}
+    </select>
+
     <!-- 获取全部配置（理论上只有一条） -->
     <select id="getAllSettings" resultMap="BaseResultMap">
         SELECT * FROM blog_settings

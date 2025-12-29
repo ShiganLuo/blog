@@ -47,32 +47,32 @@ const formRef = ref<FormInstance>();
 // 定义表单数据类型
 interface FriendLinkData {
   id?: number | string; // id可能存在
-  site_name: string;
-  site_desc: string;
-  site_url: string;
-  site_avatar: string;
+  siteName: string;
+  siteDesc: string;
+  siteUrl: string;
+  siteAvatar: string;
   bgList: any[]; // Upload组件的文件列表，类型不确定时用any[]
   status: number;
-  user_id?: number | string;
+  userId?: number | string;
 }
 
 const form = reactive<FriendLinkData>({
-  site_name: "",
-  site_desc: "",
-  site_url: "",
-  site_avatar: "",
+  siteName: "",
+  siteDesc: "",
+  siteUrl: "",
+  siteAvatar: "",
   bgList: [],
   status: 1,
-  user_id: undefined,
+  userId: undefined,
 });
 
 const primaryForm = reactive<FriendLinkData>({ ...form });
 
 // 定义表单校验规则的类型
 const rules = reactive<FormRules<FriendLinkData>>({
-  site_name: [{ required: true, message: "请输入网站名称", trigger: "blur" }],
-  site_desc: [{ required: true, message: "请输入网站描述", trigger: "blur" }],
-  site_url: [{ required: true, validator: urlV, trigger: "blur" }],
+  siteName: [{ required: true, message: "请输入网站名称", trigger: "blur" }],
+  siteDesc: [{ required: true, message: "请输入网站描述", trigger: "blur" }],
+  siteUrl: [{ required: true, validator: urlV, trigger: "blur" }],
 });
 
 const handleClose = () => {
@@ -81,22 +81,21 @@ const handleClose = () => {
 
 // 申请/修改友链
 const applyLinks = async () => {
-  // 使用可选链操作符和类型守卫来确保formRef.value存在
   if (!formRef.value) return;
 
   try {
     const valid = await formRef.value.validate();
     if (valid) {
       loading.value = true;
-      // 检查bgList是否存在文件且不是已有的
-      if (form.bgList.length && !form.bgList[0].id) {
+      const file = form.bgList[0];
+      if (file?.raw instanceof File) {
         // 类型断言，确保bgList[0]是一个File或Blob对象
         const formData = new FormData();
-        formData.append('file', form.bgList[0].raw);
+        formData.append('file', file.raw);
         const img = await UserService.imgUpload(formData);
         if (img.code === 200 && img.result) {
           const url = img.result;
-          form.site_avatar = url;
+          form.siteAvatar = url;
         }
       }
       form.status = 1;
@@ -104,7 +103,7 @@ const applyLinks = async () => {
       if (form.id) {
         res = await LinkService.updateFriendLinks(form);
       } else {
-        form.user_id = getUserInfo.value.id;
+        form.userId = getUserInfo.value.id;
         res = await LinkService.addFriendLinks(form);
       }
 
@@ -195,12 +194,12 @@ watch(
         </el-form-item>
 
         <el-form-item label="网站名称" prop="site_name">
-          <el-input v-model="form.site_name" placeholder="请输入网站名称" clearable />
+          <el-input v-model="form.siteName" placeholder="请输入网站名称" clearable />
         </el-form-item>
         <el-form-item label="网站描述" prop="site_desc">
           <el-input
             type="textarea"
-            v-model="form.site_desc"
+            v-model="form.siteDesc"
             maxlength="125"
             resize="none"
             :autosize="{ minRows: 2, maxRows: 3 }"
@@ -210,7 +209,7 @@ watch(
           />
         </el-form-item>
         <el-form-item label="网站地址" prop="url">
-          <el-input v-model="form.site_url" placeholder="请输入网站地址" clearable />
+          <el-input v-model="form.siteUrl" placeholder="请输入网站地址" clearable />
         </el-form-item>
       </el-form>
       <div class="pos">

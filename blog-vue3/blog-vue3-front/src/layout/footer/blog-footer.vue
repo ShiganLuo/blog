@@ -1,6 +1,19 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+import { ConfigService } from "@/api/configApi";
 const route = useRoute();
+const icpFillingNumber = ref('');
+
+const getICPFillingNumber = async (): Promise<void> =>{
+  const res = await ConfigService.getICPFilingNumber();
+  if (res.code == 200) {
+    icpFillingNumber.value = res.result;
+  }
+}
+onMounted(async () => {
+  await getICPFillingNumber();
+});
 </script>
 
 <template>
@@ -8,7 +21,7 @@ const route = useRoute();
     v-if="route.path !== '/message/chat'" class="footer_box"
   >
     <!-- eslint-disable-next-line -->
-    <div class="footer-color">&copy 时敢的博客 2025</div>
+    <div class="footer-color">&copy 时敢的博客 2025 ICP备案号 {{ icpFillingNumber }}</div>
     <div class="footer-color m-5px flex-wrap">
       <a class="p-3px" href="https://imzbf.github.io/md-editor-v3/docs/index" target="_blank">
         <img

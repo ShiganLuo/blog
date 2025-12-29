@@ -228,4 +228,10 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         return ApiResponse.success(systemSettingDictResponse);
         
     }
+
+    @Override
+    public ApiResponse<String> getICPFillingNumber() {
+        String ICPFillingNumber = blogSettingMapper.getICPFilingNumberById(1L);
+        return ApiResponse.success(ICPFillingNumber);
+    }
 } 

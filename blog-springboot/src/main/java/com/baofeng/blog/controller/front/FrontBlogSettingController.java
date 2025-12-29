@@ -30,4 +30,9 @@ public class FrontBlogSettingController {
         return blogSettingService.getSettingByIdFront(1L);
     }
 
+    @GetMapping("/getICPFilingNumber")
+    public ApiResponse<String> getICPFillingNumber() {
+        return blogSettingService.getICPFillingNumber();
+    }
+
 }

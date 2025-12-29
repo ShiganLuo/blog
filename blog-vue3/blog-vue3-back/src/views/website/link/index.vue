@@ -10,7 +10,6 @@
           />
         </el-form>
       </el-col>
-      <div style="width: 12px"></div>
       <el-col :xs="24" :sm="12" :lg="6" class="el-col2">
         <el-button @click="handleQuery" v-ripple>搜索 </el-button>
         <el-button @click="handleAdd" v-auth="['server:tag:add']" v-ripple>新增 </el-button>
@@ -37,17 +36,17 @@
       row-key="id"
     >
       <template #default>
-        <el-table-column label="链接名" align="center" prop="linkName" />
-        <el-table-column label="链接头像" align="center" prop="linkAvatar">
+        <el-table-column label="网站名" align="center" prop="siteName" />
+        <el-table-column label="网站头像" align="center" prop="siteAvatar">
           <template #default="scope">
             <el-image
               class="article-cover"
-              :src="scope.row.linkAvatar ? scope.row.linkAvatar : defaultAvatar"
+              :src="scope.row.siteAvatar ? scope.row.siteAvatar : defaultAvatar"
             />
           </template>
         </el-table-column>
-        <el-table-column label="链接地址" align="center" prop="linkAddress" />
-        <el-table-column label="链接介绍" align="center" prop="linkIntro" />
+        <el-table-column label="网站地址" align="center" prop="siteUrl" />
+        <el-table-column label="网站介绍" align="center" prop="siteDesc" />
         <el-table-column label="操作" align="center">
           <template #default="scope">
             <button-table
@@ -68,10 +67,10 @@
     <!-- 添加或修改友链管理对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
       <el-form ref="linkRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="链接名" prop="linkName">
-          <el-input v-model="form.linkName" placeholder="请输入链接名" />
+        <el-form-item label="网站名" prop="siteName">
+          <el-input v-model="form.siteName" placeholder="请输入网站名" />
         </el-form-item>
-        <el-form-item label="链接头像" prop="linkAvatar">
+        <el-form-item label="网站头像" prop="siteAvatar">
           <div class="el-top upload-container">
             <el-upload
               class="cover-uploader"
@@ -82,20 +81,20 @@
               :on-error="onError"
               :before-upload="beforeUpload"
             >
-              <div v-if="!form.linkAvatar" class="upload-placeholder">
+              <div v-if="!form.siteAvatar" class="upload-placeholder">
                 <el-icon class="upload-icon"><Plus /></el-icon>
                 <div class="upload-text">点击上传封面</div>
               </div>
-              <img v-else :src="form.linkAvatar" class="cover-image" />
+              <img v-else :src="form.siteAvatar" class="cover-image" />
             </el-upload>
             <div class="el-upload__tip">建议尺寸 16:9，jpg/png 格式</div>
           </div>
         </el-form-item>
-        <el-form-item label="链接地址" prop="linkAddress">
-          <el-input v-model="form.linkAddress" placeholder="请输入链接地址" />
+        <el-form-item label="网站地址" prop="siteUrl">
+          <el-input v-model="form.siteUrl" placeholder="请输入网站地址" />
         </el-form-item>
-        <el-form-item label="链接介绍" prop="linkIntro">
-          <el-input v-model="form.linkIntro" placeholder="请输入链接介绍" />
+        <el-form-item label="网站介绍" prop="siteDesc">
+          <el-input v-model="form.siteDesc" placeholder="请输入网站介绍" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -136,10 +135,10 @@
   // 定义初始表单状态
   const initialFormState = {
     id: null,
-    linkName: null,
-    linkAvatar: null,
-    linkAddress: null,
-    linkIntro: null
+    siteName: null,
+    siteAvatar: null,
+    siteUrl: null,
+    siteDesc: null
   }
   const form = reactive({ ...initialFormState })
   const queryParams = reactive({
@@ -148,31 +147,31 @@
     keywords: ''
   })
   const rules = reactive({
-    linkName: [
+    siteName: [
       {
         required: true,
-        message: '链接名不能为空',
+        message: '网站名不能为空',
         trigger: 'blur'
       }
     ],
-    linkAvatar: [
+    siteAvatar: [
       {
         required: true,
-        message: '链接头像不能为空',
+        message: '网站头像不能为空',
         trigger: 'blur'
       }
     ],
-    linkAddress: [
+    siteUrl: [
       {
         required: true,
-        message: '链接地址不能为空',
+        message: '网站地址不能为空',
         trigger: 'blur'
       }
     ],
-    linkIntro: [
+    siteDesc: [
       {
         required: true,
-        message: '链接介绍不能为空',
+        message: '网站介绍不能为空',
         trigger: 'blur'
       }
     ]
@@ -191,7 +190,7 @@
 
   // 上传成功后的处理函数
   const onSuccess = (response: any) => {
-    form.linkAvatar = response.msg
+    form.siteAvatar = response.msg
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
@@ -301,6 +300,11 @@
   })
 </script>
 <style lang="scss" scoped>
+  .page-content {
+    .el-col2{
+      padding-left: 12px;
+    }
+  }
   .upload-container {
     .cover-uploader {
       position: relative;

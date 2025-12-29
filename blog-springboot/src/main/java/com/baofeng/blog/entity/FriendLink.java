@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class FriendLink {
     private Long id;
-    private String siteTitle;
+    private String siteName;
     private String siteDesc;
     private String siteLogo;
     private String siteUrl;

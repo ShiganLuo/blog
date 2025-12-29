@@ -2,12 +2,12 @@ import { BaseArrayResult, BaseObjectResult, BasePageResult } from '../axios'
 
 export interface FriendLinkResult {
   id: string
-  linkName: string
-  linkAvatar: string
-  linkAddress: string
-  linkIntro: string
-  createTime: string
-  updateTime: string
+  siteName: string
+  siteAvatar: string
+  siteUrl: string
+  siteDesc: string
+  createdAt: string
+  updatedAt: string
 }
 
 export type FriendLinkListPageResult = BasePageResult<FriendLinkResult>

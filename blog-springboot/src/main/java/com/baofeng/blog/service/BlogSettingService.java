@@ -49,5 +49,11 @@ public interface BlogSettingService {
      * @return
      */
     public ApiResponse<SystemSettingDictResponse> getSystemSettingDict(String type);
+
+    /**
+     * 获取ICP备案号
+     * @return
+     */
+    public ApiResponse<String> getICPFillingNumber();
     
 } 

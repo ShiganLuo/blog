@@ -6,5 +6,11 @@ export class ConfigService {
             url: '/front/settings/getBlogConfig'
         })
     }
+
+    static getICPFilingNumber() {
+        return request.get<string>({
+            url: '/front/settings/getICPFilingNumber'
+        })
+    }
 }
 

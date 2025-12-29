@@ -49,6 +49,13 @@ public interface BlogSettingMapper {
      * @return BlogSetting
      */
     BlogSetting getSettingById(Long id);
+
+    /**
+     * 获取ICP备案号
+     * @param id
+     * @return
+     */
+    String getICPFilingNumberById(Long id);
      
 
 }

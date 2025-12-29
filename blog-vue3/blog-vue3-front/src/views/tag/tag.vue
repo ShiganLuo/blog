@@ -29,7 +29,7 @@ const randomFontColor = (): string => {
 const goToArticleList = (item: TagItem) => {
   router.push({
     path: "articleList",
-    query: { id: String(item.id), type: "tag", name: item.tag_name },
+    query: { id: String(item.id), type: "tag", name: item.tagName },
   });
 };
 
@@ -42,7 +42,7 @@ const getTagList = async () => {
       total.value = res.result.length;
       tagList.value = res.result.map((tag) => ({
         id: tag.id,
-        tag_name: tag.tag_name,
+        tagName: tag.tagName,
         fontSize: randomFontSize(),
         fontColor: randomFontColor(),
       }));
@@ -83,7 +83,7 @@ onMounted(() => {
                 class="tag-item__label scale animate__animated animate__fadeInDown"
                 @click="goToArticleList(item)"
               >
-                {{ item.tag_name }}
+                {{ item.tagName }}
               </span>
             </el-col>
           </el-row>

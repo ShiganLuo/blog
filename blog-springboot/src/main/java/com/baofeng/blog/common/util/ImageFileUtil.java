@@ -44,6 +44,7 @@ public class ImageFileUtil {
      */
     public static String generateUniqueImageName(MultipartFile file) {
         if (file == null || file.isEmpty()) {
+            logger.warn("图片为空");
             return null;
         }
 
@@ -61,7 +62,7 @@ public class ImageFileUtil {
             // 异常处理
             logger.warn("生成图片文件唯一名称时文件读取失败：",e);
         }
-
-        return null; // 如果没有找到匹配的幻数，返回null
+        logger.warn("如果没有找到匹配的幻数，返回null");
+        return null;
     }
 }

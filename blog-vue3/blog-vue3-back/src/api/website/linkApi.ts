@@ -6,7 +6,7 @@ export class FriendLinkService {
   // 查询友链管理列表
   static listLink(query: any) {
     return request.get<FriendLinkRecordResult>({
-      url: '/blog/link/admin/links',
+      url: '/admin/link/getAllFriendLink',
       params: query
     })
   }
@@ -22,7 +22,7 @@ export class FriendLinkService {
   // 删除友链管理
   static deleteLink(id: any) {
     return request.del({
-      url: '/blog/link/admin/links/',
+      url: '/admin/link/del',
       headers: {
         'Content-Type': 'application/json'
       },

@@ -46,7 +46,10 @@ export class UserService {
   static imgUpload(data?: object) {
     return request.post<string>({
       url: "/front/images/uploadImage",
-      data: data      
+      data: data,
+      headers: {
+        'Content-Type': undefined
+      }
     })
   }
 
