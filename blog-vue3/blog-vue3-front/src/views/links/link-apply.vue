@@ -50,7 +50,7 @@ interface FriendLinkData {
   siteName: string;
   siteDesc: string;
   siteUrl: string;
-  siteAvatar: string;
+  siteLogo: string;
   bgList: any[]; // Upload组件的文件列表，类型不确定时用any[]
   status: number;
   userId?: number | string;
@@ -60,7 +60,7 @@ const form = reactive<FriendLinkData>({
   siteName: "",
   siteDesc: "",
   siteUrl: "",
-  siteAvatar: "",
+  siteLogo: "",
   bgList: [],
   status: 1,
   userId: undefined,
@@ -95,7 +95,7 @@ const applyLinks = async () => {
         const img = await UserService.imgUpload(formData);
         if (img.code === 200 && img.result) {
           const url = img.result;
-          form.siteAvatar = url;
+          form.siteLogo = url;
         }
       }
       form.status = 1;

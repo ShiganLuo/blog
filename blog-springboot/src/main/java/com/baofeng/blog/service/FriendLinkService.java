@@ -3,8 +3,7 @@ package com.baofeng.blog.service;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkPageResponse;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkRequest;
-import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AddOrUpdateFriendLinkRequest;
-import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontAddFriendLinkRequest;
+import com.baofeng.blog.dto.common.FriendLinkDTO.AddFriendLinkRequest;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkPageResponse;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkRequest;
 
@@ -19,26 +18,15 @@ public interface FriendLinkService {
      */
     public ApiResponse<FrontFriendLinkPageResponse> getAllFriendLinkFront(FrontFriendLinkRequest request);
 
-    /**
-     * 增加友链
-     * @param addFriendLinkRequest
-     * @return
-     */
-    public ApiResponse<String> addFriendLink(FrontAddFriendLinkRequest frontAddFriendLinkRequest);
 
-    // /**
-    //  * 更新或新增友链
-    //  * @param addOrUpdateFriendLink
-    //  * @return
-    //  */
-    // public ApiResponse<String> addOrUpdateFriendLink(AddOrUpdateFriendLinkRequest addOrUpdateFriendLink);
 
     /**
-     * 更新友链信息
-     * @param addFriendLinkRequest
+     * 更新或新增友链
+     * @param addOrUpdateFriendLink
      * @return
      */
-    public ApiResponse<String> updateFriendLink(FrontAddFriendLinkRequest frontAddFriendLinkRequest);
+    public ApiResponse<String> addOrUpdateFriendLink(AddFriendLinkRequest addOrUpdateFriendLink);
+
 
     /**
      * 删除友链

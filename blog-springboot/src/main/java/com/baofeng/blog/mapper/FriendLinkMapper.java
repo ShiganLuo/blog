@@ -4,7 +4,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkItem;
-import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontAddFriendLinkRequest;
+import com.baofeng.blog.dto.common.FriendLinkDTO.AddFriendLinkRequest;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkItem;
 import com.baofeng.blog.entity.FriendLink;
 
@@ -22,14 +22,14 @@ public interface FriendLinkMapper {
      * @param addFriendLinkRequest
      * @return
      */
-    int insertFriendLink(FrontAddFriendLinkRequest frontAddFriendLinkRequest);
+    int insertOrUpdateFriendLink(AddFriendLinkRequest addFriendLinkRequest);
 
     /**
      * 更新友链信息
      * @param addFriendLinkRequest
      * @return
      */
-    int updateFriendLinkById(FrontAddFriendLinkRequest frontAddFriendLinkRequest);
+    int updateFriendLinkById(AddFriendLinkRequest addFriendLinkRequest);
 
     /**
      * 根据id获取友链

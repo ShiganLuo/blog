@@ -6,14 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AddOrUpdateFriendLinkRequest;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkItem;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkPageResponse;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkRequest;
-import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontAddFriendLinkRequest;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkRequest;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkItem;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkPageResponse;
+import com.baofeng.blog.dto.common.FriendLinkDTO.AddFriendLinkRequest;
 import com.baofeng.blog.entity.FriendLink;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.enums.ResultCodeEnum;
@@ -54,37 +53,7 @@ public class FriendLinkServiceImpl implements FriendLinkService {
         return ApiResponse.success(response);
     }
 
-    @Override
-    public ApiResponse<String> addFriendLink(FrontAddFriendLinkRequest frontAddFriendLinkRequest) {
-        
-        User user = userMapper.selectUserById(frontAddFriendLinkRequest.getUserId());
-        if (user == null) {
-            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在, 用户必须登录才能添加友链");
-        }
-        int rowUpdated = friendLinkMapper.insertFriendLink(frontAddFriendLinkRequest);
-        return rowUpdated > 0 
-            ? ApiResponse.success("友链添加成功")
-            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"友链添加失败");
 
-    }
-
-    @Override
-    public ApiResponse<String> updateFriendLink(FrontAddFriendLinkRequest frontAddFriendLinkRequest) {
-        if (frontAddFriendLinkRequest.getId() == null) {
-            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"更新友链, id不能为空");
-        }
-        if (frontAddFriendLinkRequest.getId() == 1) {
-            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED,"没有权限更新该友链");
-        }
-        FriendLink friendLink = friendLinkMapper.getFriendLinkById(frontAddFriendLinkRequest.getId());
-        if (friendLink == null) {
-            return ApiResponse.error(ResultCodeEnum.NOT_FOUND,"该友链不存在");
-        }
-        int rowUpdated = friendLinkMapper.updateFriendLinkById(frontAddFriendLinkRequest);
-        return rowUpdated > 0
-            ? ApiResponse.success("友链更新成功")
-            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"友链更新失败");
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -117,11 +86,16 @@ public class FriendLinkServiceImpl implements FriendLinkService {
         return ApiResponse.success(adminFriendLinkPageResponse);
     }
 
-    // @Override
-    // public ApiResponse<String> addOrUpdateFriendLink(AddOrUpdateFriendLinkRequest addOrUpdateFriendLink) {
-    //     if (addOrUpdateFriendLink.id() == null) {
-
-    //     }
-    // }
+    @Override
+    public ApiResponse<String> addOrUpdateFriendLink(AddFriendLinkRequest addFriendLinkRequest) {
+        Long userId = addFriendLinkRequest.getUserId();
+        if (userId == null) {
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "请登录后申请友链");
+        }
+        int rowUpdated = friendLinkMapper.insertOrUpdateFriendLink(addFriendLinkRequest);
+        return rowUpdated > 0 
+            ? ApiResponse.success("友链添加成功")
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"友链添加失败");
+    }
     
 }

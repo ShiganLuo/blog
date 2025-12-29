@@ -37,11 +37,11 @@
     >
       <template #default>
         <el-table-column label="网站名" align="center" prop="siteName" />
-        <el-table-column label="网站头像" align="center" prop="siteAvatar">
+        <el-table-column label="网站头像" align="center" prop="siteLogo">
           <template #default="scope">
             <el-image
               class="article-cover"
-              :src="scope.row.siteAvatar ? scope.row.siteAvatar : defaultAvatar"
+              :src="scope.row.siteLogo ? scope.row.siteLogo : defaultAvatar"
             />
           </template>
         </el-table-column>
@@ -70,7 +70,7 @@
         <el-form-item label="网站名" prop="siteName">
           <el-input v-model="form.siteName" placeholder="请输入网站名" />
         </el-form-item>
-        <el-form-item label="网站头像" prop="siteAvatar">
+        <el-form-item label="网站头像" prop="siteLogo">
           <div class="el-top upload-container">
             <el-upload
               class="cover-uploader"
@@ -81,11 +81,11 @@
               :on-error="onError"
               :before-upload="beforeUpload"
             >
-              <div v-if="!form.siteAvatar" class="upload-placeholder">
+              <div v-if="!form.siteLogo" class="upload-placeholder">
                 <el-icon class="upload-icon"><Plus /></el-icon>
                 <div class="upload-text">点击上传封面</div>
               </div>
-              <img v-else :src="form.siteAvatar" class="cover-image" />
+              <img v-else :src="form.siteLogo" class="cover-image" />
             </el-upload>
             <div class="el-upload__tip">建议尺寸 16:9，jpg/png 格式</div>
           </div>
@@ -127,16 +127,17 @@
   const queryRef = ref()
   const linkRef = ref<FormInstance>()
   const userStore = useUserStore()
-  let { accessToken } = userStore
+  let { accessToken,getUserInfo } = userStore
   // 上传路径
-  const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/blog/article/admin/articles/images`
+  const uploadImageUrl =  `${import.meta.env.VITE_API_BASE_URL}/admin/image/uploadImage`
   // 传递 token
   const uploadHeaders = { Authorization: accessToken }
   // 定义初始表单状态
   const initialFormState = {
+    userId: '',
     id: null,
     siteName: null,
-    siteAvatar: null,
+    siteLogo: null,
     siteUrl: null,
     siteDesc: null
   }
@@ -154,7 +155,7 @@
         trigger: 'blur'
       }
     ],
-    siteAvatar: [
+    siteLogo: [
       {
         required: true,
         message: '网站头像不能为空',
@@ -190,7 +191,7 @@
 
   // 上传成功后的处理函数
   const onSuccess = (response: any) => {
-    form.siteAvatar = response.msg
+    form.siteLogo = response.result
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
@@ -271,6 +272,12 @@
     if (!linkRef.value) return
     await linkRef.value.validate(async (valid) => {
       if (valid) {
+        const userId = getUserInfo.id
+        if (!userId) {
+          ElNotification.warning('请先登录后再申请友链')
+          return
+        }
+        form.userId = userId;
         const res = await FriendLinkService.addOrUpdateLink(form)
         if (res.code === 200) {
           ElMessage.success(res.message)

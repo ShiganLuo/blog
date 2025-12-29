@@ -2,6 +2,7 @@ package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkRequest;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkPageResponse;
+import com.baofeng.blog.dto.common.FriendLinkDTO.AddFriendLinkRequest;
 import com.baofeng.blog.service.FriendLinkService;
 import com.baofeng.blog.dto.ApiResponse;
 
@@ -33,4 +34,8 @@ public class AdminFriendLinkController {
         return friendLinkService.deleteFriendLinks(ids);
     }
     
+    @PostMapping("/addOrUpdateFriendLink")
+    public ApiResponse<String> addOrUpdateFriendLink(@RequestBody AddFriendLinkRequest addFriendLink) {
+        return friendLinkService.addOrUpdateFriendLink(addFriendLink);
+    }
 }

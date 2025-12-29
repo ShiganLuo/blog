@@ -1,7 +1,7 @@
 package com.baofeng.blog.controller.front;
 
 import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontAddFriendLinkRequest;
+import com.baofeng.blog.dto.common.FriendLinkDTO.AddFriendLinkRequest;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkPageResponse;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkRequest;
 import com.baofeng.blog.service.FriendLinkService;
@@ -27,13 +27,13 @@ public class FrontFriendLinkController {
     }
 
     @PostMapping("/addFriendLink")
-    public ApiResponse<String> addFriendLink(@RequestBody FrontAddFriendLinkRequest addFriendLinkRequest) {
-        return friendLinkService.addFriendLink(addFriendLinkRequest);
+    public ApiResponse<String> addFriendLink(@RequestBody AddFriendLinkRequest addFriendLinkRequest) {
+        return friendLinkService.addOrUpdateFriendLink(addFriendLinkRequest);
     }
 
     @PostMapping("/updateFriendLink")
-    public ApiResponse<String> updateFriendLink(@RequestBody FrontAddFriendLinkRequest addFriendLinkRequest) {
-        return friendLinkService.updateFriendLink(addFriendLinkRequest);
+    public ApiResponse<String> updateFriendLink(@RequestBody AddFriendLinkRequest addFriendLinkRequest) {
+        return friendLinkService.addOrUpdateFriendLink(addFriendLinkRequest);
     }
 
     @DeleteMapping("/delteFirendLink/{id}")

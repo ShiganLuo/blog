@@ -7,18 +7,6 @@ import lombok.Data;
 
 public class FrontFriendLinkDTO {
 
-    @Data
-    public static class FrontAddFriendLinkRequest{
-        private Long id;
-        private String siteName;
-        private String siteDesc;
-        private String siteUrl;
-        private String siteAvatar;
-        private String siteLogo;
-        private String applyMessage;
-        @NotNull 
-        private Long userId;
-     }
 
     public static record FrontFriendLinkRequest(
         @NotNull Integer current,
@@ -34,7 +22,7 @@ public class FrontFriendLinkDTO {
     @Data
     public static class FrontFriendLinkItem {
         private Long id;
-        private String siteAvatar;
+        private String siteLogo;
         private String siteName;
         private String siteDesc;
         private String siteUrl;

@@ -14,7 +14,7 @@ export class FriendLinkService {
   // 新增或修改友链管理
   static addOrUpdateLink(data: any) {
     return request.post({
-      url: '/blog/link/admin/links',
+      url: '/admin/link/addOrUpdateFriendLink',
       data: data
     })
   }

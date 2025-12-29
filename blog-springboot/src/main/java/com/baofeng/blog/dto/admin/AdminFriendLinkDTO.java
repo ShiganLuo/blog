@@ -26,23 +26,11 @@ public class AdminFriendLinkDTO {
         private Long id;
         private Long userId;
         private String siteName;
-        private String siteAvatar;
+        private String siteLogo;
         private String siteUrl;
         private String siteDesc;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
-    }
-
-    public static record AddOrUpdateFriendLinkRequest(
-        Long userId,
-        Long id,
-        @NotNull
-        String siteName,
-        String siteAvatar,
-        @NotNull
-        String siteUrl,
-        String siteDesc
-    ) {
     }
     
 }

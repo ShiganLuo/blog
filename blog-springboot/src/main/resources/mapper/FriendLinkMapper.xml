@@ -95,8 +95,8 @@
         WHERE id = #{id}
     </select>
 
-    <!--增加友链-->
-    <insert id="insertFriendLink"
+    <!-- 新增或更新友链（存在则更新，不存在则插入） -->
+    <insert id="insertOrUpdateFriendLink"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO friend_link (
@@ -124,7 +124,14 @@
             CURRENT_TIMESTAMP,
             CURRENT_TIMESTAMP
         )
+        ON DUPLICATE KEY UPDATE
+            site_name      = VALUES(site_name),
+            site_desc      = VALUES(site_desc),
+            site_logo      = VALUES(site_logo),
+            apply_message  = VALUES(apply_message),
+            updated_at     = CURRENT_TIMESTAMP
     </insert>
+
 
     <!--更新友链-->
     <update id="updateFriendLinkById">
