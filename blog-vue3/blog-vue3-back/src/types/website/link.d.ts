@@ -3,9 +3,15 @@ import { BaseArrayResult, BaseObjectResult, BasePageResult } from '../axios'
 export interface FriendLinkResult {
   id: string
   siteName: string
-  siteAvatar: string
+  siteLogo: string
   siteUrl: string
   siteDesc: string
+  userName: string
+  status: string
+  statusName: string
+  sortOrder: string
+  isVisible: string
+  applyMessage: string
   createdAt: string
   updatedAt: string
 }

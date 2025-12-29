@@ -15,6 +15,7 @@ import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkPageResponse
 import com.baofeng.blog.dto.common.FriendLinkDTO.AddFriendLinkRequest;
 import com.baofeng.blog.entity.FriendLink;
 import com.baofeng.blog.entity.User;
+import com.baofeng.blog.enums.FriendLinkStatusEnum;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.service.FriendLinkService;
 import com.baofeng.blog.mapper.FriendLinkMapper;
@@ -81,6 +82,9 @@ public class FriendLinkServiceImpl implements FriendLinkService {
         List<AdminFriendLinkItem> list = friendLinkMapper.getAllFriendLinksForAdmin(adminFriendLinkRequest.keyword());
         PageInfo<AdminFriendLinkItem> pageInfo = new PageInfo<>(list);
         AdminFriendLinkPageResponse adminFriendLinkPageResponse = new AdminFriendLinkPageResponse();
+        for (AdminFriendLinkItem item : list) {
+            item.setStatusName(FriendLinkStatusEnum.fromCode(item.getStatus()).getName());
+        }
         adminFriendLinkPageResponse.setList(pageInfo.getList());
         adminFriendLinkPageResponse.setTotal(pageInfo.getTotal());
         return ApiResponse.success(adminFriendLinkPageResponse);

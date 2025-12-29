@@ -24,11 +24,16 @@ public class AdminFriendLinkDTO {
     @Data 
     public static class AdminFriendLinkItem {
         private Long id;
-        private Long userId;
+        private String userName;
         private String siteName;
         private String siteLogo;
         private String siteUrl;
         private String siteDesc;
+        private Integer status;
+        private String statusName;
+        private Integer sortOrder;
+        private Boolean isVisible;
+        private String applyMessage;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }

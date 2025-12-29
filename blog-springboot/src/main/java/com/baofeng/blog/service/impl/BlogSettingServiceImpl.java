@@ -215,6 +215,18 @@ public class BlogSettingServiceImpl implements BlogSettingService {
                                         })
                                         .collect(Collectors.toList());
                 break;
+            case "FriendLinkStatus":
+                systemSettingDicts = Arrays.stream(FriendLinkStatusEnum.values())
+                                        .map( friendLinkStatusEnum -> {
+                                            SystemSettingDict dict = new SystemSettingDict();
+                                            dict.setDictLabel(friendLinkStatusEnum.getName());
+                                            dict.setDictValue(String.valueOf(friendLinkStatusEnum.getCode()));
+                                            dict.setCssClass("FriendLinkStatus-type-tag");
+                                            dict.setListClass("info");
+                                            return dict;
+                                        })
+                                        .collect(Collectors.toList());
+                break;
             default:
                 logger.info(type);
                 return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"不支持的获取类型");

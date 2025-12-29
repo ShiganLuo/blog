@@ -47,6 +47,32 @@
         </el-table-column>
         <el-table-column label="网站地址" align="center" prop="siteUrl" />
         <el-table-column label="网站介绍" align="center" prop="siteDesc" />
+        <el-table-column label="展示" align="center" prop="isVisible">
+          <template #default="scope">
+            <el-switch
+              v-model="scope.row.isVisible"
+              :active-value="1"
+              :inactive-value="0"
+              @change="(val) => handleVisibleChange(val, scope.row)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="审核" align="center" prop="statusName">
+          <template #default="scope">
+            <el-select
+              v-model="scope.row.statusName"
+              placeholder="请选择"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in FriendLinkStatusDict"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
           <template #default="scope">
             <button-table
@@ -117,6 +143,8 @@
   import EmojiText from '@/utils/emojo'
   import defaultAvatar from '@/assets/img/avatar/default-avatar.png'
   import { Plus } from '@element-plus/icons-vue'
+  import { useDict, DictType } from '@/utils/dict'
+  const FriendLinkStatusDict = ref<DictType[]>([])
   const linkList = ref<FriendLinkResult[]>([])
   const open = ref(false)
   const loading = ref(true)
@@ -178,6 +206,13 @@
     ]
   })
 
+  /**获取友链审核状态字典 */
+  const getFriendLinkStatusDict = async () => {
+    const { FriendLinkStatus } = await useDict("FriendLinkStatus")
+    console.log(FriendLinkStatus)
+    FriendLinkStatusDict.value = FriendLinkStatus;
+  }
+
   /** 查询友链管理列表 */
   const getList = async () => {
     loading.value = true
@@ -187,6 +222,11 @@
       total.value = res.result.total
       loading.value = false
     }
+  }
+
+  const handleVisibleChange = (val: any, row: FriendLinkResult) => {
+    console.log(val, row.id)
+    // 调接口
   }
 
   // 上传成功后的处理函数
@@ -304,6 +344,7 @@
   // 初始化
   onMounted(() => {
     getList()
+    getFriendLinkStatusDict()
   })
 </script>
 <style lang="scss" scoped>
