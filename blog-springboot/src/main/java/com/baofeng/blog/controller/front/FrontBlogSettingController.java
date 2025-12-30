@@ -2,6 +2,7 @@ package com.baofeng.blog.controller.front;
 
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetail;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.SomeFrontInformation;
 import com.baofeng.blog.service.BlogSettingService;
 
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +31,9 @@ public class FrontBlogSettingController {
         return blogSettingService.getSettingByIdFront(1L);
     }
 
-    @GetMapping("/getICPFilingNumber")
-    public ApiResponse<String> getICPFillingNumber() {
-        return blogSettingService.getICPFillingNumber();
+    @GetMapping("/getSomeFrontInformation")
+    public ApiResponse<SomeFrontInformation> getSomeFrontInformation() {
+        return blogSettingService.getSomeFrontInformation();
     }
 
 }

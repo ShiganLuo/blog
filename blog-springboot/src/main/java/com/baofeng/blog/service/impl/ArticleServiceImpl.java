@@ -369,9 +369,8 @@ public class ArticleServiceImpl implements ArticleService {
             articleImage.setUsageType(usageType);
             int rowsUpdated2 = entityImageMapper.insertEntityImage(articleImage);
 
-            String imagePath = minioService.getPermanentFileUrl(uniqueFilename);
             return rowsUpdated > 0 && rowsUpdated1 > 0 && rowsUpdated2 > 0
-                    ? ApiResponse.success(imagePath)
+                    ? ApiResponse.success(uniqueFilename)
                     : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "文件存储失败");
 
         } catch (Exception e) {

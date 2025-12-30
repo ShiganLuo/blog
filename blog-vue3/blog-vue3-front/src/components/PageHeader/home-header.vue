@@ -9,6 +9,7 @@ import { debounce } from "@/utils/tool";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { storeToRefs } from "pinia";
+import { ConfigService } from "@/api/configApi";
 
 // API 返回类型
 interface SentenceResponse {
@@ -24,7 +25,7 @@ interface PageHeader {
   route_name: string;
   bgUrl: string;
 }
-
+const websiteChineseName = ref('')
 const route = useRoute();
 const staticStore = useStaticData();
 const { getPageHeaderList } = storeToRefs(staticStore);
@@ -71,11 +72,16 @@ const getBgCover = computed(() => {
   const index = bgList.findIndex((bg) => bg.route_name === route.name);
   return index === -1 ? defaultUrl : bgList[index].bgUrl;
 });
-
+const getWebsiteChineseName = async () => {
+  const res = await ConfigService.getSomeFrontInformation();
+  if (res.code == 200) {
+    websiteChineseName.value = res.result.websiteChineseName
+  }
+}
 onMounted(() => {
   initOneSentence();
   initScrollEvent();
-
+  getWebsiteChineseName();
   gsap.to(".bg", {
     scrollTrigger: {
       trigger: "#home",
@@ -96,7 +102,7 @@ onBeforeUnmount(() => {
 <template>
   <div id="home">
     <el-image class="bg full-size" fit="cover" :src="getBgCover"></el-image>
-    <div class="font">生活日志</div>
+    <div class="font">{{ websiteChineseName }}</div>
     <TypeWriter class="type-writer" size="1.2em" :typeList="saying" :timeSpace="200" :wordPrintTime="100" color="#ffffff"/>
     <Waves />
     <div v-if="showScrollBottom" class="scroll-bottom">

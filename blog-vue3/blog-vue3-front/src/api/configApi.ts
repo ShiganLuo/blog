@@ -1,5 +1,9 @@
 import request from "@/utils/http/index";
 import { type ConfigDetail } from "@/types/config";
+interface FooterInfomation {
+    websiteChineseName:string
+    icpFillingNumber:string
+}
 export class ConfigService {
     static homeGetConfig(){
         return request.get<ConfigDetail>({
@@ -7,9 +11,9 @@ export class ConfigService {
         })
     }
 
-    static getICPFilingNumber() {
-        return request.get<string>({
-            url: '/front/settings/getICPFilingNumber'
+    static getSomeFrontInformation() {
+        return request.get<FooterInfomation>({
+            url: '/front/settings/getSomeFrontInformation'
         })
     }
 }

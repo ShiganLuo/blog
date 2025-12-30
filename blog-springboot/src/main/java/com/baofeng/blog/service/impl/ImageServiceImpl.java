@@ -62,7 +62,7 @@ public class ImageServiceImpl implements ImageService {
             );
 
             // 获取可访问地址
-            String imagePath = minioService.getPermanentFileUrl(uniqueFilename);
+            
                 // 7. 插入 images 表
             Image image = new Image();
             long bytes = file.getSize();
@@ -75,14 +75,14 @@ public class ImageServiceImpl implements ImageService {
                 username = authentication.getName();
             }
 
-            image.setFilePath(imagePath);
+            image.setFilePath(uniqueFilename);
             image.setFileName(uniqueFilename);
             image.setFileSize(kilobytes);
             image.setMimeType(contentType);
             image.setCreatedBy(username);
             int rowsUpdated = imageMapper.insertImage(image);
             return rowsUpdated > 0
-                ? ApiResponse.success(imagePath)
+                ? ApiResponse.success(uniqueFilename)
                 : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
 
         } catch (Exception e) {

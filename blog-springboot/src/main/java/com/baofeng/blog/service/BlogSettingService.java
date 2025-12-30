@@ -4,6 +4,7 @@ import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetail;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetail;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.SomeFrontInformation;
 import com.baofeng.blog.entity.BlogSetting;
 
 public interface BlogSettingService {
@@ -54,6 +55,6 @@ public interface BlogSettingService {
      * 获取ICP备案号
      * @return
      */
-    public ApiResponse<String> getICPFillingNumber();
+    public ApiResponse<SomeFrontInformation> getSomeFrontInformation();
     
 } 

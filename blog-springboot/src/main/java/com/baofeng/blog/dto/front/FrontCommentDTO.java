@@ -2,6 +2,10 @@ package com.baofeng.blog.dto.front;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.baofeng.blog.common.annotation.MinioFile;
+import com.baofeng.blog.common.annotation.MinioScan;
+
 import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
@@ -84,6 +88,7 @@ public class FrontCommentDTO {
      * 评论分页响应体
      */
     @Data
+    @MinioScan(maxDepth = 2)
     public static class CommentPageResponse {
         private List<CommentResponse> list;
         private Long total;
@@ -96,6 +101,7 @@ public class FrontCommentDTO {
         private Long id;
         private Long from_id;
         private String from_name;
+        @MinioFile
         private String from_avatar;
         private String to_name;
         private Long for_id;
@@ -112,6 +118,7 @@ public class FrontCommentDTO {
         private Long id;
         private Long from_id;
         private String from_name;
+        @MinioFile
         private String from_avatar;
         private String to_name;
         private Long for_id;
@@ -136,7 +143,9 @@ public class FrontCommentDTO {
         String type,
         Long user_id
     ){    }
+    
     @Data
+    @MinioScan(maxDepth = 2)
     public static class MessagePageResponse {
         private Long total;
         private List<MessageResponse> list;
@@ -145,6 +154,7 @@ public class FrontCommentDTO {
     @Data
     public static class MessageResponse {
         private Long id;
+        @MinioFile
         private String avatar;
         private Long from_id;
         private String nick_name;

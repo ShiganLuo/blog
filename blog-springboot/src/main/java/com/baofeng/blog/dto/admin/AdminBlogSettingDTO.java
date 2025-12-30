@@ -2,6 +2,9 @@ package com.baofeng.blog.dto.admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.baofeng.blog.common.annotation.MinioFile;
+
 import lombok.Data;
 
 public class AdminBlogSettingDTO {
@@ -10,7 +13,9 @@ public class AdminBlogSettingDTO {
         String websiteEnglishName,
         String websiteTitle,
         LocalDateTime websiteCreaDateTime,
+        @MinioFile
         String logo,
+        @MinioFile
         String favicon,
         String notice,
         String icpFilingNumber,
@@ -18,6 +23,7 @@ public class AdminBlogSettingDTO {
         String author,
         String authorAvatar,
         String authorIntro,
+        @MinioFile
         String userAvatar,
         String github,
         String gitee,
@@ -32,11 +38,14 @@ public class AdminBlogSettingDTO {
         String juejin,
         String twitter,
         String stackoverflow,
+        @MinioFile
         String touristAvatar,
         Integer multiLanguage,
         Boolean isCommentReview,
         Boolean isEmailNotice,
+        @MinioFile
         String weiXinQRCode,
+        @MinioFile
         String alipayQRCode
     ) {}
     
@@ -61,8 +70,11 @@ public class AdminBlogSettingDTO {
         private String websiteTitle;
         private String websiteIntro;
         private LocalDateTime websiteCreateTime;
+        @MinioFile
         private String frontHeadBackground;
+        @MinioFile
         private String logo;
+        @MinioFile
         private String favicon;
         private String notice;
         private String icpFilingNumber;
@@ -71,6 +83,7 @@ public class AdminBlogSettingDTO {
         private String authorAvatar;
         private String authorIntro;
         private String authroPersonalSay;
+        @MinioFile
         private String userAvatar;
         private String github;
         private String gitee;
@@ -89,7 +102,9 @@ public class AdminBlogSettingDTO {
         private Integer multiLanguage;
         private Boolean isCommentReview;
         private Boolean isEmailNotice;
+        @MinioFile
         private String weiXinQRCode;
+        @MinioFile
         private String alipayQRCode;
     }
 }

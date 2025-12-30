@@ -242,8 +242,11 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     }
 
     @Override
-    public ApiResponse<String> getICPFillingNumber() {
-        String ICPFillingNumber = blogSettingMapper.getICPFilingNumberById(1L);
-        return ApiResponse.success(ICPFillingNumber);
+    public ApiResponse<SomeFrontInformation> getSomeFrontInformation() {
+        SomeFrontInformation someFrontInformation = new SomeFrontInformation();
+        BlogSetting blogSetting = blogSettingMapper.getSettingById(1L);
+        someFrontInformation.setIcpFilingNumber(blogSetting.getIcpFilingNumber());
+        someFrontInformation.setWebsiteChineseName(blogSetting.getWebsiteChineseName());
+        return ApiResponse.success(someFrontInformation);
     }
 } 

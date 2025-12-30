@@ -1,10 +1,13 @@
 package com.baofeng.blog.dto.front;
 import lombok.Data;
 import java.time.LocalDateTime;
+
+import com.baofeng.blog.common.annotation.MinioFile;
 public class FrontBlogSettinDTO {
     public static record updateSettingRequest(
         String siteTitle,
         String siteDescription,
+        @MinioFile
         String siteLogo,
         String blogNotice,
         String personalSay,
@@ -23,10 +26,13 @@ public class FrontBlogSettinDTO {
     @Data
     public static class FrontConfigDetail {
         private String websiteTitle;
+        @MinioFile
         private String FrontHeadBackground;
         private String personal_say;
         private String notice;
+        @MinioFile
         private String authorAvatar;
+        @MinioFile
         private String logo;
         private String icpFilingNumber;
         private String psbFilingNumber;
@@ -47,6 +53,12 @@ public class FrontBlogSettinDTO {
         private String qq;
         private LocalDateTime createdAt;
         
+    }
+
+    @Data
+    public static class SomeFrontInformation {
+        private String icpFilingNumber;
+        private String websiteChineseName;
     }
 
 

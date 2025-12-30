@@ -4,6 +4,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.baofeng.blog.common.annotation.MinioFile;
+
 import jakarta.validation.constraints.NotNull;
 
 public class AdminFriendLinkDTO {
@@ -26,6 +28,7 @@ public class AdminFriendLinkDTO {
         private Long id;
         private String userName;
         private String siteName;
+        @MinioFile
         private String siteLogo;
         private String siteUrl;
         private String siteDesc;

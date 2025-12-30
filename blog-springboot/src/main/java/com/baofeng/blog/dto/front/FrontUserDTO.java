@@ -1,5 +1,6 @@
 package com.baofeng.blog.dto.front;
 
+import com.baofeng.blog.common.annotation.MinioFile;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class FrontUserDTO {
     @AllArgsConstructor
     public static class User {
         private Long id;
+        @MinioFile
         private String avatar;
         private String username;
         private String nickname;
