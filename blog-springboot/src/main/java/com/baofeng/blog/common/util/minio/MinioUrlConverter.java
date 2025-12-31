@@ -12,11 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class MinioUrlConverter {
 
-    @Value("${minio.hostPoint}")
-    private String hostPoint;
+    @Value("${file.public-base-url}")
+    private String prefix;
 
-    @Value("${minio.bucket}")
-    private String bucket;
 
     /**
      * 反射字段缓存（Class -> Fields）
@@ -126,6 +124,6 @@ public class MinioUrlConverter {
     }
 
     private String buildPermanentUrl(String objectName) {
-        return hostPoint + "/" + bucket + "/" + objectName;
+        return prefix + "/" + objectName;
     }
 }
