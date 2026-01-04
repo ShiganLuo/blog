@@ -23,6 +23,12 @@ export class UserService {
     })
   }
 
+  static sendEmailCode(email:string) {
+    return request.get<string>({
+      url: '/admin/users/getEmailCode/email',
+      params: {email}
+    })
+  }
   static getUserInfoById(id?: string | number) {
     return request.get({
       url: `/front/users/getUserInfoById/${id}`
@@ -38,7 +44,7 @@ export class UserService {
 
   static reqRegister(data?: object) {
     return request.post({
-      url: "/admin/users/register",
+      url: "/admin/users/emailRegister",
       data: data      
     })
   }

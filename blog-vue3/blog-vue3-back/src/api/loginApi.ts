@@ -1,5 +1,5 @@
 import request from '@/utils/http'
-import { BaseResult,UserLoginResponse } from '@/types/axios'
+import { UserLoginResponse } from '@/types/axios'
 import { CaptchaResult, loginFunctionEnabledResult, LoginResult } from '@/types/login'
 import { LoginUserResult } from '@/types/system/user'
 import { MenuListType } from '@/types/menu'
@@ -22,7 +22,7 @@ export class LoginService {
   }
   // 注册方法
   static register(data: any) {
-    return request.post<BaseResult>({
+    return request.post<string>({
       url: '/admin/users/emailRegister',
       data
     })
@@ -35,7 +35,7 @@ export class LoginService {
   }
   // 退出方法
   static logout() {
-    return request.post<BaseResult>({
+    return request.post<string>({
       url: '/logout'
     })
   }
@@ -51,14 +51,14 @@ export class LoginService {
   }
   // 发送邮箱验证码
   static sendEmailCode(email:string) {
-    return request.get<BaseResult>({
+    return request.get<string>({
       url: '/admin/users/getEmailCode/email',
       params: {email}
     })
   }
   // 重置密码
   static forgetPwd(data: { email: string; verifyCode: string; password: string }) {
-    return request.post<BaseResult>({
+    return request.post<string>({
       url: '/forgetPwd',
       data
     })

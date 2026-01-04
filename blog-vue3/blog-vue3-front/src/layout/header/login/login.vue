@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, watch, h, nextTick } from "vue";
 import type { FormInstance, FormRules, FormItemRule } from "element-plus";
+import { ElMessage } from "element-plus";
 import { ElNotification } from "element-plus";
 import { UserService } from "@/api/userApi";
 import { useUserStore } from "@/stores/index";
@@ -16,9 +17,10 @@ interface LoginForm {
 
 interface RegisterForm {
   username: string;
+  email: string;
+  verifyCode: string;
   password1: string;
   password2: string;
-  nick_name: string;
 }
 
 const userStore = useUserStore();
@@ -32,18 +34,20 @@ const isRemember = ref<boolean>(false);
 const registerFormRef = ref<FormInstance>();
 const registerForm = reactive<RegisterForm>({
   username: "",
+  email: "",
+  verifyCode: "",
   password1: "",
   password2: "",
-  nick_name: "",
+  
 });
-const primaryRegisterForm: RegisterForm = { username: "", password1: "", password2: "", nick_name: "" };
+const primaryRegisterForm: RegisterForm = { username: "",  email: "", verifyCode: "", password1: "", password2: ""};
 
 const isLogin = ref<boolean>(true);
 const showDialog = ref<boolean>(false);
 
 const usernameV: FormItemRule["validator"] = (rule, value, cb) => {
   if (!value) cb(new Error("请输入用户账号"));
-  else if (value.length > 16 || value.length < 5) cb(new Error("用户账号长度应该在5-16之间"));
+  else if (value.length > 16 || value.length < 3) cb(new Error("用户账号长度应该在3-16之间"));
   else cb();
 };
 
@@ -88,7 +92,8 @@ const userRegister = async () => {
       const register = {
         username: registerForm.username,
         password: registerForm.password1,
-        nick_name: registerForm.nick_name,
+        email: registerForm.email,
+        verifyCode: registerForm.verifyCode
       };
       const res = await UserService.reqRegister(register);
       if (res?.code === 200) {
@@ -115,6 +120,30 @@ const userLogin = async (type?: "register") => {
     });
   }
 };
+
+const cooldown = ref(0)
+
+  const startCooldown = () => {
+    cooldown.value = 60
+    const timer = setInterval(() => {
+      cooldown.value--
+      if (cooldown.value <= 0) {
+        clearInterval(timer)
+      }
+    }, 1000)
+  }
+
+const getVerifyCode = async () => {
+  try {
+    const res = await UserService.sendEmailCode(registerForm.email)
+    if (res.code === 200) {
+      ElMessage.success("验证码发送成功")
+      startCooldown()
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 const onLogin = async (form: LoginForm, type: "login" | "register" = "login") => {
   const res = await UserService.reqLogin(form);
@@ -178,8 +207,8 @@ watch(
     <template #header>
       <h1>{{ isLogin ? "登录" : "注册" }}</h1>
     </template>
-    <div class="login-box flex flex-col justify-between">
-      <div class="flex justify-between items-center !w-[100%]">
+    <div class="login-box">
+      <div>
         <div v-if="isLogin" class="no-account">
           没有账号？<span class="line" @click="toRegister">去注册</span>
         </div>
@@ -233,24 +262,43 @@ watch(
           <el-input
             v-model="registerForm.username"
             :style="{ width: '100%' }"
-            placeholder="请输入用户名"
+            placeholder="请输入您的用户名"
             clearable
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="email">
           <el-input
-            v-model="registerForm.nick_name"
+            v-model="registerForm.email"
             :style="{ width: '199%' }"
-            placeholder="请输入昵称"
+            placeholder="请输入您的邮箱"
             clearable
           />
+        </el-form-item>
+        <el-form-item prop="verifyCode">
+          <div style="display: flex; width:100%">
+            <el-input
+              v-model.trim="registerForm.verifyCode"
+              size="large",
+              placeholder="请输入验证码"
+              style="width: 65%"
+            />
+            <el-button
+            type="primary"
+            size="large"
+            style="width: 33%; margin-left: 2%; height: 44px"
+            @click="getVerifyCode"
+            :disabled="!registerForm.email || cooldown > 0"
+            >
+            {{ cooldown > 0 ? `${cooldown}s` : "获取验证码" }}
+            </el-button>
+          </div>
         </el-form-item>
         <el-form-item prop="password1">
           <el-input
             show-password
             v-model="registerForm.password1"
             :style="{ width: '100%' }"
-            placeholder="请输入密码"
+            placeholder="请输入您的密码"
             clearable
           />
         </el-form-item>
@@ -259,7 +307,7 @@ watch(
             show-password
             v-model="registerForm.password2"
             :style="{ width: '100%' }"
-            placeholder="确认密码"
+            placeholder="请再次输入您的密码"
             clearable
             @keyup.enter="submit"
           />

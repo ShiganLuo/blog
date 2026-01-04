@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import ElementPlus from 'element-plus'
+import { initApp } from './app-init'
 import 'element-plus/dist/index.css'
 // 引入 Element Plus 的暗黑主题
 import "element-plus/theme-chalk/dark/css-vars.css";
@@ -28,3 +29,4 @@ app.use(router)
 app.use(ElementPlus)
 
 app.mount('#app')
+initApp()

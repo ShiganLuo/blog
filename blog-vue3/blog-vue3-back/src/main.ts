@@ -19,6 +19,7 @@ import '@styles/dark.scss'                          // 系统主题
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { setupGlobDirectives } from './directives'
 import language from './language'
+import { initApp } from './app-init'
 
 const app = createApp(App)
 initStore(app)
@@ -32,3 +33,4 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 app.mount('#app')
+initApp()

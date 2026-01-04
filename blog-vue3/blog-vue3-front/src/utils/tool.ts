@@ -306,3 +306,24 @@ export function tansParams(params: any) {
   }
   return result
 }
+
+export function setFavicon(url: string) {
+  if (!url) return;
+
+  let link = document.querySelector<HTMLLinkElement>(
+    "link[rel~='icon']"
+  );
+
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'icon';
+    document.head.appendChild(link);
+  }
+
+  // 防缓存：强烈建议
+  const finalUrl = url.includes('?')
+    ? `${url}&v=${Date.now()}`
+    : `${url}?v=${Date.now()}`;
+
+  link.href = finalUrl;
+}

@@ -57,4 +57,5 @@ public interface BlogSettingService {
      */
     public ApiResponse<SomeFrontInformation> getSomeFrontInformation();
     
+
 } 

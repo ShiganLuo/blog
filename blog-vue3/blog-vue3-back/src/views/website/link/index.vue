@@ -209,7 +209,6 @@
   /**获取友链审核状态字典 */
   const getFriendLinkStatusDict = async () => {
     const { FriendLinkStatus } = await useDict("FriendLinkStatus")
-    console.log(FriendLinkStatus)
     FriendLinkStatusDict.value = FriendLinkStatus;
   }
 
@@ -318,6 +317,7 @@
           return
         }
         form.userId = userId;
+        console.log(form)
         const res = await FriendLinkService.addOrUpdateLink(form)
         if (res.code === 200) {
           ElMessage.success(res.message)

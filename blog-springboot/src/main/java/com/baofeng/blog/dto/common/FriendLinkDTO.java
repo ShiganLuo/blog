@@ -14,5 +14,7 @@ public class FriendLinkDTO {
         private String applyMessage;
         @NotNull 
         private Long userId;
+        private Integer status;
+        private Boolean isVisible;
     }
 }

@@ -1,0 +1,15 @@
+--2026-01-04 21:52:09--  https://www.iconfont.cn/api/project/download.zip?spm=a313x.manage_type_myprojects.i1.d7543c303.30f13a81Km30vl
+正在解析主机 www.iconfont.cn (www.iconfont.cn)... 203.119.238.221, 2408:4001:f00::1297
+正在连接 www.iconfont.cn (www.iconfont.cn)|203.119.238.221|:443... 已连接。
+已发出 HTTP 请求，正在等待回应... 302 Found
+位置：/errors?path=%2Fapi%2Fproject%2Fdownload.zip&data=%7B%22code%22%3A500%2C%22error_code%22%3A%22LOGIN%20REQUIRED%22%2C%22message%22%3A%22LOGIN%20REQUIRED%22%7D [跟随至新的 URL]
+--2026-01-04 21:52:10--  https://www.iconfont.cn/errors?path=%2Fapi%2Fproject%2Fdownload.zip&data=%7B%22code%22%3A500%2C%22error_code%22%3A%22LOGIN%20REQUIRED%22%2C%22message%22%3A%22LOGIN%20REQUIRED%22%7D
+再次使用存在的到 www.iconfont.cn:443 的连接。
+已发出 HTTP 请求，正在等待回应... 200 OK
+长度： 未指定 [text/html]
+正在保存至: ‘download.zip?spm=a313x.manage_type_myprojects.i1.d7543c303.30f13a81Km30vl’
+
+                    download.zip?spm=a3     [<=>                                                                           ]       0  --.-KB/s               download.zip?spm=a313x.manage_type_mypr     [ <=>                                                                          ]   2.74K  --.-KB/s    用时 0s    
+
+2026-01-04 21:52:10 (854 MB/s) - ‘download.zip?spm=a313x.manage_type_myprojects.i1.d7543c303.30f13a81Km30vl’ 已保存 [2804]
+

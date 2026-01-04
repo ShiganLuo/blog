@@ -48,7 +48,10 @@ const handleSelect = async (val: string, type: "pc" | "mobile") => {
     });
   } else if (val === "/login") {
     userStore.setShowLogin(true);
-  } else {
+  } else if (val == "/admin") {
+    window.open(import.meta.env.VITE_ADMIN_BASE_URL, "_blank", "noopener,noreferrer");
+  } 
+  else {
     router.push(val);
   }
 
@@ -120,7 +123,7 @@ onBeforeUnmount(() => {
         <router-link v-if="getBlogAvatar" to="/"
           ><el-avatar class="el-avatar" :src="getBlogAvatar" />
         </router-link>
-        <MessageBox class="ml-[10px]" v-if="getUserInfo.id" :user-id="getUserInfo.id" type="pc" />
+        <MessageBox class="ml-10px" v-if="getUserInfo.id" :user-id="getUserInfo.id" type="pc" />
       </div>
       <div class="flex_r_around">
         <BlogSearch></BlogSearch>
@@ -136,19 +139,14 @@ onBeforeUnmount(() => {
           <el-menu-item index="/archives"><i class="iconfont icon-icon"></i> 时间轴</el-menu-item>
           <el-sub-menu index="/resources">
             <template #title><i class="iconfont icon-menu"></i> 更多</template>
-            <!-- <el-menu-item index="/message/chat"
-              ><i class="iconfont icon-speechbubble"></i> 聊天室</el-menu-item
-            > -->
-            <el-menu-item index="/resources/front"
-              ><i class="iconfont icon-folder"></i> 前端推荐</el-menu-item
-            >
-            <el-menu-item index="/resources/back"
-              ><i class="iconfont icon-houduankaifa"></i> 后端推荐</el-menu-item
-            >
-            <!-- <el-menu-item index="/music"><i class="iconfont icon-bofangduilie"></i> 音乐</el-menu-item> -->
+            <el-menu-item index="/resources/front">
+              <i class="iconfont icon-folder"></i> 前端推荐
+              </el-menu-item>
+            <el-menu-item index="/resources/back">
+              <i class="iconfont icon-houduankaifa"></i> 后端推荐
+            </el-menu-item>
           </el-sub-menu>
           <el-menu-item index="/category"><i class="iconfont icon-sort"></i> 分类</el-menu-item>
-          <!-- <el-menu-item index="/tag"><i class="iconfont icon-label_fill"></i> 标签</el-menu-item> -->
           <el-menu-item index="/photoAlbum"><i class="iconfont icon-paper"></i> 相册</el-menu-item>
           <el-menu-item index="/talk"><i class="iconfont icon-speechbubble"></i> 说说</el-menu-item>
           <el-menu-item index="/link/list"
@@ -157,22 +155,23 @@ onBeforeUnmount(() => {
           <el-menu-item index="/message/list"
             ><i class="iconfont icon-liuyan"></i> 留言</el-menu-item
           >
-          <el-menu-item index="/login" v-if="!getUserInfo.id"
-            ><i class="iconfont icon-timerauto"></i> 登录</el-menu-item
-          >
+          <el-menu-item index="/login" v-if="!getUserInfo.id">
+            <i class="iconfont icon-timerauto"></i> 登录
+          </el-menu-item>
           <div v-else class="user flex justify-center items-center">
             <el-sub-menu index="/#">
-              <template #title
-                ><el-avatar :src="getUserInfo.avatar" :size="30">{{
-                  getUserInfo.nick_name
-                }}</el-avatar></template
-              >
-              <el-menu-item index="/userCenter"
-                ><i class="iconfont icon-gerenzhongxin"></i> 个人中心</el-menu-item
-              >
-              <el-menu-item index="/logout"
-                ><i class="iconfont icon-tuichudenglu"></i> 退出</el-menu-item
-              >
+              <template #title>
+                <el-avatar :src="getUserInfo.avatar" :size="30">
+                  {{ getUserInfo.nickname }}
+                </el-avatar>
+                </template>
+              <el-menu-item index="/userCenter">
+                <i class="iconfont icon-gerenzhongxin"></i> 个人中心</el-menu-item>
+              <el-menu-item index="/admin">
+                <i class="iconfont icon-houtaiguanli"></i> 后台管理
+              </el-menu-item>
+              <el-menu-item index="/logout">
+                <i class="iconfont icon-tuichudenglu"></i> 退出</el-menu-item>
             </el-sub-menu>
           </div>
         </el-menu>
@@ -207,7 +206,7 @@ onBeforeUnmount(() => {
               :src="getUserInfo.avatar"
               :size="80"
               @click="toPersonal"
-              >{{ getUserInfo.nick_name }}</el-avatar
+              >{{ getUserInfo.nickname }}</el-avatar
             >
             <el-avatar v-else class="el-avatar" :size="80" @click="toLogin">去登录</el-avatar>
           </div>
@@ -221,34 +220,30 @@ onBeforeUnmount(() => {
             <el-menu-item index="/archives"><i class="iconfont icon-icon"></i> 时间轴</el-menu-item>
             <el-sub-menu index="/resources">
               <template #title><i class="iconfont icon-menu"></i> 更多</template>
-              <!-- <el-menu-item index="/message/chat"
-                ><i class="iconfont icon-speechbubble"></i> 聊天室</el-menu-item
-              > -->
-              <el-menu-item index="/resources/front"
-                ><i class="iconfont icon-folder"></i> 前端推荐</el-menu-item
-              >
-              <el-menu-item index="/resources/back"
-                ><i class="iconfont icon-houduankaifa"></i> 后端推荐</el-menu-item
-              >
+              <el-menu-item index="/resources/front">
+                <i class="iconfont icon-folder"></i> 前端推荐
+              </el-menu-item>
+              <el-menu-item index="/resources/back">
+                <i class="iconfont icon-houduankaifa"></i> 后端推荐
+              </el-menu-item>
             </el-sub-menu>
             <el-menu-item index="/category"><i class="iconfont icon-sort"></i> 分类</el-menu-item>
             <el-menu-item index="/tag"><i class="iconfont icon-label_fill"></i> 标签</el-menu-item>
-            <el-menu-item index="/photoAlbum"
-              ><i class="iconfont icon-paper"></i> 相册</el-menu-item
-            >
-            <el-menu-item index="/talk"
-              ><i class="iconfont icon-speechbubble"></i> 说说</el-menu-item
-            >
-            <el-menu-item index="/link/list"
-              ><i class="iconfont icon-pengyouquan"></i> 友链</el-menu-item
-            >
-
-            <el-menu-item index="/message/list"
-              ><i class="iconfont icon-liuyan"></i> 留言</el-menu-item
-            >
-            <el-menu-item v-if="getUserInfo.id" index="/logout"
-              ><i class="iconfont icon-tuichudenglu"></i> 退出</el-menu-item
-            >
+            <el-menu-item index="/photoAlbum">
+              <i class="iconfont icon-paper"></i> 相册
+            </el-menu-item>
+            <el-menu-item index="/talk">
+              <i class="iconfont icon-speechbubble"></i> 说说
+            </el-menu-item>
+            <el-menu-item index="/link/list">
+              <i class="iconfont icon-pengyouquan"></i> 友链
+            </el-menu-item>
+            <el-menu-item index="/message/list">
+              <i class="iconfont icon-liuyan"></i> 留言
+            </el-menu-item>
+            <el-menu-item v-if="getUserInfo.id" index="/logout">
+              <i class="iconfont icon-tuichudenglu"></i> 退出
+            </el-menu-item>
             <!-- <el-sub-menu index="/menu">
               <template #title><i class="iconfont icon-menu21"></i> 菜单</template>
             </el-sub-menu> -->
@@ -272,11 +267,21 @@ onBeforeUnmount(() => {
   overflow: hidden;
   box-sizing: border-box;
 
-  .sub-avatar {
-    padding: 5px 0 0 0;
-    display: flex;
-    align-items: center;
+  .pc_menu {
+    :deep(.el-sub-menu__icon-arrow) {
+      display: none;
+    }
+    .sub-avatar {
+      padding: 5px 0 0 0;
+      display: flex;
+      align-items: center;
+      .ml-10px {
+        margin-left: 10px;
+      }
+    }
+
   }
+
 
   .sub-menu {
     height: 53px;
@@ -292,11 +297,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.pc_menu {
-  :deep(.el-sub-menu__icon-arrow) {
-    display: none;
-  }
-}
+
 
 :deep(.el-menu--horizontal > .el-sub-menu .el-sub-menu__title:hover) {
   background-color: transparent;

@@ -22,14 +22,14 @@ public interface FriendLinkMapper {
      * @param addFriendLinkRequest
      * @return
      */
-    int insertOrUpdateFriendLink(AddFriendLinkRequest addFriendLinkRequest);
+    int addFriendLink(AddFriendLinkRequest addFriendLinkRequest);
 
     /**
      * 更新友链信息
      * @param addFriendLinkRequest
      * @return
      */
-    int updateFriendLinkById(AddFriendLinkRequest addFriendLinkRequest);
+    int updateFriendLinkById(FriendLink friendLink);
 
     /**
      * 根据id获取友链

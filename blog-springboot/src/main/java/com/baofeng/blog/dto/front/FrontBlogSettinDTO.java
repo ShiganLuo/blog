@@ -59,6 +59,8 @@ public class FrontBlogSettinDTO {
     public static class SomeFrontInformation {
         private String icpFilingNumber;
         private String websiteChineseName;
+        @MinioFile
+        private String favicon;
     }
 
 

@@ -98,7 +98,28 @@ public class FriendLinkServiceImpl implements FriendLinkService {
         if (userId == null) {
             return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "请登录后申请友链");
         }
-        int rowUpdated = friendLinkMapper.insertOrUpdateFriendLink(addFriendLinkRequest);
+        int rowUpdated = 0;
+        Long friendLinkId = addFriendLinkRequest.getId();
+        if (friendLinkId != null) {
+            FriendLink friendLink = friendLinkMapper.getFriendLinkById(friendLinkId);
+            if (friendLink != null) {
+                friendLink.setApplyMessage(addFriendLinkRequest.getApplyMessage());
+                friendLink.setIsVisible(addFriendLinkRequest.getIsVisible());
+                friendLink.setSiteName(addFriendLinkRequest.getSiteName());
+                friendLink.setSiteDesc(addFriendLinkRequest.getSiteDesc());
+                friendLink.setSiteLogo(addFriendLinkRequest.getSiteLogo());
+                friendLink.setSiteUrl(addFriendLinkRequest.getSiteUrl());
+                friendLink.setUserId(addFriendLinkRequest.getUserId());
+                friendLink.setStatus(addFriendLinkRequest.getStatus());
+                rowUpdated = friendLinkMapper.updateFriendLinkById(friendLink);
+            } else {
+                logger.warn("友链不存在，但是前端上传了友链id");
+                rowUpdated = friendLinkMapper.addFriendLink(addFriendLinkRequest);
+            }
+        } else {
+            rowUpdated = friendLinkMapper.addFriendLink(addFriendLinkRequest);
+        }
+        
         return rowUpdated > 0 
             ? ApiResponse.success("友链添加成功")
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"友链添加失败");

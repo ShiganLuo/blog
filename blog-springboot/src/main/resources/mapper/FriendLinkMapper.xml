@@ -87,24 +87,13 @@
     <!--根据id查询友链-->
     <select id="getFriendLinkById" resultMap="FriendLinkResultMap">
         SELECT
-            id,
-            site_name,
-            site_desc,
-            site_logo,
-            site_url,
-            user_id,
-            status,
-            sort_order,
-            is_visible,
-            apply_message,
-            created_at,
-            updated_at
+            *
         FROM friend_link
         WHERE id = #{id}
     </select>
 
     <!-- 新增或更新友链（存在则更新，不存在则插入） -->
-    <insert id="insertOrUpdateFriendLink"
+    <insert id="addFriendLink"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO friend_link (
@@ -132,12 +121,6 @@
             CURRENT_TIMESTAMP,
             CURRENT_TIMESTAMP
         )
-        ON DUPLICATE KEY UPDATE
-            site_name      = VALUES(site_name),
-            site_desc      = VALUES(site_desc),
-            site_logo      = VALUES(site_logo),
-            apply_message  = VALUES(apply_message),
-            updated_at     = CURRENT_TIMESTAMP
     </insert>
 
 
