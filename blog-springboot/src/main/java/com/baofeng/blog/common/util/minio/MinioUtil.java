@@ -16,8 +16,8 @@ public class MinioUtil {
     @Value("${minio.bucket}")
     private String bucket;
 
-    @Value("${minio.endpoint}")
-    private String endpoint;
+    @Value("${file.public-base-url}")
+    private String prefix;
 
     public MinioUtil(MinioClient minioClient) {
         this.minioClient = minioClient;
@@ -61,8 +61,12 @@ public class MinioUtil {
     /**
      * 获取永久访问 URL（bucket 必须是 public）
      */
+    public String getPermanentRelativeFileUrl(String objectName) {
+        return String.format("%s/%s", bucket, objectName);
+    }
+
     public String getPermanentFileUrl(String objectName) {
-        return String.format("%s/%s/%s", endpoint, bucket, objectName);
+        return String.format("%s/%s/%s",prefix, bucket, objectName);
     }
 
     // 下载文件

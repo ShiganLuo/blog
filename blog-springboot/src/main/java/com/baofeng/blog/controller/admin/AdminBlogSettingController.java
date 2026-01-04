@@ -1,7 +1,7 @@
 package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetail;
+import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetailResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
 import com.baofeng.blog.entity.BlogSetting;
 import com.baofeng.blog.service.BlogSettingService;
@@ -38,7 +38,7 @@ public class AdminBlogSettingController {
     }
 
     @GetMapping("/getBlogConfig")
-    public ApiResponse<AdminConfigDetail> getBlogConfig() {
+    public ApiResponse<AdminConfigDetailResponse> getBlogConfig() {
         return blogSettingService.getSettingByIdAdmin((long) 1);
     }
 

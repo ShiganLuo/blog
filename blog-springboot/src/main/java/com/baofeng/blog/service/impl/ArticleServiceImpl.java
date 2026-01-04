@@ -14,9 +14,11 @@ import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.enums.ArticleStatusEnum;
 import com.baofeng.blog.mapper.*;
 import com.baofeng.blog.service.ArticleService;
+import com.baofeng.blog.common.util.UrlNormalizeUtil;
+
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
@@ -196,9 +198,8 @@ public class ArticleServiceImpl implements ArticleService {
 
             // 图片-文章关系表
             String articleCover = updateArticlesRequest.articleCover();
-            String prefix = endpoint + "/" + bucket + "/";
-            if (articleCover != null && articleCover.startsWith(prefix)) {
-                articleCover = articleCover.substring(prefix.length());
+            if (articleCover != null) {
+                articleCover = UrlNormalizeUtil.stripUrlPrefix(articleCover);
                 Long imageId = imageMapper.getImageIdByFileName(articleCover);
                 UpdateImageIdEntity updateImageIdEntity = new UpdateImageIdEntity();
                 

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import com.baofeng.blog.common.annotation.MinioFile;
 public class FrontBlogSettinDTO {
-    public static record updateSettingRequest(
+    public static record UpdateSettingRequest(
         String siteTitle,
         String siteDescription,
         @MinioFile
@@ -24,7 +24,7 @@ public class FrontBlogSettinDTO {
     ) {}
 
     @Data
-    public static class FrontConfigDetail {
+    public static class FrontConfigDetailResponse {
         private String websiteTitle;
         @MinioFile
         private String FrontHeadBackground;

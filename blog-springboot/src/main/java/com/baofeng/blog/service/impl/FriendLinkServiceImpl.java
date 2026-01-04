@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.baofeng.blog.common.util.UrlNormalizeUtil;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkItem;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkPageResponse;
@@ -93,6 +94,7 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     @Override
     public ApiResponse<String> addOrUpdateFriendLink(AddFriendLinkRequest addFriendLinkRequest) {
         Long userId = addFriendLinkRequest.getUserId();
+        addFriendLinkRequest.setSiteLogo(UrlNormalizeUtil.stripUrlPrefix(addFriendLinkRequest.getSiteLogo()));
         if (userId == null) {
             return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "请登录后申请友链");
         }

@@ -1,9 +1,9 @@
 package com.baofeng.blog.service;
 
 import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetail;
+import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetailResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetail;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetailResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.SomeFrontInformation;
 import com.baofeng.blog.entity.BlogSetting;
 
@@ -34,14 +34,14 @@ public interface BlogSettingService {
      * @param id
      * @return
      */
-    public ApiResponse<FrontConfigDetail> getSettingByIdFront(Long id);
+    public ApiResponse<FrontConfigDetailResponse> getSettingByIdFront(Long id);
 
     /**
      * 获取网站设置后台展示
      * @param id
      * @return
      */
-    public ApiResponse<AdminConfigDetail> getSettingByIdAdmin(Long id);
+    public ApiResponse<AdminConfigDetailResponse> getSettingByIdAdmin(Long id);
 
     
     /**

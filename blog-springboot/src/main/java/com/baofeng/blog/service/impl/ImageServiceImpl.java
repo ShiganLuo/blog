@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.baofeng.blog.service.ImageService;
 import com.baofeng.blog.mapper.ImageMapper;
-import com.baofeng.blog.common.util.ImageFileUtil;
+import com.baofeng.blog.common.util.file.ImageFileUtil;
 import com.baofeng.blog.common.util.minio.MinioUtil;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontImageDTO.AlbumResponse;
@@ -74,15 +74,16 @@ public class ImageServiceImpl implements ImageService {
             if (authentication != null) {
                 username = authentication.getName();
             }
-
-            image.setFilePath(uniqueFilename);
+            String filePath = minioService.getPermanentRelativeFileUrl(uniqueFilename);
+            String fileUrl = minioService.getPermanentFileUrl(uniqueFilename);
+            image.setFilePath(filePath);
             image.setFileName(uniqueFilename);
             image.setFileSize(kilobytes);
             image.setMimeType(contentType);
             image.setCreatedBy(username);
             int rowsUpdated = imageMapper.insertImage(image);
             return rowsUpdated > 0
-                ? ApiResponse.success(uniqueFilename)
+                ? ApiResponse.success(fileUrl)
                 : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
 
         } catch (Exception e) {

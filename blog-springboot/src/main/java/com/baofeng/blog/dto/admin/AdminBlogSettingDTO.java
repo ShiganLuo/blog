@@ -8,14 +8,13 @@ import com.baofeng.blog.common.annotation.MinioFile;
 import lombok.Data;
 
 public class AdminBlogSettingDTO {
+
     public static record InitSettingRequest(
         String websiteChineseName,
         String websiteEnglishName,
         String websiteTitle,
         LocalDateTime websiteCreaDateTime,
-        @MinioFile
         String logo,
-        @MinioFile
         String favicon,
         String notice,
         String icpFilingNumber,
@@ -23,7 +22,6 @@ public class AdminBlogSettingDTO {
         String author,
         String authorAvatar,
         String authorIntro,
-        @MinioFile
         String userAvatar,
         String github,
         String gitee,
@@ -38,14 +36,11 @@ public class AdminBlogSettingDTO {
         String juejin,
         String twitter,
         String stackoverflow,
-        @MinioFile
         String touristAvatar,
         Integer multiLanguage,
         Boolean isCommentReview,
         Boolean isEmailNotice,
-        @MinioFile
         String weiXinQRCode,
-        @MinioFile
         String alipayQRCode
     ) {}
     
@@ -64,7 +59,7 @@ public class AdminBlogSettingDTO {
     }
 
     @Data
-    public static class AdminConfigDetail {
+    public static class AdminConfigDetailResponse {
         private String websiteChineseName;
         private String websiteEnglishName;
         private String websiteTitle;
@@ -80,6 +75,7 @@ public class AdminBlogSettingDTO {
         private String icpFilingNumber;
         private String psbFilingNumber;
         private String author;
+        @MinioFile
         private String authorAvatar;
         private String authorIntro;
         private String authroPersonalSay;

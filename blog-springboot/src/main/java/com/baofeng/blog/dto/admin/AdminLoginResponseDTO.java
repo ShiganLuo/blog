@@ -5,12 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import java.util.List;
+import com.baofeng.blog.common.annotation.MinioFile;
+import com.baofeng.blog.common.annotation.MinioScan;
 /**
  * LoginResponse 直接将 token 定义为 String
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@MinioScan(maxDepth = 2)
 public class AdminLoginResponseDTO {
     private String accessToken; // 短期有效
     private String refreshToken; //长期有效
@@ -23,6 +26,7 @@ public class AdminLoginResponseDTO {
     @AllArgsConstructor
     public static class User {
         private Long id;
+        @MinioFile
         private String avatar;
         private String username;
         private String nickName;

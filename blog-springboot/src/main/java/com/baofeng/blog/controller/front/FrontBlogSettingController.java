@@ -1,7 +1,7 @@
 package com.baofeng.blog.controller.front;
 
 import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetail;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetailResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.SomeFrontInformation;
 import com.baofeng.blog.service.BlogSettingService;
 
@@ -27,7 +27,7 @@ public class FrontBlogSettingController {
 
 
     @GetMapping("/getBlogConfig")
-    public ApiResponse<FrontConfigDetail> getBlogConfig() {
+    public ApiResponse<FrontConfigDetailResponse> getBlogConfig() {
         return blogSettingService.getSettingByIdFront(1L);
     }
 

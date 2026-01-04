@@ -6,8 +6,9 @@ import com.baofeng.blog.mapper.ArticleMapper;
 import com.baofeng.blog.mapper.TagMapper;
 import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.mapper.CategoryMapper;
+import com.baofeng.blog.common.util.UrlNormalizeUtil;
 import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetail;
+import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetailResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDict;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.*;
@@ -74,6 +75,25 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         blogSetting.setId(1L);
         BlogSetting blogsetting2 = blogSettingMapper.getSettingById(1L);
         int success = 0;
+        blogSetting.setFrontHeadBackground(
+                UrlNormalizeUtil.stripUrlPrefix(blogSetting.getFrontHeadBackground())
+        );
+        blogSetting.setLogo(
+                UrlNormalizeUtil.stripUrlPrefix(blogSetting.getLogo())
+        );
+        blogSetting.setFavicon(
+                UrlNormalizeUtil.stripUrlPrefix(blogSetting.getFavicon())
+        );
+        blogSetting.setAuthorAvatar(
+                UrlNormalizeUtil.stripUrlPrefix(blogSetting.getAuthorAvatar())
+        );
+        blogSetting.setUserAvatar(
+                UrlNormalizeUtil.stripUrlPrefix(blogSetting.getUserAvatar())
+        );
+        blogSetting.setTouristAvatar(
+                UrlNormalizeUtil.stripUrlPrefix(blogSetting.getTouristAvatar())
+        );
+
         if (blogsetting2 == null) {
             blogSetting.setVisitCount(0L);
             success = blogSettingMapper.insertSetting(blogSetting);
@@ -86,13 +106,13 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     }
 
     @Override
-    public ApiResponse<FrontConfigDetail> getSettingByIdFront(Long id) {
+    public ApiResponse<FrontConfigDetailResponse> getSettingByIdFront(Long id) {
         BlogSetting blogSetting = blogSettingMapper.getSettingById(id);
         Long articleCount = articleMapper.countAllArticles();
         Long tagCount = tagMapper.countAllTags();
         Long categoryCount = categoryMapper.countAllCategories();
         Long userCount = userMapper.countAllUsers();
-        FrontConfigDetail detail = new FrontConfigDetail();
+        FrontConfigDetailResponse detail = new FrontConfigDetailResponse();
         detail.setWebsiteTitle(blogSetting.getWebsiteTitle());
         detail.setAuthorAvatar(blogSetting.getAuthorAvatar());
         detail.setLogo(blogSetting.getLogo());
@@ -119,9 +139,9 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     }
     
     @Override
-    public ApiResponse<AdminConfigDetail> getSettingByIdAdmin(Long id) {
+    public ApiResponse<AdminConfigDetailResponse> getSettingByIdAdmin(Long id) {
         BlogSetting blogSetting = blogSettingMapper.getSettingById(id);
-        AdminConfigDetail detail = new AdminConfigDetail();
+        AdminConfigDetailResponse detail = new AdminConfigDetailResponse();
         detail.setWebsiteChineseName(blogSetting.getWebsiteChineseName());
         detail.setWebsiteEnglishName(blogSetting.getWebsiteEnglishName());
         detail.setWebsiteTitle(blogSetting.getWebsiteTitle());

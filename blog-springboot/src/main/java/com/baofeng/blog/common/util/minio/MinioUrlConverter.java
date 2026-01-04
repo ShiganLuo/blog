@@ -124,6 +124,6 @@ public class MinioUrlConverter {
     }
 
     private String buildPermanentUrl(String objectName) {
-        return prefix + "/" + objectName;
+        return prefix  + objectName;
     }
 }
