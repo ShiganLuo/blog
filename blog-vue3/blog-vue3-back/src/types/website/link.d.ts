@@ -7,10 +7,10 @@ export interface FriendLinkResult {
   siteUrl: string
   siteDesc: string
   userName: string
-  status: string
+  status: number
   statusName: string
-  sortOrder: string
-  isVisible: string
+  sortOrder: number
+  isVisible: number
   applyMessage: string
   createdAt: string
   updatedAt: string

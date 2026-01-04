@@ -32,6 +32,8 @@ const total = ref<number>(0);
 const dialogVisible = ref<boolean>(false);
 const applyType = ref<"add" | "edit">("add");
 const blogName = ref<string>("");
+const qq = ref<string>("");
+const websiteUrl = "shiganluo.top"
 let observe: IntersectionObserver | null = null;
 let box: Element | null = null;
 
@@ -107,6 +109,7 @@ const getConfigDetail = async (): Promise<void> => {
   let res = await ConfigService.homeGetConfig();
   if (res.code === 200 && res.result) {
     blogName.value = res.result.websiteTitle || " ";
+    qq.value = res.result.qq || " "
   }
 };
 
@@ -149,11 +152,11 @@ function copyElementText(element: HTMLElement): void {
       <div class="descriptions">
         <div class="desc-item">
           <div class="desc-label">博客链接</div>
-          <div class="desc-content" @click="copyElementText($event.target as HTMLElement)">https://example.com</div>
+          <div class="desc-content" @click="copyElementText($event.target as HTMLElement)">{{websiteUrl}}</div>
         </div>
         <div class="desc-item">
           <div class="desc-label">QQ</div>
-          <div class="desc-content"  @click="copyElementText($event.target as HTMLElement)">2530320102</div>
+          <div class="desc-content"  @click="copyElementText($event.target as HTMLElement)">{{qq}}</div>
         </div>
       </div>
       <div class="desc-remark">
@@ -176,12 +179,6 @@ function copyElementText(element: HTMLElement): void {
           <el-card class="card-hover animate__animated animate__fadeIn">
             <div
               :key="item.id"
-              :style="{
-                zIndex: 1,
-                backgroundImage: `url(${
-                  item.site_avatar
-                })`,
-              }"
               class="site-item site-mask"
             >
               <div class="top">
@@ -189,23 +186,23 @@ function copyElementText(element: HTMLElement): void {
                   :key="item.id"
                   fit="cover"
                   :size="64"
-                  :src="item.site_avatar || returnUrl(item.site_url)"
+                  :src="item.siteLogo || returnUrl(item.siteUrl)"
                 >
-                  <span class="avatar-font">{{ item.site_name }}</span>
+                  <span class="avatar-font">{{ item.siteName }}</span>
                 </el-avatar>
                 <div class="flex-1">
-                  <span :title="item.site_name" class="name" @click="goToSite(item.site_url)">{{
-                    item.site_name
+                  <span :title="item.siteName" class="name" @click="goToSite(item.siteUrl)">{{
+                    item.siteName
                   }}</span>
                 </div>
               </div>
 
               <div class="bottom">
-                <span :title="item.site_desc" class="desc"> {{ item.site_desc }}</span>
+                <span :title="item.siteDesc" class="desc"> {{ item.siteDesc }}</span>
               </div>
 
               <div class="op-icon" v-if="getUserInfo.id">
-                <el-icon v-if="getUserInfo.id === 1 || getUserInfo.id === item.user_id">
+                <el-icon v-if="getUserInfo.id === 1 || getUserInfo.id === item.userId">
                   <Edit @click="updateLink(item)" />
                 </el-icon>
               </div>
@@ -357,7 +354,7 @@ function copyElementText(element: HTMLElement): void {
         font-size: 1.8rem;
         font-weight: bold;
         line-height: 1.7;
-        color: var(--global-white);
+        color: var(--global-black);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -378,7 +375,7 @@ function copyElementText(element: HTMLElement): void {
         display: -webkit-box;
         width: 100%;
         font-weight: bold;
-        color: var(--global-white);
+        color: var(--global-black);
         line-height: 1.2;
         font-size: 1rem;
         text-overflow: -o-ellipsis-lastline;

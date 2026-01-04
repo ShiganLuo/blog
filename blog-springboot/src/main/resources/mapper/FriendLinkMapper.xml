@@ -38,7 +38,7 @@
             site_desc,
             site_logo,
             site_url,
-            user_id,
+            user_id
         FROM friend_link
         WHERE status = 1
           AND is_visible = 1
@@ -115,7 +115,7 @@
             #{siteUrl},
             #{userId},
             0,
-            0,
+            1,
             0,
             #{applyMessage},
             CURRENT_TIMESTAMP,

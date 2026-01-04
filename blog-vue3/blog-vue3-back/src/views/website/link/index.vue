@@ -51,8 +51,8 @@
           <template #default="scope">
             <el-switch
               v-model="scope.row.isVisible"
-              :active-value="1"
-              :inactive-value="0"
+              :active-value=true
+              :inactive-value=false
               @change="(val) => handleVisibleChange(val, scope.row)"
             />
           </template>
@@ -63,6 +63,7 @@
               v-model="scope.row.statusName"
               placeholder="请选择"
               style="width: 100%"
+              @change="handleStatusChange(scope.row, $event)"
             >
               <el-option
                 v-for="item in FriendLinkStatusDict"
@@ -223,10 +224,37 @@
     }
   }
 
-  const handleVisibleChange = (val: any, row: FriendLinkResult) => {
-    console.log(val, row.id)
-    // 调接口
+
+  /**
+   * 更新审核状态
+   * @param row 
+   * @param newValue 
+   */
+  const handleStatusChange = async (row: any, newValue: any) => {
+    const res = await FriendLinkService.updateFriendLinkStatus({id: row.id, status: newValue})
+    if (res.code == 200) {
+      getList()
+      ElMessage.success('审核状态更新成功');
+    } else {
+      ElMessage.success('审核状态更新失败');
+    }
+  };
+
+  /**
+   * 更新可视化状态
+   * @param row 
+   * @param newValue 
+   */
+  const handleVisibleChange = async (val: any, row: FriendLinkResult) => {
+    const res = await FriendLinkService.updateFriendLinkIsVisible({id: row.id, isVisible: val})
+    if (res.code == 200) {
+      getList()
+      ElMessage.success('可视化状态更新成功');
+    } else {
+      ElMessage.success('可视化状态更新失败');
+    }
   }
+
 
   // 上传成功后的处理函数
   const onSuccess = (response: any) => {

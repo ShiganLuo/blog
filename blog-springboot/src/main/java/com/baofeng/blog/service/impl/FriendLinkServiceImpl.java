@@ -10,6 +10,8 @@ import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkItem;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkPageResponse;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkRequest;
+import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.UpdateFriendLinkIsVisibleRequest;
+import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.UpdateFriendLinkStatusRequest;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkRequest;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkItem;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkPageResponse;
@@ -124,5 +126,50 @@ public class FriendLinkServiceImpl implements FriendLinkService {
             ? ApiResponse.success("友链添加成功")
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"友链添加失败");
     }
+
+    @Override
+    public ApiResponse<String> updateFriendLinkStatus(UpdateFriendLinkStatusRequest updateFriendLinkStatusRequest) {
+        Long id = updateFriendLinkStatusRequest.id();
+        FriendLink friendLink = friendLinkMapper.getFriendLinkById(id);
+        if (friendLink == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"该友链不存在");
+        }
+        Integer status = updateFriendLinkStatusRequest.status();
+        FriendLinkStatusEnum friendLinkStatusEnum = FriendLinkStatusEnum.fromCode(status);
+        if (friendLinkStatusEnum == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"status非法，必须为0或1或2");
+        }
+
+        FriendLink friendLink2 = new FriendLink();
+        friendLink2.setId(id);
+        friendLink2.setStatus(status);
+        int rowUpdated = friendLinkMapper.updateFriendLinkById(friendLink2);
+        return rowUpdated > 0
+            ? ApiResponse.success("友链状态更新成功")
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
+
+    }
     
+    @Override
+    public ApiResponse<String> updateFriendLinkIsVisible(UpdateFriendLinkIsVisibleRequest updateFriendLinkIsVisibleRequest){
+        Long id = updateFriendLinkIsVisibleRequest.id();
+        Boolean isVisible = updateFriendLinkIsVisibleRequest.isVisible();
+        logger.info("isVisible:{}",isVisible);
+        FriendLink friendLink = friendLinkMapper.getFriendLinkById(id);
+        if (friendLink == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"该友链不存在");
+        }
+        if (isVisible == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"isVisble不能为空");
+        }
+        FriendLink friendLink2 = new FriendLink();
+        friendLink2.setId(id);
+        friendLink2.setIsVisible(isVisible);
+        int rowUpdated = friendLinkMapper.updateFriendLinkById(friendLink2);
+        return rowUpdated > 0
+            ? ApiResponse.success("友链可视状态更新成功")
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
+
+    }
+
 }

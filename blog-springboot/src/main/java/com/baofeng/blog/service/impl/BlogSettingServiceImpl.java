@@ -100,6 +100,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         } else {
             success = blogSettingMapper.updateSettingById(blogSetting);
         }
+        logger.info(blogSetting.getQq());
         return success > 0
             ? ApiResponse.success("网站设置更新成功")
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "网站设置更新失败");

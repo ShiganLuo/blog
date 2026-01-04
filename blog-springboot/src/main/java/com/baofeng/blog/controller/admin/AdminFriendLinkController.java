@@ -1,6 +1,8 @@
 package com.baofeng.blog.controller.admin;
 
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkRequest;
+import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.UpdateFriendLinkIsVisibleRequest;
+import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.UpdateFriendLinkStatusRequest;
 import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkPageResponse;
 import com.baofeng.blog.dto.common.FriendLinkDTO.AddFriendLinkRequest;
 import com.baofeng.blog.service.FriendLinkService;
@@ -37,5 +39,15 @@ public class AdminFriendLinkController {
     @PostMapping("/addOrUpdateFriendLink")
     public ApiResponse<String> addOrUpdateFriendLink(@RequestBody AddFriendLinkRequest addFriendLink) {
         return friendLinkService.addOrUpdateFriendLink(addFriendLink);
+    }
+
+    @PostMapping("/updateFriendLinkStatus")
+    public ApiResponse<String> updateFriendLinkStatus(@RequestBody UpdateFriendLinkStatusRequest updateFriendLinkStatusRequest) {
+        return friendLinkService.updateFriendLinkStatus(updateFriendLinkStatusRequest);
+    }
+
+    @PostMapping("/updateFriendLinkIsVisible")
+    public ApiResponse<String> updateFriendLinkIsVisible(@RequestBody UpdateFriendLinkIsVisibleRequest updateFriendLinkIsVisibleRequest) {
+        return friendLinkService.updateFriendLinkIsVisible(updateFriendLinkIsVisibleRequest);
     }
 }

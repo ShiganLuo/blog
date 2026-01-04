@@ -26,7 +26,7 @@ public interface FriendLinkMapper {
 
     /**
      * 更新友链信息
-     * @param addFriendLinkRequest
+     * @param frinedLink
      * @return
      */
     int updateFriendLinkById(FriendLink friendLink);

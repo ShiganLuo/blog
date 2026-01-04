@@ -41,4 +41,18 @@ public class AdminFriendLinkDTO {
         private LocalDateTime updatedAt;
     }
     
+    public static record UpdateFriendLinkStatusRequest(
+        @NotNull
+        Long id,
+        @NotNull
+        Integer status
+    ) {
+    }
+    public static record UpdateFriendLinkIsVisibleRequest(
+        @NotNull
+        Long id,
+        @NotNull
+        Boolean isVisible
+    ) {
+    }
 }

@@ -29,4 +29,18 @@ export class FriendLinkService {
       data: id
     })
   }
+
+  static updateFriendLinkStatus(data:any) {
+    return request.post({
+      url: '/admin/link/updateFriendLinkStatus',
+      data: data
+    })
+  }
+
+  static updateFriendLinkIsVisible(data:any) {
+    return request.post({
+      url: '/admin/link/updateFriendLinkIsVisible',
+      data: data
+    })
+  }
 }

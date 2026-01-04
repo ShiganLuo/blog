@@ -6,6 +6,8 @@ import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.AdminFriendLinkRequest;
 import com.baofeng.blog.dto.common.FriendLinkDTO.AddFriendLinkRequest;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkPageResponse;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkRequest;
+import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.UpdateFriendLinkStatusRequest;
+import com.baofeng.blog.dto.admin.AdminFriendLinkDTO.UpdateFriendLinkIsVisibleRequest;
 
 import java.util.List;
 
@@ -41,5 +43,19 @@ public interface FriendLinkService {
      * @return
      */
     public ApiResponse<AdminFriendLinkPageResponse> getAllFriendLinkAdmin(AdminFriendLinkRequest adminFriendLinkRequest);
+
+    /**
+     * 更新友链状态
+     * @param updateFriendLinkStatusRequest
+     * @return
+     */
+    public ApiResponse<String> updateFriendLinkStatus(UpdateFriendLinkStatusRequest updateFriendLinkStatusRequest);
+
+    /**
+     * 决定友链是否可见
+     * @param updateFriendLinkIsVisible
+     * @return
+     */
+    public ApiResponse<String> updateFriendLinkIsVisible(UpdateFriendLinkIsVisibleRequest updateFriendLinkIsVisible);
 
 }
