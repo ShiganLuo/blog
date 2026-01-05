@@ -9,12 +9,6 @@ import lombok.Data;
 import com.baofeng.blog.common.annotation.MinioFile;
 import com.baofeng.blog.common.annotation.MinioScan;
 public class AdminArticleDTO {
-    public static record CreateArticleRequest(
-        String title,
-        String content,
-        String summary,
-        String author
-    ) {}
     /**
      * 文章分页请求参数
      */
@@ -91,9 +85,10 @@ public class AdminArticleDTO {
         private Long total;
     }
 
-    public static record UpdateArticlesRequest(
+    public static record CreateOrupdateArticlesRequest(
         @NotEmpty List<Long> ids,
         Long id,
+        Long authorId,
         Long imageId,
         String articleTitle,
         String articleContent,

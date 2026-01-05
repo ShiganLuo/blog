@@ -203,23 +203,44 @@
   import { CategoryService } from '@/api/blog/categoryApi'
   import { TagService } from '@/api/blog/tagApi'
   // 定义初始表单状态
-  const initialFormState = {
-    id: 0,
-    imageId: null,
-    articleTitle: '',
-    articleContent: '',
-    articleAbstract: '',
-    articleCover: '',
-    categoryNameList: [] as string[],
-    tagNameList: [] as string[],
-    isTop: 0,
-    isFeatured: 0,
-    type: 1,
-    status: 1,
-    password: '',
-    originalUrl: ''
-  }
- const form = reactive({ ...initialFormState })
+interface ArticleForm {
+  id: number
+  imageId: number | null
+  articleTitle: string
+  articleContent: string
+  articleAbstract: string
+  articleCover: string
+  categoryNameList: string[]
+  tagNameList: string[]
+  isTop: number
+  isDeleted: number
+  isFeatured: number
+  type: number
+  status: number
+  password: string
+  originalUrl: string
+  authorId?: string
+}
+const initialFormState: ArticleForm = {
+  id: 0,
+  imageId: null,
+  articleTitle: '',
+  articleContent: '',
+  articleAbstract: '',
+  articleCover: '',
+  categoryNameList: [],
+  tagNameList: [],
+  isTop: 0,
+  isDeleted: 0,
+  isFeatured: 0,
+  type: 1,
+  status: 1,
+  password: '',
+  originalUrl: '',
+  authorId: ''
+}
+
+ const form = ref<ArticleForm>({ ...initialFormState })
  type CategoryResult = {
     id: string,
     categoryName: string,
@@ -240,7 +261,7 @@
   const tagName = ref('')
 
   const userStore = useUserStore()
-  let { accessToken } = userStore
+  let { accessToken,info } = userStore
 
   // 上传路径
   const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/admin/image/uploadImage`
@@ -258,8 +279,8 @@
 
   // 上传成功后的处理函数
   const onSuccess = (response: any) => {
-    form.articleCover = response.result.imageUrl
-    form.imageId = response.result.imageId
+    form.value.articleCover = response.result.imageUrl
+    form.value.imageId = response.result.imageId
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
@@ -286,8 +307,8 @@
 
   // 移除分类
   const removeCategory = (item:string) => {
-    const index = form.categoryNameList.indexOf(item)
-    form.categoryNameList.splice(index, 1)
+    const index = form.value.categoryNameList.indexOf(item)
+    form.value.categoryNameList.splice(index, 1)
   }
 
   // 搜索分类
@@ -316,8 +337,8 @@
 
   // 添加分类
   const addCategory = (item: any) => {
-    if (form.categoryNameList.indexOf(item.categoryName) == -1) {
-      form.categoryNameList.push(item.categoryName)
+    if (form.value.categoryNameList.indexOf(item.categoryName) == -1) {
+      form.value.categoryNameList.push(item.categoryName)
     }
   }
 
@@ -330,14 +351,14 @@
 
   // 移除标签
   const removeTag = (item: any) => {
-    const index = form.tagNameList.indexOf(item)
-    form.tagNameList.splice(index, 1)
+    const index = form.value.tagNameList.indexOf(item)
+    form.value.tagNameList.splice(index, 1)
   }
 
   // 添加标签
   const addTag = (item: any) => {
-    if (form.tagNameList.indexOf(item.tagName) == -1) {
-      form.tagNameList.push(item.tagName)
+    if (form.value.tagNameList.indexOf(item.tagName) == -1) {
+      form.value.tagNameList.push(item.tagName)
     }
   }
 
@@ -360,7 +381,7 @@
 
   // 标签样式
   const tagClass = (item: any) => {
-    return form.tagNameList.indexOf(item.tagName) == -1 ? 'tag-item' : 'tag-item active'
+    return form.value.tagNameList.indexOf(item.tagName) == -1 ? 'tag-item' : 'tag-item active'
   }
 
   // 列出分类
@@ -379,27 +400,27 @@
 
   // 验证输入
   const validateArticle = () => {
-    if (form.articleTitle.trim() == '') {
+    if (form.value.articleTitle.trim() == '') {
       ElMessage.error(`文章标题不能为空`)
       return false
     }
 
-    if (form.articleContent.trim() == '<p><br></p>') {
+    if (form.value.articleContent.trim() == '<p><br></p>') {
       ElMessage.error(`文章内容不能为空`)
       return false
     }
 
-    if (form.categoryNameList == null) {
+    if (form.value.categoryNameList == null) {
       ElMessage.error(`文章分类不能为空`)
       return false
     }
 
-    if (form.tagNameList.length == 0) {
+    if (form.value.tagNameList.length == 0) {
       ElMessage.error(`文章标签不能为空`)
       return false
     }
 
-    if (form.articleCover.trim() == '') {
+    if (form.value.articleCover.trim() == '') {
       ElMessage.error(`文章封面不能为空`)
       return false
     }
@@ -416,9 +437,9 @@
     if (!validateArticle()) {
       return
     }
-    form.articleContent = delCodeTrim(form.articleContent)
-    console.log(form)
-    const res = await ArticleService.updateArticles(form)
+    form.value.articleContent = delCodeTrim(form.value.articleContent)
+    form.value.authorId = info.id
+    const res = await ArticleService.addOrUpdateArticle(form.value)
     if (res.code === 200) {
       ElMessage.success(`${res.message} ${EmojiText[200]}`)
       goBack()
@@ -426,18 +447,18 @@
   }
 
   const saveArticleDraft = async () => {
-    if (form.articleTitle.trim() == '') {
+    if (form.value.articleTitle.trim() == '') {
       ElMessage.error(`文章标题不能为空`)
       return
     }
 
-    if (form.articleTitle.trim() == '') {
+    if (form.value.articleTitle.trim() == '') {
       ElMessage.error(`文章内容不能为空`)
       return
     }
-    form.articleContent = delCodeTrim(form.articleContent)
-    form.status = 3
-    const res = await ArticleService.addOrUpdateArticle(form)
+    form.value.articleContent = delCodeTrim(form.value.articleContent)
+    form.value.status = 3
+    const res = await ArticleService.addOrUpdateArticle(form.value)
     if (res.code === 200) {
       ElMessage.success(`${res.message} ${EmojiText[200]}`)
       goBack()
@@ -457,11 +478,11 @@
   const route = useRoute()
   // 详细文章
   const getArticleDetail = async () => {
-    form.id = Number(route.params && route.params.articleId)
-    if (form.id == 0) {
+    form.value.id = Number(route.params && route.params.articleId)
+    if (form.value.id == 0) {
       return
     }
-    const res = await ArticleService.getArticleById(form.id)
+    const res = await ArticleService.getArticleById(form.value.id)
     if (res.code === 200) {
       res.result.status = res.result.status == '3' ? '1' : res.result.status
 

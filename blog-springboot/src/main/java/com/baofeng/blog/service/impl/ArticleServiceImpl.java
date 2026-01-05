@@ -12,6 +12,7 @@ import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 import com.baofeng.blog.entity.*;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.enums.ArticleStatusEnum;
+import com.baofeng.blog.enums.ArticleTypeEnum;
 import com.baofeng.blog.mapper.*;
 import com.baofeng.blog.service.ArticleService;
 import com.baofeng.blog.common.util.UrlNormalizeUtil;
@@ -24,6 +25,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import org.slf4j.Logger;
@@ -31,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 
@@ -71,33 +72,6 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ApiResponse<Long> createArticle(CreateArticleRequest articleRequest){
-        Article article = new Article();
-        article.setTitle(articleRequest.title());
-        article.setContent(articleRequest.content());
-        article.setSummary(articleRequest.summary());
-        article.setLikes((long) 0 );
-        article.setViews((long) 0 );
-        Long authorId = userMapper.getIdByUsername(articleRequest.author());
-        if ( authorId == null) {
-            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
-        }
-        article.setAuthorId(authorId);
-        article.setStatus(ArticleStatusEnum.PUBLIC.getCode());
-        LocalDateTime now = LocalDateTime.now();
-        article.setCreatedAt(now);
-        int rowsInserted = articleMapper.insertArticle(article);
-
-        if(rowsInserted > 0){
-            //插入后自动回填文章id
-            Long articleId = article.getId();
-            return ApiResponse.success(articleId);
-        }else{
-            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"文章创建失败");
-        }
-    }
-
-    @Override
     public ApiResponse<String> deleteArticle(Long id){
         int rowsDeleted = articleMapper.deleteArticle(id);
         return rowsDeleted > 0 
@@ -126,24 +100,51 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ApiResponse<String> updateArticlesSelective(UpdateArticlesRequest updateArticlesRequest){
-        List<Long> ids = updateArticlesRequest.ids(); // 改成 ids
+    @Transactional(rollbackFor = Exception.class)
+    public ApiResponse<String> createOrupdateArticles(CreateOrupdateArticlesRequest request){
+        List<Long> ids = request.ids(); // 改成 ids
         if (ids == null || ids.isEmpty()) {
-            ids = Optional.ofNullable(updateArticlesRequest.id())
-                    .map(List::of)
-                    .orElseThrow(() ->
-                        new IllegalArgumentException("id 或 ids 不能为空")
-                    );
+            Long id = request.id();
+            if (id != null && id !=0 ) {
+                ids = List.of(id);
+            } else {
+                Article article = new Article();
+                article.setAuthorId(request.authorId());
+                article.setCoverImage(request.articleCover());
+                article.setTitle(request.articleTitle());
+                article.setContent(request.articleContent());
+                article.setSummary(request.articleAbstract());
+                article.setViews(0L);
+                article.setLikes(0L);
+                article.setCommentsCount(0L);
+                article.setIsTop(request.isTop() != null ? request.isTop() : false);
+                article.setIsFeatured(request.isFeatured() != null ? request.isFeatured() : false);
+                article.setType(request.type() != null ? request.type() : ArticleTypeEnum.ORIGINAL.getCode());
+                article.setIsDeleted(request.isDeleted() != null ? request.isDeleted() : false);
+                article.setStatus(request.status() != null ? request.status(): ArticleStatusEnum.PUBLIC.getCode());
+                article.setOriginUrl(request.originUrl());
+                articleMapper.insertArticle(article);
+                if (article.getId() == null) {
+                    logger.error("createOrupdateArticles: 文章创建失败");
+                    return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
+                }
+                ids = List.of(article.getId());
+            }
         }
         // 目录名列表
-        List<String> categoryNameList = updateArticlesRequest.categoryNameList();
+        List<String> categoryNameList = request.categoryNameList();
 
         // 标签名列表
-        List<String> tagNameList = updateArticlesRequest.tagNameList();
+        List<String> tagNameList = request.tagNameList();
 
         boolean allSuccess = true;
 
         for (Long articleId : ids) {
+            logger.info("开始处理 articleId: {}", articleId);
+            if (articleId == null) {
+                logger.warn("检测到空的 articleId，跳过该项");
+                continue; 
+            }
             // ---- 分类 ----
             List<String> existCategoryNameList = categoryMapper.getCategoryNamesByArticleId(articleId);
             Map<String, List<String>> categoryDiff = ListDiffUtil.diffList(existCategoryNameList, categoryNameList);
@@ -197,9 +198,9 @@ public class ArticleServiceImpl implements ArticleService {
             }
 
             // 图片-文章关系表
-            String articleCover = updateArticlesRequest.articleCover();
+            String articleCover = request.articleCover();
             articleCover = UrlNormalizeUtil.stripUrlPrefix(articleCover);
-            Long imageId = updateArticlesRequest.imageId();
+            Long imageId = request.imageId();
             if (imageId != null) {
                 UpdateImageIdEntity updateImageIdEntity = new UpdateImageIdEntity();
                 
@@ -222,25 +223,26 @@ public class ArticleServiceImpl implements ArticleService {
             // ---- 更新文章 ----
             Article article = Article.builder()
                 .id(articleId)
-                .title(updateArticlesRequest.articleTitle())
-                .content(updateArticlesRequest.articleContent())
+                .title(request.articleTitle())
+                .content(request.articleContent())
                 .coverImage(articleCover)
-                .isFeatured(updateArticlesRequest.isFeatured())
-                .isTop(updateArticlesRequest.isTop())
-                .originUrl(updateArticlesRequest.originUrl())
-                .type(updateArticlesRequest.type())
-                .isDeleted(updateArticlesRequest.isDeleted())
+                .isFeatured(request.isFeatured())
+                .isTop(request.isTop())
+                .originUrl(request.originUrl())
+                .type(request.type())
+                .isDeleted(request.isDeleted())
                 .build();
 
             int rowsUpdated = articleMapper.updateArticleSelective(article);
             if (rowsUpdated <= 0) {
+                logger.error("createOrupdateArticles: 文章更新失败");
                 allSuccess = false;
             }
         }
 
         return allSuccess 
             ? ApiResponse.success()
-            : ApiResponse.error(ResultCodeEnum.BAD_REQUEST);
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
     }
 
 

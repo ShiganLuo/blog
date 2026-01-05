@@ -54,13 +54,20 @@
         SELECT author_id FROM articles WHERE id = #{id}
     </select>
     
-
     <insert id="insertArticle" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO articles (title, content, summary, cover_image, author_id,
-        views, likes, comments_count, is_top,is_featured,is_deleted, type,status, origin_url, published_at, created_at, updated_at)
-        VALUES(#{title}, #{content}, #{summary}, #{coverImage}, #{authorId}, #{views}, 
-        #{likes}, #{commentsCount}, #{isTop}, #{isFeatured},#{isDeleted} #{type}, #{status}, #{originUrl}, #{publishedAt}, NOW(), NOW())
+        INSERT INTO articles (
+            title, content, summary, cover_image, author_id,
+            views, likes, comments_count, is_top, is_featured,
+            is_deleted, type, status, origin_url, published_at,
+            created_at, updated_at
+        ) VALUES (
+            #{title}, #{content}, #{summary}, #{coverImage}, #{authorId},
+            #{views}, #{likes}, #{commentsCount}, #{isTop}, #{isFeatured},
+            #{isDeleted}, #{type}, #{status}, #{originUrl}, #{publishedAt},
+            NOW(), NOW()
+        )
     </insert>
+
 
     <update id="updateArticle">
         UPDATE articles

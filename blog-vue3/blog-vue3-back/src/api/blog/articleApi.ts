@@ -18,18 +18,10 @@ export class ArticleService {
     })
   }
 
-  // 新增文章 修改文章
+  // 批量新增文章 修改文章
   static addOrUpdateArticle(data: any) {
     return request.post({
-      url: '/blog/article/admin',
-      data: data
-    })
-  }
-
-  // 选择更新批量文章
-  static updateArticles(data: any) {
-    return request.post({
-      url: '/admin/articles/updateArticlesSelective',
+      url: '/admin/articles/createOrupdateArticles',
       data: data
     })
   }

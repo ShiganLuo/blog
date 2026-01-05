@@ -24,14 +24,6 @@ public interface ArticleService {
     public ApiResponse<AdminArticlePageVO> getAdminArticleList(CreateAdminArticlePageRequest createAdminArticlePageRequest);
 
     /**
-     * 创建文章
-     * @param articleRequest
-     * @return
-     * @throws Exception
-     */
-    public ApiResponse<Long> createArticle(CreateArticleRequest articleRequest);
-
-    /**
      * 删除文章
      * @param id
      * @return
@@ -57,7 +49,7 @@ public interface ArticleService {
      * @param article
      * @return
      */
-    public ApiResponse<String> updateArticlesSelective(UpdateArticlesRequest updateArticlesRequest);
+    public ApiResponse<String> createOrupdateArticles(CreateOrupdateArticlesRequest request);
 
     /**
      * 更新文章置顶状态

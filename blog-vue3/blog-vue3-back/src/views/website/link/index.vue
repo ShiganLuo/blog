@@ -339,7 +339,7 @@
     if (!linkRef.value) return
     await linkRef.value.validate(async (valid) => {
       if (valid) {
-        const userId = getUserInfo.id
+        const userId = getUserInfo?.id
         if (!userId) {
           ElNotification.warning('请先登录后再申请友链')
           return

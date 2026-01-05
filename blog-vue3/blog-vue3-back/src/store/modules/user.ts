@@ -7,6 +7,7 @@ import { useWorktabStore } from './worktab'
 import { getSysStorage } from '@/utils/storage'
 import { MenuListType } from '@/types/menu'
 import { AvatarImga } from '@/utils/utils'
+import { _getLocalItem,_setLocalItem,_removeLocalItem } from '@/utils/storage'
 
 interface UserState {
   language: LanguageEnum // 语言
@@ -139,9 +140,11 @@ function saveStoreStorage<T>(newData: T) {
   const version = import.meta.env.VITE_VERSION
   initVersion(version)
   const vs = localStorage.getItem('version') || version
-  const storedData = JSON.parse(localStorage.getItem(`sys-v${vs}`) || '{}')
+  // const storedData = JSON.parse(localStorage.getItem(`sys-v${vs}`) || '{}')
+  const storedData = JSON.parse(_getLocalItem(`sys-v${vs}`) || '{}')
 
   // 合并新数据与现有数据
   const mergedData = { ...storedData, ...newData }
-  localStorage.setItem(`sys-v${vs}`, JSON.stringify(mergedData))
+  _setLocalItem(`sys-v${vs}`, JSON.stringify(mergedData))
+  // localStorage.setItem(`sys-v${vs}`, JSON.stringify(mergedData))
 }

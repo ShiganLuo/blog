@@ -5,7 +5,8 @@ import { saveAs } from 'file-saver'
 import errorCode from '@/utils/errorCode'
 import type { LoadingOptions } from 'element-plus'
 import { v4 as uuidv4 } from 'uuid'
-
+import { localStorageConfig } from '@/config'
+import { Base64 } from "js-base64";
 /**
  * 常用 JavaScript 函数片段
  * author chen tao
@@ -513,5 +514,4 @@ export function setFavicon(url: string) {
 
   link.href = finalUrl;
 }
-
 

@@ -23,15 +23,6 @@ public class AdminArticleController {
     
     /**
      * 发表文章
-     * @param articleRequest 文章
-     * @return 分页结果
-     */
-    @PostMapping("/create")
-    public ApiResponse<Long> createArticle(@RequestBody CreateArticleRequest articleRequest) {
-        return articleService.createArticle(articleRequest);
-    }
-    /**
-     * 发表文章
      * @param requestBody 文章id和作者id
      * @return 分页结果
      */
@@ -76,9 +67,9 @@ public class AdminArticleController {
      * @param article 文章
      * @return 分页结果
      */
-    @PostMapping("/updateArticlesSelective")
-    public ApiResponse<String> updateArticleSelective(@RequestBody UpdateArticlesRequest updateArticlesRequest){
-        return articleService.updateArticlesSelective(updateArticlesRequest);
+    @PostMapping("/createOrupdateArticles")
+    public ApiResponse<String> createOrupdateArticles(@RequestBody CreateOrupdateArticlesRequest request){
+        return articleService.createOrupdateArticles(request);
 
     }
 

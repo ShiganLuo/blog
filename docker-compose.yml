@@ -5,6 +5,7 @@ services:
     container_name: blog_mysql
     volumes:
       - ./blog-springboot/blog.sql:/docker-entrypoint-initdb.d/blog.sql
+      - ./database/mysql:/var/lib/mysql
     restart: always
     environment:
       MYSQL_DATABASE: blog

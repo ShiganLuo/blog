@@ -22,7 +22,8 @@ export function initState() {
 // 获取系统存储数据
 export function getSysStorage() {
   const version = getSysVersion() || import.meta.env.VITE_VERSION
-  return localStorage.getItem(`sys-v${version}`) as any
+  return _getLocalItem(`sys-v${version}`) as any
+  // return localStorage.getItem(`sys-v${version}`) as any
 }
 
 // 获取系统版本
