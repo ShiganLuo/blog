@@ -317,23 +317,23 @@
   }
 
   const handleAuthorAvatarSuccess = (response: any) => {
-    websiteConfigForm.value.authorAvatar = response.result
+    websiteConfigForm.value.authorAvatar = response.result.imageUrl
     
     ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleFaviconSuccess = (response: any) => {
-    websiteConfigForm.value.favicon = response.result
+    websiteConfigForm.value.favicon = response.result.imageUrl
     ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleFrontHeadBackgroundSuccess = (response: any) => {
-    websiteConfigForm.value.frontHeadBackground = response.result
+    websiteConfigForm.value.frontHeadBackground = response.result.imageUrl
     ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleLogoSuccess = (response: any) => {
-    websiteConfigForm.value.logo = response.result
+    websiteConfigForm.value.logo = response.result.imageUrl
     ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
