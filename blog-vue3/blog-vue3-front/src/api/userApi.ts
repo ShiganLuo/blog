@@ -1,6 +1,10 @@
 import request from "@/utils/http/index";
 import { type UserResult, type RefreshTokenResult } from "@/types/user"
 
+interface image {
+  imageId: string,
+  imageUrl: string
+}
 export class UserService {
   static login(data?: object) {
     return request.post({
@@ -50,7 +54,7 @@ export class UserService {
   }
 
   static imgUpload(data?: object) {
-    return request.post<string>({
+    return request.post<image>({
       url: "/front/images/uploadImage",
       data: data,
       headers: {

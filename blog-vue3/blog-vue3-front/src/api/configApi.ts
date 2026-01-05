@@ -2,7 +2,7 @@ import request from "@/utils/http/index";
 import { type ConfigDetail } from "@/types/config";
 interface FooterInfomation {
     websiteChineseName:string
-    icpFillingNumber:string,
+    icpFilingNumber:string,
     favicon:string
 }
 export class ConfigService {

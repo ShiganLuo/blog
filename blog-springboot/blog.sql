@@ -55,7 +55,7 @@ CREATE TABLE `articles` (
     `comments_count` INT DEFAULT 0 COMMENT '评论数量',
     `is_top` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否置顶',
     `is_featured` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否推荐',
-    `published_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '文章发布时间，第一次设为PUBLISHED状态',
+    `published_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '文章发布时间，第一次设为PUBLISHED状态',
     `type` INT NOT NULL DEFAULT 1 COMMENT '文章类型（1:原创,2:转载,3:翻译……）',
     `origin_url` VARCHAR(255) COMMENT '非原创文章原文链接',
     `is_deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标志',
@@ -87,7 +87,7 @@ DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '分类ID',
     `name` VARCHAR(100) NOT NULL UNIQUE COMMENT '分类名称',
-    `description` VARCHAR(250) NOT NULL COMMENT '分类描述',
+    `description` VARCHAR(250) DEFAULT NULL COMMENT '分类描述',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='目录表';

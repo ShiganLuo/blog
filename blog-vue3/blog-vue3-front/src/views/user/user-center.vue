@@ -142,7 +142,7 @@ const updateInfo = async () => {
         if (!infoForm.avatarList[0]?.id) {
           const img = await UserService.imgUpload(infoForm.avatarList[0]);
           if (img.code === 200) {
-            infoForm.avatar = img.result;
+            infoForm.avatar = img.result.imageUrl;
           }
         }
         const res = await UserService.updateUserInfo(infoForm) as ApiResponse;

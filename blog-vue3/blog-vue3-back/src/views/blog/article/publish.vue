@@ -329,7 +329,7 @@ const initialFormState: ArticleForm = {
   const saveCategory = () => {
     if (categoryName.value.trim() != '') {
       addCategory({
-        categoryName: categoryName
+        categoryName: categoryName.value
       })
       categoryName.value = ''
     }

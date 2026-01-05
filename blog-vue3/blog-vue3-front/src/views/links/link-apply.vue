@@ -94,7 +94,7 @@ const applyLinks = async () => {
         formData.append('file', file.raw);
         const img = await UserService.imgUpload(formData);
         if (img.code === 200 && img.result) {
-          const url = img.result;
+          const url = img.result.imageUrl;
           form.siteLogo = url;
         }
       }
