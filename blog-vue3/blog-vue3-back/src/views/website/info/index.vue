@@ -318,42 +318,43 @@
 
   const handleAuthorAvatarSuccess = (response: any) => {
     websiteConfigForm.value.authorAvatar = response.result
-    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+    
+    ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleFaviconSuccess = (response: any) => {
     websiteConfigForm.value.favicon = response.result
-    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+    ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleFrontHeadBackgroundSuccess = (response: any) => {
     websiteConfigForm.value.frontHeadBackground = response.result
-    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+    ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleLogoSuccess = (response: any) => {
     websiteConfigForm.value.logo = response.result
-    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+    ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleUserAvatarSuccess = (response: any) => {
     websiteConfigForm.value.userAvatar = response.result
-    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+    ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleTouristAvatarSuccess = (response: any) => {
     websiteConfigForm.value.touristAvatar = response.result
-    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+    ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleWeiXinSuccess = (response: any) => {
     websiteConfigForm.value.weiXinQRCode = response.result
-    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+    ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleAlipaySuccess = (response: any) => {
     websiteConfigForm.value.alipayQRCode = response.result
-    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+    ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   // 上传失败后的处理函数

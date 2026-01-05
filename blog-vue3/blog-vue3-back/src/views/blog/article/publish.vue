@@ -241,7 +241,7 @@
   let { accessToken } = userStore
 
   // 上传路径
-  const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/api/admin/image/uploadImage`
+  const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/admin/image/uploadImage`
  
   // 传递 token
   const uploadHeaders = { Authorization: accessToken }
