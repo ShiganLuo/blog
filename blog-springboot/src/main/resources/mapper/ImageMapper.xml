@@ -19,8 +19,8 @@
     </select>
 
     <!--根据图片名获取图片id-->
-    <select id="getImageIdByFileName">
-        SELECT id FROM images WHERE file_name = #{fileName}
+    <select id="getImageIdByFilePath" resultType="java.lang.Long">
+        SELECT id FROM images WHERE file_path = #{filePath}
     </select>
     
     <!--查看指定时间已经存在的图片数-->

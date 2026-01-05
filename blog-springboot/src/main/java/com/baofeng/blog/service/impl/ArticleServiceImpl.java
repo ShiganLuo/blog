@@ -198,9 +198,9 @@ public class ArticleServiceImpl implements ArticleService {
 
             // 图片-文章关系表
             String articleCover = updateArticlesRequest.articleCover();
-            if (articleCover != null) {
-                articleCover = UrlNormalizeUtil.stripUrlPrefix(articleCover);
-                Long imageId = imageMapper.getImageIdByFileName(articleCover);
+            articleCover = UrlNormalizeUtil.stripUrlPrefix(articleCover);
+            Long imageId = updateArticlesRequest.imageId();
+            if (imageId != null) {
                 UpdateImageIdEntity updateImageIdEntity = new UpdateImageIdEntity();
                 
                 updateImageIdEntity.setImageId(imageId);

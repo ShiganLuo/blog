@@ -13,6 +13,7 @@ import com.baofeng.blog.mapper.ImageMapper;
 import com.baofeng.blog.common.util.file.ImageFileUtil;
 import com.baofeng.blog.common.util.minio.MinioUtil;
 import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 import com.baofeng.blog.dto.front.FrontImageDTO.AlbumResponse;
 import com.baofeng.blog.entity.Image;
 import com.baofeng.blog.enums.ResultCodeEnum;
@@ -45,7 +46,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public ApiResponse<String> uploadImage(MultipartFile file) {
+    public ApiResponse<ImageResponse> uploadImage(MultipartFile file) {
 
         String uniqueFilename = ImageFileUtil.generateUniqueImageName(file);
         if (uniqueFilename == null) {
@@ -82,8 +83,11 @@ public class ImageServiceImpl implements ImageService {
             image.setMimeType(contentType);
             image.setCreatedBy(username);
             int rowsUpdated = imageMapper.insertImage(image);
+            ImageResponse imageResponse = new ImageResponse();
+            imageResponse.setImageUrl(fileUrl);
+            imageResponse.setImageId(image.getId());
             return rowsUpdated > 0
-                ? ApiResponse.success(fileUrl)
+                ? ApiResponse.success(imageResponse)
                 : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
 
         } catch (Exception e) {

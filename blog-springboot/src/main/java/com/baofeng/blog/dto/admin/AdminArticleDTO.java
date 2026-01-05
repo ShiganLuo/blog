@@ -94,6 +94,7 @@ public class AdminArticleDTO {
     public static record UpdateArticlesRequest(
         @NotEmpty List<Long> ids,
         Long id,
+        Long imageId,
         String articleTitle,
         String articleContent,
         String articleAbstract,

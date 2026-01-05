@@ -3,6 +3,7 @@ package com.baofeng.blog.controller.front;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontImageDTO.AlbumResponse;
 import com.baofeng.blog.service.ImageService;
+import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +32,7 @@ public class FrontImageController {
     }
 
     @PostMapping("/uploadImage")
-    public ApiResponse<String> uploadImage(MultipartFile file) {
+    public ApiResponse<ImageResponse> uploadImage(MultipartFile file) {
         return imageService.uploadImage(file);
     }
     

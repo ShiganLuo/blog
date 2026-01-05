@@ -338,22 +338,22 @@
   }
 
   const handleUserAvatarSuccess = (response: any) => {
-    websiteConfigForm.value.userAvatar = response.result
+    websiteConfigForm.value.userAvatar = response.result.imageUrl
     ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleTouristAvatarSuccess = (response: any) => {
-    websiteConfigForm.value.touristAvatar = response.result
+    websiteConfigForm.value.touristAvatar = response.result.imageUrl
     ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleWeiXinSuccess = (response: any) => {
-    websiteConfigForm.value.weiXinQRCode = response.result
+    websiteConfigForm.value.weiXinQRCode = response.result.imageUrl
     ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 
   const handleAlipaySuccess = (response: any) => {
-    websiteConfigForm.value.alipayQRCode = response.result
+    websiteConfigForm.value.alipayQRCode = response.result.imageUrl
     ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 

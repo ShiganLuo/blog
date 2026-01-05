@@ -1,12 +1,14 @@
 package com.baofeng.blog.controller.admin;
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.service.ImageService;
+import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/admin/image")
@@ -21,7 +23,7 @@ public class AdminImageController {
     }
 
     @PostMapping("/uploadImage")
-    public ApiResponse<String> uploadImage(@RequestPart MultipartFile file) {
+    public ApiResponse<ImageResponse> uploadImage(@RequestPart MultipartFile file) {
         return imageService.uploadImage(file);
     }
 }

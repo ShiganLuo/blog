@@ -17,7 +17,6 @@ import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkItem;
 import com.baofeng.blog.dto.front.FrontFriendLinkDTO.FrontFriendLinkPageResponse;
 import com.baofeng.blog.dto.common.FriendLinkDTO.AddFriendLinkRequest;
 import com.baofeng.blog.entity.FriendLink;
-import com.baofeng.blog.entity.User;
 import com.baofeng.blog.enums.FriendLinkStatusEnum;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.service.FriendLinkService;

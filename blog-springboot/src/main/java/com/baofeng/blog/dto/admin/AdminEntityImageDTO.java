@@ -12,4 +12,5 @@ public class AdminEntityImageDTO {
         private String usageType;
         private Integer sortOrder;
     }
+
 }

@@ -258,7 +258,7 @@
 
   // 上传成功后的处理函数
   const onSuccess = (response: any) => {
-    form.siteLogo = response.result
+    form.siteLogo = response.result.imageUrl
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 

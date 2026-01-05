@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontImageDTO.AlbumResponse;
+import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 
 public interface ImageService {
 
@@ -19,6 +20,6 @@ public interface ImageService {
      * 上传图片，返回url
      * @return
      */
-    public ApiResponse<String> uploadImage(MultipartFile file);
+    public ApiResponse<ImageResponse> uploadImage(MultipartFile file);
     
 }

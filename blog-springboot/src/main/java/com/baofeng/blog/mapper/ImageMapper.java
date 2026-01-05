@@ -61,5 +61,5 @@ public interface ImageMapper {
      * @param fileName
      * @return
      */
-    Long getImageIdByFileName(String fileName);
+    Long getImageIdByFilePath(String filePath);
 }

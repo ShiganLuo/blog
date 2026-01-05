@@ -65,7 +65,7 @@
                 placement="bottom-start"
                 width="460"
                 trigger="click"
-                v-if="!form.categoryNameList"
+                v-if="form.categoryNameList.length < 3"
               >
                 <div class="popover-title">分类</div>
                 <el-autocomplete
@@ -82,14 +82,15 @@
                   </template>
                 </el-autocomplete>
                 <div class="popover-container">
-                  <div
+                  <div style="margin-bottom: 1rem">添加分类</div>
+                  <el-tag
                     v-for="item of categorys"
                     :key="item.id"
                     class="category-item"
                     @click="addCategory(item)"
                   >
                     {{ item.categoryName }}
-                  </div>
+                  </el-tag>
                 </div>
                 <template #reference>
                   <el-button type="success" plain> 添加分类 </el-button>
@@ -204,6 +205,7 @@
   // 定义初始表单状态
   const initialFormState = {
     id: 0,
+    imageId: null,
     articleTitle: '',
     articleContent: '',
     articleAbstract: '',
@@ -256,7 +258,8 @@
 
   // 上传成功后的处理函数
   const onSuccess = (response: any) => {
-    form.articleCover = response.result
+    form.articleCover = response.result.imageUrl
+    form.imageId = response.result.imageId
     ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
   }
 
@@ -414,6 +417,7 @@
       return
     }
     form.articleContent = delCodeTrim(form.articleContent)
+    console.log(form)
     const res = await ArticleService.updateArticles(form)
     if (res.code === 200) {
       ElMessage.success(`${res.message} ${EmojiText[200]}`)
