@@ -484,9 +484,11 @@ const initialFormState: ArticleForm = {
     }
     const res = await ArticleService.getArticleById(form.value.id)
     if (res.code === 200) {
+      console.log(res.result)
       res.result.status = res.result.status == '3' ? '1' : res.result.status
 
-      Object.assign(form, res.result)
+      Object.assign(form.value, res.result)
+      console.log(form.value)
     }
   }
 
