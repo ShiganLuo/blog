@@ -131,7 +131,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         detail.setAli_pay(blogSetting.getAlipayQrCode());
         detail.setArticleCount(articleCount);
         detail.setWe_chat_pay(blogSetting.getWechatQrCode());
-        detail.setView_time(0L);
+        detail.setView_time(blogSetting.getVisitCount());
         detail.setCreatedAt(blogSetting.getCreatedAt());
         detail.setTagCount(tagCount);
         detail.setCategoryCount(categoryCount);

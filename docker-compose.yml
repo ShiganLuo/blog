@@ -29,8 +29,8 @@ services:
     container_name: blog_minio
     restart: always
     ports:
-      - "9002:9000"       # API 端口（后端上传用）
-      - "9003:9001"       # 管理界面端口（浏览器访问用）
+      - "9007:9000"       # API 端口（后端上传用）
+      - "9008:9001"       # 管理界面端口（浏览器访问用）
     environment:
       MINIO_ROOT_USER: admin              # 管理员账号
       MINIO_ROOT_PASSWORD: R4K90L43ChhBNfw9bKGG    # 管理员密码（建议修改）
