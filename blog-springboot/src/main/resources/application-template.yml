@@ -86,3 +86,5 @@ minio:
   accessKey: xxxxx            # 账号
   secretKey: xxxxx            # 密码
   bucket: my-bucket                 # 默认存储桶
+file:
+  public-base-url: xxxxxx

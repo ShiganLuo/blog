@@ -90,7 +90,7 @@ const submitReply = () => {
               'thumbs',
               '!mr-[1rem]',
               'iconfont',
-              'icon-icon1',
+              'icon-icon',
               comment.is_like ? 'like-active' : '',
             ]"
             @click="handleLike"
@@ -146,7 +146,7 @@ const submitReply = () => {
 .active {
   color: var(--primary);
 }
-.icon-icon1 {
+.icon-icon {
   cursor: pointer;
 }
 .thumbs {

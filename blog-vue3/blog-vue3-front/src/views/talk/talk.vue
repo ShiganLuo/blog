@@ -265,7 +265,7 @@ onBeforeUnmount(() => {
                       <i
                         :class="[
                           'iconfont',
-                          'icon-icon1',
+                          'icon-icon',
                           '!ml-[10px]',
                           talk.is_like ? 'is-like' : '',
                         ]"

@@ -166,7 +166,7 @@ defineExpose({ getComment });
 .active {
   color: var(--primary);
 }
-.icon-icon1 {
+.icon-icon {
   cursor: pointer;
 }
 .thumbs {

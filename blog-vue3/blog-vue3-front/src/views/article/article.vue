@@ -249,7 +249,7 @@ watch(
             </div>
           </div>
           <div :class="['like', isLike ? 'is-like' : '']" @click="like">
-            <i class="iconfont icon-icon1 mr-5px"></i>
+            <i class="iconfont icon-icon mr-5px"></i>
             <GsapCount
               :class="[isLike ? 'is-like' : '']"
               v-if="articleForm.thumbsUpTimes - 0 < 1000"
@@ -570,7 +570,7 @@ watch(
   justify-content: center;
   align-items: center;
 
-  .icon-icon1 {
+  .icon-icon {
     font-size: 1.8rem;
     transition: all 0.3s;
     &:hover {
@@ -583,7 +583,7 @@ watch(
   font-size: 1.2rem;
   font-weight: 600;
   color: var(--primary);
-  .icon-icon1 {
+  .icon-icon {
     font-size: 1.8rem;
     color: var(--primary);
   }

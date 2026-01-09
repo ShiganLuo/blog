@@ -195,7 +195,7 @@ watch(
                   </span>
                   <span class="article-meta__separator"></span>
                   <span class="to_pointer">
-                    <i class="iconfont icon-icon1"></i>
+                    <i class="iconfont icon-icon"></i>
                     <GsapCount
                       class="meta-value"
                       v-if="(item.thumbsUpTimes ?? 0) - 0 < 1000"
@@ -306,7 +306,7 @@ watch(
       font-size: 1.2rem;
     }
 
-    .icon-icon1 {
+    .icon-icon {
       font-size: 1.2rem;
     }
 

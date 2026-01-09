@@ -149,7 +149,7 @@ watch(
         </span>
         <span class="meta-separator"></span>
         <span class="to_pointer">
-          <i class="iconfont icon-icon1"></i>
+          <i class="iconfont icon-icon"></i>
           <span class="meta-label">点赞数</span>
           <GsapCount
             class="meta-value"
