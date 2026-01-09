@@ -5,3 +5,4 @@ publish
 minio
 database
 docker-compose.yml
+redis.conf
