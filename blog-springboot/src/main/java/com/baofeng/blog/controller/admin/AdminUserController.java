@@ -3,6 +3,7 @@ package com.baofeng.blog.controller.admin;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminLoginResponseDTO;
 import com.baofeng.blog.dto.admin.AdminUserAuthDTO.*;
+import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
 import com.baofeng.blog.entity.User;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.validation.annotation.Validated;
 
 @RestController
@@ -119,6 +121,11 @@ public class AdminUserController {
     @PostMapping("/captchaLogin")
     public ApiResponse<AdminLoginResponseDTO> captchaLogin(@RequestBody @Validated CaptchaAuthLonginRequest captchaAuthLonginRequest) {
         return utilService.captechaLogin(captchaAuthLonginRequest);
+    }
+
+    @PostMapping("/updateUserAvatar")
+    public ApiResponse<ImageResponse> updateUserAvatar(@RequestParam("userId") Long userId, @RequestParam("avatarFile") MultipartFile avatarFile) {
+        return userService.updateUserAvatar(userId, avatarFile);
     }
 
 } 

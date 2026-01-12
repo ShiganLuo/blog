@@ -343,7 +343,8 @@
     dialogVisible.value = false
     const blob = base64ToBlob(imageData)
     const data = new FormData()
-    data.append('avatarfile', blob, 'avatar')
+    data.append('avatarFile', blob)
+    data.append('userId', String(userInfo.value.id))
     const res = await UserService.editProfileAvatar(data)
     if (res.code === 200) {
       userStore.setAvatar(res.result.imgUrl)

@@ -149,7 +149,7 @@
                   </div>
                 </div>
                 <ul class="user-menu">
-                  <li @click="goPage('/user/user')">
+                  <li @click="goPage('/user/userCenter')">
                     <i class="menu-icon iconfont-sys">&#xe734;</i>
                     <span class="menu-txt">{{ $t('topBar.user.userCenter') }}</span>
                   </li>

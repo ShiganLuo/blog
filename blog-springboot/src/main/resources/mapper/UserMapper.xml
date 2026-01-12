@@ -126,6 +126,12 @@
         WHERE username = #{username}
     </update>
 
+    <!--更新用户头像-->
+    <update id="updateAvatarUrl">
+        UPDATE users
+            SET avatar_url = #{avatarUrl}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
     <!-- 动态更新 -->
     <update id="updateUserSelective">
         UPDATE users

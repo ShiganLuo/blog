@@ -112,7 +112,7 @@ export class UserService {
   // 修改个人信息头像
   static editProfileAvatar(data: object) {
     return request.post<EditProfileAvatarResult>({
-      url: '/system/user/profile/avatar',
+      url: '/admin/users/updateUserAvatar',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       data
     })

@@ -161,6 +161,7 @@
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="userName" column="user_name"/>
+        <result property="userAvatar" column="user_avatar"/>
         <result property="forId" column="for_id"/>
         <result property="commentContent" column="content"/>
         <result property="replyUserId" column="reply_user_id"/>
@@ -177,6 +178,7 @@
             c.id, 
             c.user_id,
             u.username AS user_name,
+            u.avatar_url AS user_avatar,
             c.for_id,
             c.content,
             c.reply_user_id,

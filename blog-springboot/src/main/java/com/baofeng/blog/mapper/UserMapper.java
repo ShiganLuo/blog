@@ -121,4 +121,12 @@ public interface UserMapper {
      * @return
      */
     int deleteUserById(Long userId);
+
+    /**
+     * 更新用户头像
+     * @param id
+     * @param avatarUrl
+     * @return
+     */
+    int updateAvatarUrl(@Param("id") Long id, @Param("avatarUrl") String avatarUrl);
 } 

@@ -35,6 +35,7 @@ public class AdminCommentDTO {
         private Long id;
         private Long userId;
         private String userName;
+        private String userAvatar;
         private Long forId;
         private String CommentContent;
         private Long replyUserId;

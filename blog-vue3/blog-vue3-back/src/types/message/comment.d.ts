@@ -4,6 +4,7 @@ export interface CommentResult {
   id: string
   userId: string
   userName: string
+  userAvatar: string
   forId: string
   commentContent: string
   replyUserId: string

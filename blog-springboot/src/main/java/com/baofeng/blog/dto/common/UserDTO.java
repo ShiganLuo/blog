@@ -2,6 +2,8 @@ package com.baofeng.blog.dto.common;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.baofeng.blog.common.annotation.MinioFile;
+
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +25,7 @@ public class UserDTO {
         private String userName;
         private String email;
         private String password;
+        @MinioFile
         private String avatarUrl;
         private String bio;
         private String nickName;

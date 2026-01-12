@@ -37,9 +37,9 @@
     >
       <template #default>
         <el-table-column type="selection" />
-        <el-table-column prop="avatar" label="头像" align="center">
+        <el-table-column prop="userAvatar" label="头像" align="center">
           <template #default="scope">
-            <img :src="AvatarImga(scope.row.avatar)" width="40" height="40" />
+            <img :src="AvatarImga(scope.row.userAvatar)" width="40" height="40" />
           </template>
         </el-table-column>
         <el-table-column prop="userName" label="评论人" align="center" />
@@ -113,7 +113,7 @@
     size: 10,
     keywords: '',
     status: 0,
-    type: ['comment']
+    type: ['comment','post']
   })
 
   /** 查询评论管理列表 */

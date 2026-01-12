@@ -101,7 +101,7 @@
     { name: '登录', path: '/login' },
     { name: '注册', path: '/register' },
     { name: '忘记密码', path: '/forget-password' },
-    { name: '个人中心', path: '/user/user' }
+    { name: '个人中心', path: '/user/userCenter' }
   ]
 
   const handleAppClick = (path: string) => {

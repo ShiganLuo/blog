@@ -117,7 +117,7 @@ const staticRoutes: AppRouteRecordRaw[] = [
     meta: { title: 'menus.user.title' },
     children: [
       {
-        path: RoutesAlias.UserCenter,
+        path: 'userCenter',
         name: 'UserCenter',
         component: () => import('@views/user/user.vue'),
         meta: { title: 'menus.user.userCenter' }

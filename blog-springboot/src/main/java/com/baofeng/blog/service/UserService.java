@@ -1,8 +1,11 @@
 package com.baofeng.blog.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminLoginResponseDTO;
 import com.baofeng.blog.dto.admin.AdminUserAuthDTO.*;
+import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
 import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
@@ -89,6 +92,12 @@ public interface UserService {
      */
     public ApiResponse<String> deleteUser(Long userId);
 
-    
+    /**
+     * 更新用户头像
+     * @param id
+     * @param avatarUrl
+     * @return
+     */
+    public ApiResponse<ImageResponse> updateUserAvatar(Long userId, MultipartFile avatarFile);
 
 } 

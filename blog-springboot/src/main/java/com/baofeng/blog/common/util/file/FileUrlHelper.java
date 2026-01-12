@@ -36,6 +36,7 @@ public class FileUrlHelper {
      * - path        -> 原样返回
      * - 完整 URL    -> 剥离前缀，返回 path
      */
+    // 两段式上传和一段式上传问题没解决
     public String normalizePath(String value) {
         if (!StringUtils.hasText(value)) {
             return null;

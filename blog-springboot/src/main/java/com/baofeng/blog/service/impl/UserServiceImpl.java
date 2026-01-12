@@ -6,23 +6,31 @@ import com.baofeng.blog.mapper.RoleMapper;
 import com.baofeng.blog.mapper.PermissionMapper;
 import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.common.util.JwtTokenProviderUtil;
+import com.baofeng.blog.common.util.file.ImageFileUtil;
 import com.baofeng.blog.config.JwtPropertiesConfig;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminLoginResponseDTO;
 import com.baofeng.blog.dto.admin.AdminUserAuthDTO.*;
+import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
 import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
 import com.baofeng.blog.entity.User;
+import com.baofeng.blog.entity.Image;
 import com.baofeng.blog.entity.Role;
 import com.baofeng.blog.enums.GenderEnum;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.enums.RoleTypeEnum;
 import com.baofeng.blog.enums.UserStatusEnum;
+import com.baofeng.blog.common.util.minio.MinioUtil;
+import com.baofeng.blog.mapper.ImageMapper;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +50,8 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProviderUtil jwtTokenProvider;
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
+    private final MinioUtil minioUtil;
+    private final ImageMapper imageMapper;
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     public UserServiceImpl(UserMapper userMapper,
@@ -49,7 +59,10 @@ public class UserServiceImpl implements UserService {
                             PermissionMapper permissionMapper,
                             BCryptPasswordEncoder passwordEncoder,
                             JwtTokenProviderUtil jwtTokenProvider, 
-                            JwtPropertiesConfig jwtProperties) {
+                            JwtPropertiesConfig jwtProperties,
+                            MinioUtil minioUtil,
+                            ImageMapper imageMapper
+                            ) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.permissionMapper = permissionMapper;
@@ -57,6 +70,8 @@ public class UserServiceImpl implements UserService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.accessTokenExpiration = jwtProperties.getAccessTokenExpiration();
         this.refreshTokenExpiration = jwtProperties.getRefreshTokenExpiration();
+        this.minioUtil = minioUtil;
+        this.imageMapper = imageMapper;
 
     }
 
@@ -387,10 +402,64 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
     public ApiResponse<String> deleteUser(Long userId) {
         int rowsDeleted = userMapper.deleteUserById(userId);
         return rowsDeleted > 0 
             ?  ApiResponse.success("用户删除成功")
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户删除失败");
+    }
+
+    @Override
+    public ApiResponse<ImageResponse> updateUserAvatar(Long userId, MultipartFile avatarFile) {
+        if (userId== null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户id不能为空");
+        }
+        String uniqueFilename = ImageFileUtil.generateUniqueImageName(avatarFile);
+        if (uniqueFilename == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"图片为空或图片类型错误, 目前仅支持jpg、png、gif、bmp");
+        }
+        ImageResponse imageResponse = new ImageResponse();
+        try {
+            minioUtil.uploadFile(
+                    uniqueFilename,
+                    avatarFile.getInputStream(),
+                    avatarFile.getSize(),
+                    avatarFile.getContentType()
+            );
+
+            Image image = new Image();
+            long bytes = avatarFile.getSize();
+            long kilobytes = bytes / 1024;
+            String contentType = avatarFile.getContentType();
+            String username = null;
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null) {
+                username = authentication.getName();
+            }
+            String filePath = minioUtil.getPermanentRelativeFileUrl(uniqueFilename);
+            String fileUrl = minioUtil.getPermanentFileUrl(uniqueFilename);
+            image.setFilePath(filePath);
+            image.setFileName(uniqueFilename);
+            image.setFileSize(kilobytes);
+            image.setMimeType(contentType);
+            image.setCreatedBy(username);
+            int rowsUpdated = imageMapper.insertImage(image);
+            
+            imageResponse.setImageUrl(fileUrl);
+            imageResponse.setImageId(image.getId());
+            if (rowsUpdated == 0) {
+                return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "文件存储失败");
+            }
+
+        } catch (Exception e) {
+            logger.warn("minio存储文件失败" + e.getMessage());
+            return ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "文件存储失败");
+        }
+        int rowUpdated = userMapper.updateAvatarUrl(userId, minioUtil.getPermanentRelativeFileUrl(uniqueFilename));
+        return rowUpdated > 0
+            ? ApiResponse.success(imageResponse)
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户头像更新失败");
     }
 } 
