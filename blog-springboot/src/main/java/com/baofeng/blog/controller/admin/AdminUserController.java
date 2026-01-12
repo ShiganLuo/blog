@@ -56,28 +56,6 @@ public class AdminUserController {
     }
 
 
-
-    /**
-     * 测试
-     * 此接口要求请求携带有效的 JWT Token，JwtAuthenticationFilter 已经在请求处理前解析并设置好了认证信息
-     * 当请求成功认证后，就可以通过 SecurityContextHolder 获取当前用户的用户名，再通过业务层查询数据库返回数据。
-     */
-    @GetMapping("/me")
-    public ApiResponse<User> getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()) {
-            return ApiResponse.error(401, "未认证");
-        }
-        // 获取认证后的用户名
-        String username = auth.getName();
-        // 根据用户名查询数据库返回用户信息
-        User user = userService.getUserByUsername(username);
-        if (user == null) {
-            return ApiResponse.error(404, "未找到用户信息");
-        }
-        return ApiResponse.success(user);
-    }
-
     @PostMapping("/updateUserRoles")
     public ApiResponse<String> updateUserRole(@RequestBody @Validated UpdateUserRoleRequest updaUserRoleRequest) {
         return userService.updateUserRole(updaUserRoleRequest);

@@ -162,7 +162,7 @@ router.beforeEach(async (to, from, next) => {
   setSystemTheme(to)
   // 检查登录状态，如果未登录则跳转到登录页
   const userStore = useUserStore()
-  if (!userStore.isLogin && to.path !== '/login' && !to.meta.noLogin) {
+  if (!userStore.accessToken && to.path !== '/login' && !to.meta.noLogin) {
     userStore.logOut()
     return next('/login')
   }
