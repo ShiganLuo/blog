@@ -107,7 +107,7 @@ public class MinioUtil {
      * 获取永久访问 URL（bucket 必须是 public）
      */
     public String getPermanentRelativeFileUrl(String objectName) {
-        return String.format("%s/%s", bucket, objectName);
+        return String.format("/%s/%s", bucket, objectName);
     }
 
     public String getPermanentFileUrl(String objectName) {

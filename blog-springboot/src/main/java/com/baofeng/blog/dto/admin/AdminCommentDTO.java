@@ -4,6 +4,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.baofeng.blog.common.annotation.MinioFile;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -35,6 +37,7 @@ public class AdminCommentDTO {
         private Long id;
         private Long userId;
         private String userName;
+        @MinioFile
         private String userAvatar;
         private Long forId;
         private String CommentContent;

@@ -25,7 +25,8 @@ export interface LoginUserResult {
 
 // 修改头像返回数据结构
 export interface EditProfileAvatarResult {
-  imgUrl: string
+  imageUrl: string
+  imageId: string
 }
 
 export interface UserResult {

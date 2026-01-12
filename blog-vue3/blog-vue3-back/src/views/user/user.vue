@@ -347,7 +347,7 @@
     data.append('userId', String(userInfo.value.id))
     const res = await UserService.editProfileAvatar(data)
     if (res.code === 200) {
-      userStore.setAvatar(res.result.imgUrl)
+      userStore.setAvatar(res.result.imageUrl)
       avatarUrl.value = userStore.info.avatar || defaultAvatar
       ElMessage.success(res.message)
     }
