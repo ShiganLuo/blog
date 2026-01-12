@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/link")
-@Validated
 public class AdminFriendLinkController {
 
     private FriendLinkService friendLinkService;
@@ -27,7 +26,7 @@ public class AdminFriendLinkController {
     }
 
     @GetMapping("/getAllFriendLink")
-    public ApiResponse<AdminFriendLinkPageResponse> getAllFriendLink(AdminFriendLinkRequest adminFriendLinkRequest) {
+    public ApiResponse<AdminFriendLinkPageResponse> getAllFriendLink(@RequestBody @Validated AdminFriendLinkRequest adminFriendLinkRequest) {
         return friendLinkService.getAllFriendLinkAdmin(adminFriendLinkRequest);
     }
 
@@ -37,17 +36,17 @@ public class AdminFriendLinkController {
     }
     
     @PostMapping("/addOrUpdateFriendLink")
-    public ApiResponse<String> addOrUpdateFriendLink(@RequestBody AddFriendLinkRequest addFriendLink) {
+    public ApiResponse<String> addOrUpdateFriendLink(@RequestBody @Validated AddFriendLinkRequest addFriendLink) {
         return friendLinkService.addOrUpdateFriendLink(addFriendLink);
     }
 
     @PostMapping("/updateFriendLinkStatus")
-    public ApiResponse<String> updateFriendLinkStatus(@RequestBody UpdateFriendLinkStatusRequest updateFriendLinkStatusRequest) {
+    public ApiResponse<String> updateFriendLinkStatus(@RequestBody @Validated UpdateFriendLinkStatusRequest updateFriendLinkStatusRequest) {
         return friendLinkService.updateFriendLinkStatus(updateFriendLinkStatusRequest);
     }
 
     @PostMapping("/updateFriendLinkIsVisible")
-    public ApiResponse<String> updateFriendLinkIsVisible(@RequestBody UpdateFriendLinkIsVisibleRequest updateFriendLinkIsVisibleRequest) {
+    public ApiResponse<String> updateFriendLinkIsVisible(@RequestBody @Validated UpdateFriendLinkIsVisibleRequest updateFriendLinkIsVisibleRequest) {
         return friendLinkService.updateFriendLinkIsVisible(updateFriendLinkIsVisibleRequest);
     }
 }

@@ -1,16 +1,16 @@
 package com.baofeng.blog.mapper;
 
+import com.baofeng.blog.dto.front.FrontCommentDTO.*;
+import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentResult;
+import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentPageRequest;
+import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentStatusUpateRequest;
+import com.baofeng.blog.entity.Comment;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-
-import com.baofeng.blog.dto.front.FrontCommentDTO.*;
-import com.baofeng.blog.entity.Comment;
-
 
 @Mapper
 public interface CommentMapper {
@@ -38,11 +38,19 @@ public interface CommentMapper {
     List<NotifyResponse> getNotifyPage(NotifyPageRequest notifyPageRequest);
 
     /**
-     * 获取评论分页信息
+     * 获取前台论分页信息
      * @param commentPageRequest
      * @return
      */
-    List<ArticleCommentResponse> getCommentsByCondition(CommentPageRequest commentPageRequest);
+    List<FrontArticleCommentResponse> getCommentsByCondition(FrontCommentPageRequest request);
+
+
+    /**
+     * 获取后台评论分页信息
+     * @param request
+     * @return
+     */
+    List<AdminCommentResult> getAdminCommentsByCondition(AdminCommentPageRequest request);
 
     /**
      * 根据id删除评论
@@ -90,7 +98,7 @@ public interface CommentMapper {
      * @param commentId
      * @return
      */
-    List<CommentResponse> selectChildCommentsById(Long id);
+    List<FrontCommentResponse> selectChildCommentsById(Long id);
 
     /**
      * 批量删除评论
@@ -106,4 +114,11 @@ public interface CommentMapper {
      */
     long selectCommentCountWhenSpecifiedTime(@Param("createdAt") LocalDateTime createdAt);
 
+    /**
+     * 批量更新评论状态
+     * @param ids
+     * @param status
+     * @return
+     */
+    int updateCommentsStatusByIds(AdminCommentStatusUpateRequest request);
 } 

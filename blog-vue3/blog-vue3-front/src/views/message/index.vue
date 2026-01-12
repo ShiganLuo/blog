@@ -20,13 +20,13 @@ interface MessageForm {
   id: number | string;
   content: string;
   type: string;
-  from_id: number | string;
+  userId: number | string;
   color: string;
   font_size: number;
   font_weight: number;
   bg_color: string;
   bg_url: string;
-  nick_name: string;
+  nickName: string;
   avatar: string;
   isNew: boolean;
 }
@@ -86,13 +86,13 @@ const userAddMessage = (): void => {
       id: 0,
       content: message.value,
       type: "message",
-      from_id: getUserInfo.value.id || 0,
+      userId: getUserInfo.value.id || 0,
       color: randomFontColor(),
       font_size: randomFontSize(),
       font_weight: randomFontWeight(),
       bg_color: "transparent",
       bg_url: "",
-      nick_name: getUserInfo.value.nick_name || "游客",
+      nickName: getUserInfo.value.nick_name || "游客",
       avatar: getUserInfo.value.avatar || "游客",
       isNew: true,
     };

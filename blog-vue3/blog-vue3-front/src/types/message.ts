@@ -1,15 +1,15 @@
 export interface MessageItem {
   id: number;
   avatar: string;
-  nick_name: string;
-  user_id: number;
+  nickName: string;
+  userId: number;
   content: string;
   color: string;
   font_size: number;
   font_weight: number;
   createdAt: string;
-  is_like: boolean;
-  thumbs_up: number;
+  isLiked: boolean;
+  likes: number;
 }
 
 export type MessageItemListResponse = {

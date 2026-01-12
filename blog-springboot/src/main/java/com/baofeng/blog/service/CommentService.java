@@ -2,6 +2,9 @@ package com.baofeng.blog.service;
 
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.front.FrontCommentDTO.*;
+import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentPageResponse;
+import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentPageRequest;
+import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentStatusUpateRequest;
 import com.baofeng.blog.entity.Comment;
 
 import java.util.List;
@@ -30,11 +33,17 @@ public interface CommentService {
     public ApiResponse<NotifyPageResponse> getNotifyPage(NotifyPageRequest request);
 
     /**
-     * 获取评论分页信息
+     * 获取前台评论分页信息
      * @param commentPageRequest
      * @return
      */
-    public ApiResponse<CommentPageResponse> getCommentPage(CommentPageRequest commentPageRequest);
+    public ApiResponse<FrontCommentPageResponse> getFrontCommentPage(FrontCommentPageRequest request);
+
+    /**
+     * 获取后台评论分页信息
+     * @return
+     */
+    public ApiResponse<AdminCommentPageResponse> getAdminCommentPage(AdminCommentPageRequest request);
 
     /**
      * 根据id删除评论
@@ -55,4 +64,11 @@ public interface CommentService {
      * @return
      */
     public ApiResponse<MessagePageResponse> getAllMessage(MessageTalkPageRequest request);
+
+    /**
+     * 批量更新评论状态
+     * @param request
+     * @return
+     */
+    public ApiResponse<String> updateCommentsStatusByIds(AdminCommentStatusUpateRequest request);
 } 

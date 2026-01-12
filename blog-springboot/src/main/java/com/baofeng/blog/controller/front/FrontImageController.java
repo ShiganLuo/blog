@@ -7,12 +7,10 @@ import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/front/images")
-@Validated
 public class FrontImageController {
     private final ImageService imageService;
 

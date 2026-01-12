@@ -6,11 +6,9 @@ import com.baofeng.blog.dto.front.FrontBlogSettinDTO.SomeFrontInformation;
 import com.baofeng.blog.service.BlogSettingService;
 
 import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/front/settings")
-@Validated
 public class FrontBlogSettingController {
     private final BlogSettingService blogSettingService;
 

@@ -36,7 +36,7 @@ const param = reactive({
   current: 1,
   size: 5,
   type: "talk",
-  user_id: userStore.getUserInfo.id,
+  userId: userStore.getUserInfo.id,
 });
 
 // 点赞状态锁
@@ -91,11 +91,11 @@ const like = async (item: TalkItem, index: number) => {
   if (likePending.value) return;
   likePending.value = true;
 
-  if (item.is_like) {
-    const res = await LikeService.cancelLike({ for_id: item.id, type: 2, user_id: userStore.getUserInfo.id });
+  if (item.isLiked) {
+    const res = await LikeService.cancelLike({ for_id: item.id, type: 2, userId: userStore.getUserInfo.id });
     if (res.code === 200) {
-      talkList.value[index].is_like = false;
-      talkList.value[index].like_times--;
+      talkList.value[index].isLiked = false;
+      talkList.value[index].likes--;
       likePending.value = false;
       ElNotification({
         offset: 60,
@@ -104,10 +104,10 @@ const like = async (item: TalkItem, index: number) => {
       });
     }
   } else {
-    const res = await LikeService.addLike({ for_id: item.id, type: 2, user_id: userStore.getUserInfo.id });
+    const res = await LikeService.addLike({ for_id: item.id, type: 2, userId: userStore.getUserInfo.id });
     if (res.code === 200) {
-      talkList.value[index].is_like = true;
-      talkList.value[index].like_times++;
+      talkList.value[index].isLiked = true;
+      talkList.value[index].likes++;
       likePending.value = false;
       ElNotification({
         offset: 60,
@@ -186,8 +186,8 @@ onBeforeUnmount(() => {
               <div class="w-[100%]">
                 <div class="right">
                   <div class="right-top relative">
-                    <i v-if="talk.is_top == 1" class="iconfont icon-zhiding"></i>
-                    <span class="nick-name">{{ talk.nick_name }}</span>
+                    <i v-if="talk.isToped == 1" class="iconfont icon-zhiding"></i>
+                    <span class="nick-name">{{ talk.nickName }}</span>
                     <TextOverflow
                       class="content"
                       :text="talk.content"
@@ -267,13 +267,13 @@ onBeforeUnmount(() => {
                           'iconfont',
                           'icon-icon',
                           '!ml-[10px]',
-                          talk.is_like ? 'is-like' : '',
+                          talk.isLiked ? 'is-like' : '',
                         ]"
                         @click="like(talk, talkIndex)"
                       >
                       </i>
-                      <span :class="[talk.is_like ? 'is-like' : '', '!ml-[5px]']">{{
-                        talk.like_times
+                      <span :class="[talk.isLiked ? 'is-like' : '', '!ml-[5px]']">{{
+                        talk.likes
                       }}</span>
                     </div>
                   </div>
@@ -283,7 +283,7 @@ onBeforeUnmount(() => {
                       class="w-[100%]"
                       type="talk"
                       :id="talk.id"
-                      :author-id="talk.from_id"
+                      :author-id="talk.userId"
                       :is-show-toggle="false"
                     />
                   </div>

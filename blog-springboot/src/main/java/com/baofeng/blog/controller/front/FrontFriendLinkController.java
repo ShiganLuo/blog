@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/front/link")
-@Validated
 public class FrontFriendLinkController {
     private final FriendLinkService friendLinkService;
     public FrontFriendLinkController (
@@ -22,17 +21,17 @@ public class FrontFriendLinkController {
     }
 
     @PostMapping("/getAllFriendLink")
-    public ApiResponse<FrontFriendLinkPageResponse> getAllFriendLink(@RequestBody FrontFriendLinkRequest request) {
+    public ApiResponse<FrontFriendLinkPageResponse> getAllFriendLink(@RequestBody @Validated FrontFriendLinkRequest request) {
         return friendLinkService.getAllFriendLinkFront(request);
     }
 
     @PostMapping("/addFriendLink")
-    public ApiResponse<String> addFriendLink(@RequestBody AddFriendLinkRequest addFriendLinkRequest) {
+    public ApiResponse<String> addFriendLink(@RequestBody @Validated AddFriendLinkRequest addFriendLinkRequest) {
         return friendLinkService.addOrUpdateFriendLink(addFriendLinkRequest);
     }
 
     @PostMapping("/updateFriendLink")
-    public ApiResponse<String> updateFriendLink(@RequestBody AddFriendLinkRequest addFriendLinkRequest) {
+    public ApiResponse<String> updateFriendLink(@RequestBody @Validated AddFriendLinkRequest addFriendLinkRequest) {
         return friendLinkService.addOrUpdateFriendLink(addFriendLinkRequest);
     }
 

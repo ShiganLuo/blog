@@ -15,15 +15,15 @@ interface MessageItem {
   id: number | string;
   content: string;
   type: string;
-  from_id?: number | string;
+  userId?: number | string;
   color: string;
   font_size: number;
   font_weight: number;
   user_id: number;
-  thumbs_up: number;
-  nick_name: string;
+  likes: number;
+  nickName: string;
   avatar: string;
-  is_like: boolean;
+  isLiked: boolean;
   createdAt?: string; // 时间可能存在
 }
 
@@ -34,15 +34,15 @@ const message = reactive<MessageItem>({
   id: 0,
   content: "",
   type:"message",
-  from_id: getUserInfo.value.id,
+  userId: getUserInfo.value.id,
   color: "",
   font_size: 16,
   font_weight: 500,
   user_id: 0,
-  thumbs_up: 0,
-  nick_name: "",
+  likes: 0,
+  nickName: "",
   avatar: "",
-  is_like: false,
+  isLiked: false,
 });
 
 const likePending = ref(false);
@@ -51,12 +51,12 @@ const like = async (item: MessageItem) => {
   if (likePending.value) return;
   likePending.value = true;
 
-  if (item.is_like) {
+  if (item.isLiked) {
     // 取消点赞
     const res = await LikeService.cancelLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
     if (res.code === 200) {
-      item.thumbs_up--;
-      item.is_like = false;
+      item.likes--;
+      item.isLiked = false;
       likePending.value = false;
 
       ElNotification({
@@ -69,8 +69,8 @@ const like = async (item: MessageItem) => {
     // 点赞
     const res = await LikeService.addLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
     if (res.code === 200) {
-      item.thumbs_up++;
-      item.is_like = true;
+      item.likes++;
+      item.isLiked = true;
       likePending.value = false;
 
       ElNotification({
@@ -111,9 +111,9 @@ onMounted(() => {
             <div class="top-header">
               <div class="header-items">
                 <el-avatar class="left-avatar" :src="message.avatar">
-                  {{ message.nick_name }}
+                  {{ message.nickName }}
                 </el-avatar>
-                <span class="nick-name"> {{ message.nick_name }}</span>
+                <span class="nick-name"> {{ message.nickName }}</span>
               </div>
             </div>
             <div
@@ -143,12 +143,12 @@ onMounted(() => {
               </div>
               <div class="right bottom-items">
                 <svg-icon
-                  :name="message.is_like ? 'redHeart' : 'greyHeart'"
+                  :name="message.isLiked ? 'redHeart' : 'greyHeart'"
                   :width="1.5"
                   @click="like(message)"
                 ></svg-icon>
-                <span :style="{ color: message.is_like ? '#f00' : '' }" class="like-count">
-                  {{ message.thumbs_up}}
+                <span :style="{ color: message.isLiked ? '#f00' : '' }" class="like-count">
+                  {{ message.likes}}
                 </span>
               </div>
             </div>

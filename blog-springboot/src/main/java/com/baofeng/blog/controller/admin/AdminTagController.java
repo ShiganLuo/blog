@@ -17,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/admin/tags")
-@Validated
 public class AdminTagController {
     
     private final TagService tagService;
@@ -36,7 +35,7 @@ public class AdminTagController {
      * @return 创建结果
      */
     @PostMapping("/create")
-    public ApiResponse<String> createTag(@Validated @RequestBody CreateTagRequest request) {        
+    public ApiResponse<String> createTag(@RequestBody @Validated CreateTagRequest request) {        
         return tagService.createTag(request);
     }
 
@@ -56,7 +55,7 @@ public class AdminTagController {
      * @return 分页结果
      */
     @PostMapping("/list")
-    public ApiResponse<TagPageResponseVO> getTagPage(@RequestBody TagPageRequestVO request) {
+    public ApiResponse<TagPageResponseVO> getTagPage(@RequestBody @Validated TagPageRequestVO request) {
         return tagService.getTagPage(request);
     }
     /**

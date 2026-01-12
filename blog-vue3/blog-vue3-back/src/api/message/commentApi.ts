@@ -5,10 +5,10 @@ import { CodeMsgResult } from '@/types/axios'
 // 评论
 export class CommentService {
   // 评论列表
-  static getCommentList(params: any) {
-    return request.get<CommentRecordResult>({
-      url: '/blog/comment/admin/comments',
-      params
+  static getCommentList(data: any) {
+    return request.post<CommentRecordResult>({
+      url: '/admin/comments/getAdminCommentPage',
+      data: data
     })
   }
 
@@ -25,8 +25,8 @@ export class CommentService {
 
   // 评论审核
   static passComment(data: any) {
-    return request.put({
-      url: `/blog/comment/admin/comments/review`,
+    return request.post({
+      url: `/admin/comments/updateCommentsStatusByIds`,
       data
     })
   }

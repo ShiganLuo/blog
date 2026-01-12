@@ -6,7 +6,7 @@ import VueDanmaku from "vue3-danmaku";
 // 定义弹幕数据类型
 interface Danmu {
   avatar: string;
-  nick_name: string;
+  nickName: string;
   content: string;
   isNew?: boolean;
 }
@@ -111,7 +111,7 @@ defineExpose({
   >
     <template #dm="{ danmu }">
       <div class="danmu-item">
-        <el-avatar :src="danmu.avatar">{{ danmu.nick_name }}</el-avatar> :
+        <el-avatar :src="danmu.avatar">{{ danmu.nickName }}</el-avatar> :
         <span class="new-item" v-if="danmu.isNew">{{ danmu.content }}</span>
         <span v-else>{{ danmu.content }}</span>
       </div>

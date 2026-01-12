@@ -7,26 +7,26 @@
     <!-- 基础结果映射 -->
     <resultMap id="BaseResultMap" type="com.baofeng.blog.entity.Comment">
         <id property="id" column="id"/>
-        <result property="fromId" column="from_id"/>
+        <result property="userId" column="user_id"/>
         <result property="content" column="content"/>
         <result property="forId" column="for_id"/>
-        <result property="type" column="type"/>
-        <result property="authorId" column="author_id"/>
         <result property="likes" column="likes"/>
+        <result property="type" column="type"/>
+        <result property="replyUserId" column="reply_user_id"/>
+        <result property="authorId" column="author_id"/>
         <result property="isDeleted" column="is_deleted"/>
         <result property="status" column="status"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
         <result property="ipAddress" column="ip_address"/>
         <result property="rootId" column="root_id"/>
-        <result property="toId" column="to_id"/>
     </resultMap>
 
     <!--创建评论-->
     <insert id="insertComment" parameterType="com.baofeng.blog.entity.Comment" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO comments (
-            from_id,
-            to_id,
+            user_id,
+            reply_user_id,
             content,
             for_id,
             type,
@@ -38,8 +38,8 @@
             tag
         )
         VALUES (
-            #{fromId},
-            #{toId},
+            #{userId},
+            #{replyUserId},
             #{content},
             #{forId},
             #{type},
@@ -68,10 +68,10 @@
     <!--获取用户通知-->
     <resultMap id="NotifyPageResultMap" type="com.baofeng.blog.dto.front.FrontCommentDTO$NotifyResponse">
         <id property="id" column="id"/>
-        <result property="isView" column="status"/>
+        <result property="isViewed" column="status"/> <!-- 待修改 -->
         <result property="message" column="content"/>
         <result property="type" column="type"/>
-        <result property="to_id" column="for_id"/>
+        <result property="forId" column="for_id"/>
     </resultMap>
     <select id="getNotifyPage" resultMap="NotifyPageResultMap">
         SELECT 
@@ -80,36 +80,36 @@
         WHERE c.author_id = #{userId}
     </select>
 
-    <!--分页获取评论-->
-    <resultMap id="CommentPageResultMap" type="com.baofeng.blog.dto.front.FrontCommentDTO$ArticleCommentResponse">
+    <!--前台分页获取评论-->
+    <resultMap id="CommentPageResultMap" type="com.baofeng.blog.dto.front.FrontCommentDTO$FrontArticleCommentResponse">
         <id property="id" column="id"/>
-        <result property="from_id" column="from_id"/>
-        <result property="from_name" column="from_name"/>
-        <result property="from_avatar" column="from_avatar"/>
-        <result property="to_name" column="to_name"/>
-        <result property="for_id" column="for_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="userAvatar" column="user_avatar"/>
+        <result property="replyUserName" column="reply_user_name"/>
+        <result property="forId" column="for_id"/>
         <result property="content" column="content"/>
         <result property="type" column="type"/>
         <result property="createdAt" column="created_at"/>
-        <result property="thumbs_up" column="likes"/>
+        <result property="likes" column="likes"/>
         <result property="ipAddress" column="ip_address"/>
     </resultMap>
     
     <select id="getCommentsByCondition" resultMap="CommentPageResultMap" parameterType="map">
         SELECT 
             c.id, 
-            c.from_id, 
-            u.username AS from_name, 
-            u.avatar_url AS from_avatar, 
-            u2.username AS to_name,
+            c.user_id, 
+            u.username AS user_name, 
+            u.avatar_url AS user_avatar, 
+            u2.username AS reply_user_name,
             c.for_id,
             c.content,
             c.type,
             c.created_at, 
             c.likes
         FROM comments c
-        LEFT JOIN users u ON c.from_id = u.id
-        LEFT JOIN users u2 ON c.to_id = u2.id
+        LEFT JOIN users u ON c.user_id = u.id
+        LEFT JOIN users u2 ON c.reply_user_id = u2.id
         <where>
             <if test="type != null and type.size > 0">
                 AND c.type IN
@@ -117,8 +117,8 @@
                     #{t}
                 </foreach>
             </if>
-            <if test="for_id != null">
-                AND c.for_id = #{for_id}
+            <if test="forId != null">
+                AND c.for_id = #{forId}
             </if>
             <if test="rootId != null">
                 AND c.root_id = #{rootId}
@@ -142,20 +142,71 @@
     <select id="selectChildCommentsById" resultMap="CommentPageResultMap">
         SELECT 
             c.id, 
-            c.from_id, 
-            u.username AS from_name, 
-            u.avatar_url AS from_avatar, 
+            c.user_id, 
+            u.username AS user_name, 
+            u.avatar_url AS user_avatar, 
             c.content, 
             c.created_at, 
             c.likes
         FROM comments c
-        LEFT JOIN users u ON c.from_id = u.id
+        LEFT JOIN users u ON c.user_id = u.id
         WHERE c.type = 'comment'
         AND c.for_id = #{id}
         AND c.is_deleted = 0 AND c.status = 1
         ORDER BY c.created_at ASC
     </select>
 
+    <!--后台分页评论-->
+    <resultMap id="AdminCommentPageResultMap" type="com.baofeng.blog.dto.admin.AdminCommentDTO$AdminCommentResult">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="forId" column="for_id"/>
+        <result property="commentContent" column="content"/>
+        <result property="replyUserId" column="reply_user_id"/>
+        <result property="replyUserName" column="reply_user_name"/>
+        <result property="parentId" column="root_id"/>
+        <result property="type" column="type"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+    <select id="getAdminCommentsByCondition" resultMap="AdminCommentPageResultMap" parameterType="map">
+        SELECT 
+            c.id, 
+            c.user_id,
+            u.username AS user_name,
+            c.for_id,
+            c.content,
+            c.reply_user_id,
+            u2.username AS reply_user_name,
+            c.root_id,
+            c.type,
+            c.is_deleted,
+            c.status,
+            c.created_at, 
+            c.updated_at
+        FROM comments c
+        LEFT JOIN users u ON c.user_id = u.id
+        LEFT JOIN users u2 ON c.reply_user_id = u2.id
+        <where>
+            <if test="type != null and type.size > 0">
+                AND c.type IN
+                <foreach collection="type" item="t" open="(" separator="," close=")">
+                    #{t}
+                </foreach>
+            </if>
+            <if test="forId != null">
+                AND c.for_id = #{forId}
+            </if>
+            <if test="status != null">
+                AND c.status = #{status}
+            </if>
+            AND c.is_deleted = 0
+        </where>
+            ORDER BY c.created_at ASC
+    </select>
     <!--删除评论-->
     <delete id="deleteCommentById">
         DELETE FROM comments WHERE id = #{id}
@@ -200,33 +251,43 @@
     <resultMap id="AllMessageTalkResultMap" type="com.baofeng.blog.dto.front.FrontCommentDTO$MessageResponse">
         <id property="id" column="id"/>
         <result property="avatar" column="avatar_url"/>
-        <result property="from_id" column="from_id"/>
-        <result property="nick_name" column="nick_name"/>
+        <result property="userId" column="user_id"/>
+        <result property="nickName" column="nick_name"/>
         <result property="content" column="content"/>
         <result property="createdAt" column="created_at"/>
-        <result property="thumbs_up" column="likes"/>
+        <result property="likes" column="likes"/>
     </resultMap>
     <select id="selectAllMessageTalk" resultMap="AllMessageTalkResultMap" parameterType="map">
         SELECT 
             c.id,
             u.avatar_url,
-            c.from_id,
+            c.user_id,
             u.nick_name, 
             c.content,
             c.created_at,
             c.likes
         FROM comments c
-        LEFT JOIN users u ON c.from_id = u.id
+        LEFT JOIN users u ON c.user_id = u.id
         <where>
             <if test="type != null">
                 AND c.type = #{type}
             </if>
             <if test="user_id != null">
-                AND c.from_id = #{user_id}
+                AND c.user_id = #{userId}
             </if>
             AND c.is_deleted = 0
             AND c.status = 1
         </where>
         ORDER BY c.created_at DESC
     </select>
+
+    <!--批量更新评论状态-->
+    <update id="updateCommentsStatusByIds">
+        UPDATE comments
+        SET status = #{status}
+        WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper> 

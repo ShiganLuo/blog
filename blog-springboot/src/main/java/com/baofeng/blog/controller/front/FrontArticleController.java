@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/front/articles")
-@Validated
 public class FrontArticleController {
     
     private final ArticleService articleService;
@@ -28,7 +27,7 @@ public class FrontArticleController {
      * @return 分页结果
      */
     @PostMapping("/getArticleList")
-    public ApiResponse<FrontArticlePageResponse> getArticlePage(@Validated @RequestBody ArticlePageRequest articlePageRequest) {
+    public ApiResponse<FrontArticlePageResponse> getArticlePage(@RequestBody @Validated ArticlePageRequest articlePageRequest) {
         // 参数校验
 
         if (articlePageRequest.sortBy() != null && !isValidSortField(articlePageRequest.sortBy())) {
@@ -79,7 +78,7 @@ public class FrontArticleController {
     }
 
     @PostMapping("/getTimeLineArticle")
-    public ApiResponse<ArticleAbstractsResponse> getTimeLineArticle(TimeLineRequest request){
+    public ApiResponse<ArticleAbstractsResponse> getTimeLineArticle(@RequestBody @Validated TimeLineRequest request){
         return articleService.getTimeLine(request);
     }
 
@@ -89,7 +88,7 @@ public class FrontArticleController {
      * @return
      */
     @PostMapping("/getArticlesByCategoryId")
-    public ApiResponse<ArticleAbstractsResponse> getArticlesByCategoryId(@RequestBody CategoryOrTagRequest request) {
+    public ApiResponse<ArticleAbstractsResponse> getArticlesByCategoryId(@RequestBody @Validated CategoryOrTagRequest request) {
         return articleService.getArticlesByCategoryId(request);
     }
 
@@ -99,7 +98,7 @@ public class FrontArticleController {
      * @return
      */
     @PostMapping("/getArticlesByTagId")
-    public ApiResponse<ArticleAbstractsResponse> getArticlesByTagId(@RequestBody CategoryOrTagRequest request) {
+    public ApiResponse<ArticleAbstractsResponse> getArticlesByTagId(@RequestBody @Validated CategoryOrTagRequest request) {
         return articleService.getArticlesByTagId(request); 
     }
     

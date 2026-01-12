@@ -11,8 +11,6 @@ import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/front/comments")
-@Validated
-
 public class FrontCommentController {
 
     private final CommentService commentService;
@@ -29,7 +27,7 @@ public class FrontCommentController {
      * @return
      */
     @PostMapping("/addComment")
-    public ApiResponse<String> addComment(@RequestBody CreateCommentRequest createCommentRequest) {
+    public ApiResponse<String> addComment(@RequestBody @Validated CreateCommentRequest createCommentRequest) {
         return commentService.CreateComment(createCommentRequest);
     }
 
@@ -49,7 +47,7 @@ public class FrontCommentController {
      * @return
      */
     @PostMapping("/getNotifyPage")
-    public ApiResponse<NotifyPageResponse> getNotifyPageInfo(@RequestBody NotifyPageRequest request) {
+    public ApiResponse<NotifyPageResponse> getNotifyPageInfo(@RequestBody @Validated NotifyPageRequest request) {
         return commentService.getNotifyPage(request);
     }
 
@@ -59,8 +57,8 @@ public class FrontCommentController {
      * @return
      */
     @PostMapping("/getCommentPage")
-    public ApiResponse<CommentPageResponse> getCommentPageInfo(@RequestBody CommentPageRequest request) {
-        return commentService.getCommentPage(request);
+    public ApiResponse<FrontCommentPageResponse> getCommentPageInfo(@RequestBody @Validated FrontCommentPageRequest request) {
+        return commentService.getFrontCommentPage(request);
     }
 
     /**
@@ -83,7 +81,7 @@ public class FrontCommentController {
      * @return
      */
     @PostMapping("/getMessageTalkPage")
-    public ApiResponse<MessagePageResponse> getAllMessage(@RequestBody MessageTalkPageRequest request) {
+    public ApiResponse<MessagePageResponse> getAllMessage(@RequestBody @Validated MessageTalkPageRequest request) {
         return commentService.getAllMessage(request);
     }
     

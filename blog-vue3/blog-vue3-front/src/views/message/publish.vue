@@ -27,8 +27,8 @@ interface MessageForm {
   font_size: number;
   font_weight: number;
   bg_color: string;
-  from_id?: number | string;
-  nick_name: string;
+  userId?: number | string;
+  nickName: string;
   avatar?: string;
 }
 
@@ -61,8 +61,8 @@ const form = reactive<MessageForm>({
   font_size: 16,
   font_weight: 500,
   bg_color: "transparent",
-  from_id: getUserInfo.value.id,
-  nick_name: getUserInfo.value.nick_name || "游客",
+  userId: getUserInfo.value.id,
+  nickName: getUserInfo.value.nick_name || "游客",
   avatar: getUserInfo.value.avatar || "游客",
 });
 
@@ -121,7 +121,7 @@ const leaveMessage = async () => {
     return;
   }
   if (!form.id) {
-    form.from_id = getUserInfo.value.id;
+    form.userId = getUserInfo.value.id;
   }
 
   loading.value = true;
@@ -179,7 +179,7 @@ onMounted(async () => {
     if (inputCommentRef.value) {
       inputCommentRef.value.innerHTML = "留下点什么再走吧~";
     }
-    form.nick_name = getUserInfo.value.nick_name || "游客";
+    form.nickName = getUserInfo.value.nick_name || "游客";
     form.avatar = getUserInfo.value.avatar || "游客";
   }
 });
@@ -197,8 +197,8 @@ onMounted(async () => {
         <div class="card-content-height" :style="{ backgroundColor: form.bg_color }">
           <div class="top-header">
             <div class="flex items-center">
-              <el-avatar class="left-avatar" :src="form.avatar">{{ form.nick_name }} </el-avatar>
-              <span class="nick-name"> {{ form.nick_name }}</span>
+              <el-avatar class="left-avatar" :src="form.avatar">{{ form.nickName }} </el-avatar>
+              <span class="nick-name"> {{ form.nickName }}</span>
             </div>
           </div>
           <div

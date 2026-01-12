@@ -107,17 +107,44 @@ export const asyncRoutes: MenuListType[] = [
     children: [
       {
         id: uuid(),
-        path: '/website/info',
+        path: '/info',
         component: RoutesAlias.WebsiteInfo,
         name: 'WebsiteInfo',
         meta: {title: "网站管理", keepAlive: false }
       },
       {
         id: uuid(),
-        path: '/website/link',
+        path: '/link',
         component: RoutesAlias.WebsiteLink,
         name: 'WebsiteLink',
         meta: {title: "友链管理", keepAlive: false}
+      }
+    ]
+  },{
+    id: uuid(),
+    path: '/message',
+    name: 'message',
+    component: RoutesAlias.Home,
+    meta: {
+      title: '消息管理',
+      icon: '&#xe6c2',
+      keepAlive: false,
+      isHide: false
+    },
+    children: [
+      {
+        id: uuid(),
+        path: '/comment',
+        component: RoutesAlias.CommentManage,
+        name: 'CommentManage',
+        meta: {title: "评论管理", keepAlive: false }
+      },
+      {
+        id: uuid(),
+        path: '/talk',
+        component: RoutesAlias.TalkManage,
+        name: 'TalkManage',
+        meta: {title: "随言碎语", keepAlive: false}
       }
     ]
   }

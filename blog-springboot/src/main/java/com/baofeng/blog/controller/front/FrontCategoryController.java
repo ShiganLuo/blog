@@ -5,12 +5,10 @@ import com.baofeng.blog.dto.common.CategoryDTO.CategoryDictionaryResponse;
 import com.baofeng.blog.service.CategoryService;
 
 import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/front/categories")
-@Validated
 public class FrontCategoryController {
 
     private final CategoryService categoryService;

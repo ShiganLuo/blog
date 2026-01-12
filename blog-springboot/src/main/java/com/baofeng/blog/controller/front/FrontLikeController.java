@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/front/likes")
-@Validated
 public class FrontLikeController {
 
     private final LikeService likeService;
@@ -21,17 +20,17 @@ public class FrontLikeController {
     }
 
     @PostMapping("/addLike")
-    public ApiResponse<String> addLike(@Validated @RequestBody LikeRequest request) {
+    public ApiResponse<String> addLike(@RequestBody @Validated LikeRequest request) {
         return likeService.addLikeByLikeRequest(request);
     }
 
     @PostMapping("/deleteLike")
-    public ApiResponse<String> deleteLike(@Validated @RequestBody LikeRequest request) {
+    public ApiResponse<String> deleteLike(@RequestBody @Validated LikeRequest request) {
         return likeService.deleteLikeByLikeRequest(request);
     }
 
     @PostMapping("/getIsLike")
-    public ApiResponse<Boolean> getIsLikeByArticleAndUserId(@Validated @RequestBody LikeRequest request) {
+    public ApiResponse<Boolean> getIsLikeByArticleAndUserId(@RequestBody @Validated LikeRequest request) {
         return likeService.getIsLikeByLikeRequest(request);
     }
 

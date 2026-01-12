@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/admin/users")
@@ -31,13 +31,13 @@ public class AdminUserController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<String> registerUser(@RequestBody @Valid RegisterRequest registerDTO) {
+    public ApiResponse<String> registerUser(@RequestBody @Validated RegisterRequest registerDTO) {
         //在Serivce写清楚了用户名重复如何处理的逻辑
         return userService.registerUser(registerDTO);
     }
 
     @PostMapping("/login")
-    public ApiResponse<AdminLoginResponseDTO> login(@RequestBody @Valid LoginRequest loginDTO) {
+    public ApiResponse<AdminLoginResponseDTO> login(@RequestBody @Validated LoginRequest loginDTO) {
         return userService.loginUserAdmin(loginDTO);
     }
 
@@ -77,7 +77,7 @@ public class AdminUserController {
     }
 
     @PostMapping("/updateUserRoles")
-    public ApiResponse<String> updateUserRole(@RequestBody @Valid UpdateUserRoleRequest updaUserRoleRequest) {
+    public ApiResponse<String> updateUserRole(@RequestBody @Validated UpdateUserRoleRequest updaUserRoleRequest) {
         return userService.updateUserRole(updaUserRoleRequest);
     }
 
@@ -112,12 +112,12 @@ public class AdminUserController {
     }
 
     @PostMapping("/emailRegister")
-    public ApiResponse<String> emailRegister(@RequestBody EmailAuthRequest emailAuthRequest) {
+    public ApiResponse<String> emailRegister(@RequestBody @Validated EmailAuthRequest emailAuthRequest) {
         return utilService.EmailAuthRegister(emailAuthRequest);
     }
 
     @PostMapping("/captchaLogin")
-    public ApiResponse<AdminLoginResponseDTO> captchaLogin(@RequestBody CaptchaAuthLonginRequest captchaAuthLonginRequest) {
+    public ApiResponse<AdminLoginResponseDTO> captchaLogin(@RequestBody @Validated CaptchaAuthLonginRequest captchaAuthLonginRequest) {
         return utilService.captechaLogin(captchaAuthLonginRequest);
     }
 

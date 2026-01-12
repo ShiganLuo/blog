@@ -2,14 +2,14 @@ export type CommentType = "post" | "comment" | "talk";
 
 export interface CommentItem {
   id: number | string;
-  from_id: number | string;
-  from_name: string;
-  from_avatar: string;
-  to_name: string;
+  userId: number | string;
+  userName: string;
+  userAvatar: string;
+  replyUserName: string;
   content: string;
   createdAt: string;
-  thumbs_up: number;
-  is_like: boolean;
+  likes: number;
+  isLiked: boolean;
   ipAddress: string;
   showApplyInput: boolean;
   childComments: CommentItem[];
@@ -24,9 +24,9 @@ export interface CommentPage {
 export interface CommentParams {
   current: number;
   size: number;
-  user_id?: number | string;
+  userId?: number | string;
   type?: string;
-  for_id?: number | string;
+  forId?: number | string;
   rootId?: number | string;
   order?: string;
   loading: boolean

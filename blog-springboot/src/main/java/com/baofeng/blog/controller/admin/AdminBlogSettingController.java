@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/admin/settings")
-@Validated
 public class AdminBlogSettingController {
     
     private final BlogSettingService blogSettingService;
@@ -23,7 +22,7 @@ public class AdminBlogSettingController {
         this.blogSettingService = blogSettingService;
     }
     @PostMapping("/initSetting")
-    public ApiResponse<String> initSetting(@RequestBody BlogSetting blogSetting){
+    public ApiResponse<String> initSetting(@RequestBody @Validated BlogSetting blogSetting){
         return blogSettingService.initSetting(blogSetting);
 
     }
@@ -33,7 +32,7 @@ public class AdminBlogSettingController {
     }
 
     @PostMapping("/updateWebsiteInfo")
-    public ApiResponse<String> updateWebsiteInfo(@RequestBody BlogSetting blogSetting){
+    public ApiResponse<String> updateWebsiteInfo(@RequestBody @Validated BlogSetting blogSetting){
         return blogSettingService.updateSetting(blogSetting);
     }
 

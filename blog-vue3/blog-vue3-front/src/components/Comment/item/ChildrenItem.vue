@@ -42,9 +42,9 @@ const handleClose = () => {
 const submitReply = () => {
   emits('publish', {
     content: replyInputText.value,
-    for_id: props.comment.id,
-    to_name: props.comment.from_name,
-    to_id: props.comment.from_id
+    forId: props.comment.id,
+    replyUserName: props.comment.userName,
+    replyUserId: props.comment.userId
   });
   // 清空输入框内容
   replyInputText.value = "";
@@ -56,14 +56,14 @@ const submitReply = () => {
   <div class="comment-item">
     <div class="flex justify-start items-start">
       <div class="avatar-box">
-        <el-avatar class="avatar" :src="comment.from_avatar">{{ comment.from_name }}</el-avatar>
+        <el-avatar class="avatar" :src="comment.from_avatar">{{ comment.userName }}</el-avatar>
       </div>
       <div class="right !w-[100%]">
         <div class="cursor-pointer">
-          {{ comment.from_name }}
-          <span v-if="comment.from_id == 1" class="up">UP</span>
-          <span v-if="comment.to_name" class="reply-to">
-            回复 <span class="reply-name">{{ comment.to_name }}</span>
+          {{ comment.userName }}
+          <span v-if="comment.userId == 1" class="up">UP</span>
+          <span v-if="comment.replyUserName" class="reply-to">
+            回复 <span class="reply-name">{{ comment.replyUserName }}</span>
           </span>
         </div>
         <div id="comment-content" class="!mt-[1rem]">
@@ -105,7 +105,7 @@ const submitReply = () => {
           >关闭</span>
           <span
             class="!mr-[1rem] delete cursor-pointer"
-            v-if="userStore.getUserInfo.id == comment.from_id || userStore.getUserInfo.role == 1"
+            v-if="userStore.getUserInfo.id == comment.userId || userStore.getUserInfo.role == 1"
             @click="handleDelete"
           >删除</span>
         </div>
@@ -115,7 +115,7 @@ const submitReply = () => {
           <CommentInput
             v-model:inputText="replyInputText"
             :showPublishButton="true"
-            :placeholder="comment.from_name"
+            :placeholder="comment.userName"
             :parent="false"
             @publish="submitReply"
           />

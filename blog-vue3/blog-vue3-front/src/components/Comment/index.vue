@@ -63,12 +63,12 @@ const publish = async (): Promise<void> => {
   }
 
   const data: any = {
-    from_id: userStore.getUserInfo.id,
+    userId: userStore.getUserInfo.id,
     content: commentText.value,
-    for_id: props.id,
+    forId: props.id,
     type: props.type, 
-    author_id: props.authorId, // 文章作者的id用于消息推送
-    root_id: props.id
+    authorId: props.authorId, // 文章作者的id用于消息推送
+    rootId: props.id
   };
   const res: any = await CommentSerivce.addComment(data);
   if (res.code === 200) {

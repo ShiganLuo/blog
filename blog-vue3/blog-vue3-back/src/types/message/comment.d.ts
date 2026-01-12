@@ -3,15 +3,17 @@ import { BaseArrayResult, BaseObjectResult, BasePageResult, BaseRecordResult } f
 export interface CommentResult {
   id: string
   userId: string
-  topicId: string
+  userName: string
+  forId: string
   commentContent: string
   replyUserId: string
+  replyUserName: string
   parentId: string
   type: string
-  isDelete: string
-  isReview: string
-  createTime: string
-  updateTime: string
+  isDeleted: string
+  status: string
+  createdAt: string
+  updatedAt: string
 }
 
 export type CommentListPageResult = BasePageResult<CommentResult>

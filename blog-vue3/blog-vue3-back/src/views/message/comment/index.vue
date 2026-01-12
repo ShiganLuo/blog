@@ -16,10 +16,10 @@
         <el-button @click="handlePass" :disabled="multiple" v-ripple>审核 </el-button>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="12">
-        <el-radio-group v-model="queryParams.isReview" @change="getList()" style="float: right">
-          <el-radio-button :value="''">全部</el-radio-button>
-          <el-radio-button :value="1">正常</el-radio-button>
-          <el-radio-button :value="0">审核中</el-radio-button>
+        <el-radio-group v-model="queryParams.status" @change="getList()" style="float: right">
+          <el-radio-button :value="0">待审</el-radio-button>
+          <el-radio-button :value="1">通过</el-radio-button>
+          <el-radio-button :value="2">拒绝</el-radio-button>
         </el-radio-group>
       </el-col>
     </el-row>
@@ -42,10 +42,10 @@
             <img :src="AvatarImga(scope.row.avatar)" width="40" height="40" />
           </template>
         </el-table-column>
-        <el-table-column prop="nickname" label="评论人" align="center" />
-        <el-table-column prop="replyNickname" label="回复人" align="center">
+        <el-table-column prop="userName" label="评论人" align="center" />
+        <el-table-column prop="replyUserName" label="回复人" align="center">
           <template #default="scope">
-            {{ scope.row.replyNickname }}
+            {{ scope.row.replyUserName }}
           </template>
         </el-table-column>
         <el-table-column prop="articleTitle" label="文章标题" align="center">
@@ -58,15 +58,15 @@
             <span v-html="scope.row.commentContent" class="comment-content" />
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="评论时间" align="center">
+        <el-table-column prop="createdAt" label="评论时间" align="center">
           <template #default="scope">
-            {{ parseTime(scope.row.createTime) }}
+            {{ parseTime(scope.row.createdAt) }}
           </template>
         </el-table-column>
-        <el-table-column prop="isReview" label="状态" align="center">
+        <el-table-column prop="status" label="状态" align="center">
           <template #default="scope">
-            <el-tag v-if="scope.row.isReview == 0" type="warning">审核中</el-tag>
-            <el-tag v-if="scope.row.isReview == 1" type="success">正常</el-tag>
+            <el-tag v-if="scope.row.status == 0" type="warning">审核中</el-tag>
+            <el-tag v-if="scope.row.status == 1" type="success">通过</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="来源" align="center">
@@ -84,7 +84,7 @@
             <button-table
               type="add"
               icon="&#xe86a;"
-              v-if="scope.row.isReview == 0"
+              v-if="scope.row.status == 0"
               @click="handlePass(scope.row)"
             >
               通过
@@ -112,7 +112,8 @@
     current: 1,
     size: 10,
     keywords: '',
-    isReview: ''
+    status: 0,
+    type: ['comment']
   })
 
   /** 查询评论管理列表 */
@@ -168,7 +169,7 @@
     const _ids = row ? [row.id] : ids.value
     const Tr = await ElMessageBox.confirm('是否确认审核评论管理编号为"' + _ids + '"的数据项？')
     if (Tr) {
-      const res = await CommentService.passComment({ ids: _ids, isReview: 1 })
+      const res = await CommentService.passComment({ ids: _ids, status: 1 })
       if (res.code === 200) {
         getList()
         ElMessage.success(res.message)

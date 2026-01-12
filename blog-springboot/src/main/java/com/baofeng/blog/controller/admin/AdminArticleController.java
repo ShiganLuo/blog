@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
 @RequestMapping("/api/admin/articles")
-@Validated
 public class AdminArticleController {
     private final ArticleService articleService;
 
@@ -27,7 +26,7 @@ public class AdminArticleController {
      * @return 分页结果
      */
     @PostMapping("/publish")
-    public ApiResponse<String> publishArticle(@RequestBody JsonNode requestBody) {
+    public ApiResponse<String> publishArticle(@RequestBody @Validated JsonNode requestBody) {
         Long articleId = requestBody.get("articleId").asLong(); // 从请求体中提取用户名
         Long authorId = requestBody.get("authorId").asLong(); // 提取新密码
         return articleService.publishArticle(articleId,authorId);
@@ -49,7 +48,7 @@ public class AdminArticleController {
      * @return
      */
     @PostMapping("/updateArticlesDeletedStatus")
-    public ApiResponse<String> updateArticlesDeletedStatus(@RequestBody DeleteArticlesLogicallyRequest deleteArticlesLogicallyRequest) {
+    public ApiResponse<String> updateArticlesDeletedStatus(@RequestBody @Validated DeleteArticlesLogicallyRequest deleteArticlesLogicallyRequest) {
         return articleService.deleteArticlesLogically(deleteArticlesLogicallyRequest);
     }
     /**
@@ -68,7 +67,7 @@ public class AdminArticleController {
      * @return 分页结果
      */
     @PostMapping("/createOrupdateArticles")
-    public ApiResponse<String> createOrupdateArticles(@RequestBody CreateOrupdateArticlesRequest request){
+    public ApiResponse<String> createOrupdateArticles(@RequestBody @Validated CreateOrupdateArticlesRequest request){
         return articleService.createOrupdateArticles(request);
 
     }
@@ -90,7 +89,7 @@ public class AdminArticleController {
      * @return 分页结果
      */
     @PostMapping("/getArticleList")
-    public ApiResponse<AdminArticlePageVO> getArticleList(@RequestBody CreateAdminArticlePageRequest createAdminArticlePageRequest) {
+    public ApiResponse<AdminArticlePageVO> getArticleList(@RequestBody @Validated CreateAdminArticlePageRequest createAdminArticlePageRequest) {
         return articleService.getAdminArticleList(createAdminArticlePageRequest);
     }
 

@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/front/users")
-@Validated
 public class FrontUserController {
     
     private final UserService userService;

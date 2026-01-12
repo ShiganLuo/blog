@@ -19,6 +19,8 @@ export enum RoutesAlias {
   OutsideIframe = '/outside/iframe', // 外部iframe
   ArticlePublish = '/blog/article/publish', // 文章发布
   ArticleManage = '/blog/article/index', // 文章统计
+  CommentManage = '/message/comment/index', // 评论管理
+  TalkManage = '/message/talk/index', // 随言碎语
   WebsiteInfo = '/website/info/index', // 网站信息
   WebsiteLink = '/website/link/index', // 友链
   Photo = '/photo/photo', // 照片管理

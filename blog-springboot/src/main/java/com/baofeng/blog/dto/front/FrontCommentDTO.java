@@ -17,13 +17,16 @@ public class FrontCommentDTO {
      * 创建评论请求体
      */
     public record CreateCommentRequest(
-        @NotNull Long from_id,
-        @NotBlank String content,
-        Long for_id,
-        Long to_id,
-        @NotBlank String type,
-        Long author_id,
-        Long root_id,
+        @NotNull 
+        Long userId,
+        @NotBlank 
+        String content,
+        Long forId,
+        Long replyUserId,
+        @NotBlank 
+        String type,
+        Long authorId,
+        Long rootId,
         String tag
     ) {}
 
@@ -53,16 +56,16 @@ public class FrontCommentDTO {
     @Data
     public static class NotifyResponse {
         private Long id;
-        private Boolean isView;
+        private Boolean isViewed; // 待修改
         private String message;
         private String type;
-        private Long to_id;
+        private Long replyUserId;
     }
 
     /*
      * 评论分页请求体
      */
-    public static record CommentPageRequest(
+    public static record FrontCommentPageRequest(
 
         @NotNull(message = "当前页不能为空")
         @Min(value = 1, message = "当前页必须大于等于 1")
@@ -73,14 +76,14 @@ public class FrontCommentDTO {
         Integer size,
 
         List<String> type,
-        Long for_id,
+        Long forId,
 
         // order 可选，但如果写了必须是 new 或 hot
         @Pattern(regexp = "^(new|hot)?$", message = "order 参数只能是 'new' 或 'hot'")
         String order,
 
         Long rootId,
-        Long user_id
+        Long userId
 
     ) {}
 
@@ -89,45 +92,45 @@ public class FrontCommentDTO {
      */
     @Data
     @MinioScan(maxDepth = 2)
-    public static class CommentPageResponse {
-        private List<CommentResponse> list;
+    public static class FrontCommentPageResponse {
+        private List<FrontCommentResponse> list;
         private Long total;
     }
     /**
      * 评论响应体
      */
     @Data
-    public static class CommentResponse {
+    public static class FrontCommentResponse {
         private Long id;
-        private Long from_id;
-        private String from_name;
+        private Long userId;
+        private String userName;
         @MinioFile
-        private String from_avatar;
-        private String to_name;
-        private Long for_id;
+        private String userAvatar;
+        private String replyUserName;
+        private Long forId;
         private String content;
         private LocalDateTime createdAt;
-        private Long thumbs_up;
+        private Long likes;
         private String ipAdress;
-        private Boolean is_like;
-        private List<CommentResponse> childComments;
+        private Boolean isLiked;
+        private List<FrontCommentResponse> childComments;
     }
 
     @Data
-    public static class ArticleCommentResponse {
+    public static class FrontArticleCommentResponse {
         private Long id;
-        private Long from_id;
-        private String from_name;
+        private Long userId;
+        private String userName;
         @MinioFile
-        private String from_avatar;
-        private String to_name;
-        private Long for_id;
+        private String userAvatar;
+        private String replyUserName;
+        private Long forId;
         private String type;
         private String content;
         private LocalDateTime createdAt;
-        private Long thumbs_up;
+        private Long likes;
         private String ipAdress;
-        private Boolean is_like;
+        private Boolean isLiked;
     }
 
     public static record MessageTalkPageRequest(
@@ -141,7 +144,7 @@ public class FrontCommentDTO {
 
         @NotBlank
         String type,
-        Long user_id
+        Long userId
     ){    }
     
     @Data
@@ -156,11 +159,11 @@ public class FrontCommentDTO {
         private Long id;
         @MinioFile
         private String avatar;
-        private Long from_id;
-        private String nick_name;
+        private Long userId;
+        private String nickname;
         private String content;
         private LocalDateTime createdAt;
-        private Long thumbs_up;
-        private Boolean is_like;
+        private Long likes;
+        private Boolean isLiked;
     }
 }

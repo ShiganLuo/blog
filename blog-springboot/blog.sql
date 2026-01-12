@@ -68,20 +68,23 @@ DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments` (
   `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '评论ID',
   `root_id` BIGINT  DEFAULT NULL COMMENT '根评论ID，可以为null，方便维护文章评论树',
-  `from_id` BIGINT NOT NULL COMMENT '评论者用户ID',
+  `user_id` BIGINT NOT NULL COMMENT '评论者用户ID',
   `content` TEXT NOT NULL COMMENT '评论内容',
   `for_id` BIGINT DEFAULT NULL COMMENT '评论目标ID：文章或评论ID',
   `type` VARCHAR(32) NOT NULL DEFAULT 'post' COMMENT '类型：post=文章评论，comment=回复评论',
   `author_id` BIGINT DEFAULT NULL COMMENT '被评论对象的作者ID（用于通知）',
-  `to_id` BIGINT DEFAULT NULL COMMENT '被评论用户ID',
+  `reply_user_id` BIGINT DEFAULT NULL COMMENT '回复评论用户ID',
   `likes` INT NOT NULL DEFAULT 0 COMMENT '点赞数',
   `ip_address` VARCHAR(45) DEFAULT NULL COMMENT '用户评论时ip',
   `is_deleted` TINYINT(1) DEFAULT 0 COMMENT '是否逻辑删除：0=否，1=是',
   `status` TINYINT DEFAULT 0 COMMENT '审核状态：0=待审，1=通过，2=拒绝',
+  `tag` VARCHAR(32) DEFALUT NULL COMMENT 'message类型独有',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   CONSTRAINT fk_comments_author_user FOREIGN KEY (author_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评论表';
+
+
 
 DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (

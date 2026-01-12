@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 @RestController
 @RequestMapping("/api/admin/categories")
-@Validated
 public class AdminCategoryController {
     
     private final CategoryService categoryService;
@@ -33,7 +32,7 @@ public class AdminCategoryController {
      * @return 创建结果
      */
     @PostMapping("/create")
-    public ApiResponse<String> createCategory(@Validated @RequestBody CreateCategoryRequest request) {
+    public ApiResponse<String> createCategory(@RequestBody @Validated CreateCategoryRequest request) {
         return categoryService.createCategory(request);
     }
 
@@ -43,7 +42,7 @@ public class AdminCategoryController {
      * @return 分页结果
      */
     @PostMapping("/list")
-    public ApiResponse<CategoryPageResponseVO> getCategoryPage(@Validated @RequestBody CategoryPageRequestVO request) {
+    public ApiResponse<CategoryPageResponseVO> getCategoryPage(@RequestBody @Validated CategoryPageRequestVO request) {
         return categoryService.getCategoryPage(request);
     }
 
@@ -69,7 +68,7 @@ public class AdminCategoryController {
      * 增加分类接口,如果表中没有则添加
      */
     @PostMapping("/uploadCategory")
-    public ApiResponse<String> uploadCategory(@RequestBody CategoryRequest request){
+    public ApiResponse<String> uploadCategory(@RequestBody @Validated CategoryRequest request){
         return articleService.addCategory(request);
     }
 }

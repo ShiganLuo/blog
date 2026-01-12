@@ -208,47 +208,46 @@ CREATE TABLE `articles` (
 再在表中加入一个root_id字段，用来表示评论根节点，可以为null，因为文章评论可以表示为树状结构；但是后续type可能扩展类型，可能该类型没有父子关系；并且后续如果有其它评论也能表现出树形结构，可以再添加一个字段用于维护，目前只有文章评论可以表示为树形结构。
 root_id主要目的是可以方便一次性查询文章所有评论，再在java中组装树。
 
-
-| 字段名          | 类型          | 是否可以为空 | 默认值                                             | 约束/描述                          |
-| ------------ | ----------- | ------ | ----------------------------------------------- | ------------------------------ |
-| `id`         | 主键          | 否      | 自增                                              | 自增评论唯一标识                       |
-| `from_id`    | BIGINT      | 否      | 无                                               | 评论人用户 ID                       |
-| `root_id`    | BIGINT      | 是      | NULL                                            | 根评论id，可以为null，方便维护文章评论树        |
-| `content`    | TEXT        | 否      | 无                                               | 评论文本内容                         |
-| `for_id`     | BIGINT      | 是      | NULL                                            | 被评论对象 ID（文章 ID 或评论 ID）；没有外键约束  |
-| `type`       | varchar(32) | 否      | post                                            | （如 post、comment、message、talk）  |
-| `author_id`  | BIGINT      | 是      | NULL                                            | 被评论对象作者的 ID（用于通知，外键关联users.id） |
-| `to_id`      | BIGINT      | 是      | NULL                                            | 被评论用户ID；回复评论才赋值，评论文章不赋值        |
-| `likes`      | INT         | 否      | 0                                               | 点赞数                            |
-| `ip_address` | VARCHAR(45) | 是      | NULL                                            | 评论时ip地址                        |
-| `is_deleted` | TINYINT     | 否      | 0                                               | 逻辑删除标志                         |
-| `status`     | TINYINT     | 否      | 0                                               | 审核状态：0=待审，1=通过，2=拒绝            |
-| `tag`        | varchar(32) | 是      | NULL                                            | message类型独有                    |
-| `created_at` | TIMESTAMP   | 否      | `CURRENT_TIMESTAMP`                             | 创建时间                           |
-| `updated_at` | TIMESTAMP   | 否      | `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 更新时间（自动更新）                     |
+| 字段名             | 类型          | 是否可以为空 | 默认值                                             | 约束/描述                          |
+| --------------- | ----------- | ------ | ----------------------------------------------- | ------------------------------ |
+| `id`            | 主键          | 否      | 自增                                              | 自增评论唯一标识                       |
+| `user_id`       | BIGINT      | 否      | 无                                               | 评论人用户 ID                       |
+| `type`          | varchar(32) | 否      | post                                            | （如 post、comment、message、talk）  |
+| `content`       | TEXT        | 否      | 无                                               | 评论文本内容                         |
+| `likes`         | INT         | 否      | 0                                               | 点赞数                            |
+| `is_deleted`    | TINYINT     | 否      | 0                                               | 逻辑删除标志                         |
+| `status`        | TINYINT     | 否      | 0                                               | 审核状态：0=待审，1=通过，2=拒绝            |
+| `reply_user_id` | BIGINT      | 是      | NULL                                            | 回复评论用户ID；回复评论才赋值，评论文章不赋值       |
+| `root_id`       | BIGINT      | 是      | NULL                                            | 根评论id，可以为null，方便维护文章评论树        |
+| `for_id`        | BIGINT      | 是      | NULL                                            | 被评论对象 ID（文章 ID 或评论 ID）；没有外键约束  |
+| `author_id`     | BIGINT      | 是      | NULL                                            | 被评论对象作者的 ID（用于通知，外键关联users.id） |
+| `ip_address`    | VARCHAR(45) | 是      | NULL                                            | 评论时ip地址                        |
+| `tag`           | VARCHAR(32) | 是      | NULL                                            | message类型独有                    |
+| `created_at`    | TIMESTAMP   | 否      | `CURRENT_TIMESTAMP`                             | 创建时间                           |
+| `updated_at`    | TIMESTAMP   | 否      | `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 更新时间（自动更新）                     |
 
 ```sql
 DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments` (
   `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '评论ID',
   `root_id` BIGINT  DEFAULT NULL COMMENT '根评论ID，可以为null，方便维护文章评论树',
-  `from_id` BIGINT NOT NULL COMMENT '评论者用户ID',
+  `user_id` BIGINT NOT NULL COMMENT '评论者用户ID',
   `content` TEXT NOT NULL COMMENT '评论内容',
   `for_id` BIGINT DEFAULT NULL COMMENT '评论目标ID：文章或评论ID',
   `type` VARCHAR(32) NOT NULL DEFAULT 'post' COMMENT '类型：post=文章评论，comment=回复评论',
   `author_id` BIGINT DEFAULT NULL COMMENT '被评论对象的作者ID（用于通知）',
-  `to_id` BIGINT DEFAULT NULL COMMENT '被评论用户ID',
+  `reply_user_id` BIGINT DEFAULT NULL COMMENT '回复评论用户ID',
   `likes` INT NOT NULL DEFAULT 0 COMMENT '点赞数',
   `ip_address` VARCHAR(45) DEFAULT NULL COMMENT '用户评论时ip',
   `is_deleted` TINYINT(1) DEFAULT 0 COMMENT '是否逻辑删除：0=否，1=是',
   `status` TINYINT DEFAULT 0 COMMENT '审核状态：0=待审，1=通过，2=拒绝',
+  `tag` VARCHAR(32) DEFALUT NULL COMMENT 'message类型独有',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   CONSTRAINT fk_comments_author_user FOREIGN KEY (author_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评论表';
-
-
 ```
+
 ---
 
 ### 目录表 categories

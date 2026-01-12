@@ -4,12 +4,10 @@ import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.service.NoneTableService;
 
 import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/front/utils")
-@Validated
 public class FrontNoneTableController {
 
     private final NoneTableService noneTableService;

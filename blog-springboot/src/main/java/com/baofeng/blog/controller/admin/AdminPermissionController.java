@@ -5,6 +5,7 @@ import com.baofeng.blog.dto.admin.AdminPermissionDTO.*;
 import com.baofeng.blog.service.PermissionService;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping("/api/admin/permission")
@@ -22,12 +23,12 @@ public class AdminPermissionController {
      * @return
      */
     @PostMapping("/AssignPermission")
-    public ApiResponse<String> AssignPermissionForRole(@RequestBody AssignPermissionRequest assignPermissionRequest) {
+    public ApiResponse<String> AssignPermissionForRole(@RequestBody @Validated AssignPermissionRequest assignPermissionRequest) {
         return permissionService.assignPermissionForRole(assignPermissionRequest);
     }
 
     @PostMapping("/addNewPermission")
-    public ApiResponse<String> AddNewPermission(@RequestBody AddNewPermissionRequest addNewPermissionRequest) {
+    public ApiResponse<String> AddNewPermission(@RequestBody @Validated AddNewPermissionRequest addNewPermissionRequest) {
         return permissionService.addNewPermission(addNewPermissionRequest);
     }
 

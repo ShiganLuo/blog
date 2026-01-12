@@ -30,7 +30,7 @@ const topCommentInputRef = ref<InstanceType<typeof CommentInput> | null>(null);
 const params = reactive<CommentParams>({
   current: 1,
   size: 10,
-  user_id: getUserInfo.value.id,
+  userId: getUserInfo.value.id,
   rootId: props.id,
   loading: false,
 });
@@ -58,19 +58,19 @@ const showMore = () => {
 // 处理点赞事件
 const handleLike = async (comment: CommentItem) => {
   let res;
-  const payload = { for_id: comment.id, type: "comment", user_id: userStore.getUserInfo.id };
-  if (comment.is_like) {
+  const payload = { forId: comment.id, type: "comment", user_id: userStore.getUserInfo.id };
+  if (comment.isLiked) {
     res = await LikeService.cancelLike(payload);
     if (res?.code === 200) {
-      comment.is_like = false;
-      comment.thumbs_up--;
+      comment.isLiked = false;
+      comment.likes--;
       ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "已取消点赞") });
     }
   } else {
     res = await LikeService.addLike(payload);
     if (res?.code === 200) {
-      comment.is_like = true;
-      comment.thumbs_up++;
+      comment.isLiked = true;
+      comment.likes++;
       ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "点赞成功") });
     }
   }
@@ -94,22 +94,22 @@ const handleDelete = (commentId: number | string) => {
 };
 
 // 回复评论，由CommentItem触发
-const publish = async (data: { content: string, for_id?: number | string, to_id?: string }) => {
+const publish = async (data: { content: string, forId?: number | string, replyUserId?: string }) => {
   const commentData = {
-    from_id: userStore.getUserInfo.id,
+    userId: userStore.getUserInfo.id,
     content: data.content,
-    for_id: data.for_id,
-    to_id: data.to_id,
+    forId: data.forId,
+    replyUserId: data.replyUserId,
     type: "comment",
-    author_id: props.authorId,
-    root_id: props.id
+    authorId: props.authorId,
+    rootId: props.id
   };
   const res = await CommentSerivce.addComment(commentData);
   if (res.code === 200) {
     ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "评论成功") });
     getComment("clear");
     emits("refresh");
-    if (!data.for_id) {
+    if (!data.forId) {
       topCommentInputRef.value?.clear(); // 清空顶层评论输入框
     }
   } else {

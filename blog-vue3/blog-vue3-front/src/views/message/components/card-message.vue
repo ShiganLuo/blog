@@ -38,7 +38,7 @@ interface Params {
   size: number;
   type: string;
   content: string;
-  user_id?: number | string;
+  userId?: number | string;
 }
 
 const param = reactive<Params>({
@@ -46,7 +46,7 @@ const param = reactive<Params>({
   size: 10,
   type: "message",
   content: "",
-  user_id: getUserInfo.value.id, // 确保 user_id 有默认值
+  userId: getUserInfo.value.id, // 确保 userId 有默认值
 });
 const primaryParam = reactive<Params>({ ...param });
 
@@ -171,26 +171,26 @@ const like = async (item: MessageItem, index: number): Promise<void> => {
   try {
     let res;
     // 取消点赞
-    if (item.is_like) {
-      res = await LikeService.cancelLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
+    if (item.isLiked) {
+      res = await LikeService.cancelLike({ for_id: item.id, type: "message", userId: getUserInfo.value.id });
     }
     // 点赞
     else {
-      res = await LikeService.addLike({ for_id: item.id, type: "message", user_id: getUserInfo.value.id });
+      res = await LikeService.addLike({ for_id: item.id, type: "message", userId: getUserInfo.value.id });
     }
 
     if (res && res.code === 200) {
-      if (item.is_like) {
-        messageList.value[index].thumbs_up--;
-        messageList.value[index].is_like = false;
+      if (item.isLiked) {
+        messageList.value[index].likes--;
+        messageList.value[index].isLiked = false;
         ElNotification({
           offset: 60,
           title: "提示",
           message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "已取消点赞"),
         });
       } else {
-        messageList.value[index].thumbs_up++;
-        messageList.value[index].is_like = true;
+        messageList.value[index].likes++;
+        messageList.value[index].isLiked = true;
         ElNotification({
           offset: 60,
           title: "提示",
@@ -368,14 +368,14 @@ defineExpose<{
                 <div class="top-header">
                   <div class="flex items-center">
                     <el-avatar class="left-avatar" :src="message.avatar"
-                      >{{ message.nick_name }}
+                      >{{ message.nickName }}
                     </el-avatar>
-                    <span class="nick-name"> {{ message.nick_name }}</span>
+                    <span class="nick-name"> {{ message.nickName }}</span>
                   </div>
                   <div
                     class="flex items-center cursor-pointer option-top"
                     v-if="
-                      (getUserInfo.id && getUserInfo.id === message.user_id) || getUserInfo.role === 1
+                      (getUserInfo.id && getUserInfo.id === message.userId) || getUserInfo.role === 1
                     "
                   >
                     <el-icon @click="handleEditMessage(message)"><Edit /></el-icon>
@@ -416,11 +416,11 @@ defineExpose<{
                       @click="like(message, index)"
                     >
                       <svg-icon
-                        :name="message.is_like ? 'redHeart' : 'greyHeart'"
+                        :name="message.isLiked ? 'redHeart' : 'greyHeart'"
                         :width="1.5"
                       ></svg-icon>
-                      <span :style="{ color: message.is_like ? '#f00' : '' }" class="thums_up">{{
-                        message.thumbs_up
+                      <span :style="{ color: message.isLiked ? '#f00' : '' }" class="thums_up">{{
+                        message.likes
                       }}</span>
                     </div>
                   </div>
@@ -585,7 +585,7 @@ defineExpose<{
     font-size: 16px;
   }
 }
-.thumbs_up {
+.likes {
   margin-left: -5px !important;
 }
 .observer {

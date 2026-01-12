@@ -1,15 +1,15 @@
 // 类型定义
 export interface TalkItem {
   id: number | string;
-  from_id: number | string;
-  nick_name: string;
+  userId: number | string;
+  nickName: string;
   avatar: string;
   content: string;
   talkImgList: string[];
   createdAt: string;
-  is_top: number;
-  is_like: boolean;
-  like_times: number;
+  isToped: number;
+  isLiked: boolean;
+  likes: number;
 }
 
 export type TalkItemListResponse = {
