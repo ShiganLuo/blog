@@ -21,7 +21,7 @@ public class AdminImageController {
     }
 
     @PostMapping("/uploadImage")
-    public ApiResponse<ImageResponse> uploadImage(@RequestPart MultipartFile file) {
+    public ApiResponse<ImageResponse> uploadImage(@RequestPart("file") MultipartFile file) {
         return imageService.uploadImage(file);
     }
 }

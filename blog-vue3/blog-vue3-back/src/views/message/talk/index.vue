@@ -69,11 +69,9 @@
           <div class="left-wrapper">
             <el-upload
               v-show="uploads.length == 0"
-              :action="uploadImageUrl"
               multiple
-              :headers="uploadHeaders"
               :before-upload="beforeUpload"
-              :on-success="onSuccess"
+              :http-request="imageUpload"
               :show-file-list="false"
             >
               <i class="iconfont-sys" v-html="'&#xe634;'" style="font-size: 32px" />
@@ -122,10 +120,9 @@
         <el-upload
           class="talk-image-upload"
           v-show="uploads.length > 0"
-          :action="uploadImageUrl"
           list-type="picture-card"
           multiple
-          :headers="uploadHeaders"
+          :http-request="imageUpload"
           v-model:file-list="uploads"
           :before-upload="beforeUpload"
         >
@@ -152,6 +149,8 @@
   import { useUserStore } from '@/store/modules/user'
   import EmojiText from '@/utils/emojo'
   import { parseTime, AvatarImga } from '@/utils/utils'
+  import { UploadRequestOptions } from 'element-plus'
+  import { PhotoService } from '@/api/photo/photoApi'
 
   // 响应式数据
   const current = ref(0)
@@ -177,11 +176,9 @@
   const talk = reactive({ ...initialFormState })
 
   const userStore = useUserStore()
-  let { accessToken } = userStore
   // 上传路径
   const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/blog/talk/admin/talks/images`
 
-  const uploadHeaders = { Authorization: accessToken }
 
   // 方法
   const handleCommand = (command: string) => {
@@ -196,6 +193,33 @@
     }
   }
 
+  const imageUpload = async (options: UploadRequestOptions) => {
+    const formData = new FormData()
+    formData.append('file', options.file)
+    const makeError = (e: any, status = 500) => ({
+      name: e?.name || 'Upload Error',
+      message: e?.message || '上传失败',
+      status,
+      method: 'POST',
+      url: uploadImageUrl
+    })
+    try {
+      const res = await PhotoService.uploadPhoto(formData)
+
+      if (res.code === 200) {
+        uploads.value.push({ url: res.result.imageUrl })
+        ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+        options.onSuccess?.(res)
+      } else {
+        ElMessage.error(`图片上传失败 ${res.message} ${EmojiText[500]}`)
+        options.onError?.(makeError(res, res.code))
+      }
+    } catch (err) {
+      ElMessage.error('图片上传失败，网络或服务器异常')
+      options.onError?.(makeError(err))
+    }
+  }
+  
   const listTalks = async () => {
     const res = await TalkService.listBackTalks({
       current: current.value,
@@ -229,11 +253,6 @@
     return true
   }
 
-  // 上传成功后的处理函数
-  const onSuccess = (response: any) => {
-    uploads.value.push({ url: response.msg })
-    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
-  }
 
   const sizeChange = (newSize: number) => {
     previews.value = []

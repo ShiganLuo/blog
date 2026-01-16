@@ -11,11 +11,14 @@ const axiosInstance = axios.create({
   withCredentials: true, // 异步请求携带cookie
   transformRequest: [
     (data, headers) => {
+      if (data instanceof FormData) {
+        return data; // 如果数据是 FormData 类型，则直接返回，防止被转换为 JSON 字符串
+      }
       const contentType = headers['Content-Type'] as string
       if (contentType && contentType.includes('x-www-form-urlencoded')) {
         return data
       }
-      return JSON.stringify(data)
+      return JSON.stringify(data) // 虽然axios会自动将js对象转换为JSON字符串，但这里还是显式转换一下，确保数据格式正确
     }
   ], // 请求数据转换为 JSON 字符串
   validateStatus: (status) => status >= 200 && status < 300, // 只接受 2xx 的状态码

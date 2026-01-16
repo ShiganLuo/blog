@@ -1,9 +1,8 @@
 import request from '@/utils/http'
-import { PhotoAlbumRecordResult } from '@/types/photo/photo'
-import { CodeMsgResult } from '@/types/axios'
+import { PhotoAlbumRecordResult, UploadPhotoResult } from '@/types/photo/photo'
 
 // 照片
-class PhotoService {
+export class PhotoService {
   // 获取照片列表
   static listPhoto(params: any) {
     return request.get<PhotoAlbumRecordResult>({
@@ -20,14 +19,24 @@ class PhotoService {
     })
   }
 
-  // 更新照片
+  // 更新照片信息
   static updatePhoto(data: any) {
-    return request.put({
-      url: '/blog/photo/admin/photos',
-      data
+    return request.post<UploadPhotoResult>({
+      url: '',
+      data: data
     })
   }
 
+  // 上传照片
+  static uploadPhoto(data: any) {
+    return request.post<UploadPhotoResult>({
+      url: '/admin/image/uploadImage',
+      data: data,
+      headers: {
+        'Content-Type': undefined // 覆盖默认的 Content-Type 设置，让浏览器根据文件类型自动设置
+      }
+    })
+  }
   // 移动照片相册
   static movePhotoAlbum(data: any) {
     return request.put({
@@ -56,4 +65,3 @@ class PhotoService {
   }
 }
 
-export default PhotoService

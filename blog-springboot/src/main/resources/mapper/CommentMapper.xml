@@ -71,11 +71,12 @@
         <result property="isViewed" column="status"/> <!-- 待修改 -->
         <result property="message" column="content"/>
         <result property="type" column="type"/>
+        <result property="replyUserId" column="reply_user_id"/>
         <result property="forId" column="for_id"/>
     </resultMap>
     <select id="getNotifyPage" resultMap="NotifyPageResultMap">
         SELECT 
-            c.id, c.status, c.content, c.type, c.for_id
+            c.id, c.status, c.content, c.type, c.for_id, c.reply_user_id
         FROM comments c
         WHERE c.author_id = #{userId}
     </select>

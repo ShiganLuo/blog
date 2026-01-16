@@ -86,7 +86,7 @@ public class AdminArticleDTO {
     }
 
     public static record CreateOrupdateArticlesRequest(
-        @NotEmpty List<Long> ids,
+        List<Long> ids,
         Long id,
         Long authorId,
         Long imageId,

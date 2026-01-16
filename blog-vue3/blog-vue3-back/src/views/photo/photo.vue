@@ -84,13 +84,10 @@
       <div class="upload-container">
         <el-upload
           v-show="uploads.length > 0"
-          :action="uploadImageUrl"
+          :http-request="imageUpload"
           list-type="picture-card"
           v-model:file-list="uploads"
-          multiple
-          :headers="uploadHeaders"
           :before-upload="beforeUpload"
-          @error="onError"
         >
           <el-icon><Plus /></el-icon>
           <template #file="{ file }">
@@ -108,12 +105,9 @@
           <el-upload
             v-show="uploads.length == 0"
             drag
-            :action="uploadImageUrl"
             multiple
-            :headers="uploadHeaders"
+            :http-request="imageUpload"
             :before-upload="beforeUpload"
-            @success="onSuccess"
-            @error="onError"
             :show-file-list="false"
           >
             <template #default>
@@ -188,11 +182,11 @@
 <script setup lang="ts">
   import { ref, reactive, onMounted } from 'vue'
   import { useRoute } from 'vue-router'
-  import { ElMessage, ElNotification } from 'element-plus'
+  import { ElMessage, ElNotification, UploadRequestOptions } from 'element-plus'
   import { PhotoAlbumResult } from '@/types/photo/photo'
   import { useUserStore } from '@/store/modules/user'
   import PhotoAlbumService from '@/api/photo/photoAlbumApi'
-  import PhotoService from '@/api/photo/photoApi'
+  import { PhotoService } from '@/api/photo/photoApi'
 
   const route = useRoute()
 
@@ -253,16 +247,35 @@
   const photoFormRef = ref<FormInstance>()
 
   import EmojiText from '@/utils/emojo'
-  // 上传成功后的处理函数
-  const onSuccess = (response: any) => {
-    uploads.value.push({ url: response.msg })
-    ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+
+  const imageUpload = async (options: UploadRequestOptions) => {
+    // 统一交给自定义axios处理，保持与其它接口的请求格式一致
+    const formData = new FormData()
+    formData.append('file', options.file)
+    const makeError = (e: any, status = 500) => ({
+      name: e?.name || 'Upload Error',
+      message: e?.message || '上传失败',
+      status,
+      method: 'POST',
+      url: uploadImageUrl
+    })
+    try {
+      const res = await PhotoService.uploadPhoto(formData)
+
+      if (res.code === 200) {
+        uploads.value.push({ url: res.result.imageUrl })
+        ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+        options.onSuccess?.(res)
+      } else {
+        ElMessage.error(`图片上传失败 ${res.message} ${EmojiText[500]}`)
+        options.onError?.(makeError(res, res.code))
+      }
+    } catch (err) {
+      ElMessage.error('图片上传失败，网络或服务器异常')
+      options.onError?.(makeError(err))
+    }
   }
 
-  // 上传失败后的处理函数
-  const onError = () => {
-    ElMessage.error(`图片上传失败 ${EmojiText[500]}`)
-  }
 
   // API调用
   const getAlbumInfo = async () => {
@@ -306,6 +319,7 @@
     }
   }
 
+  
   const updatePhoto = async () => {
     if (!photoFormRef.value) return
     await photoFormRef.value.validate(async (valid) => {

@@ -17,3 +17,8 @@ export type PhotoAlbumRecordResult = {
   list: PhotoAlbumResult[]
   total: number
 }
+
+export type UploadPhotoResult = {
+  imageUrl: string
+  imageId: number
+}

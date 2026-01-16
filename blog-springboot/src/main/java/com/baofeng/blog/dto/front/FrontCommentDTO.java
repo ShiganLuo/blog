@@ -60,6 +60,7 @@ public class FrontCommentDTO {
         private String message;
         private String type;
         private Long replyUserId;
+        private Long forId;
     }
 
     /*
