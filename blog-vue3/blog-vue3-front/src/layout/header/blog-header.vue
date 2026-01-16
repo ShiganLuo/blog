@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
           @select="(val: string) => handleSelect(val, 'pc')"
         >
           <el-menu-item index="/home"><i class="iconfont icon-home"></i> 主页</el-menu-item>
-          <el-menu-item index="/archives"><i class="iconfont icon-icon"></i> 时间轴</el-menu-item>
+          <el-menu-item index="/archives"><i class="iconfont icon-shijiantime"></i> 时间轴</el-menu-item>
           <el-sub-menu index="/resources">
             <template #title><i class="iconfont icon-menu"></i> 更多</template>
             <el-menu-item index="/resources/front">
