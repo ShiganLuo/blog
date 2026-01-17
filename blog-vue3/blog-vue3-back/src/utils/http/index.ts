@@ -60,9 +60,10 @@ axiosInstance.interceptors.request.use(
   }
 )
 
+
 // 响应拦截器
 let isRefreshing = false
-let requests: ((token: string) => void)[] = []
+let requests: ((token: string | null) => void)[] = []
 
 axiosInstance.interceptors.response.use(
   async (response: AxiosResponse) => {
@@ -73,18 +74,25 @@ axiosInstance.interceptors.response.use(
     if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') { // response.request.responseType类型不安全
       return response
     }
-
     // 401 -> token过期，尝试刷新
     if (code == ApiStatus.success) {
       return Promise.resolve(response)
     } else if (code === ApiStatus.unauthorized) {
       const userStore = useUserStore()
       const originalRequest = response.config
+      // 刷新请求报 401
+      if (originalRequest.url?.includes('/admin/users/refreshToken')) {
+        isRefreshing = false // 强制解锁
+        requests.forEach(cb => cb(null))
+        requests = []
+        userStore.logOut()
+        return Promise.reject(new Error('Refresh Token 失效'))
+      }
       if (!isRefreshing) {
         isRefreshing = true
         try {
           // 调用刷新 token 接口
-          const refreshRes = await axiosInstance.post('/api/admin/users/refreshToken', {
+          const refreshRes = await axiosInstance.post('/admin/users/refreshToken', {
             refreshToken: userStore.refreshToken
           })
           const newAccessToken = refreshRes.data.result
@@ -108,7 +116,7 @@ axiosInstance.interceptors.response.use(
       } else {
         // 已经在刷新 token，把请求挂起
         return new Promise((resolve,reject) => {
-          requests.push((newAccessToken: string) => {
+          requests.push((newAccessToken: string | null) => {
 
             if (!newAccessToken) {
               reject(new Error('刷新 token 失败'))

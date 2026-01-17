@@ -55,7 +55,7 @@
   import { ref, onMounted } from 'vue'
   import { useRoute } from 'vue-router'
   import { ElMessage } from 'element-plus'
-  import PhotoService from '@/api/photo/photoApi'
+  import { PhotoService } from '@/api/photo/photoApi'
 
   const route = useRoute()
   const loading = ref(true)

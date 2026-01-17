@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         String requestUri = request.getRequestURI();
+        logger.info("requestUri:" + requestUri);
         for (String uri : whiteListUris) {
             if (requestUri.startsWith(uri.replace("/**", ""))) {
                 filterChain.doFilter(request, response);
