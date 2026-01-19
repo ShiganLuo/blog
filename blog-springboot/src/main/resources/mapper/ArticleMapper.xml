@@ -11,14 +11,13 @@
         <result property="content" column="content"/>
         <result property="summary" column="summary"/>
         <result property="coverImage" column="cover_image"/>
-        <result property="visitCount" column="visit_count"/>
         <result property="authorId" column="author_id"/>
         <result property="views" column="views"/>
         <result property="likes" column="likes"/>
         <result property="commentsCount" column="comments_count"/>
         <result property="isTop" column="is_top"/>
         <result property="isFeatured" column="is_featured"/>
-        <result property="isDelted" column="is_deleted"/>
+        <result property="isDeleted" column="is_deleted"/>
         <result property="type" column="type"/>
         <result property="status" column="status"/>
         <result property="originUrl" column="origin_url"/>
@@ -411,17 +410,24 @@
         ORDER BY a.created_at DESC
     </select>
 
-    <update id="incrementVisitCountById">
+    <!--增加文章访问次数-->
+    <update id="incrementArticleViewsById">
         UPDATE articles
-        SET visit_count = visit_count + #{count}
+        SET views = views + #{count}
         WHERE id = #{id}
     </update>
 
-    <update id="batchIncrementVisitCount">
-        <foreach collection="visitMap" item="count" index="articleId" separator=";">
-            UPDATE article
-            SET visit_count = visit_count + #{count}
-            WHERE id = #{articleId}
+    <!--批量增加文章访问次数（未开启批量执行sql版）-->
+    <update id="batchIncrementArticleViews">
+        UPDATE articles
+        SET views = views + CASE id
+            <foreach collection="visitMap" item="count" index="articleId">
+                WHEN #{articleId} THEN #{count}
+            </foreach>
+        END
+        WHERE id IN
+        <foreach collection="visitMap" item="count" index="articleId" open="(" separator="," close=")">
+            #{articleId}
         </foreach>
     </update>
 

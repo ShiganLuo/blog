@@ -10,6 +10,13 @@ import java.io.IOException;
 public interface ArticleService {
     
     /**
+     * 增加文章访问次数
+     * @param articleId
+     * @return
+     */
+    public ApiResponse<String> addArticlesViews(Long articleId);
+
+    /**
      * 查询文章列表，包括标签，分类，作者
      * @param ArticlePageRequestVO
      * @return ArticlePageResponseVO

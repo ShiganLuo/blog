@@ -101,5 +101,10 @@ public class FrontArticleController {
     public ApiResponse<ArticleAbstractsResponse> getArticlesByTagId(@RequestBody @Validated CategoryOrTagRequest request) {
         return articleService.getArticlesByTagId(request); 
     }
+
+    @PostMapping("/addArticleViews")
+    public ApiResponse<String> addArticleViews(@RequestBody Long articleId) {
+        return articleService.addArticlesViews(articleId);
+    }
     
 }

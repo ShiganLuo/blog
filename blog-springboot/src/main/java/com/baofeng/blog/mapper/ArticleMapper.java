@@ -185,17 +185,17 @@ public interface ArticleMapper {
 
     /**
      * 增加文章访问次数
-     * @param articleId
      * @param count
+     * @param id
      * @return
      */
-    int incrementVisitCountById(Long id, long count);
+    int incrementArticleViewsById(long count,long id);
 
     /**
      * 批量增加文章访问量
      * @param visitMap key: articleId, value: 增加的访问量
      * @return 更新的行数
      */
-    int batchIncrementVisitCount(@Param("visitMap") Map<Long, Long> visitMap);
+    int batchIncrementArticleViews(@Param("visitMap") Map<Long, Long> visitMap);
 
 }

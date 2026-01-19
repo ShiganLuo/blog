@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisVisitCounter {
 
+    Long blogSettingId = 1L;
+
     private final StringRedisTemplate redisTemplate;
 
     public RedisVisitCounter(StringRedisTemplate redisTemplate) {
@@ -16,7 +18,7 @@ public class RedisVisitCounter {
 
     // 站点访问量
     public void incrSiteVisit() {
-        redisTemplate.opsForValue().increment(RedisKeysEnum.SITE_VISIT.getKey());
+        redisTemplate.opsForValue().increment(RedisKeysEnum.SITE_VISIT.getKey() + blogSettingId);
     }
 
     // 文章访问量

@@ -35,17 +35,17 @@ public class VisitCountSyncTask {
      */
     @Scheduled(cron = "0 */1 * * * ?")
     public void syncSiteVisitCount() {
-        Long blogSettingId = 1L; // 单站点固定 ID，可扩展多站点
+        long blogSettingId = 1L; // 单站点固定 ID，可扩展多站点
 
         String key = RedisKeysEnum.SITE_VISIT.getKey() + blogSettingId;
         String value = redisTemplate.opsForValue().get(key);
 
         if (value == null) return;
 
-        long count = Long.parseLong(value);
+        int count = (value == null) ? 0 : Integer.parseInt(value);
         if (count <= 0) return;
 
-        int rowsUpdated = blogSettingMapper.incrementVisitCountById(blogSettingId, count);
+        int rowsUpdated = blogSettingMapper.incrementVisitCountById(count,blogSettingId);
         if (rowsUpdated == 0) {
             log.warn("Site visit sync failed, 0 row was updated, blogSettingId={}", blogSettingId);
         } else {
@@ -80,7 +80,7 @@ public class VisitCountSyncTask {
 
         // 批量更新数据库
         if (!articleVisitMap.isEmpty()) {
-            int updatedRows = articleMapper.batchIncrementVisitCount(articleVisitMap);
+            int updatedRows = articleMapper.batchIncrementArticleViews(articleVisitMap);
             log.info("Article visits synced, total articles: {}, rows updated: {}", articleVisitMap.size(), updatedRows);
 
             // 删除 Redis key

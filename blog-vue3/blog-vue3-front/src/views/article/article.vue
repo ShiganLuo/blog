@@ -23,6 +23,7 @@ interface MdState {
 }
 
 let setUpTimes: Date | null = null;
+let lastVisitTime = 0;
 let lastArticleId: string | null = null;
 let comment: Element | null = null;
 let observe: IntersectionObserver | null = null; // 用于监听评论是否出现在可视区域内
@@ -190,13 +191,41 @@ const observeBox = (): void => {
   if (comment) observe.observe(comment);
 };
 
+// 增加文章访问量
+const addArticleViews = async (id: string) => {
+  try {
+    await ArticleService.addArticleViews(Number(id));
+  } catch (error) {
+    console.error("增加阅读量失败", error);
+  }
+};
+
 watch(
   () => route.query.id,
   (newId) => {
-    if (route.path === "/article" && typeof newId === "string") {
-      setUpTimes = new Date();
-      lastArticleId = newId;
-      init(newId);
+    // 基础校验
+    if (route.path === "/article" && newId) {
+      const currentId = String(newId);
+      const now = Date.now();
+
+      // 1. 核心内容：立即加载，保证用户第一秒看到文字
+      init(currentId);
+
+      // 2. 统计逻辑：判断并延迟执行
+      const isDifferentArticle = currentId !== lastArticleId;
+      const isTimeExceeded = now - lastVisitTime > 10 * 60 * 1000; // 10分钟
+
+      if (isDifferentArticle || isTimeExceeded) {
+        // 使用延时，避开首屏网络竞争
+        // 建议设为 2s，此时用户已经开始阅读内容，统计更真实
+        setTimeout(() => {
+          addArticleViews(currentId);
+          
+          // 更新状态
+          lastArticleId = currentId;
+          lastVisitTime = now;
+        }, 2000); 
+      }
     }
   },
   { immediate: true }

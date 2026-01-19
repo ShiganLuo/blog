@@ -9,6 +9,12 @@ import { type ArticleListResponse,
 
 export class ArticleService {
 
+  static addArticleViews(articleId:number) {
+    return request.post<string>({
+      url: '/front/articles/addArticleViews',
+      data: articleId
+    })
+  }
   static homeGetArticleList(data?: object) {
     return request.post<ArticleInfoListResponse>({
         url: '/front/articles/getArticleList',

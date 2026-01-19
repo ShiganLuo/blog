@@ -15,6 +15,7 @@ import com.baofeng.blog.enums.ArticleStatusEnum;
 import com.baofeng.blog.enums.ArticleTypeEnum;
 import com.baofeng.blog.mapper.*;
 import com.baofeng.blog.service.ArticleService;
+import com.baofeng.blog.service.redis.RedisVisitCounter;
 import com.baofeng.blog.common.util.UrlNormalizeUtil;
 
 
@@ -47,6 +48,8 @@ public class ArticleServiceImpl implements ArticleService {
     private final TagMapper tagMapper;
     private final EntityImageMapper entityImageMapper;
     private final MinioUtil minioService;
+    private final RedisVisitCounter redisVisitCounter;
+
     private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
 
     @Value("${minio.endpoint}")
@@ -61,7 +64,8 @@ public class ArticleServiceImpl implements ArticleService {
                               UserMapper userMapper,
                               CategoryMapper categoryMapper,
                               TagMapper tagMapper,
-                              EntityImageMapper entityImageMapper) {
+                              EntityImageMapper entityImageMapper,
+                              RedisVisitCounter redisVisitCounter) {
         this.minioService = minioService;
         this.articleMapper = articleMapper;
         this.imageMapper = imageMapper;
@@ -69,8 +73,22 @@ public class ArticleServiceImpl implements ArticleService {
         this.categoryMapper = categoryMapper;
         this.tagMapper = tagMapper;
         this.entityImageMapper = entityImageMapper;
+        this.redisVisitCounter = redisVisitCounter;
     }
 
+    @Override
+    public ApiResponse<String> addArticlesViews(Long articleId) {
+        if (articleId == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"articleId不能为空");
+        }
+        Article article = articleMapper.getArticleById(articleId);
+        if (article == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"文章不存在");
+        }
+        redisVisitCounter.incrArticleVisit(articleId);
+        return ApiResponse.success("文章访问次数增加成功");
+
+    }
     @Override
     public ApiResponse<String> deleteArticle(Long id){
         int rowsDeleted = articleMapper.deleteArticle(id);
