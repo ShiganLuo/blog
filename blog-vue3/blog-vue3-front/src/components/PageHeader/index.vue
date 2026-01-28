@@ -39,8 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
   bgUrl: "",
   photoAlbumList: () => [],
 });
-console.log("----1----")
-console.log(props.bgUrl)
+
 // =====================
 // Store + 路由
 // =====================

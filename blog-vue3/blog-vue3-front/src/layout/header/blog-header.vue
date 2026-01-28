@@ -179,8 +179,8 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <div class="mobile_menu flex_r_between" >
-      <div class="flex items-center">
-        <span class="iconfont icon-menu2" @click="headerState.drawerShow = true"> </span>
+      <div class="items-center">
+        <span class="iconfont icon-menu" @click="headerState.drawerShow = true"> </span>
         <MessageBox
           class="ml-[10px]"
           v-if="getUserInfo.id"
@@ -217,7 +217,7 @@ onBeforeUnmount(() => {
             @select="(val: string) => handleSelect(val, 'mobile')"
           >
             <el-menu-item index="/home"><i class="iconfont icon-home"></i> 主页</el-menu-item>
-            <el-menu-item index="/archives"><i class="iconfont icon-icon"></i> 时间轴</el-menu-item>
+            <el-menu-item index="/archives"><i class="iconfont icon-shijiantime"></i> 时间轴</el-menu-item>
             <el-sub-menu index="/resources">
               <template #title><i class="iconfont icon-menu"></i> 更多</template>
               <el-menu-item index="/resources/front">
@@ -282,7 +282,19 @@ onBeforeUnmount(() => {
 
   }
 
+  .flex-r-between {
+    display: flex;
+    flex-direction: row;      
+    justify-content: space-between; 
+    align-items: center;
+  }
 
+  .items-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: auto;
+  }
   .sub-menu {
     height: 53px;
 
