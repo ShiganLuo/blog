@@ -81,9 +81,9 @@
                 <div class="popover-container">
                   <div style="margin-bottom: 1rem">添加分类</div>
                   <el-tag
-                    v-for="item of categorys"
-                    :key="item.id"
-                    class="category-item"
+                    v-for="(item, index) of categoryList"
+                    :key="index"
+                    :class="categoryClass(item)"
                     @click="addCategory(item)"
                   >
                     {{ item.categoryName }}
@@ -245,7 +245,7 @@ const initialFormState: ArticleForm = {
     createdAt: string,
     updatedAt: string,
   }
-  const categorys = ref<CategoryResult[]>([])
+  const categoryList = ref<CategoryResult[]>([])
 
   type TagResult = {
     id: string,
@@ -397,12 +397,17 @@ const initialFormState: ArticleForm = {
   const tagClass = (item: any) => {
     return form.value.tagNameList.indexOf(item.tagName) == -1 ? 'tag-item' : 'tag-item active'
   }
+  
+  // 分类样式
+  const categoryClass = (item: any) => {
+    return form.value.categoryNameList.indexOf(item.categoryName) == -1 ? 'category-item' : 'category-item active'
+  }
 
   // 列出分类
   const listCategories = async () => {
     const res = await CategoryService.searchCategories('')
     if (res.code === 200) {
-      categorys.value = res.result
+      categoryList.value = res.result
     }
   }
   const listTags = async () => {
@@ -625,15 +630,26 @@ const initialFormState: ArticleForm = {
     margin-bottom: 1rem;
     cursor: pointer;
   }
-  .tag-item-select {
+  .tag-item:hover {
+    background-color: #f0f9eb;
+    color: #67c23a;
+  }
+  .tag-item.active {
     margin-right: 1rem;
     margin-bottom: 1rem;
     cursor: not-allowed;
-    color: #ccccd8 !important;
+    color: #ef1616 !important;
   }
   .category-item {
     cursor: pointer;
-    padding: 0.6rem 0.5rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+  }
+  .category-item.active {
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    cursor: not-allowed;
+    color: #ef1616 !important;
   }
   .category-item:hover {
     background-color: #f0f9eb;
