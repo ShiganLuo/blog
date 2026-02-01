@@ -56,11 +56,14 @@ const infoRules: FormRules<InfoForm> = reactive({
 const getCurrentUserInfo = async () => {
   infoForm.nickname = userStore.getUserInfo.nickname || '';
   infoForm.avatar = userStore.getUserInfo.avatar || '';
-  infoForm.avatarList = [{
+  if (infoForm.avatar) {
+    infoForm.avatarList = [{
       id: 1,
-      url: userStore.getUserInfo.avatar,
-      name: userStore.getUserInfo.avatar?.split("/").slice(-1)[0], 
+      url: infoForm.avatar,
+      name: infoForm.avatar?.split("/").slice(-1)[0], 
     },];
+  }
+
   infoForm.userId = userStore.getUserInfo.id || '';
 };
 
