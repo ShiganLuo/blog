@@ -9,6 +9,7 @@ import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
 import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUpdateUserInfoRequest;
 import com.baofeng.blog.entity.User;
 
 
@@ -84,6 +85,13 @@ public interface UserService {
      * @return
      */
     public ApiResponse<String> updateUserInfo(UpdateUserInfo updateUserInfo);
+
+    /**
+     * 更新用户信息
+     * @param updateUserInfoRequest
+     * @return
+     */
+    public ApiResponse<String> updateUserInfoFront(FrontUpdateUserInfoRequest updateUserInfoRequest);
 
     /**
      * 删除用户

@@ -6,6 +6,7 @@ import com.baofeng.blog.mapper.RoleMapper;
 import com.baofeng.blog.mapper.PermissionMapper;
 import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.common.util.JwtTokenProviderUtil;
+import com.baofeng.blog.common.util.UrlNormalizeUtil;
 import com.baofeng.blog.common.util.file.ImageFileUtil;
 import com.baofeng.blog.config.JwtPropertiesConfig;
 import com.baofeng.blog.dto.ApiResponse;
@@ -15,6 +16,7 @@ import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
 import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUpdateUserInfoRequest;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.entity.Image;
 import com.baofeng.blog.entity.Role;
@@ -202,7 +204,26 @@ public class UserServiceImpl implements UserService {
         return ApiResponse.success(clazz.cast(response));
     }
 
-    
+    @Override
+    public ApiResponse<String> updateUserInfoFront(FrontUpdateUserInfoRequest updateUserInfoRequest) {
+        if (updateUserInfoRequest.userId() == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户id不能为空");
+        }
+        User userExistEntity = userMapper.selectUserById(updateUserInfoRequest.userId());
+        if (userExistEntity == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
+        }
+        User user = new User();
+        user.setId(updateUserInfoRequest.userId());
+        user.setUsername(updateUserInfoRequest.username());
+        user.setNickName(updateUserInfoRequest.nickname());
+        String avatar = UrlNormalizeUtil.stripUrlPrefix(updateUserInfoRequest.avatar());
+        user.setAvatarUrl(avatar);
+        int rowUpdated = userMapper.updateUserSelective(user);
+        return rowUpdated > 0
+            ? ApiResponse.success("用户信息更新成功")
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户信息更新失败");
+    }
     @Override
     public User getUserByUsername(String username) {
         // 此处直接复用 UserMapper 中 selectByUsernameOrEmail 方法

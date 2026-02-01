@@ -148,18 +148,18 @@ const getVerifyCode = async () => {
 const onLogin = async (form: LoginForm, type: "login" | "register" = "login") => {
   const res = await UserService.reqLogin(form);
   if (res?.code === 200) {
-    await userStore.setToken(res.result.accessToken);
+    userStore.setToken(res.result.accessToken);
     // 用户注册后登录
     if (type === "register" || isRemember.value) {
       _setLocalItem("loginForm", _encrypt(form));
     } else {
       _removeLocalItem("loginForm");
     }
-    await userStore.setUserInfo(res.result);
+    userStore.setUserInfo(res.result);
     Object.assign(loginForm, primaryLoginForm);
     Object.assign(registerForm, primaryRegisterForm);
     handleClose();
-    await welcome(res.result.id, res.result.nickname);
+    welcome(res.result.id, res.result.nickname);
     ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, type === "login" ? "登录成功" : "自动登录成功") });
 
   } else {

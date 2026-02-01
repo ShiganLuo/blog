@@ -65,7 +65,7 @@ export class UserService {
 
   static updateUserInfo(data?: object) {
     return request.post({
-      url: "",
+      url: "/front/users/updateUserInfo",
       data: data
     })
   }

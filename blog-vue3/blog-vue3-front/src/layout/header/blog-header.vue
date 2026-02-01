@@ -13,7 +13,7 @@ import { storeToRefs } from "pinia";
 import { ElNotification } from "element-plus";
 import MessageBox from "@/components/MessageBox/message-box.vue";
 import SwitchTheme from "@/components/SwitchTheme/index.vue";
-import Login from "@/layout/header/login/login.vue";
+import Login from "@/views/login/login.vue";
 import { debounce, isMobile } from "@/utils/tool";
 import BlogSearch from "@/components/Search/blog-search.vue";
 

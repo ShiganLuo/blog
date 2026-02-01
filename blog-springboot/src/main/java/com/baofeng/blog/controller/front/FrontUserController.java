@@ -4,6 +4,7 @@ import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
 import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUpdateUserInfoRequest;
 import com.baofeng.blog.service.UserService;
 
 import org.springframework.web.bind.annotation.*;
@@ -29,4 +30,8 @@ public class FrontUserController {
         return userService.getUserInfoById(id);
     }
 
+    @PostMapping("/updateUserInfo")
+    public ApiResponse<String> updateUserInfo(@RequestBody @Validated FrontUpdateUserInfoRequest request) {
+        return userService.updateUserInfoFront(request);
+    }
 }

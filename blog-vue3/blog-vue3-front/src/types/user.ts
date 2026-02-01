@@ -1,5 +1,4 @@
 export type UserResult = {
-
     accessToken: string;
     refreshToken: string;
     /** `accessToken`的过期时间（格式'xxxx/xx/xx xx:xx:xx'） */
