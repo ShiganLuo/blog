@@ -9,8 +9,8 @@ import { TagService } from "@/api/blog/tagApi";
 import { type ConfigDetail } from "@/types/config";
 import { randomFontColor, numberFormate } from "@/utils/tool";
 import PageHeader from "@/components/PageHeader/index.vue";
-import HomeArticleList from "@/components/HomeArticle/home-article-list.vue";
-import RightSide from "@/components/RightSide/right-side.vue";
+import HomeArticleList from "./HomeArticle/home-article-list.vue";
+import RightSide from "./RightSide/right-side.vue";
 import { gsapTransY } from "@/utils/transform";
 import { type Tag, type ColoredTag } from "@/types/blog/tag"
 
@@ -52,9 +52,10 @@ const getHomeArticleList = async (): Promise<void> => {
   try {
     const res = await ArticleService.homeGetArticleList( { pageNum: param.current, pageSize: param.size });
     if (res.code === 200) {
-      const { total, list } = res.result;
-      articleTotal.value = total;
-      Object.assign(articleList.value, list);
+      const { total, list } = res.result
+      articleTotal.value = total
+      articleList.value = [] // 清空状态
+      Object.assign(articleList.value, list)
     }
   } finally {
     param.loading = false;

@@ -8,10 +8,10 @@ import { numberFormate } from "@/utils/tool";
 import { gsapTransY } from "@/utils/transform";
 import { type ColoredTag } from "@/types/blog/tag";
 import { type ConfigDetail } from "@/types/config";
-import RightSideSkeletonItem from "@/components/RightSide/components/skeleton/right-side-skeleton-item.vue";
-import RightSideTopSkeleton from "@/components/RightSide/components/skeleton/right-side-top-skeleton.vue";
-import RightSideItem from "@/components/RightSide/components/item/right-side-item.vue";
-import RightSideTop from "@/components/RightSide/components/item/right-side-top.vue";
+import RightSideSkeletonItem from "./components/skeleton/right-side-skeleton-item.vue";
+import RightSideTopSkeleton from "./components/skeleton/right-side-top-skeleton.vue";
+import RightSideItem from "./components/item/right-side-item.vue";
+import RightSideTop from "./components/item/right-side-top.vue";
 import GsapCount from "@/components/GsapCount/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 
@@ -108,7 +108,7 @@ onMounted(() => {
                   <div class="flex justify-end items-start flex-nowrap">
                     <div class="grid place-items-center" v-image="configDetail.qq_group">
                       <ElImage
-                        class="img !ml-[10px]"
+                        class="img"
                         :src="configDetail.qq_group"
                         fit="cover"
                         :preview-src-list="[configDetail.qq_group || '']"
@@ -116,13 +116,13 @@ onMounted(() => {
                         lazy
                       >
                         <template #error>
-                          <div class="w-[100%] h-[100%] grid place-items-center">
+                          <div class="">
                             <svg-icon name="image404" :width="4" :height="4" />
                           </div>
                         </template>
                       </ElImage>
                     </div>
-                    <div class="grid place-items-center" v-image="configDetail.we_chat_group">
+                    <div class="" v-image="configDetail.we_chat_group">
                       <ElImage
                         class="img"
                         :src="configDetail.we_chat_group"
@@ -132,7 +132,7 @@ onMounted(() => {
                         lazy
                       >
                         <template #error>
-                          <div class="w-[100%] h-[100%] grid place-items-center">
+                          <div class="">
                             <svg-icon name="image404" :width="4" :height="4" />
                           </div>
                         </template>

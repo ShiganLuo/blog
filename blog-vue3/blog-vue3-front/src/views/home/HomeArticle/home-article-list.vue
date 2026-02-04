@@ -4,9 +4,9 @@ import { useRouter, type RouteLocationRaw } from "vue-router";
 
 import { numberFormate } from "@/utils/tool";
 
-import ArticleSkeleton from "./components/article-skeleton.vue";
+import ArticleSkeleton from "./article-skeleton.vue";
 import Tooltip from "@/components/ToolTip/index.vue";
-import Pagination from "../Pagination/pagination.vue";
+import Pagination from "@/components/Pagination/pagination.vue";
 import GsapCount from "@/components/GsapCount/index.vue";
 import { gsapTransY } from "@/utils/transform";
 import { isMobile } from "@/utils/tool";

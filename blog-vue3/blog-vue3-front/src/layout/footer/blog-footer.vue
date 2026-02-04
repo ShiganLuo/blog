@@ -5,12 +5,14 @@ import { ConfigService } from "@/api/configApi";
 const route = useRoute();
 const icpFilingNumber = ref('');
 const websiteChinseName = ref('')
+const psbFilingNumber = ref('')
 
 const geticpFilingNumber = async (): Promise<void> =>{
   const res = await ConfigService.getSomeFrontInformation();
   if (res.code == 200) {
-    icpFilingNumber.value = res.result.icpFilingNumber;
+    icpFilingNumber.value = res.result.icpFilingNumber
     websiteChinseName.value = res.result.websiteChineseName
+    psbFilingNumber.value = res.result.psbFilingNumber
   }
 }
 onMounted(async () => {
@@ -23,7 +25,7 @@ onMounted(async () => {
     v-if="route.path !== '/message/chat'" class="footer_box"
   >
     <!-- eslint-disable-next-line -->
-    <div class="footer-color">&copy {{ websiteChinseName }} 2025 ICP备案号 {{ icpFilingNumber }}</div>
+    <div class="footer-color">&copy {{ websiteChinseName }} 2025 ICP备案号 {{ icpFilingNumber }} PSB备案号 {{ psbFilingNumber }} </div>
     <div class="footer-color m-5px flex-wrap">
       <a class="p-3px" href="https://imzbf.github.io/md-editor-v3/docs/index" target="_blank">
         <img

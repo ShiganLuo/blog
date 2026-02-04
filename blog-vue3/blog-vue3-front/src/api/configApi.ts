@@ -3,6 +3,7 @@ import { type ConfigDetail } from "@/types/config";
 interface FooterInfomation {
     websiteChineseName:string
     icpFilingNumber:string,
+    psbFilingNumber:string,
     favicon:string
 }
 export class ConfigService {

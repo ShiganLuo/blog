@@ -267,6 +267,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         SomeFrontInformation someFrontInformation = new SomeFrontInformation();
         BlogSetting blogSetting = blogSettingMapper.getSettingById(1L);
         someFrontInformation.setIcpFilingNumber(blogSetting.getIcpFilingNumber());
+        someFrontInformation.setPsbFilingNumber(blogSetting.getPsbFilingNumber());
         someFrontInformation.setWebsiteChineseName(blogSetting.getWebsiteChineseName());
         someFrontInformation.setFavicon(blogSetting.getFavicon());
         return ApiResponse.success(someFrontInformation);
