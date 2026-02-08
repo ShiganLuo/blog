@@ -24,7 +24,7 @@ RUN pnpm run build
 FROM nginx:stable-alpine
 
 # 复制编译后的文件到 nginx 目录
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY --from=build-stage /app/dist /usr/share/nginx/back/html
 
 # 重要：对于 Vue/React 项目，如果不开启 try_files，
 # 刷新页面会出现 404（尤其是在使用 history 模式路由时）
