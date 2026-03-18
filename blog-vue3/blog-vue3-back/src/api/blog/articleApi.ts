@@ -40,8 +40,8 @@ export class ArticleService {
   // 置顶或推荐文章
   static updateTopOrFeatured(data: any) {
     return request.post({
-      url: '/admin/articles/updateArticlesSelective',
-      headers: {
+      url: '/admin/articles/updateArticleRecommendStatus',
+        headers: {
         'Content-Type': 'application/json'
       },
       data: data

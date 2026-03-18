@@ -109,6 +109,14 @@ public class AdminArticleDTO {
         @NotNull Boolean isDeleted
     ) {}
 
+    public static record UpdateArticleRecommendStatusRequest(
+        @NotNull
+        Long id,
+        Boolean isTop,
+        Boolean isFeatured
+    ) {
+    }
 
+        
     
 }

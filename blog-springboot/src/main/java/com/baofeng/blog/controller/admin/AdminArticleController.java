@@ -114,6 +114,11 @@ public class AdminArticleController {
         return articleService.storeImage(uploadImage);
     }
 
+    @PostMapping("/updateArticleRecommendStatus")
+    public ApiResponse<String> updateArticleRecommendStatus(@RequestBody UpdateArticleRecommendStatusRequest request) {
+        return articleService.updateArticleRecommendStatus(request);
+    }
+
 }
 
 

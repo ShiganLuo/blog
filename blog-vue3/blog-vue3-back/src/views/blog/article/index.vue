@@ -129,26 +129,31 @@
           v-if="columns[5].show"
         />
         <el-table-column label="置顶" align="center" prop="isTop" v-if="columns[6].show">
-          <template #default="scope">
+          <template #default="{ row }">
             <el-switch
-              :disabled="scope.row.isDeleted == 1"
-              v-model="scope.row.isTop"
+              :disabled="row.isDeleted == 1"
+              :model-value="row.isTop"
               :active-value="1"
               :inactive-value="0"
-              @change="updateTopOrFeaturedChange(scope.row)"
+              @change="val => updateTopOrFeaturedChange(row, Number(val), 'top')"
             />
           </template>
         </el-table-column>
-        <el-table-column label="推荐" align="center" prop="isFeatured" v-if="columns[7].show">
-          <template #default="scope">
-            <el-switch
-              :disabled="scope.row.isDeleted == 1"
-              v-model="scope.row.isFeatured"
-              :active-value="1"
-              :inactive-value="0"
-              @change="updateTopOrFeaturedChange(scope.row)"
-            />
-          </template>
+        <el-table-column
+            label="推荐"
+            align="center"
+            prop="isFeatured"
+            v-if="columns[7].show"
+        >
+            <template #default="{ row }">
+                <el-switch
+                :disabled="row.isDeleted == 1"
+                :model-value="row.isFeatured"
+                :active-value="1"
+                :inactive-value="0"
+                @change="val => updateTopOrFeaturedChange(row, Number(val), 'featured')"
+                />
+        </template>
         </el-table-column>
         <el-table-column label="删除" align="center" prop="isDeleted" v-if="columns[8].show" />
         <el-table-column label="状态" align="center" prop="status" v-if="columns[9].show" />
@@ -262,6 +267,7 @@
     if (query.status === '4') {
       query.status = ''
     }
+
     const res = await ArticleService.listArticle(query)
     if (res.code === 200) {
       articleListForm.value = res.result.list;
@@ -416,17 +422,39 @@
   }
 
   /** 置顶/推荐切换操作 */
-  const updateTopOrFeaturedChange = async (row: any) => {
-    const res = await ArticleService.updateTopOrFeatured({
-      id: row.id,
-      isTop: row.isTop,
-      isFeatured: row.isFeatured
-    })
-    if (res.code === 200) {
-      ElMessage.success(res.message)
-      getList()
+    const updateTopOrFeaturedChange = async (
+    row: any,
+    val: number,
+    type: 'top' | 'featured'
+    ) => {
+    try {
+        // ⭐ 手动更新要提交的值（不要依赖 v-model）
+        const params = {
+        id: row.id,
+        isTop: type === 'top' ? val : row.isTop,
+        isFeatured: type === 'featured' ? val : row.isFeatured
+        }
+
+        const res = await ArticleService.updateTopOrFeatured(params)
+
+        if (res.code === 200) {
+        ElMessage.success(res.message)
+
+        // ⭐ 成功才更新本地状态（非常关键）
+        if (type === 'top') {
+            row.isTop = val
+        } else {
+            row.isFeatured = val
+        }
+
+        getList()
+        }
+
+    } catch (e) {
+        ElMessage.error('修改失败')
+        console.error(e)
     }
-  }
+    }
 
   /** 导出按钮操作 */
   const handleExport = () => {

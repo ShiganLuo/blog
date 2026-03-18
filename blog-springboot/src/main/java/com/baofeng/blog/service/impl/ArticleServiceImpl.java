@@ -565,6 +565,8 @@ public class ArticleServiceImpl implements ArticleService {
         response.setList(pageInfo.getList());      // 当前页数据
         return ApiResponse.success(response);
     }
+
+    @Override
     public ApiResponse<AdminArticlePageVO> getAdminArticleList(CreateAdminArticlePageRequest createAdminArticlePageRequest) {
         int current = createAdminArticlePageRequest.current() != null ? createAdminArticlePageRequest.current() : 1;
         int size = createAdminArticlePageRequest.size() != null ? createAdminArticlePageRequest.size() : 10;
@@ -576,4 +578,17 @@ public class ArticleServiceImpl implements ArticleService {
         adminArticlePageVO.setTotal(pageInfo.getTotal());
         return ApiResponse.success(adminArticlePageVO);
     }   
+
+    @Override
+    public ApiResponse<String> updateArticleRecommendStatus(UpdateArticleRecommendStatusRequest request) {
+        Article article = new Article();
+        article.setId(request.id());
+        article.setIsTop(request.isTop());
+        article.setIsFeatured(request.isFeatured());
+        int rowsUpdated = articleMapper.updateArticleSelective(article);
+        return rowsUpdated > 0 
+            ? ApiResponse.success("文章推荐更新成功")
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR);
+    }
+
 }

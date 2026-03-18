@@ -14,7 +14,10 @@ const axiosInstance = axios.create({
       if (data instanceof FormData) {
         return data; // 如果数据是 FormData 类型，则直接返回，防止被转换为 JSON 字符串
       }
-      const contentType = headers['Content-Type'] as string
+      if (typeof data === 'string') { // 请求队列重放时，data 已经是字符串了，不需要再次转换
+        return data
+      }
+      const contentType = (headers['Content-Type'] || headers['content-type']) as string
       if (contentType && contentType.includes('x-www-form-urlencoded')) {
         return data
       }

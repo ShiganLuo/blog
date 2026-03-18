@@ -7,6 +7,7 @@ import com.baofeng.blog.dto.front.FrontArticleDTO.*;
 
 import java.io.IOException;
 
+
 public interface ArticleService {
     
     /**
@@ -153,4 +154,11 @@ public interface ArticleService {
      * @return
      */
     public ApiResponse<ArticleAbstractsResponse> getArticlesByCategoryId(CategoryOrTagRequest request);
+
+    /**
+     * 更新文章推荐状态
+     * @return
+     */
+    public ApiResponse<String> updateArticleRecommendStatus(UpdateArticleRecommendStatusRequest request);
+
 }

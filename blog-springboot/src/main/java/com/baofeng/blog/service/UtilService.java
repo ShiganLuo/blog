@@ -33,4 +33,6 @@ public interface UtilService {
      * @return
      */
     public ApiResponse<String> EmailAuthRegister(EmailAuthRequest emailAuthRequest);
+
+    
 }
