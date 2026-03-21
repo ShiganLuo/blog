@@ -19,6 +19,13 @@ interface SentenceResponse {
   };
 }
 
+interface Props {
+  bgUrl?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  bgUrl: "",
+});
 
 // 页面头图类型
 interface PageHeader {
@@ -66,12 +73,6 @@ const initScrollEvent = () => {
   window.addEventListener("scroll", scrollListener);
 };
 
-const getBgCover = computed(() => {
-  const bgList: PageHeader[] = getPageHeaderList.value;
-  const defaultUrl = "http://img.mrzym.top/FvmVKfygxBKoJbFVXJwzjgAASL9S";
-  const index = bgList.findIndex((bg) => bg.route_name === route.name);
-  return index === -1 ? defaultUrl : bgList[index].bgUrl;
-});
 const getWebsiteChineseName = async () => {
   const res = await ConfigService.getSomeFrontInformation();
   if (res.code == 200) {
@@ -101,7 +102,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div id="home">
-    <el-image class="bg full-size" fit="cover" :src="getBgCover"></el-image>
+    <el-image class="bg full-size" fit="cover" :src="bgUrl"></el-image>
     <div class="font">{{ websiteChineseName }}</div>
     <TypeWriter class="type-writer" size="1.2em" :typeList="saying" :timeSpace="200" :wordPrintTime="100" color="#ffffff"/>
     <Waves />

@@ -104,7 +104,7 @@ watch(
 </script>
 
 <template>
-  <HomeHeader :bgUrl = "bgUrl" class="!w-[100%] !h-[100vh]" v-if="route.path == '/home'" />
+  <HomeHeader :bgUrl="props.bgUrl" class="!w-[100%] !h-[100vh]" v-if="route.path == '/home'" />
 
   <div v-else class="page-header" :style="getBgCover">
     <div v-if="route.path == '/article'" class="article main-article">
