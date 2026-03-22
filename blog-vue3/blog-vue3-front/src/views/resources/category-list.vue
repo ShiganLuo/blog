@@ -1,8 +1,9 @@
 <!-- 优质网站分类 -->
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { frontCategory, backCategory } from "./data";
+import { ConfigService } from "@/api/configApi";
 import PageHeader from "@/components/PageHeader/index.vue";
 
 // 定义 category 数据结构
@@ -14,7 +15,7 @@ type CategoryMap = Record<string, CategoryItem>;
 
 const router = useRouter();
 const route = useRoute();
-
+const bgUrl = ref<string>("");
 const active = ref<number>(0);
 const activeType = ref<string>(""); // 当前是哪个分类 前端、后端等
 const routeType = ref<string>(""); // 路由参数，用来区分前后端
@@ -37,7 +38,12 @@ const mouseLeaveItem = () => {
 const goToSiteList = (type: string, item: string) => {
   router.push({ path: "/siteList", query: { type, category: item } });
 };
-
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
 // 监听路由变化，动态切换分类
 watch(
   () => route.path,
@@ -61,10 +67,13 @@ watch(
     immediate: true,
   }
 );
+onMounted(() => {
+  getFrontBackground();
+});
 </script>
 
 <template>
-  <PageHeader />
+  <PageHeader :bg-url="bgUrl" />
   <div class="center_box">
     <el-row class="category">
       <el-col

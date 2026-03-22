@@ -65,20 +65,18 @@ const addZero = (time: number): string => {
 // 计算属性
 // =====================
 const getBgCover = computed(() => {
-  const bgList = getPageHeaderList.value;
   let url: string;
-  const fallback = "http://10.135.4.3/uploads/f2b516a7-8557-4d31-baf1-2d68d9fe34e7.jpeg";
   // console.log("bgList", bgList);
   if (route.path === "/article") {
-    url = props.article.articleCover || fallback;
-  } else if (props.bgUrl) {
-    url = props.bgUrl;
+    console.log("props.article", props.article);
+    url = props.article.articleCover ?? "";
   } else {
-    const index = bgList.findIndex((bg: any) => bg.route_name === route.name);
-    url = index === -1 ? fallback : bgList[index].bg_url;
+    console.log("props.bgUrl", props.bgUrl);
+    url = props.bgUrl;
   }
 
   finalUrl.value = url;
+  console.log("url", url);
   return `background-image: url(${url});}`;
 });
 
@@ -207,7 +205,7 @@ watch(
       </div>
     </div>
     <div v-else class="route-font">
-      <div class="loading !pt-[80px]" v-image="finalUrl"></div>
+      <div class="loading" v-image="finalUrl"></div>
       <!-- 想修改路由 就修改插槽即可 -->
       <slot name="route">
         <span style="display: inline-block" class="char" v-for="i in getTitle.length" :key="i">

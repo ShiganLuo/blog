@@ -1,6 +1,7 @@
 package com.baofeng.blog.controller.front;
 
 import com.baofeng.blog.dto.ApiResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontBackgroundResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetailResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.SomeFrontInformation;
 import com.baofeng.blog.service.BlogSettingService;
@@ -34,4 +35,8 @@ public class FrontBlogSettingController {
         return blogSettingService.getSomeFrontInformation();
     }
 
+    @GetMapping("/getFrontBackground")
+    public ApiResponse<FrontBackgroundResponse> getFrontBackground() {
+        return blogSettingService.getFrontBackgroud();
+    }
 }

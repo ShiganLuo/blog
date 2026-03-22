@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import { ArticleService } from "@/api/blog/articleApi";
+import { ConfigService } from "@/api/configApi";
 import { type Article, type ArchiveGroup } from "@/types/blog/article"
 import PageHeader from "@/components/PageHeader/index.vue";
 import TimeLine from "@/components/TimeLine/index.vue";
 
 // 归档数据
 const archives = ref<ArchiveGroup[]>([]);
+const bgUrl = ref<string>("");
 
 // 分页参数
 const param = reactive({
@@ -58,13 +60,21 @@ const getArchives = async () => {
   }
 };
 
+const getFrontBackground = async () => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
+
 onMounted(() => {
   getArchives();
+  getFrontBackground();
 });
 </script>
 
 <template>
-  <PageHeader :loading="loading" />
+  <PageHeader :bg-url="bgUrl" :loading="loading" />
   <div class="archives">
     <el-row class="center_box">
       <el-col :span="24">

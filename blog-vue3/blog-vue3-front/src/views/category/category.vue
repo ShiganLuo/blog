@@ -2,12 +2,13 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { CategoryService } from "@/api/blog/categoryApi";
+import { ConfigService } from "@/api/configApi";
 import { type Category, type CategoryResponse } from "@/types/blog/category";
 import GsapCount from "@/components/GsapCount/index.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
 
 const router = useRouter();
-
+const bgUrl = ref<string>("");
 // ref 指定类型
 const categoryList = ref<Category[]>([]);
 const loading = ref<boolean>(false);
@@ -36,9 +37,12 @@ const getCategoryList = async (): Promise<void> => {
   loading.value = false;
 };
 
-onMounted(() => {
-  getCategoryList();
-});
+const getFrontBackground = async () => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
 
 const goToArticleList = (item: Category): void => {
   router.push({
@@ -46,10 +50,19 @@ const goToArticleList = (item: Category): void => {
     query: { id: item.id, type: "category", name: item.categoryName },
   });
 };
+
+onMounted(() => {
+  getCategoryList();
+  getFrontBackground();
+});
+
+
+
+
 </script>
 
 <template>
-  <PageHeader :loading="loading" />
+  <PageHeader :bg-url="bgUrl" :loading="loading" />
   <div class="category center_box">
     <el-card class="category-card">
       <div class="category-total flex_center">

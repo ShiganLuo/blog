@@ -3,6 +3,7 @@ package com.baofeng.blog.service;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetailResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontBackgroundResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetailResponse;
 import com.baofeng.blog.dto.front.FrontBlogSettinDTO.SomeFrontInformation;
 import com.baofeng.blog.entity.BlogSetting;
@@ -57,5 +58,10 @@ public interface BlogSettingService {
      */
     public ApiResponse<SomeFrontInformation> getSomeFrontInformation();
     
+    /**
+     * 获取前台背景图片
+     * @return
+     */
+    public ApiResponse<FrontBackgroundResponse> getFrontBackgroud();
 
 } 

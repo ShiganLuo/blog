@@ -64,5 +64,10 @@ public class FrontBlogSettinDTO {
         private String favicon;
     }
 
+    @Data
+    public static class FrontBackgroundResponse {
+        @MinioFile
+        private String frontHeadBackground;
+    }
 
 }

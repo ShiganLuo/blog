@@ -5,6 +5,7 @@ import { storeToRefs } from "pinia";
 import { returnTime, _getLocalItem, _setLocalItem, containHTML } from "@/utils/tool";
 import { LikeService } from "@/api/likeApi";
 import { useUserStore } from "@/stores/index";
+import { ConfigService } from "@/api/configApi";
 
 import { ElNotification } from "element-plus";
 import PageHeader from "@/components/PageHeader/index.vue";
@@ -29,6 +30,7 @@ interface MessageItem {
 
 const userStore = useUserStore();
 const { getUserInfo } = storeToRefs(userStore);
+const bgUrl = ref<string>("");
 
 const message = reactive<MessageItem>({
   id: 0,
@@ -88,8 +90,15 @@ const like = async (item: MessageItem) => {
 const commentRefresh = () => {
   _setLocalItem("message-refresh", true);
 };
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
 
-onMounted(() => {
+onMounted(async () => {
+  await getFrontBackground();
   const item = _getLocalItem("blog-message-item") as MessageItem | null;
   if (item) {
     Object.assign(message, item);
@@ -97,7 +106,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <PageHeader>
+  <PageHeader :bg-url="bgUrl">
     <template #route> 留言详情 </template>
   </PageHeader>
   <div class="message">

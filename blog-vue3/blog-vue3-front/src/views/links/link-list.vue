@@ -17,6 +17,7 @@ const { getUserInfo } = storeToRefs(useUserStore());
 
 const loading = ref<boolean>(false);
 const scrollLoading = ref<boolean>(false);
+const bgUrl = ref<string>("");
 const params = reactive<{
   current: number;
   size: number;
@@ -113,11 +114,18 @@ const getConfigDetail = async (): Promise<void> => {
   }
 };
 
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
 
 onMounted(async () => {
   _removeLocalItem("blog-link-update");
   await getConfigDetail();
   await pageGetLinksList();
+  await getFrontBackground();
   if (linksList.value.length < total.value) {
     observeBox();
   }
@@ -145,7 +153,7 @@ function copyElementText(element: HTMLElement): void {
 </script>
 
 <template>
-  <PageHeader :loading="loading" />
+  <PageHeader :bg-url="bgUrl" :loading="loading" />
   <div class="center_box">
   <div class="card-tight">
       <h1>欢迎来到{{blogName}}</h1>

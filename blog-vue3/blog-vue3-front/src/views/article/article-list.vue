@@ -3,6 +3,7 @@ import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 import { ArticleService } from "@/api/blog/articleApi";
+import { ConfigService } from "@/api/configApi";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import Tooltip from "@/components/ToolTip/index.vue";
 import Pagination from "@/components/Pagination/pagination.vue";
@@ -22,6 +23,7 @@ const param = reactive<PaginationParam>({
 });
 
 const router = useRouter();
+const bgUrl = ref<string>("");
 
 interface ArticleSimple {
   id: string,
@@ -67,6 +69,12 @@ const getArticleListById = async () => {
   loading.value = false;
 };
 
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
 // 页面初始化
 onMounted(() => {
   const { id, type, name } = router.currentRoute.value.query;
@@ -74,11 +82,12 @@ onMounted(() => {
   currentType.value = String(type);
   currentName.value = String(name);
   getArticleListById();
+  getFrontBackground();
 });
 </script>
 
 <template>
-  <PageHeader :loading="loading" />
+  <PageHeader :loading="loading" :bg-url="bgUrl" />
   <div class="center_box">
     <el-card class="article-list">
       <el-skeleton v-if="loading" :loading="loading" animated>

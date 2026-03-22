@@ -272,4 +272,15 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         someFrontInformation.setFavicon(blogSetting.getFavicon());
         return ApiResponse.success(someFrontInformation);
     }
+
+    @Override
+    public ApiResponse<FrontBackgroundResponse> getFrontBackgroud() {
+        BlogSetting blogSetting = blogSettingMapper.getSettingById(1L);
+        if (blogSetting == null || blogSetting.getFrontHeadBackground() == null) {
+            return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "前台背景图片未设置");
+        }
+        FrontBackgroundResponse response = new FrontBackgroundResponse();
+        response.setFrontHeadBackground(blogSetting.getFrontHeadBackground());
+        return ApiResponse.success(response);
+    }
 } 

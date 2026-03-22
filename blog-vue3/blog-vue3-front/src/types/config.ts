@@ -19,3 +19,7 @@ export interface ConfigDetail {
   weChat?: string;
   qq?: string;
 }
+
+export interface FrontBackground{
+  frontHeadBackground: string;
+}

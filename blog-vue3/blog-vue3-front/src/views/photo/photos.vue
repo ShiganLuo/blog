@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { PhotoService } from "@/api/photoApi";
+import { ConfigService } from "@/api/configApi";
 import PageHeader from "@/components/PageHeader/index.vue";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import { isMobile } from "@/utils/tool";
@@ -10,6 +11,7 @@ import { type Photo, type Album } from "@/types/photo";
 // 路由
 const route = useRoute();
 const router = useRouter();
+const bgUrl = ref<string>("");
 
 // 状态
 const photoList = ref<Photo[]>([]);
@@ -56,6 +58,12 @@ const handleClose = () => {
   drawerShow.value = false;
 };
 
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
 // 监听路由变化
 watch(
   () => route.query.id as string, // 断言为 string
@@ -64,10 +72,12 @@ watch(
   },
   { immediate: true }
 );
-
+onMounted(() => {
+  getFrontBackground();
+});
 </script>
 <template>
-  <PageHeader :bgUrl="typeof route.query.bg === 'string' ? route.query.bg : undefined" />
+  <PageHeader :bgUrl="bgUrl" />
   <div class="photoList">
     <div class="center_box">
       <div class="photoList-card">

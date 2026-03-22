@@ -3,6 +3,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { frontSite, backSite, frontCategory, backCategory } from "./data";
+import { ConfigService } from "@/api/configApi";
 import PageHeader from "@/components/PageHeader/index.vue";
 
 // 定义单个网站对象类型
@@ -24,6 +25,7 @@ interface RouteQuery {
   category?: string;
 }
 
+const bgUrl = ref<string>("");
 const route = useRoute();
 const active = ref<number>(0);
 const activeType = ref<string>("");
@@ -62,6 +64,12 @@ const currentTitle = computed<string>(() => {
   }
 });
 
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
 onMounted(() => {
   const { type, category } = route.query as RouteQuery;
 
@@ -75,10 +83,11 @@ onMounted(() => {
       siteList.value = (backSite as Record<string, SiteItem[]>)[category];
     }
   }
+  getFrontBackground();
 });
 </script>
 <template>
-  <PageHeader />
+  <PageHeader :bg-url="bgUrl" />
   <div class="center_box">
     <div class="title">{{ currentTitle }} - {{ currenCategory }}</div>
     <div style="margin-top: 30px">

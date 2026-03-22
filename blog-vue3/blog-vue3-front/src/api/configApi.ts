@@ -1,5 +1,5 @@
 import request from "@/utils/http/index";
-import { type ConfigDetail } from "@/types/config";
+import { type ConfigDetail, type FrontBackground } from "@/types/config";
 interface FooterInfomation {
     websiteChineseName:string
     icpFilingNumber:string,
@@ -16,6 +16,12 @@ export class ConfigService {
     static getSomeFrontInformation() {
         return request.get<FooterInfomation>({
             url: '/front/settings/getSomeFrontInformation'
+        })
+    }
+
+    static getFrontBackground() {
+        return request.get<FrontBackground>({
+            url: '/front/settings/getFrontBackground'
         })
     }
 }

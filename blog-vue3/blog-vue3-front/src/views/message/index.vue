@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, h, onActivated, type Ref } from "vue";
+import { ref, h, onActivated, onMounted,type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore, useStaticData } from "@/stores/index";
 import { storeToRefs } from "pinia";
-
+import { ConfigService } from "@/api/configApi";
 import TypeWriter from "@/components/TypeWriter/index.vue";
 import CardMessage from "./components/card-message.vue";
 import DanmuMessage from "./components/danmu-message.vue";
@@ -15,7 +15,7 @@ import SvgIcon from "@/components/SvgIcon/index.vue";
 
 
 
-
+const bgUrl = ref<string>("");
 interface MessageForm {
   id: number | string;
   content: string;
@@ -121,6 +121,12 @@ const hideSearchInput = (): void => {
   }
 };
 
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
 onActivated(() => {
   if (isLoaded.value && !getMessageTypeIsCard.value) {
     messageRef.value?.init();
@@ -128,9 +134,13 @@ onActivated(() => {
   isLoaded.value = true;
 });
 
+onMounted(async () => {
+  getFrontBackground();
+});
+
 </script>
 <template>
-  <PageHeader v-if="getMessageTypeIsCard">
+  <PageHeader v-if="getMessageTypeIsCard" :bg-url="bgUrl">
     <template #route>
       <el-popover
         placement="top-start"

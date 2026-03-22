@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { TagService } from "@/api/blog/tagApi";
+import { ConfigService } from "@/api/configApi";
 import { type  TagListResponse, type TagItem } from "@/types/blog/tag"
 import GsapCount from "@/components/GsapCount/index.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
@@ -9,6 +10,7 @@ import PageHeader from "@/components/PageHeader/index.vue";
 
 // router
 const router = useRouter();
+const bgUrl = ref<string>("");
 
 // state
 const tagList = ref<TagItem[]>([]);
@@ -51,15 +53,21 @@ const getTagList = async () => {
     loading.value = false;
   }
 };
-
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+}
 // 初始化
 onMounted(() => {
   getTagList();
+  getFrontBackground();
 });
 </script>
 
 <template>
-  <PageHeader :loading="loading" />
+  <PageHeader :loading="loading" :bg-url="bgUrl" />
   <div class="tag">
     <el-row class="center_box">
       <el-col :span="24">

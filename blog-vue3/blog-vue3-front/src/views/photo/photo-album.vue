@@ -6,10 +6,11 @@ import { type Album } from "@/types/photo";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
-
+import { ConfigService } from "@/api/configApi";
 
 const albumList = ref<Album[]>([]);
 const loading = ref(false);
+const bgUrl = ref<string>("");
 
 const router = useRouter();
 
@@ -35,12 +36,19 @@ const getAll = async () => {
   loading.value = false;
 };
 
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
 onMounted(() => {
   getAll();
+  getFrontBackground();
 });
 </script>
 <template>
-  <PageHeader />
+  <PageHeader :bg-url="bgUrl"/>
   <div class="albumList">
     <el-row class="center_box">
       <el-col :span="24">

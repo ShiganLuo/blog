@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, h, reactive, onMounted, onBeforeUnmount } from "vue";
 import { useUserStore } from "@/stores/index";
-
+import { ConfigService } from "@/api/configApi";
 import { returnTime } from "@/utils/tool";
 import { LikeService } from "@/api/likeApi";
 import { TalkService } from "@/api/talkApi";
@@ -16,7 +16,7 @@ import SvgIcon from "@/components/SvgIcon/index.vue";
 
 // store
 const userStore = useUserStore();
-
+const bgUrl = ref<string>("");
 
 // ref 和 reactive
 const talkList = ref<TalkItem[]>([]);
@@ -123,12 +123,19 @@ const toggleComment = (index: number) => {
   talkCommentRef.value[index]?.toggleExpand?.();
 };
 
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+};
 // 生命周期
 onMounted(async () => {
   await pageGetTalkList();
   if (talkList.value.length < total.value) {
     observeBox();
   }
+  getFrontBackground();
 });
 
 onBeforeUnmount(() => {
@@ -139,7 +146,7 @@ onBeforeUnmount(() => {
 });
 </script>
 <template>
-  <PageHeader :loading="loading" />
+  <PageHeader :loading="loading" :bg-url="bgUrl"/>
   <div class="talk center_box">
     <el-card class="talk-card">
       <el-skeleton :loading="loading" style="height: 100%" animated>

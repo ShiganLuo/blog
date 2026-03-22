@@ -3,6 +3,7 @@ import { ref, reactive, onMounted, h } from "vue";
 import type { FormInstance, FormRules, FormItemRule } from "element-plus";
 import { UserService } from "@/api/userApi";
 import { useUserStore } from "@/stores/index";
+import { ConfigService } from "@/api/configApi";
 import Upload from "@/components/Upload/upload.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
 import { ElNotification, ElMessageBox, type UploadFiles } from "element-plus";
@@ -19,7 +20,7 @@ interface InfoForm {
 
 
 const userStore = useUserStore();
-
+const bgUrl = ref<string>("");
 
 // 表单校验
 type ValidateCallback = (error?: Error) => void;
@@ -109,12 +110,20 @@ const updateInfo = async () => {
     }
   });
 };
+const getFrontBackground = async (): Promise<void> => {
+  const res = await ConfigService.getFrontBackground();
+  if (res.code === 200) {
+    bgUrl.value = res.result.frontHeadBackground;
+  }
+}
 
-
-onMounted(getCurrentUserInfo);
+onMounted( async () => {
+  await getCurrentUserInfo();
+  getFrontBackground();
+});
 </script>
 <template>
-  <PageHeader />
+  <PageHeader :bg-url="bgUrl"/>
   <div class="center_box">
     <div class="info">
       <el-tabs v-model="activeName">
