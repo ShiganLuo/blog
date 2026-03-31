@@ -30,11 +30,9 @@ public class MinioUrlConverter {
         convertInternal(target, 0, visited);
     }
 
-    // ================= 核心递归 =================
 
     private void convertInternal(Object target, int depth, Set<Integer> visited) {
         if (target == null) return;
-
         // 循环引用保护（identity）
         int identity = System.identityHashCode(target);
         if (!visited.add(identity)) {
@@ -42,11 +40,6 @@ public class MinioUrlConverter {
         }
 
         Class<?> clazz = target.getClass();
-
-        // 基础类型直接跳过
-        if (isSimpleType(clazz)) {
-            return;
-        }
 
         // Map 支持
         if (target instanceof Map<?, ?> map) {
@@ -64,32 +57,37 @@ public class MinioUrlConverter {
 
         // Collection 支持
         if (target instanceof Collection<?> collection) {
+            System.out.println("List");
             for (Object element : collection) {
                 convertInternal(element, depth + 1, visited);
             }
             return;
         }
 
+        // 基础类型直接跳过
+        if (isSimpleType(clazz)) {
+            return;
+        }
+
         // 深度 & 注解控制
         MinioScan scan = clazz.getAnnotation(MinioScan.class);
         if (scan != null) {
+            System.out.println(scan.maxDepth());
             if (!scan.deep()) return;
             if (scan.maxDepth() >= 0 && depth > scan.maxDepth()) return;
         }
-
         // 普通对象字段处理
         for (Field field : getFields(clazz)) {
+            
             field.setAccessible(true);
-
             try {
                 Object value = field.get(target);
+                System.out.println(clazz.getSimpleName() + "." + field.getName() + " = " + value);
                 if (value == null) continue;
-
                 // @MinioFile
                 if (field.isAnnotationPresent(MinioFile.class)
                         && value instanceof String objectName
                         && !objectName.isBlank()) {
-
                     field.set(target, buildPermanentUrl(objectName));
                     continue;
                 }
@@ -107,7 +105,6 @@ public class MinioUrlConverter {
         }
     }
 
-    // ================= 工具方法 =================
 
     private Field[] getFields(Class<?> clazz) {
         return FIELD_CACHE.computeIfAbsent(clazz, Class::getDeclaredFields);

@@ -6,15 +6,12 @@ import com.baofeng.blog.dto.admin.AdminUserAuthDTO.*;
 import com.baofeng.blog.dto.common.ImageDTO.ImageResponse;
 import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
-import com.baofeng.blog.entity.User;
 import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.service.UtilService;
 
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.validation.annotation.Validated;

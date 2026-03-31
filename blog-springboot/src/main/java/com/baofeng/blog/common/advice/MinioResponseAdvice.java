@@ -34,7 +34,6 @@ public class MinioResponseAdvice implements ResponseBodyAdvice<Object> {
             Class<? extends HttpMessageConverter<?>> selectedConverterType,
             org.springframework.http.server.ServerHttpRequest request,
             org.springframework.http.server.ServerHttpResponse response) {
-
         if (body instanceof ApiResponse<?> apiResponse) {
             Object data = apiResponse.result();
             if (data != null) {

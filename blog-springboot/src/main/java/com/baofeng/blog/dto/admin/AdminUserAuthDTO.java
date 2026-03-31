@@ -4,6 +4,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.baofeng.blog.common.annotation.MinioFile;
+import com.baofeng.blog.common.annotation.MinioScan;
+
 public class AdminUserAuthDTO {
 
     // 注册请求
@@ -68,6 +71,7 @@ public class AdminUserAuthDTO {
     }
     
     @Data
+    @MinioScan(maxDepth = 2)
     public static class UserPageResponse {
         private List<UserPageVO> list;      // 数据列表
         private int total;             // 总记录数
@@ -82,6 +86,7 @@ public class AdminUserAuthDTO {
         private String phoneNumber;
         private Integer sex;
         private String status;
+        @MinioFile
         private String avatarUrl;
         private String role;
         private LocalDateTime createdAt;
