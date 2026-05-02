@@ -6,3 +6,4 @@ minio
 database
 docker-compose.yml
 redis.conf
+wget-log

@@ -3,6 +3,7 @@ package com.baofeng.blog.common.scheduler;
 import com.baofeng.blog.enums.RedisKeysEnum;
 import com.baofeng.blog.mapper.ArticleMapper;
 import com.baofeng.blog.mapper.BlogSettingMapper;
+import com.baofeng.blog.common.util.SafeRedisExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -37,8 +38,12 @@ public class VisitCountSyncTask {
     public void syncSiteVisitCount() {
         long blogSettingId = 1L; // 单站点固定 ID，可扩展多站点
 
-        String key = RedisKeysEnum.SITE_VISIT.getKey() + blogSettingId;
-        String value = redisTemplate.opsForValue().get(key);
+        String key = SafeRedisExecutor.execute(() -> {
+            return RedisKeysEnum.SITE_VISIT.getKey() + blogSettingId;
+        }, "获取站点访问量 key");
+        String value = SafeRedisExecutor.execute(() -> {
+            return redisTemplate.opsForValue().get(key);
+        }, "获取站点访问量");
 
         if (value == null) return;
 
@@ -52,7 +57,9 @@ public class VisitCountSyncTask {
             log.info("Site visit synced, blogSettingId={}, +{}", blogSettingId, count);
         }
 
-        redisTemplate.delete(key);
+        SafeRedisExecutor.execute(() -> {
+            redisTemplate.delete(key);
+        }, "删除站点访问量 Redis key");
     }
 
     /**
@@ -60,7 +67,10 @@ public class VisitCountSyncTask {
      */
     @Scheduled(cron = "0 */1 * * * ?")
     public void syncArticleVisitCount() {
-        Set<String> keys = redisTemplate.keys(RedisKeysEnum.ARTICLE_VISIT_PREFIX.getKey() + "*");
+        
+        Set<String> keys = SafeRedisExecutor.execute(() -> {
+            return redisTemplate.keys(RedisKeysEnum.ARTICLE_VISIT_PREFIX.getKey() + "*");
+        }, "获取文章访问量 keys");
 
         if (keys == null || keys.isEmpty()) return;
 
@@ -68,7 +78,9 @@ public class VisitCountSyncTask {
 
         // 遍历 Redis key 统计访问量
         for (String key : keys) {
-            String value = redisTemplate.opsForValue().get(key);
+            String value = SafeRedisExecutor.execute(() -> {
+                return redisTemplate.opsForValue().get(key);
+            }, "获取文章访问量");
             if (value == null) continue;
 
             long count = Long.parseLong(value);
@@ -85,7 +97,9 @@ public class VisitCountSyncTask {
 
             // 删除 Redis key
             for (Long articleId : articleVisitMap.keySet()) {
-                redisTemplate.delete(RedisKeysEnum.ARTICLE_VISIT_PREFIX.getKey() + articleId);
+                SafeRedisExecutor.execute(() -> {
+                    redisTemplate.delete(RedisKeysEnum.ARTICLE_VISIT_PREFIX.getKey() + articleId);
+                }, "删除文章访问量 Redis key");
             }
         }
     }

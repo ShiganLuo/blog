@@ -17,6 +17,7 @@ import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.mapper.RoleMapper;
 import com.baofeng.blog.mapper.PermissionMapper;
 import com.baofeng.blog.common.util.JwtTokenProviderUtil;
+import com.baofeng.blog.common.util.SafeRedisExecutor;
 import com.baofeng.blog.config.JwtPropertiesConfig;
 import com.baofeng.blog.service.redis.RedisCaptchaService;
 import com.baofeng.blog.service.redis.RedisEmailCaptchaService;
@@ -180,8 +181,11 @@ public class UtilServiceImpl implements UtilService {
         private void sendCode(String email){
 
         String code = String.valueOf((int)((Math.random() * 9 + 1) * 100000));
-
-        redisEmailCaptchaService.saveEmailCaptcha(email, code);
+        
+        boolean saved = SafeRedisExecutor.execute(() -> redisEmailCaptchaService.saveEmailCaptcha(email, code), "保存邮箱验证码");
+        if (!saved) {
+            throw new IllegalStateException("保存邮箱验证码失败");
+        }
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(eamilUsername); // 必须和配置中的 username 一致
