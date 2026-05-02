@@ -108,4 +108,10 @@ public interface UserService {
      */
     public ApiResponse<ImageResponse> updateUserAvatar(Long userId, MultipartFile avatarFile);
 
+    /**
+     * 忘记密码
+     * @param forgetPasswordRequest
+     * @return
+     */
+    public ApiResponse<String> forgetPassword(ForgetPasswordRequest forgetPasswordRequest);
 } 

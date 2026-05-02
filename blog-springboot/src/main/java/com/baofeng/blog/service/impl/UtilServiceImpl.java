@@ -86,7 +86,6 @@ public class UtilServiceImpl implements UtilService {
 
     @Override
     public ApiResponse<CaptchaResponse> getCaptcha() {
-
         String text = captchaProducer.createText();
         BufferedImage image = captchaProducer.createImage(text);
 
@@ -102,7 +101,6 @@ public class UtilServiceImpl implements UtilService {
 
             String imgBase64 = Base64.getEncoder().encodeToString(bos.toByteArray());
             captchaResponse.setImg("data:image/jpg;base64," + imgBase64);
-
             return ApiResponse.success(captchaResponse);
 
         } catch (IOException e) {
@@ -118,7 +116,6 @@ public class UtilServiceImpl implements UtilService {
     public ApiResponse<AdminLoginResponseDTO> captechaLogin(
             CaptchaAuthLonginRequest captchaAuthLonginRequest
     ) {
-
         String uuid = captchaAuthLonginRequest.uuid();
         String verifyText = captchaAuthLonginRequest.verifyText();
         boolean verifyStatus = redisCaptchaService.validateCaptcha(uuid, verifyText);

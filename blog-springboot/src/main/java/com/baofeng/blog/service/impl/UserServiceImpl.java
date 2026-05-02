@@ -26,13 +26,16 @@ import com.baofeng.blog.enums.RoleTypeEnum;
 import com.baofeng.blog.enums.UserStatusEnum;
 import com.baofeng.blog.common.util.minio.MinioUtil;
 import com.baofeng.blog.mapper.ImageMapper;
+import com.baofeng.blog.service.redis.RedisEmailCaptchaService;
 
+import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.checkerframework.checker.units.qual.t;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,7 @@ public class UserServiceImpl implements UserService {
     private final long refreshTokenExpiration;
     private final MinioUtil minioUtil;
     private final ImageMapper imageMapper;
+    private final RedisEmailCaptchaService redisEmailCaptchaService;
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     public UserServiceImpl(UserMapper userMapper,
@@ -63,7 +67,8 @@ public class UserServiceImpl implements UserService {
                             JwtTokenProviderUtil jwtTokenProvider, 
                             JwtPropertiesConfig jwtProperties,
                             MinioUtil minioUtil,
-                            ImageMapper imageMapper
+                            ImageMapper imageMapper,
+                            RedisEmailCaptchaService redisEmailCaptchaService
                             ) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
@@ -74,6 +79,7 @@ public class UserServiceImpl implements UserService {
         this.refreshTokenExpiration = jwtProperties.getRefreshTokenExpiration();
         this.minioUtil = minioUtil;
         this.imageMapper = imageMapper;
+        this.redisEmailCaptchaService = redisEmailCaptchaService;
 
     }
 
@@ -483,4 +489,21 @@ public class UserServiceImpl implements UserService {
             ? ApiResponse.success(imageResponse)
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户头像更新失败");
     }
+
+    @Override
+    public ApiResponse<String> forgetPassword(ForgetPasswordRequest forgetPasswordRequest) {
+        User user = userMapper.selectByUsernameOrEmail(forgetPasswordRequest.email());
+        if (user == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"用户不存在");
+        }
+        // 验证验证码
+        boolean isValid = redisEmailCaptchaService.validateEmailCaptcha(forgetPasswordRequest.email(), forgetPasswordRequest.verifyCode());
+        if (!isValid) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"验证码无效或已过期");
+        }
+        int rowUpdated = userMapper.updatePassword(user.getUsername(), passwordEncoder.encode(forgetPasswordRequest.newPassword()));
+        return rowUpdated > 0
+            ? ApiResponse.success("密码重置成功")
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"密码重置失败");   
+        }
 } 

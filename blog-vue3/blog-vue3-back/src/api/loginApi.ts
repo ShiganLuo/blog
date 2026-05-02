@@ -57,9 +57,9 @@ export class LoginService {
     })
   }
   // 重置密码
-  static forgetPwd(data: { email: string; verifyCode: string; password: string }) {
+  static forgetPwd(data: { email: string; verifyCode: string; newPassword: string }) {
     return request.post<string>({
-      url: '/forgetPwd',
+      url: '/admin/users/forgetPassword',
       data
     })
   }

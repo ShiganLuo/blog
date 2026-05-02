@@ -124,6 +124,14 @@ public class AdminUserAuthDTO {
         String newPassword
     ) {}
 
+    public static record ForgetPasswordRequest(
+        @NotNull
+        String email,
+        @NotNull
+        String verifyCode,
+        @NotNull
+        String newPassword
+    ) {}
 
 
 } 

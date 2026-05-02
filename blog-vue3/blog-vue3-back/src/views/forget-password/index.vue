@@ -174,7 +174,7 @@
       const res = await LoginService.forgetPwd({
         email: form.email,
         verifyCode: form.verifyCode,
-        password: form.password
+        newPassword: form.password
       })
       if (res.code === 200) {
         ElMessage.success(t('forgetPassword.resetSuccess'))

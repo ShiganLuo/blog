@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 @Slf4j
@@ -20,6 +22,7 @@ public class VisitCountSyncTask {
     private final StringRedisTemplate redisTemplate;
     private final BlogSettingMapper blogSettingMapper;
     private final ArticleMapper articleMapper;
+    private static final Logger log = LoggerFactory.getLogger(VisitCountSyncTask.class);
 
     public VisitCountSyncTask(
             StringRedisTemplate redisTemplate,

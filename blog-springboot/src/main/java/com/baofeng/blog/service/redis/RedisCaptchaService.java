@@ -5,6 +5,8 @@ import com.baofeng.blog.common.util.SafeRedisExecutor;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class RedisCaptchaService {
 
     private final StringRedisTemplate redisTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(RedisCaptchaService.class);
 
     public RedisCaptchaService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
@@ -32,9 +35,10 @@ public class RedisCaptchaService {
         if (realText != null && realText.equalsIgnoreCase(input)) {
             SafeRedisExecutor.execute(() -> {
                 redisTemplate.delete(key);
-                return true;
             }, "验证验证码");
+            return true;
         }
+        logger.warn("验证码验证失败，uuid={}, input={}", uuid, input);
         return false;
     }
 }

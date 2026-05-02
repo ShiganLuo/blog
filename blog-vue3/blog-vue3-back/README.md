@@ -48,17 +48,17 @@ blog-admin 是一款专注于用户体验和视觉设计的后台管理系统模
 
 1. 安装依赖
 ```bash
-yarn install
+pnpm install
 ```
 
 2. 启动开发服务器
 ```bash
-yarn dev
+pnpm dev
 ```
 
 3. 构建生产版本
 ```bash
-yarn build
+pnpm build
 
 ## 贡献指南
 欢迎提交问题和改进建议。请确保在提交之前：

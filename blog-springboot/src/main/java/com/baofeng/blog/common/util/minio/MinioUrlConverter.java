@@ -57,7 +57,6 @@ public class MinioUrlConverter {
 
         // Collection 支持
         if (target instanceof Collection<?> collection) {
-            System.out.println("List");
             for (Object element : collection) {
                 convertInternal(element, depth + 1, visited);
             }
@@ -72,7 +71,6 @@ public class MinioUrlConverter {
         // 深度 & 注解控制
         MinioScan scan = clazz.getAnnotation(MinioScan.class);
         if (scan != null) {
-            System.out.println(scan.maxDepth());
             if (!scan.deep()) return;
             if (scan.maxDepth() >= 0 && depth > scan.maxDepth()) return;
         }
@@ -82,7 +80,6 @@ public class MinioUrlConverter {
             field.setAccessible(true);
             try {
                 Object value = field.get(target);
-                System.out.println(clazz.getSimpleName() + "." + field.getName() + " = " + value);
                 if (value == null) continue;
                 // @MinioFile
                 if (field.isAnnotationPresent(MinioFile.class)
