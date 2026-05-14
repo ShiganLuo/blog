@@ -148,7 +148,8 @@ const getVerifyCode = async () => {
 const onLogin = async (form: LoginForm, type: "login" | "register" = "login") => {
   const res = await UserService.reqLogin(form);
   if (res?.code === 200) {
-    userStore.setToken(res.result.accessToken);
+    // 同时存储accessToken和refreshToken
+    userStore.setToken(res.result.accessToken, res.result.refreshToken);
     // 用户注册后登录
     if (type === "register" || isRemember.value) {
       _setLocalItem("loginForm", _encrypt(form));

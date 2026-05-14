@@ -1,8 +1,12 @@
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig, loadEnv, type ConfigEnv } from 'vite' // 引入类型
+import { defineConfig, loadEnv, type ConfigEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import path from 'path'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import viteCompression from 'vite-plugin-compression'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }: ConfigEnv) => {
@@ -23,11 +27,27 @@ export default defineConfig(({ mode }: ConfigEnv) => {
       vue(),
       // SVG 插件配置
       createSvgIconsPlugin({
-        // 建议使用 path.resolve 确保路径正确
         iconDirs: [path.resolve(root, "src/icons/svg")],
         symbolId: 'icon-[dir]-[name]',
         inject: 'body-last',
         customDomId: '__svg__icons__dom__',
+      }),
+      // Gzip压缩
+      viteCompression({
+        threshold: 10240, // 大于10KB的文件进行压缩
+        algorithm: 'gzip',
+        ext: '.gz',
+      }),
+      // 自动导入Vue/Pinia/VueRouter API
+      AutoImport({
+        imports: ['vue', 'vue-router', 'pinia'],
+        resolvers: [ElementPlusResolver()],
+        dts: 'src/auto-imports.d.ts',
+      }),
+      // 组件自动注册（Element Plus按需引入）
+      Components({
+        resolvers: [ElementPlusResolver()],
+        dts: 'src/components.d.ts',
       }),
     ],
 
@@ -41,10 +61,22 @@ export default defineConfig(({ mode }: ConfigEnv) => {
     css: {
       preprocessorOptions: {
         scss: {
-          // 注意：如果使用了 Sass 1.8.0+，建议加上 api: 'modern-compiler'
           additionalData: `@use "@/styles/base.scss";`,
         },
       },
+    },
+
+    // 依赖预构建优化
+    optimizeDeps: {
+      include: [
+        'vue',
+        'vue-router',
+        'pinia',
+        'axios',
+        'element-plus',
+        '@element-plus/icons-vue',
+        'gsap',
+      ],
     },
 
     server: {
@@ -75,7 +107,29 @@ export default defineConfig(({ mode }: ConfigEnv) => {
     // 生产环境打包优化
     build: {
       chunkSizeWarningLimit: 2000,
-      // 可以在这里对齐“能跑的项目”里的 terser 压缩配置
+      // Terser压缩配置
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true, // 移除console
+          drop_debugger: true, // 移除debugger
+        },
+      },
+      // 代码分割配置
+      rollupOptions: {
+        output: {
+          // 手动分割chunk
+          manualChunks: {
+            'vue-vendor': ['vue', 'vue-router', 'pinia'],
+            'element-plus': ['element-plus'],
+            'utils': ['axios', 'crypto-js', 'js-base64'],
+          },
+          // chunk文件命名格式
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: 'assets/js/[name]-[hash].js',
+          assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        },
+      },
     }
   }
 })

@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
 
 import { ArticleService } from "@/api/blog/articleApi";
 import { _setLocalItem, _getLocalItem, _removeLocalItem } from "@/utils/tool";
-import { type ArticleInfo } from "@/types/blog/article";
 import { Search } from "@element-plus/icons-vue";
-import { type Article, type ArticleSearch } from "@/types/blog/article";
 
 const router = useRouter();
 
@@ -14,18 +13,18 @@ const isClick = ref<boolean>(false);
 const searchShow = ref<boolean>(false);
 const input = ref<string>(""); // 搜索内容
 
-interface SearchResultItem  {
-  id: number,
-  article_title: string,
-  highlight_content: string,
-  rest_content: string,
+interface SearchResultItem {
+  id: number;
+  article_title: string;
+  highlight_content: string;
+  rest_content: string;
 }
 const searchResult = ref<SearchResultItem[]>([]); // 搜索结果
 
 interface HostSearchItem {
   id: number;
   articleTitle: string;
-  icon: string // 根据你 numberList 存的内容决定
+  icon: string;
 }
 const hotSearchList = ref<HostSearchItem[]>([]);
 
@@ -38,14 +37,15 @@ const clickSearchIcon = async (): Promise<void> => {
   searchShow.value = true;
   historySearchList.value = _getLocalItem("blogSearchHistory") || [];
 
-  const res = await ArticleService.getHotArticle();
-  if (res.code === 200) {
-    hotSearchList.value = res.result.map((r: ArticleInfo, index: number) => ({
-      id: r.id,
-      articleTitle: r.articleTitle ?? "",
-      icon: numberList[index],
-    }));
-  }
+  // TODO: 热门文章功能待后端接口实现后启用
+  // const res = await ArticleService.getHotArticle();
+  // if (res.code === 200) {
+  //   hotSearchList.value = res.result.map((r: ArticleInfo, index: number) => ({
+  //     id: r.id,
+  //     articleTitle: r.articleTitle ?? "",
+  //     icon: numberList[index],
+  //   }));
+  // }
 };
 
 const handleClose = (): void => {
@@ -70,24 +70,26 @@ const clickHistoryTag = (val: string): void => {
 };
 
 const getArticleList = async (): Promise<void> => {
-  const res = await ArticleService.getArticleByContent({value: input.value});
-  if (res.code === 200) {
-    searchResult.value = res.result.length > 0 
-      ? res.result.map((r: ArticleSearch) => ({
-          id: r.id,
-          article_title: r.article_title,
-          highlight_content: input.value,
-          rest_content: r.article_content?.substring(input.value.length) || "",
-        }))
-  : []; // 明确返回空数组，而不是数字 0
-    if (historySearchList.value.length > 10) {
-      historySearchList.value.shift();
-    }
-    if (!historySearchList.value.includes(input.value)) {
-      historySearchList.value.push(input.value);
-    }
-    _setLocalItem("blogSearchHistory", historySearchList.value);
-  }
+  // TODO: 搜索功能待后端接口实现后启用
+  ElMessage.info("搜索功能开发中");
+  // const res = await ArticleService.getArticleByContent({value: input.value});
+  // if (res.code === 200) {
+  //   searchResult.value = res.result.length > 0
+  //     ? res.result.map((r: ArticleSearch) => ({
+  //         id: r.id,
+  //         article_title: r.article_title,
+  //         highlight_content: input.value,
+  //         rest_content: r.article_content?.substring(input.value.length) || "",
+  //       }))
+  //     : [];
+  //   if (historySearchList.value.length > 10) {
+  //     historySearchList.value.shift();
+  //   }
+  //   if (!historySearchList.value.includes(input.value)) {
+  //     historySearchList.value.push(input.value);
+  //   }
+  //   _setLocalItem("blogSearchHistory", historySearchList.value);
+  // }
 };
 
 const clearHistorySearch = (): void => {

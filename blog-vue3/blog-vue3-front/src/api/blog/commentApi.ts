@@ -1,6 +1,6 @@
 import request from "@/utils/http/index";
 import {type CommentPage} from "@/types/comment"
-// import { }
+
 export class CommentSerivce {
   static addComment(data?: object) {
     return request.post({
@@ -22,12 +22,13 @@ export class CommentSerivce {
     })
   }
 
-  static applyComment(data?: object) {
-    return request.post({
-      url: '',
-      data
-    })
-  }
+  // TODO: 后端暂未实现申请评论接口，待实现后取消注释
+  // static applyComment(data?: object) {
+  //   return request.post({
+  //     url: '/front/comments/applyComment',
+  //     data
+  //   })
+  // }
 
   static deleteComment(id?: number | string) {
     return request.get({

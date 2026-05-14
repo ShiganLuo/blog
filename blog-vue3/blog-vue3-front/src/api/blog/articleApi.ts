@@ -1,6 +1,6 @@
 import request from "@/utils/http/index";
 import { type ArticleListResponse,
-        type ArticleInfo, 
+        type ArticleInfo,
         type recommendArticles,
         type ArticleInfoListResponse,
         type ArticleSearch
@@ -15,6 +15,7 @@ export class ArticleService {
       data: articleId
     })
   }
+
   static homeGetArticleList(data?: object) {
     return request.post<ArticleInfoListResponse>({
         url: '/front/articles/getArticleList',
@@ -22,19 +23,21 @@ export class ArticleService {
     })
   }
 
-  static getHotArticle(data?: object) {
-    return request.post<ArticleInfo[]>({
-      url: '',
-      data
-    })
-  }
+  // TODO: 后端暂未实现热门文章接口，待实现后取消注释
+  // static getHotArticle(data?: object) {
+  //   return request.post<ArticleInfo[]>({
+  //     url: '/front/articles/getHotArticle',
+  //     data
+  //   })
+  // }
 
-  static getArticleByContent(data?: object) {
-    return request.post<ArticleSearch[]>({
-      url: '',
-      data
-    })
-  }
+  // TODO: 后端暂未实现搜索文章接口，待实现后取消注释
+  // static getArticleByContent(data?: object) {
+  //   return request.post<ArticleSearch[]>({
+  //     url: '/front/articles/searchByContent',
+  //     data
+  //   })
+  // }
 
   static getArticleById(id?: string | number) {
     if (id == null) {

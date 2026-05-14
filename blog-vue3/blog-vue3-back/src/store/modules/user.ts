@@ -8,6 +8,7 @@ import { getSysStorage } from '@/utils/storage'
 import { MenuListType } from '@/types/menu'
 import { AvatarImga } from '@/utils/utils'
 import { _getLocalItem,_setLocalItem,_removeLocalItem } from '@/utils/storage'
+import { Base64 } from 'js-base64'
 
 interface UserState {
   language: LanguageEnum // 语言
@@ -20,18 +21,48 @@ interface UserState {
   refreshToken: string // 添加刷新令牌
 }
 
+// 从前台localStorage读取token的辅助函数
+function getFrontendToken(): { accessToken: string; refreshToken: string } {
+  try {
+    // 前台使用Base64编码存储，没有前缀
+    // 存储格式：key = Base64.encode(key), value = Base64.encode(JSON.stringify(value))
+    const accessTokenKey = Base64.encode('accessToken')
+    const refreshTokenKey = Base64.encode('refreshToken')
+
+    const accessTokenRaw = localStorage.getItem(accessTokenKey)
+    const refreshTokenRaw = localStorage.getItem(refreshTokenKey)
+
+    // 解码：先Base64.decode，再JSON.parse
+    const accessToken = accessTokenRaw ? JSON.parse(Base64.decode(accessTokenRaw)) : ''
+    const refreshToken = refreshTokenRaw ? JSON.parse(Base64.decode(refreshTokenRaw)) : ''
+
+    return {
+      accessToken: accessToken || '',
+      refreshToken: refreshToken || ''
+    }
+  } catch (err) {
+    console.error('Failed to load token from frontend:', err)
+    return { accessToken: '', refreshToken: '' }
+  }
+}
+
 export const useUserStore = defineStore({
   id: 'userStore',
-  state: (): UserState => ({
-    language: LanguageEnum.ZH,
-    isLogin: false,
-    isLock: false,
-    lockPassword: '',
-    info: {},
-    searchHistory: [],
-    accessToken: '',
-    refreshToken: ''
-  }),
+  state: (): UserState => {
+    // 尝试从前台获取token
+    const frontendToken = getFrontendToken()
+
+    return {
+      language: LanguageEnum.ZH,
+      isLogin: !!frontendToken.accessToken,
+      isLock: false,
+      lockPassword: '',
+      info: {},
+      searchHistory: [],
+      accessToken: frontendToken.accessToken,
+      refreshToken: frontendToken.refreshToken
+    }
+  },
   getters: {
     getUserInfo(): Partial<UserInfo> {
       return this.info
@@ -60,6 +91,17 @@ export const useUserStore = defineStore({
         this.lockPassword = lockPassword || ''
         this.refreshToken = refreshToken || ''
         this.accessToken = sessionStorage.getItem('accessToken') || ''
+      }
+
+      // 如果后台没有token，尝试从前台localStorage读取
+      if (!this.accessToken) {
+        const frontendToken = getFrontendToken()
+        if (frontendToken.accessToken) {
+          this.accessToken = frontendToken.accessToken
+          this.refreshToken = frontendToken.refreshToken
+          this.isLogin = true
+          sessionStorage.setItem('accessToken', this.accessToken)
+        }
       }
     },
     // 用户数据持久化存储
@@ -104,7 +146,20 @@ export const useUserStore = defineStore({
       if (refreshToken) {
         this.refreshToken = refreshToken
       }
-      sessionStorage.setItem('accessToken', accessToken) // 相比于localStorage，sessionStorage不会长期存储，关闭页面或标签页则失效
+      sessionStorage.setItem('accessToken', accessToken)
+
+      // 同时存储到前台的localStorage格式，以便前台共享登录状态
+      try {
+        const accessTokenKey = Base64.encode('accessToken')
+        const refreshTokenKey = Base64.encode('refreshToken')
+        localStorage.setItem(accessTokenKey, Base64.encode(JSON.stringify(accessToken)))
+        if (refreshToken) {
+          localStorage.setItem(refreshTokenKey, Base64.encode(JSON.stringify(refreshToken)))
+        }
+      } catch (err) {
+        console.error('Failed to save token to frontend storage:', err)
+      }
+
       this.saveUserData()
     },
     setAvatar(url: string) {
@@ -119,6 +174,17 @@ export const useUserStore = defineStore({
         this.accessToken = ''
         this.refreshToken = ''
         sessionStorage.removeItem('accessToken')
+
+        // 同时清除前台的localStorage
+        try {
+          const accessTokenKey = Base64.encode('accessToken')
+          const refreshTokenKey = Base64.encode('refreshToken')
+          localStorage.removeItem(accessTokenKey)
+          localStorage.removeItem(refreshTokenKey)
+        } catch (err) {
+          console.error('Failed to remove token from frontend storage:', err)
+        }
+
         useWorktabStore().opened = []
         this.saveUserData()
         sessionStorage.removeItem('iframeRoutes')
