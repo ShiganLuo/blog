@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useUserStore } from "@/stores/index";
 import { frontSite, backSite, frontCategory, backCategory } from "./data";
 import { ConfigService } from "@/api/configApi";
 import PageHeader from "@/components/PageHeader/index.vue";
@@ -27,6 +28,7 @@ interface RouteQuery {
 
 const bgUrl = ref<string>("");
 const route = useRoute();
+const userStore = useUserStore();
 const active = ref<number>(0);
 const activeType = ref<string>("");
 
@@ -65,7 +67,7 @@ const currentTitle = computed<string>(() => {
 });
 
 const getFrontBackground = async (): Promise<void> => {
-  const res = await ConfigService.getFrontBackground();
+  const res = await ConfigService.getFrontBackground(userStore.getUserInfo.id || 1);
   if (res.code === 200) {
     bgUrl.value = res.result.frontHeadBackground;
   }

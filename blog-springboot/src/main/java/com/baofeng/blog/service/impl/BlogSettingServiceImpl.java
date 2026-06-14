@@ -11,13 +11,17 @@ import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetailResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDict;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.SystemSettingDictResponse;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.*;
+import com.baofeng.blog.dto.front.FrontBlogSettingDTO.FrontBackgroundResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettingDTO.FrontConfigDetailResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettingDTO.SomeFrontInformation;
 import com.baofeng.blog.entity.BlogSetting;
 import com.baofeng.blog.service.BlogSettingService;
 import com.baofeng.blog.enums.*;
 import com.baofeng.blog.service.redis.RedisVisitCounter;
 
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,30 +55,73 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         this.userMapper = userMapper;
         this.redisVisitCounter = redisVisitCounter;
     }
+
+    /**
+     * 获取当前登录用户的ID
+     * @return 用户ID，未登录返回null
+     */
+    private Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        String username = authentication.getName();
+        if (username == null || "anonymousUser".equals(username)) {
+            return null;
+        }
+        return userMapper.getIdByUsername(username);
+    }
+
     @Override
     public ApiResponse<String> addViews(){
         redisVisitCounter.incrSiteVisit();
         return ApiResponse.success("访问量增加成功");    
     }
+
     @Override
     public ApiResponse<String> initSetting(BlogSetting blogSetting){
-        BlogSetting settring1 = blogSettingMapper.getSettingById(1L);
-        if ( settring1 != null) {
-            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"博客系统设置已存在"); // 默认第一条记录为博客系统设置
+        Long currentUserId = getCurrentUserId();
+        if (currentUserId == null) {
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "请先登录");
         }
-        
+
+        // 检查该用户是否已有设置
+        BlogSetting existing = blogSettingMapper.getSettingByUserId(currentUserId);
+        if (existing != null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "博客系统设置已存在");
+        }
+
+        blogSetting.setUserId(currentUserId);
         int success = blogSettingMapper.insertSetting(blogSetting);
         return success > 0
             ? ApiResponse.success("网站初始化成功")
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "网站初始化失败");
-
     }
 
     @Override
     public ApiResponse<String> updateSetting(BlogSetting blogSetting) {
-        blogSetting.setId(1L);
-        BlogSetting blogsetting2 = blogSettingMapper.getSettingById(1L);
-        int success = 0;
+        Long currentUserId = getCurrentUserId();
+        if (currentUserId == null) {
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "请先登录");
+        }
+
+        // 查询当前用户的设置
+        BlogSetting existing = blogSettingMapper.getSettingByUserId(currentUserId);
+        if (existing == null) {
+            // 如果没有设置，执行初始化
+            blogSetting.setUserId(currentUserId);
+            blogSetting.setVisitCount(0L);
+            int success = blogSettingMapper.insertSetting(blogSetting);
+            return success > 0
+                ? ApiResponse.success("网站设置初始化成功")
+                : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "网站设置初始化失败");
+        }
+
+        // 使用已有记录的id
+        blogSetting.setId(existing.getId());
+        blogSetting.setUserId(currentUserId);
+
+        // URL normalize 处理
         blogSetting.setFrontHeadBackground(
                 UrlNormalizeUtil.stripUrlPrefix(blogSetting.getFrontHeadBackground())
         );
@@ -94,13 +141,8 @@ public class BlogSettingServiceImpl implements BlogSettingService {
                 UrlNormalizeUtil.stripUrlPrefix(blogSetting.getTouristAvatar())
         );
 
-        if (blogsetting2 == null) {
-            blogSetting.setVisitCount(0L);
-            success = blogSettingMapper.insertSetting(blogSetting);
-        } else {
-            success = blogSettingMapper.updateSettingById(blogSetting);
-        }
-        logger.info(blogSetting.getQq());
+        // 使用全量更新，允许前端将字段置为空字符串来清空
+        int success = blogSettingMapper.updateSettingFull(blogSetting);
         return success > 0
             ? ApiResponse.success("网站设置更新成功")
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "网站设置更新失败");
@@ -109,6 +151,10 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     @Override
     public ApiResponse<FrontConfigDetailResponse> getSettingByIdFront(Long id) {
         BlogSetting blogSetting = blogSettingMapper.getSettingById(id);
+        if (blogSetting == null) {
+            return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "博客设置不存在");
+        }
+
         Long articleCount = articleMapper.countAllArticles();
         Long tagCount = tagMapper.countAllTags();
         Long categoryCount = categoryMapper.countAllCategories();
@@ -138,10 +184,24 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         detail.setUserCount(userCount);
         return ApiResponse.success(detail);
     }
-    
+
+    /**
+     * 获取当前用户的博客设置（管理后台）
+     */
+    public ApiResponse<AdminConfigDetailResponse> getSettingByCurrentUserAdmin() {
+        Long currentUserId = getCurrentUserId();
+        if (currentUserId == null) {
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "请先登录");
+        }
+        return getSettingByIdAdmin(currentUserId);
+    }
+
     @Override
-    public ApiResponse<AdminConfigDetailResponse> getSettingByIdAdmin(Long id) {
-        BlogSetting blogSetting = blogSettingMapper.getSettingById(id);
+    public ApiResponse<AdminConfigDetailResponse> getSettingByIdAdmin(Long userId) {
+        BlogSetting blogSetting = blogSettingMapper.getSettingByUserId(userId);
+        if (blogSetting == null) {
+            return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "博客设置不存在，请先初始化");
+        }
         AdminConfigDetailResponse detail = new AdminConfigDetailResponse();
         detail.setWebsiteChineseName(blogSetting.getWebsiteChineseName());
         detail.setWebsiteEnglishName(blogSetting.getWebsiteEnglishName());
@@ -159,7 +219,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         detail.setAuthor(blogSetting.getAuthor());
         detail.setAuthorAvatar(blogSetting.getAuthorAvatar());
         detail.setAuthorIntro(blogSetting.getAuthorIntro());
-        detail.setAuthroPersonalSay(blogSetting.getAuthorPersonalSay());
+        detail.setAuthorPersonalSay(blogSetting.getAuthorPersonalSay());
         detail.setUserAvatar(blogSetting.getUserAvatar());
         detail.setTouristAvatar(blogSetting.getTouristAvatar());
 
@@ -177,6 +237,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         detail.setTwitter(blogSetting.getTwitter());
         detail.setStackoverflow(blogSetting.getStackoverflow());
 
+        detail.setMultiLanguage(blogSetting.getMultiLanguage());
         detail.setIsCommentReview(blogSetting.getIsCommentReview());
         detail.setIsEmailNotice(blogSetting.getIsEmailNotice());
         detail.setAlipayQRCode(blogSetting.getAlipayQrCode());
@@ -264,8 +325,20 @@ public class BlogSettingServiceImpl implements BlogSettingService {
 
     @Override
     public ApiResponse<SomeFrontInformation> getSomeFrontInformation() {
+        Long currentUserId = getCurrentUserId();
+        if (currentUserId == null) {
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "请先登录");
+        }
+        return getSomeFrontInformationById(currentUserId);
+    }
+
+    @Override
+    public ApiResponse<SomeFrontInformation> getSomeFrontInformationById(Long userId) {
+        BlogSetting blogSetting = blogSettingMapper.getSettingByUserId(userId);
+        if (blogSetting == null) {
+            return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "博客设置不存在");
+        }
         SomeFrontInformation someFrontInformation = new SomeFrontInformation();
-        BlogSetting blogSetting = blogSettingMapper.getSettingById(1L);
         someFrontInformation.setIcpFilingNumber(blogSetting.getIcpFilingNumber());
         someFrontInformation.setPsbFilingNumber(blogSetting.getPsbFilingNumber());
         someFrontInformation.setWebsiteChineseName(blogSetting.getWebsiteChineseName());
@@ -275,7 +348,16 @@ public class BlogSettingServiceImpl implements BlogSettingService {
 
     @Override
     public ApiResponse<FrontBackgroundResponse> getFrontBackgroud() {
-        BlogSetting blogSetting = blogSettingMapper.getSettingById(1L);
+        Long currentUserId = getCurrentUserId();
+        if (currentUserId == null) {
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "请先登录");
+        }
+        return getFrontBackgroudById(currentUserId);
+    }
+
+    @Override
+    public ApiResponse<FrontBackgroundResponse> getFrontBackgroudById(Long userId) {
+        BlogSetting blogSetting = blogSettingMapper.getSettingByUserId(userId);
         if (blogSetting == null || blogSetting.getFrontHeadBackground() == null) {
             return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "前台背景图片未设置");
         }
@@ -283,4 +365,4 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         response.setFrontHeadBackground(blogSetting.getFrontHeadBackground());
         return ApiResponse.success(response);
     }
-} 
+}

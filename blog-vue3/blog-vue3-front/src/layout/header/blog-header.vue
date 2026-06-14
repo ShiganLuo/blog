@@ -21,6 +21,12 @@ const isPc = computed(() => !isMobile()); // 是否为PC端，响应式更新
 const router = useRouter();
 const route: RouteLocationNormalizedLoaded = useRoute();
 const userStore = useUserStore();
+
+// 打开 RSS 订阅
+const openRss = () => {
+  const baseUrl = window.location.origin;
+  window.open(`${baseUrl}/api/front/rss`, '_blank');
+};
 const { getBlogAvatar, getUserInfo } = storeToRefs(userStore);
 
 const headerState = reactive({
@@ -155,6 +161,9 @@ onBeforeUnmount(() => {
           <el-menu-item index="/message/list"
             ><i class="iconfont icon-liuyan"></i> 留言</el-menu-item
           >
+          <el-menu-item @click="openRss">
+            <i class="iconfont icon-rss"></i> RSS
+          </el-menu-item>
           <el-menu-item index="/login" v-if="!getUserInfo.id">
             <i class="iconfont icon-timerauto"></i> 登录
           </el-menu-item>

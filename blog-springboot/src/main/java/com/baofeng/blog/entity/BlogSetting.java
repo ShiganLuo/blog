@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @Data
 public class BlogSetting {
     private Long id;
+    private Long userId;
     private String websiteChineseName;
     private String websiteEnglishName;
     private String websiteTitle;
@@ -41,7 +42,7 @@ public class BlogSetting {
     private String juejin;
     private String twitter;
     private String stackoverflow;
-    private String multiLanguage;
+    private Integer multiLanguage;
     private Boolean isCommentReview;
     private Boolean isEmailNotice;
     private String wechatQrCode;

@@ -3,7 +3,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 import com.baofeng.blog.common.annotation.MinioFile;
-public class FrontBlogSettinDTO {
+public class FrontBlogSettingDTO {
     public static record UpdateSettingRequest(
         String siteTitle,
         String siteDescription,

@@ -118,7 +118,8 @@ CREATE TABLE `images` (
 
 DROP TABLE IF EXISTS `blog_settings`;
 CREATE TABLE `blog_settings` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键，固定仅一条记录',
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+    `user_id` BIGINT NOT NULL COMMENT '关联用户ID，每个用户一条设置记录',
     `website_chinese_name` VARCHAR(100) NOT NULL COMMENT '网站中文名称',
     `website_english_name` VARCHAR(100) DEFAULT NULL COMMENT '网站英文名称',
     `website_title` VARCHAR(255) NOT NULL COMMENT '网站标题（浏览器 title）',
@@ -156,8 +157,10 @@ CREATE TABLE `blog_settings` (
     `wechat_qrcode` VARCHAR(500) DEFAULT NULL COMMENT '微信收款二维码',
     `alipay_qrcode` VARCHAR(500) DEFAULT NULL COMMENT '支付宝收款二维码',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='博客站点全局配置表（单站点单记录）';
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    UNIQUE KEY uk_blog_setting_user (`user_id`),
+    CONSTRAINT fk_blog_setting_user FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='博客站点配置表（每用户一条记录）';
 
 
 DROP TABLE IF EXISTS `friend_link`;

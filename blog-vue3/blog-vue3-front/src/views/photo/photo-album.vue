@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
+import { useUserStore } from "@/stores/index";
 import { PhotoService } from "@/api/photoApi";
 import { type Album } from "@/types/photo";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
@@ -8,6 +9,7 @@ import PageHeader from "@/components/PageHeader/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import { ConfigService } from "@/api/configApi";
 
+const userStore = useUserStore();
 const albumList = ref<Album[]>([]);
 const loading = ref(false);
 const bgUrl = ref<string>("");
@@ -37,7 +39,7 @@ const getAll = async () => {
 };
 
 const getFrontBackground = async (): Promise<void> => {
-  const res = await ConfigService.getFrontBackground();
+  const res = await ConfigService.getFrontBackground(userStore.getUserInfo.id || 1);
   if (res.code === 200) {
     bgUrl.value = res.result.frontHeadBackground;
   }

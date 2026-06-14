@@ -5,6 +5,7 @@ import type { PropType } from "vue";
 import { ElAvatar, ElImage, ElPopover } from "element-plus";
 
 import blogAvatar from "@/assets/img/blogAvatar.png";
+import defaultBg from "@/assets/img/background.jpg";
 import GsapCount from "@/components/GsapCount/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 
@@ -70,13 +71,13 @@ const operate = (op: OperationType, val?: string): void => {
 
 <template>
   <!-- 背景图 -->
-  <div class="info-background" v-image="configDetail.frontHeadBackground">
+  <div class="info-background" v-image="configDetail.frontHeadBackground || defaultBg">
     <ElImage
       fit="cover"
       style="width: 100%; height: 100%"
-      :src="configDetail.frontHeadBackground"
+      :src="configDetail.frontHeadBackground || defaultBg"
       preview-teleported
-      :preview-src-list="[configDetail.frontHeadBackground || '']"
+      :preview-src-list="[configDetail.frontHeadBackground || defaultBg]"
     >
       <template #error>
         <div class="w-[100%] h-[100%] grid place-items-center">

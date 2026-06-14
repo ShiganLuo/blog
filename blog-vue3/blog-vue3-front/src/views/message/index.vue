@@ -122,7 +122,7 @@ const hideSearchInput = (): void => {
 };
 
 const getFrontBackground = async (): Promise<void> => {
-  const res = await ConfigService.getFrontBackground();
+  const res = await ConfigService.getFrontBackground(userStore.getUserInfo.id || 1);
   if (res.code === 200) {
     bgUrl.value = res.result.frontHeadBackground;
   }

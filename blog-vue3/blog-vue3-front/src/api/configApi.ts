@@ -7,22 +7,42 @@ interface FooterInfomation {
     favicon:string
 }
 export class ConfigService {
-    static homeGetConfig(){
+    /**
+     * 获取指定用户的博客配置（前台展示）
+     * @param userId 用户id
+     */
+    static homeGetConfig(userId: number | string){
         return request.get<ConfigDetail>({
-            url: '/front/settings/getBlogConfig'
+            url: `/front/settings/getBlogConfig/${userId}`,
+            silent: true
+        }).catch(() => {
+            return { code: 404, result: null } as any;
         })
     }
 
-    static getSomeFrontInformation() {
+    /**
+     * 获取指定用户的部分前台信息
+     * @param userId 用户id
+     */
+    static getSomeFrontInformation(userId: number | string) {
         return request.get<FooterInfomation>({
-            url: '/front/settings/getSomeFrontInformation'
+            url: `/front/settings/getSomeFrontInformation/${userId}`,
+            silent: true
+        }).catch(() => {
+            return { code: 404, result: null } as any;
         })
     }
 
-    static getFrontBackground() {
+    /**
+     * 获取指定用户的前台背景图片
+     * @param userId 用户id
+     */
+    static getFrontBackground(userId: number | string) {
         return request.get<FrontBackground>({
-            url: '/front/settings/getFrontBackground'
+            url: `/front/settings/getFrontBackground/${userId}`,
+            silent: true
+        }).catch(() => {
+            return { code: 404, result: null } as any;
         })
     }
 }
-

@@ -2,13 +2,17 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { ConfigService } from "@/api/configApi";
+import { useUserStore } from "@/stores/index";
 const route = useRoute();
+const userStore = useUserStore();
 const icpFilingNumber = ref('');
 const websiteChinseName = ref('')
 const psbFilingNumber = ref('')
 
 const geticpFilingNumber = async (): Promise<void> =>{
-  const res = await ConfigService.getSomeFrontInformation();
+  const userId = userStore.getUserInfo.id;
+  if (!userId) return;
+  const res = await ConfigService.getSomeFrontInformation(userId);
   if (res.code == 200) {
     icpFilingNumber.value = res.result.icpFilingNumber
     websiteChinseName.value = res.result.websiteChineseName

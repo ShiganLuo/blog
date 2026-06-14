@@ -6,6 +6,7 @@ import { storeToRefs } from "pinia";
 
 import { numberFormate } from "@/utils/tool";
 import { gsapTransFont } from "@/utils/transform";
+import defaultBg from "@/assets/img/background.jpg";
 
 import Tooltip from "../ToolTip/index.vue";
 import GsapCount from "@/components/GsapCount/index.vue";
@@ -73,6 +74,11 @@ const getBgCover = computed(() => {
   } else {
     console.log("props.bgUrl", props.bgUrl);
     url = props.bgUrl;
+  }
+
+  // 使用默认背景图作为 fallback
+  if (!url) {
+    url = defaultBg;
   }
 
   finalUrl.value = url;

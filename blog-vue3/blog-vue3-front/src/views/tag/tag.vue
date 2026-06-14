@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
+import { useUserStore } from "@/stores/index";
 import { TagService } from "@/api/blog/tagApi";
 import { ConfigService } from "@/api/configApi";
 import { type  TagListResponse, type TagItem } from "@/types/blog/tag"
@@ -9,6 +10,7 @@ import PageHeader from "@/components/PageHeader/index.vue";
 
 
 // router
+const userStore = useUserStore();
 const router = useRouter();
 const bgUrl = ref<string>("");
 
@@ -54,7 +56,7 @@ const getTagList = async () => {
   }
 };
 const getFrontBackground = async (): Promise<void> => {
-  const res = await ConfigService.getFrontBackground();
+  const res = await ConfigService.getFrontBackground(userStore.getUserInfo.id || 1);
   if (res.code === 200) {
     bgUrl.value = res.result.frontHeadBackground;
   }

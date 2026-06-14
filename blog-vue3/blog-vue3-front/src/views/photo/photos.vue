@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
+import { useUserStore } from "@/stores/index";
 import { PhotoService } from "@/api/photoApi";
 import { ConfigService } from "@/api/configApi";
 import PageHeader from "@/components/PageHeader/index.vue";
@@ -10,6 +11,7 @@ import { type Photo, type Album } from "@/types/photo";
 
 // 路由
 const route = useRoute();
+const userStore = useUserStore();
 const router = useRouter();
 const bgUrl = ref<string>("");
 
@@ -59,7 +61,7 @@ const handleClose = () => {
 };
 
 const getFrontBackground = async (): Promise<void> => {
-  const res = await ConfigService.getFrontBackground();
+  const res = await ConfigService.getFrontBackground(userStore.getUserInfo.id || 1);
   if (res.code === 200) {
     bgUrl.value = res.result.frontHeadBackground;
   }

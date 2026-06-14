@@ -2,7 +2,7 @@
 import { ref, onMounted, onBeforeUnmount, computed, type Ref } from "vue";
 import { useRoute } from "vue-router";
 import { HomeService } from "@/api/homeApi";
-import { useStaticData } from "@/stores/index";
+import { useStaticData, useUserStore } from "@/stores/index";
 import TypeWriter from "@/components/TypeWriter/index.vue";
 import Waves from "@/components/WelcomeComps/waves.vue";
 import { debounce } from "@/utils/tool";
@@ -10,6 +10,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { storeToRefs } from "pinia";
 import { ConfigService } from "@/api/configApi";
+import defaultBg from "@/assets/img/background.jpg";
 
 // API 返回类型
 interface SentenceResponse {
@@ -35,6 +36,7 @@ interface PageHeader {
 const websiteChineseName = ref('')
 const route = useRoute();
 const staticStore = useStaticData();
+const userStore = useUserStore();
 const { getPageHeaderList } = storeToRefs(staticStore);
 
 const saying: Ref<string[]> = ref([]);
@@ -74,7 +76,9 @@ const initScrollEvent = () => {
 };
 
 const getWebsiteChineseName = async () => {
-  const res = await ConfigService.getSomeFrontInformation();
+  const userId = userStore.getUserInfo.id;
+  if (!userId) return;
+  const res = await ConfigService.getSomeFrontInformation(userId);
   if (res.code == 200) {
     websiteChineseName.value = res.result.websiteChineseName
   }
@@ -102,7 +106,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div id="home">
-    <el-image class="bg full-size" fit="cover" :src="bgUrl"></el-image>
+    <el-image class="bg full-size" fit="cover" :src="bgUrl || defaultBg"></el-image>
     <div class="font">{{ websiteChineseName }}</div>
     <TypeWriter class="type-writer" size="1.2em" :typeList="saying" :timeSpace="200" :wordPrintTime="100" color="#ffffff"/>
     <Waves />

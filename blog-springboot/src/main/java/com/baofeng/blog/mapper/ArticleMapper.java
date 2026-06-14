@@ -198,4 +198,11 @@ public interface ArticleMapper {
      */
     int batchIncrementArticleViews(@Param("visitMap") Map<Long, Long> visitMap);
 
+    /**
+     * 获取最新文章用于 RSS 生成
+     * @param limit 最大文章数
+     * @return 文章列表
+     */
+    List<Map<String, Object>> getRecentArticlesForRss(@Param("limit") int limit);
+
 }

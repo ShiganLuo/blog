@@ -431,4 +431,13 @@
         </foreach>
     </update>
 
+    <!-- 获取最新文章用于 RSS 生成 -->
+    <select id="getRecentArticlesForRss" resultType="java.util.HashMap">
+        SELECT id, title, summary, created_at
+        FROM articles
+        WHERE is_deleted = 0 AND status = 1
+        ORDER BY created_at DESC
+        LIMIT #{limit}
+    </select>
+
 </mapper>

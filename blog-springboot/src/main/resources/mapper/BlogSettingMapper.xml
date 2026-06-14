@@ -8,6 +8,8 @@
     <resultMap id="BaseResultMap" type="com.baofeng.blog.entity.BlogSetting">
         <id property="id" column="id"/>
 
+        <result property="userId" column="user_id"/>
+
         <result property="websiteChineseName" column="website_chinese_name"/>
         <result property="websiteEnglishName" column="website_english_name"/>
         <result property="websiteTitle" column="website_title"/>
@@ -58,9 +60,14 @@
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
-    <!-- 获取网站配置（单站点，通常 id = 1） -->
+    <!-- 根据id获取博客设置 -->
     <select id="getSettingById" resultMap="BaseResultMap">
         SELECT * FROM blog_settings WHERE id = #{id}
+    </select>
+
+    <!-- 根据用户id获取博客设置 -->
+    <select id="getSettingByUserId" resultMap="BaseResultMap">
+        SELECT * FROM blog_settings WHERE user_id = #{userId}
     </select>
 
     <!--获取ICP备案号-->
@@ -68,7 +75,7 @@
         SELECT icp_filing_number FROM blog_settings WHERE id = #{id}
     </select>
 
-    <!-- 获取全部配置（理论上只有一条） -->
+    <!-- 获取全部配置 -->
     <select id="getAllSettings" resultMap="BaseResultMap">
         SELECT * FROM blog_settings
     </select>
@@ -76,6 +83,7 @@
     <!--新建博客配置-->
     <insert id="insertSetting" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO blog_settings (
+            user_id,
             website_chinese_name,
             website_english_name,
             website_title,
@@ -115,6 +123,7 @@
             created_at,
             updated_at
         ) VALUES (
+            #{userId},
             #{websiteChineseName},
             #{websiteEnglishName},
             #{websiteTitle},
@@ -157,7 +166,7 @@
     </insert>
 
     <!-- ========================= -->
-    <!-- 更新（选择性） -->
+    <!-- 选择性更新（null字段不更新） -->
     <!-- ========================= -->
     <update id="updateSettingById">
         UPDATE blog_settings
@@ -212,12 +221,59 @@
         WHERE id = #{id}
     </update>
 
+    <!-- ========================= -->
+    <!-- 全量更新（允许将字段置为null） -->
+    <!-- ========================= -->
+    <update id="updateSettingFull">
+        UPDATE blog_settings SET
+            website_chinese_name = #{websiteChineseName},
+            website_english_name = #{websiteEnglishName},
+            website_title = #{websiteTitle},
+            website_create_time = #{websiteCreateTime},
+            website_intro = #{websiteIntro},
+            logo = #{logo},
+            favicon = #{favicon},
+            front_head_background = #{frontHeadBackground},
+            notice = #{notice},
+            icp_filing_number = #{icpFilingNumber},
+            psb_filing_number = #{psbFilingNumber},
+            author = #{author},
+            author_avatar = #{authorAvatar},
+            author_intro = #{authorIntro},
+            author_personal_say = #{authorPersonalSay},
+            user_avatar = #{userAvatar},
+            tourist_avatar = #{touristAvatar},
+            github = #{github},
+            gitee = #{gitee},
+            bilibili = #{bilibili},
+            qq = #{qq},
+            qq_group = #{qqGroup},
+            wechat = #{wechat},
+            wechat_group = #{wechatGroup},
+            weibo = #{weibo},
+            csdn = #{csdn},
+            zhihu = #{zhihu},
+            juejin = #{juejin},
+            twitter = #{twitter},
+            stackoverflow = #{stackoverflow},
+            multi_language = #{multiLanguage},
+            is_comment_review = #{isCommentReview},
+            is_email_notice = #{isEmailNotice},
+            wechat_qrcode = #{wechatQrCode},
+            alipay_qrcode = #{alipayQrCode},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
     <update id="incrementVisitCountById">
         UPDATE blog_settings
         SET visit_count = visit_count + #{count}
         WHERE id = #{id}
     </update>
 
+    <!-- 根据用户id删除设置 -->
+    <delete id="deleteSettingByUserId">
+        DELETE FROM blog_settings WHERE user_id = #{userId}
+    </delete>
 
-
-</mapper> 
+</mapper>

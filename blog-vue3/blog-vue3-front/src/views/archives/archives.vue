@@ -2,11 +2,13 @@
 import { ref, reactive, onMounted } from "vue";
 import { ArticleService } from "@/api/blog/articleApi";
 import { ConfigService } from "@/api/configApi";
+import { useUserStore } from "@/stores/index";
 import { type Article, type ArchiveGroup } from "@/types/blog/article"
 import PageHeader from "@/components/PageHeader/index.vue";
 import TimeLine from "@/components/TimeLine/index.vue";
 
 // 归档数据
+const userStore = useUserStore();
 const archives = ref<ArchiveGroup[]>([]);
 const bgUrl = ref<string>("");
 
@@ -61,7 +63,7 @@ const getArchives = async () => {
 };
 
 const getFrontBackground = async () => {
-  const res = await ConfigService.getFrontBackground();
+  const res = await ConfigService.getFrontBackground(userStore.getUserInfo.id || 1);
   if (res.code === 200) {
     bgUrl.value = res.result.frontHeadBackground;
   }

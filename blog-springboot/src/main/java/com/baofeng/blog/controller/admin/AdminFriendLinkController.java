@@ -26,7 +26,7 @@ public class AdminFriendLinkController {
     }
 
     @GetMapping("/getAllFriendLink")
-    public ApiResponse<AdminFriendLinkPageResponse> getAllFriendLink(@RequestBody @Validated AdminFriendLinkRequest adminFriendLinkRequest) {
+    public ApiResponse<AdminFriendLinkPageResponse> getAllFriendLink(@ModelAttribute @Validated AdminFriendLinkRequest adminFriendLinkRequest) {
         return friendLinkService.getAllFriendLinkAdmin(adminFriendLinkRequest);
     }
 

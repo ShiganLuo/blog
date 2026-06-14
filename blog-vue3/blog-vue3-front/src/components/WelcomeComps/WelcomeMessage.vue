@@ -5,6 +5,10 @@ import { SERVER_LOCATION } from '@/config/config'
 import { onMounted } from 'vue'
 
 onMounted(async () => {
+  // 只在首次访问时弹出欢迎消息
+  const WELCOME_KEY = 'blog_welcomed'
+  if (sessionStorage.getItem(WELCOME_KEY)) return
+
   const location = await getVisitorLocation()
   if (location) {
     const distance = calculateDistance(
@@ -16,12 +20,14 @@ onMounted(async () => {
     
     ElMessage.success({
       message: `👋 欢迎来自 ${location.city}, ${location.country} 的用户！\n我们之间相距约 ${Math.round(distance)} 公里。`,
-      duration: 6000, // 6秒后关闭
-      showClose: true, // 显示关闭按钮
+      duration: 6000,
+      showClose: true,
     })
   } else {
     ElMessage.info('欢迎访问！')
   }
+
+  sessionStorage.setItem(WELCOME_KEY, '1')
 })
 </script>
 

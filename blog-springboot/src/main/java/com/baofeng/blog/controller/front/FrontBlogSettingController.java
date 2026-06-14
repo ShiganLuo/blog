@@ -1,9 +1,9 @@
 package com.baofeng.blog.controller.front;
 
 import com.baofeng.blog.dto.ApiResponse;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontBackgroundResponse;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.FrontConfigDetailResponse;
-import com.baofeng.blog.dto.front.FrontBlogSettinDTO.SomeFrontInformation;
+import com.baofeng.blog.dto.front.FrontBlogSettingDTO.FrontBackgroundResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettingDTO.FrontConfigDetailResponse;
+import com.baofeng.blog.dto.front.FrontBlogSettingDTO.SomeFrontInformation;
 import com.baofeng.blog.service.BlogSettingService;
 
 import org.springframework.web.bind.annotation.*;
@@ -24,19 +24,30 @@ public class FrontBlogSettingController {
         return blogSettingService.addViews();
     }
 
-
-    @GetMapping("/getBlogConfig")
-    public ApiResponse<FrontConfigDetailResponse> getBlogConfig() {
-        return blogSettingService.getSettingByIdFront(1L);
+    /**
+     * 获取指定用户的博客配置（前台展示）
+     * @param userId 用户id
+     */
+    @GetMapping("/getBlogConfig/{userId}")
+    public ApiResponse<FrontConfigDetailResponse> getBlogConfig(@PathVariable Long userId) {
+        return blogSettingService.getSettingByIdFront(userId);
     }
 
-    @GetMapping("/getSomeFrontInformation")
-    public ApiResponse<SomeFrontInformation> getSomeFrontInformation() {
-        return blogSettingService.getSomeFrontInformation();
+    /**
+     * 获取指定用户的部分前台信息
+     * @param userId 用户id
+     */
+    @GetMapping("/getSomeFrontInformation/{userId}")
+    public ApiResponse<SomeFrontInformation> getSomeFrontInformation(@PathVariable Long userId) {
+        return blogSettingService.getSomeFrontInformationById(userId);
     }
 
-    @GetMapping("/getFrontBackground")
-    public ApiResponse<FrontBackgroundResponse> getFrontBackground() {
-        return blogSettingService.getFrontBackgroud();
+    /**
+     * 获取指定用户的前台背景图片
+     * @param userId 用户id
+     */
+    @GetMapping("/getFrontBackground/{userId}")
+    public ApiResponse<FrontBackgroundResponse> getFrontBackground(@PathVariable Long userId) {
+        return blogSettingService.getFrontBackgroudById(userId);
     }
 }

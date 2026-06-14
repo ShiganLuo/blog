@@ -78,7 +78,7 @@ public class AdminBlogSettingDTO {
         @MinioFile
         private String authorAvatar;
         private String authorIntro;
-        private String authroPersonalSay;
+        private String authorPersonalSay;
         @MinioFile
         private String userAvatar;
         private String github;

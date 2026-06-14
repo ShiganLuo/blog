@@ -107,7 +107,7 @@ const applyLinks = (): void => {
 };
 
 const getConfigDetail = async (): Promise<void> => {
-  let res = await ConfigService.homeGetConfig();
+  let res = await ConfigService.homeGetConfig(userStore.getUserInfo.id || 1);
   if (res.code === 200 && res.result) {
     blogName.value = res.result.websiteTitle || " ";
     qq.value = res.result.qq || " "
@@ -115,7 +115,7 @@ const getConfigDetail = async (): Promise<void> => {
 };
 
 const getFrontBackground = async (): Promise<void> => {
-  const res = await ConfigService.getFrontBackground();
+  const res = await ConfigService.getFrontBackground(userStore.getUserInfo.id || 1);
   if (res.code === 200) {
     bgUrl.value = res.result.frontHeadBackground;
   }

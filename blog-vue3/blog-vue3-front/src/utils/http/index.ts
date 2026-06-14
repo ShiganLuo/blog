@@ -11,6 +11,13 @@ import { useUserStore } from '@/stores/index'
 import { ElMessage,ElMessageBox } from 'element-plus'
 import EmojiText from '../emojo'
 import { tansParams } from '@/utils/tool'
+
+// 扩展 AxiosRequestConfig，支持 silent 标记
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    silent?: boolean
+  }
+}
 const axiosInstance : AxiosInstance = axios.create({
   timeout: 10000,
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -109,10 +116,14 @@ axiosInstance.interceptors.response.use(
     } 
     // 其他业务状态处理
     else if (code === ApiStatus.SERVER_ERROR) {
-      ElMessage({ message: msg, type: 'error' })
+      if (!response.config.silent) {
+        ElMessage({ message: msg, type: 'error' })
+      }
       return Promise.reject(new Error(msg))
     } else {
-      ElMessage({ message: msg, type: 'warning' })
+      if (!response.config.silent) {
+        ElMessage({ message: msg, type: 'warning' })
+      }
       return Promise.reject(new Error(msg)) 
     }
   },

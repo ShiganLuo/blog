@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
+import { useUserStore } from "@/stores/index";
 
 import { ArticleService } from "@/api/blog/articleApi";
 import { ConfigService } from "@/api/configApi";
@@ -16,6 +17,7 @@ interface PaginationParam {
   size: number;
   id: string;
 }
+const userStore = useUserStore();
 const param = reactive<PaginationParam>({
   current: 1,
   size: 4,
@@ -70,7 +72,7 @@ const getArticleListById = async () => {
 };
 
 const getFrontBackground = async (): Promise<void> => {
-  const res = await ConfigService.getFrontBackground();
+  const res = await ConfigService.getFrontBackground(userStore.getUserInfo.id || 1);
   if (res.code === 200) {
     bgUrl.value = res.result.frontHeadBackground;
   }

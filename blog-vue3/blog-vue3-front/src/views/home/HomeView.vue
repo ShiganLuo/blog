@@ -13,6 +13,7 @@ import HomeArticleList from "./HomeArticle/home-article-list.vue";
 import RightSide from "./RightSide/right-side.vue";
 import { gsapTransY } from "@/utils/transform";
 import { type Tag, type ColoredTag } from "@/types/blog/tag"
+import defaultBg from "@/assets/img/background.jpg"
 
 interface PaginationParams {
   current: number;
@@ -76,7 +77,12 @@ const tags: Ref<ColoredTag[]> = ref([]);
 // 获取网站详细信息
 const getConfigDetail = async (): Promise<void> => {
   try {
-    const res = await ConfigService.homeGetConfig();
+    const userId = userStore.getUserInfo.id;
+    if (!userId) {
+      console.warn('用户未登录，无法获取博客配置');
+      return;
+    }
+    const res = await ConfigService.homeGetConfig(userId);
     if (res.code === 200 && typeof res.result !== "string") {
       configDetail.value = res.result as ConfigDetail;
       userStore.setBlogAvatar(res.result.logo || '');
@@ -136,7 +142,7 @@ onMounted(async () => {
 
 <template>
   <PageHeader
-  :bgUrl="configDetail.frontHeadBackground"/>
+  :bgUrl="configDetail.frontHeadBackground || defaultBg"/>
   <div class="home_center_box">
     <el-row>
       <el-col :xs="24" :sm="18">

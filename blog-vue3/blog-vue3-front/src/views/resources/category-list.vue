@@ -1,7 +1,8 @@
 <!-- 优质网站分类 -->
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
+import { useUserStore } from "@/stores/index";
 import { frontCategory, backCategory } from "./data";
 import { ConfigService } from "@/api/configApi";
 import PageHeader from "@/components/PageHeader/index.vue";
@@ -15,6 +16,7 @@ type CategoryMap = Record<string, CategoryItem>;
 
 const router = useRouter();
 const route = useRoute();
+const userStore = useUserStore();
 const bgUrl = ref<string>("");
 const active = ref<number>(0);
 const activeType = ref<string>(""); // 当前是哪个分类 前端、后端等
@@ -39,7 +41,7 @@ const goToSiteList = (type: string, item: string) => {
   router.push({ path: "/siteList", query: { type, category: item } });
 };
 const getFrontBackground = async (): Promise<void> => {
-  const res = await ConfigService.getFrontBackground();
+  const res = await ConfigService.getFrontBackground(userStore.getUserInfo.id || 1);
   if (res.code === 200) {
     bgUrl.value = res.result.frontHeadBackground;
   }

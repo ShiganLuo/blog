@@ -21,14 +21,10 @@ public class AdminBlogSettingController {
     ) {
         this.blogSettingService = blogSettingService;
     }
+
     @PostMapping("/initSetting")
     public ApiResponse<String> initSetting(@RequestBody @Validated BlogSetting blogSetting){
         return blogSettingService.initSetting(blogSetting);
-
-    }
-    @PutMapping("/addView")
-    public ApiResponse<String> addView(){
-        return blogSettingService.addViews();
     }
 
     @PostMapping("/updateWebsiteInfo")
@@ -36,9 +32,12 @@ public class AdminBlogSettingController {
         return blogSettingService.updateSetting(blogSetting);
     }
 
+    /**
+     * 获取当前登录用户的博客设置
+     */
     @GetMapping("/getBlogConfig")
     public ApiResponse<AdminConfigDetailResponse> getBlogConfig() {
-        return blogSettingService.getSettingByIdAdmin((long) 1);
+        return blogSettingService.getSettingByCurrentUserAdmin();
     }
 
     @GetMapping("/getDictSetting/{type}")
@@ -46,5 +45,4 @@ public class AdminBlogSettingController {
         return blogSettingService.getSystemSettingDict(type);
     }
     
-
-} 
+}

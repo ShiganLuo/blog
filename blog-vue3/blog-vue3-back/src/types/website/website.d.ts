@@ -13,23 +13,26 @@ export interface WebsiteResult {
     author: string
     authorAvatar: string
     authorIntro: string
+    authorPersonalSay: string
     userAvatar: string
+    touristAvatar: string
     multiLanguage: number
     websiteCreateTime: string
     github: string
     gitee: string
+    bilibili: string
     qq: string
+    qqGroup: string
     wechat: string
+    wechatGroup: string
     weibo: string
     csdn: string
     zhihu: string
     juejin: string
     twitter: string
     stackoverflow: string
-    touristAvatar: string
     isCommentReview: number
     isEmailNotice: number
-    isReward: number
     weiXinQRCode: string
     alipayQRCode: string
     favicon: string
@@ -37,4 +40,4 @@ export interface WebsiteResult {
 
 export type WebsiteListPageResult = BasePageResult<WebsiteResult>
 export type WebsiteListResult = BaseArrayResult<WebsiteResult>
-export type WebsiteRecordResult = BaseRecordResult<WebsiteResult>
+export type WebsiteRecordResult = BaseObjectResult<WebsiteResult>
