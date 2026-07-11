@@ -13,7 +13,8 @@ import { _removeLocalItem, _setLocalItem } from "@/utils/tool";
 import Loading from "@/components/Loading/index.vue"; // 确保此组件已导入
 import { ElMessage } from "element-plus";
 import { type FriendLink, type FriendLinkListResponse  } from "@/types/link";
-const { getUserInfo } = storeToRefs(useUserStore());
+const userStore = useUserStore();
+const { getUserInfo } = storeToRefs(userStore);
 
 const loading = ref<boolean>(false);
 const scrollLoading = ref<boolean>(false);

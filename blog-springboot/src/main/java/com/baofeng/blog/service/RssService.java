@@ -94,8 +94,8 @@ public class RssService {
                 Object createdAt = article.get("created_at");
 
                 appendElement(doc, item, "title", articleTitle);
-                appendElement(doc, item, "link", baseUrl + "/article/" + articleId);
-                appendElement(doc, item, "guid", baseUrl + "/article/" + articleId);
+                appendElement(doc, item, "link", baseUrl + "/article?id=" + articleId);
+                appendElement(doc, item, "guid", baseUrl + "/article?id=" + articleId);
                 appendElement(doc, item, "description", articleSummary != null ? articleSummary : "");
 
                 if (createdAt != null) {

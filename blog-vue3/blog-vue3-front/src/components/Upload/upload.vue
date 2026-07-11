@@ -5,7 +5,7 @@ import type { UploadFile, UploadFiles } from "element-plus";
 
 // Define the shape of a file item
 interface FileItem {
-  name?: string;
+  name: string;
   url: string;
   uid?: number;
 }

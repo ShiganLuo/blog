@@ -33,6 +33,7 @@ export interface WebsiteResult {
     stackoverflow: string
     isCommentReview: number
     isEmailNotice: number
+    isReward: number
     weiXinQRCode: string
     alipayQRCode: string
     favicon: string

@@ -53,7 +53,8 @@ interface MessageComponent {
 }
 
 const router = useRouter();
-const { getUserInfo } = storeToRefs(useUserStore());
+const userStore = useUserStore();
+const { getUserInfo } = storeToRefs(userStore);
 const { getMessageTypeIsCard } = storeToRefs(useStaticData());
 
 const messageRef = ref<MessageComponent | null>(null);

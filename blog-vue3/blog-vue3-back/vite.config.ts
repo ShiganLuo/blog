@@ -50,13 +50,6 @@ export default ({ mode }: ConfigEnv) => {
       target: 'es2015',
       outDir: 'dist',
       chunkSizeWarningLimit: 2000,
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: true, // 生产环境去除 console
-          drop_debugger: true // 生产环境去除 debugger
-        }
-      },
       rollupOptions: {
         output: {
           manualChunks: {

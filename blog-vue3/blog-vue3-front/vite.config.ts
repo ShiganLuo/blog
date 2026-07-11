@@ -107,14 +107,6 @@ export default defineConfig(({ mode }: ConfigEnv) => {
     // 生产环境打包优化
     build: {
       chunkSizeWarningLimit: 2000,
-      // Terser压缩配置
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: true, // 移除console
-          drop_debugger: true, // 移除debugger
-        },
-      },
       // 代码分割配置
       rollupOptions: {
         output: {

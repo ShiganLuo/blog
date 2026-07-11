@@ -21,7 +21,7 @@ COPY . .
 RUN pnpm run build
 
 # 阶段二：部署
-FROM nginx:stable-alpine
+FROM nginx:alpine
 
 # 复制编译后的文件到 nginx 目录
 COPY --from=build-stage /app/dist /usr/share/nginx/back/html
