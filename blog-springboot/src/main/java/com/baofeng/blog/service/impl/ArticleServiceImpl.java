@@ -43,7 +43,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleMapper articleMapper;
     private final ImageMapper imageMapper;
-    private final UserMapper userMapper;
     private final CategoryMapper categoryMapper;
     private final TagMapper tagMapper;
     private final EntityImageMapper entityImageMapper;
@@ -61,7 +60,6 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleServiceImpl(MinioUtil minioService,
                               ArticleMapper articleMapper,
                               ImageMapper imageMapper,
-                              UserMapper userMapper,
                               CategoryMapper categoryMapper,
                               TagMapper tagMapper,
                               EntityImageMapper entityImageMapper,
@@ -69,7 +67,6 @@ public class ArticleServiceImpl implements ArticleService {
         this.minioService = minioService;
         this.articleMapper = articleMapper;
         this.imageMapper = imageMapper;
-        this.userMapper = userMapper;
         this.categoryMapper = categoryMapper;
         this.tagMapper = tagMapper;
         this.entityImageMapper = entityImageMapper;

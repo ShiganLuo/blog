@@ -63,5 +63,17 @@ export class PhotoService {
       data: id
     })
   }
+
+  /**
+   * 获取图片素材库列表（支持按文件名搜索）
+   * @param fileName 文件名关键词（可选）
+   * @returns 图片列表
+   */
+  static listImages(fileName?: string) {
+    return request.get({
+      url: '/admin/image/list',
+      params: fileName ? { fileName } : {}
+    })
+  }
 }
 

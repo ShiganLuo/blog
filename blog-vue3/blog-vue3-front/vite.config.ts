@@ -87,6 +87,9 @@ export default defineConfig(({ mode }: ConfigEnv) => {
       hmr: {
         overlay: false
       },
+      watch: {
+        ignored: ['**/node_modules/**', '**/.git/**']
+      },
       // 设置代理
       proxy: {
         '/dev-api': {

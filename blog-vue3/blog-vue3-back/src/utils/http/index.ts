@@ -50,6 +50,7 @@ axiosInstance.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
     const { accessToken } = useUserStore()
     if (accessToken) {
+      if (refreshFailed) refreshFailed = false
       request.headers.set({
         Authorization: `Bearer ${accessToken}`
       })
@@ -66,6 +67,7 @@ axiosInstance.interceptors.request.use(
 
 // 响应拦截器
 let isRefreshing = false
+let refreshFailed = false
 let requests: ((token: string | null) => void)[] = []
 
 axiosInstance.interceptors.response.use(
@@ -82,10 +84,15 @@ axiosInstance.interceptors.response.use(
       return Promise.resolve(response)
     } else if (code === ApiStatus.unauthorized) {
       const userStore = useUserStore()
+      // 刷新已失败，直接拒绝，不再尝试
+      if (refreshFailed) {
+        return Promise.reject(new Error('登录已失效'))
+      }
       const originalRequest = response.config
       // 刷新请求报 401
       if (originalRequest.url?.includes('/admin/users/refreshToken')) {
-        isRefreshing = false // 强制解锁
+        refreshFailed = true
+        isRefreshing = false
         requests.forEach(cb => cb(null))
         requests = []
         userStore.logOut()
@@ -99,6 +106,9 @@ axiosInstance.interceptors.response.use(
             refreshToken: userStore.refreshToken
           })
           const newAccessToken = refreshRes.data.result
+          if (!newAccessToken) {
+            throw new Error('refreshToken 返回空')
+          }
           userStore.setToken(newAccessToken)
 
           // 让所有挂起请求重新执行
@@ -110,11 +120,13 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest)
         } catch (err) {
           // 刷新失败，退出登录
-          userStore.logOut()
-          ElMessageBox.alert('登录状态已过期，请重新登录', '系统提示', { type: 'warning' })
-          return Promise.reject(err)
-        } finally {
+          refreshFailed = true
           isRefreshing = false
+          requests.forEach(cb => cb(null))
+          requests = []
+          userStore.logOut()
+          ElMessage.warning('登录状态已过期，请重新登录')
+          return Promise.reject(err)
         }
       } else {
         // 已经在刷新 token，把请求挂起

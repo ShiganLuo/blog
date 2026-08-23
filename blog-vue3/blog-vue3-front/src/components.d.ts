@@ -14,6 +14,7 @@ declare module 'vue' {
     Comment: typeof import('./components/Comment/index.vue')['default']
     CommentInput: typeof import('./components/Comment/item/CommentInput.vue')['default']
     ContextMenu: typeof import('./components/ContextMenu/index.vue')['default']
+    ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBadge: typeof import('element-plus/es')['ElBadge']
     ElButton: typeof import('element-plus/es')['ElButton']

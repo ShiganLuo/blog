@@ -28,14 +28,12 @@ import com.baofeng.blog.common.util.minio.MinioUtil;
 import com.baofeng.blog.mapper.ImageMapper;
 import com.baofeng.blog.service.redis.RedisEmailCaptchaService;
 
-import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.checkerframework.checker.units.qual.t;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

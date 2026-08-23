@@ -5,6 +5,10 @@ import com.baofeng.blog.dto.front.FrontCommentDTO.*;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentPageResponse;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentPageRequest;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentStatusUpateRequest;
+import com.baofeng.blog.dto.admin.AdminTalkDTO.AdminTalkPageRequest;
+import com.baofeng.blog.dto.admin.AdminTalkDTO.AdminTalkPageResponse;
+import com.baofeng.blog.dto.admin.AdminTalkDTO.AdminTalkResult;
+import com.baofeng.blog.dto.admin.AdminTalkDTO.AdminTalkSaveRequest;
 import com.baofeng.blog.entity.Comment;
 
 import java.util.List;
@@ -71,4 +75,16 @@ public interface CommentService {
      * @return
      */
     public ApiResponse<String> updateCommentsStatusByIds(AdminCommentStatusUpateRequest request);
+
+    /** 后台说说分页列表 */
+    ApiResponse<AdminTalkPageResponse> getAdminTalkPage(AdminTalkPageRequest request);
+
+    /** 根据ID获取后台说说 */
+    ApiResponse<AdminTalkResult> getAdminTalkById(Long id);
+
+    /** 新增或修改说说 */
+    ApiResponse<String> saveOrUpdateAdminTalk(AdminTalkSaveRequest request);
+
+    /** 删除说说 */
+    ApiResponse<String> deleteAdminTalks(List<Long> ids);
 } 

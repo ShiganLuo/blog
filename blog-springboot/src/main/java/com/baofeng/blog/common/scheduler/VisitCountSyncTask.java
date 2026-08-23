@@ -1,6 +1,7 @@
 package com.baofeng.blog.common.scheduler;
 
 import com.baofeng.blog.enums.RedisKeysEnum;
+import com.baofeng.blog.entity.BlogSetting;
 import com.baofeng.blog.mapper.ArticleMapper;
 import com.baofeng.blog.mapper.BlogSettingMapper;
 import com.baofeng.blog.common.util.SafeRedisExecutor;
@@ -12,8 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -22,7 +22,6 @@ public class VisitCountSyncTask {
     private final StringRedisTemplate redisTemplate;
     private final BlogSettingMapper blogSettingMapper;
     private final ArticleMapper articleMapper;
-    private static final Logger log = LoggerFactory.getLogger(VisitCountSyncTask.class);
 
     public VisitCountSyncTask(
             StringRedisTemplate redisTemplate,
@@ -35,34 +34,40 @@ public class VisitCountSyncTask {
     }
 
     /**
-     * 站点访问量同步
+     * 站点访问量同步（遍历所有用户）
      */
     @Scheduled(cron = "0 */1 * * * ?")
     public void syncSiteVisitCount() {
-        long blogSettingId = 1L; // 单站点固定 ID，可扩展多站点
+        List<BlogSetting> allSettings = blogSettingMapper.getAllSettings();
+        if (allSettings == null || allSettings.isEmpty()) return;
 
-        String key = SafeRedisExecutor.execute(() -> {
-            return RedisKeysEnum.SITE_VISIT.getKey() + blogSettingId;
-        }, "获取站点访问量 key");
-        String value = SafeRedisExecutor.execute(() -> {
-            return redisTemplate.opsForValue().get(key);
-        }, "获取站点访问量");
+        for (BlogSetting setting : allSettings) {
+            Long userId = setting.getUserId();
+            if (userId == null) continue;
 
-        if (value == null) return;
+            String key = SafeRedisExecutor.execute(() -> {
+                return RedisKeysEnum.SITE_VISIT.getKey() + userId;
+            }, "获取站点访问量 key");
+            String value = SafeRedisExecutor.execute(() -> {
+                return redisTemplate.opsForValue().get(key);
+            }, "获取站点访问量");
 
-        int count = (value == null) ? 0 : Integer.parseInt(value);
-        if (count <= 0) return;
+            if (value == null) continue;
 
-        int rowsUpdated = blogSettingMapper.incrementVisitCountById(count,blogSettingId);
-        if (rowsUpdated == 0) {
-            log.warn("Site visit sync failed, 0 row was updated, blogSettingId={}", blogSettingId);
-        } else {
-            log.info("Site visit synced, blogSettingId={}, +{}", blogSettingId, count);
+            int count = Integer.parseInt(value);
+            if (count <= 0) continue;
+
+            int rowsUpdated = blogSettingMapper.incrementVisitCountById(count, setting.getId());
+            if (rowsUpdated == 0) {
+                log.warn("Site visit sync failed, 0 row was updated, userId={}", userId);
+            } else {
+                log.info("Site visit synced, userId={}, settingId={}, +{}", userId, setting.getId(), count);
+            }
+
+            SafeRedisExecutor.execute(() -> {
+                redisTemplate.delete(key);
+            }, "删除站点访问量 Redis key");
         }
-
-        SafeRedisExecutor.execute(() -> {
-            redisTemplate.delete(key);
-        }, "删除站点访问量 Redis key");
     }
 
     /**

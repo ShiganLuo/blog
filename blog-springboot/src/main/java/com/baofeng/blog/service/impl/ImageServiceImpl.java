@@ -97,5 +97,11 @@ public class ImageServiceImpl implements ImageService {
 
 
     }
+
+    @Override
+    public ApiResponse<List<Image>> listImages(String fileName) {
+        List<Image> images = imageMapper.selectImagesWithPage(fileName);
+        return ApiResponse.success(images);
+    }
     
 }

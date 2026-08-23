@@ -87,4 +87,15 @@
         ORDER BY created_at DESC
     </select>
 
+    <!--分页查询图片列表（支持按文件名模糊搜索）-->
+    <select id="selectImagesWithPage" resultMap="ImageResultMap">
+        SELECT * FROM images
+        <where>
+            <if test="fileName != null and fileName != ''">
+                AND file_name LIKE CONCAT('%', #{fileName}, '%')
+            </if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
 </mapper>

@@ -1,6 +1,8 @@
 package com.baofeng.blog.mapper;
 
 import com.baofeng.blog.dto.front.FrontCommentDTO.*;
+import com.baofeng.blog.dto.admin.AdminTalkDTO.AdminTalkResult;
+import com.baofeng.blog.dto.admin.AdminTalkDTO.AdminTalkPageRequest;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentResult;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentPageRequest;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentStatusUpateRequest;
@@ -14,6 +16,18 @@ import java.util.Set;
 
 @Mapper
 public interface CommentMapper {
+    /** 后台说说分页列表 */
+    List<AdminTalkResult> selectAdminTalksByCondition(AdminTalkPageRequest request);
+
+    /** 根据ID获取后台说说 */
+    AdminTalkResult selectAdminTalkById(Long id);
+
+    /** 新增说说（type='talk'写入comments表） */
+    int insertTalk(Comment comment);
+
+    /** 修改说说内容 */
+    int updateTalk(Comment comment);
+
 
     /**
      * 创建评论

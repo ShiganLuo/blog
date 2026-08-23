@@ -1,6 +1,12 @@
 <!-- 富文本编辑器 插件地址：https://www.wangeditor.com/ -->
 <template>
   <div class="editor-wrapper">
+    <div style="padding: 8px; border-bottom: 1px solid var(--art-border-color);">
+      <el-button type="primary" link @click="showImagePicker = true">
+        <el-icon><Picture /></el-icon>
+        从素材库插入图片
+      </el-button>
+    </div>
     <Toolbar
       class="editor-toolbar"
       :editor="editorRef"
@@ -14,18 +20,21 @@
       :defaultConfig="editorConfig"
       @onCreated="onCreateEditor"
     />
+    <ImagePicker v-model="showImagePicker" @select="handleImageSelect" />
   </div>
 </template>
 
 <script setup lang="ts">
   import '@wangeditor/editor/dist/css/style.css'
   import { onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+  import { Picture } from '@element-plus/icons-vue'
   import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
   import { useUserStore } from '@/store/modules/user'
   import { ElMessage } from 'element-plus'
   import EmojiText from '@/utils/emojo'
   import { IDomEditor } from '@wangeditor/editor'
-
+  import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
+    
   const modelValue = defineModel<string>({ required: true })
 
   const prop = defineProps({
@@ -38,6 +47,8 @@
   // 编辑器实例
   const editorRef = shallowRef()
   let mode = ref('default')
+  // 图片素材库
+  const showImagePicker = ref(false)
   const userStore = useUserStore()
   // token
   let { accessToken } = userStore
@@ -51,7 +62,6 @@
     // insertKeys: {
     //   index: 5, // 插入的位置，基于当前的 toolbarKeys
     //   keys: ['menu-key1', 'menu-key2']
-    // }
     // 排除某些菜单
     excludeKeys: ['fontFamily'] //'group-video', 'fontSize', 'lineHeight'
   }
@@ -61,44 +71,53 @@
     MENU_CONF: {
       // 上传图片
       uploadImage: {
-        fieldName: 'file',
-        maxFileSize: 3 * 1024 * 1024, // 大小限制
-        maxNumberOfFiles: 10, // 最多可上传几个文件，默认为 100
-        allowedFileTypes: ['image/*'], // 选择文件时的类型限制，默认为 ['image/*'] 。如不想限制，则设置为 []
-        // 注意 ${import.meta.env.VITE_BASE_URL} 写你自己的后端服务地址
-        server,
-        // 传递token
-        headers: { Authorization: accessToken },
-        // 单个文件上传成功之后
-        onSuccess() {
-          ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
-        },
-        // 上传错误，或者触发 timeout 超时
-        onError(file: File, err: any, res: any) {
-          console.log(`上传出错`, err, res)
-          ElMessage.error(`图片上传失败 ${EmojiText[500]}`)
+        maxFileSize: 3 * 1024 * 1024,
+        maxNumberOfFiles: 10,
+        allowedFileTypes: ['image/*'],
+        // 自定义上传：存相对路径，方便后续迁移 MinIO
+        async customUpload(file: File, insertFn: Function) {
+          const formData = new FormData()
+          formData.append('file', file)
+          try {
+            const res = await fetch(server, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${accessToken}` },
+              body: formData
+            })
+            const data = await res.json()
+            if (data.code === 200) {
+              // 存相对路径，不存完整 URL
+              insertFn(data.result.imageUrl, '', data.result.imageUrl)
+              ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
+            } else {
+              ElMessage.error(`图片上传失败 ${data.message || ''} ${EmojiText[500]}`)
+            }
+          } catch (err) {
+            console.error('上传出错', err)
+            ElMessage.error(`图片上传失败 ${EmojiText[500]}`)
+          }
         }
-        // 注意：返回格式需要按照指定格式返回，才能显示图片
-        // 上传成功的返回格式：
-        //   "errno": 0, // 注意：值是数字，不能是字符串
-        //   "data": {
-        //       "url": "xxx", // 图片 src ，必须
-        //       "alt": "yyy", // 图片描述文字，非必须
-        //       "href": "zzz" // 图片的链接，非必须
-        //   }
-        // }
-        // 上传失败的返回格式：
-        // {
-        //   "errno": 1, // 只要不等于 0 就行
-        //   "message": "失败信息"
-        // }
-      }
+      },
       // 代码语言
       // codeLangs: [
       //   { text: 'CSS', value: 'css' },
       //   { text: 'HTML', value: 'html' },
       //   { text: 'XML', value: 'xml' },
       // ]
+    }
+  }
+
+  // 从素材库选择图片后插入编辑器
+  const handleImageSelect = (image: { url: string; id: number }) => {
+    const editor = editorRef.value
+    if (editor) {
+      editor.insertNode({
+        type: 'image',
+        src: image.url,
+        href: '',
+        alt: '',
+        children: [{ text: '' }]
+      })
     }
   }
 

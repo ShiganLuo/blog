@@ -10,6 +10,12 @@ import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentPageRequest;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentResult;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentStatusUpateRequest;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentPageResponse;
+import com.baofeng.blog.dto.admin.AdminTalkDTO.AdminTalkPageRequest;
+import com.baofeng.blog.dto.admin.AdminTalkDTO.AdminTalkPageResponse;
+import com.baofeng.blog.dto.admin.AdminTalkDTO.AdminTalkResult;
+import com.baofeng.blog.dto.admin.AdminTalkDTO.AdminTalkSaveRequest;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.baofeng.blog.dto.front.FrontCommentDTO.*;
 import com.baofeng.blog.entity.Comment;
 import com.github.pagehelper.PageHelper;
@@ -49,6 +55,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setType(type);
         comment.setAuthorId(createCommentRequest.authorId());
         comment.setRootId(createCommentRequest.rootId());
+        comment.setStatus(true); // 默认已审核
         Integer rowUpdated = commentMapper.insertComment(comment);
 
         return rowUpdated > 0
@@ -239,5 +246,97 @@ public class CommentServiceImpl implements CommentService {
             ? ApiResponse.success("评论状态更新成功")
             : ApiResponse.error(400, "评论状态更新失败");
       }
+
+  // ==================== 后台说说管理 ====================
+
+  @Override
+  public ApiResponse<AdminTalkPageResponse> getAdminTalkPage(AdminTalkPageRequest request) {
+    int pageNum = request.getCurrent() != null ? request.getCurrent() : 1;
+    int pageSize = request.getSize() != null ? request.getSize() : 10;
+    PageHelper.startPage(pageNum, pageSize);
+
+    List<AdminTalkResult> list = commentMapper.selectAdminTalksByCondition(request);
+
+    // 解析 images JSON 为 imgs 数组
+    ObjectMapper mapper = new ObjectMapper();
+    for (AdminTalkResult talk : list) {
+      if (talk.getImages() != null && !talk.getImages().isEmpty()) {
+        try {
+          talk.setImgs(mapper.readValue(talk.getImages(), new TypeReference<List<String>>() {}));
+        } catch (Exception e) {
+          talk.setImgs(List.of());
+        }
+      } else {
+        talk.setImgs(List.of());
+      }
+    }
+
+    PageInfo<AdminTalkResult> pageInfo = new PageInfo<>(list);
+    AdminTalkPageResponse response = new AdminTalkPageResponse();
+    response.setTotal(pageInfo.getTotal());
+    response.setList(pageInfo.getList());
+    return ApiResponse.success(response);
+  }
+
+  @Override
+  public ApiResponse<AdminTalkResult> getAdminTalkById(Long id) {
+    AdminTalkResult talk = commentMapper.selectAdminTalkById(id);
+    if (talk == null) {
+      return ApiResponse.error(404, "说说不存在");
+    }
+    // 解析 images JSON
+    ObjectMapper mapper = new ObjectMapper();
+    if (talk.getImages() != null && !talk.getImages().isEmpty()) {
+      try {
+        talk.setImgs(mapper.readValue(talk.getImages(), new TypeReference<List<String>>() {}));
+      } catch (Exception e) {
+        talk.setImgs(List.of());
+      }
+    } else {
+      talk.setImgs(List.of());
+    }
+    return ApiResponse.success(talk);
+  }
+
+  @Override
+  public ApiResponse<String> saveOrUpdateAdminTalk(AdminTalkSaveRequest request) {
+    if (request.getContent() == null || request.getContent().trim().isEmpty()) {
+      return ApiResponse.error(400, "说说内容不能为空");
+    }
+
+    Comment comment = new Comment();
+    comment.setContent(request.getContent());
+    comment.setStatus(request.getStatus() != null ? request.getStatus() == 1 : true);
+    comment.setIsTop(request.getIsTop() != null && request.getIsTop() == 1);
+    comment.setTag(request.getImages());
+
+    if (request.getId() != null) {
+      // 修改
+      comment.setId(request.getId());
+      int rows = commentMapper.updateTalk(comment);
+      return rows > 0
+        ? ApiResponse.success("修改说说成功")
+        : ApiResponse.error(400, "修改说说失败");
+    } else {
+      // 新增 - 需要设置 userId，从安全上下文获取
+      // 管理员创建说说，默认使用当前登录用户
+      comment.setUserId(1L); // TODO: 从 SecurityContext 获取当前用户ID
+      int rows = commentMapper.insertTalk(comment);
+      return rows > 0
+        ? ApiResponse.success("发布说说成功")
+        : ApiResponse.error(400, "发布说说失败");
+    }
+  }
+
+  @Override
+  public ApiResponse<String> deleteAdminTalks(List<Long> ids) {
+    if (ids == null || ids.isEmpty()) {
+      return ApiResponse.error(400, "ID列表不能为空");
+    }
+    int rows = commentMapper.deleteCommentsByIds(new HashSet<>(ids));
+    return rows > 0
+      ? ApiResponse.success("删除说说成功")
+      : ApiResponse.error(400, "删除说说失败");
+  }
 
 } 

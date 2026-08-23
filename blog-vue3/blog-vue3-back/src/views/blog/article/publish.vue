@@ -45,8 +45,12 @@
                   <img v-else :src="form.articleCover" class="cover-image" />
                 </el-upload>
                 <div class="el-upload__tip">建议尺寸 16:9，jpg/png 格式</div>
+                <el-button class="el-top" type="primary" link @click="showImagePicker = true">
+                  从素材库选择
+                </el-button>
               </div>
             </el-form-item>
+            <ImagePicker v-model="showImagePicker" @select="handleImageSelect" />
             <el-form-item label="文章分类">
               <el-tag
                 type="success"
@@ -200,6 +204,7 @@
   import { CategoryService } from '@/api/blog/categoryApi'
   import { TagService } from '@/api/blog/tagApi'
   import { PhotoService } from '@/api/photo/photoApi'
+  import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
   // 定义初始表单状态
 interface ArticleForm {
   id: number
@@ -239,6 +244,12 @@ const initialFormState: ArticleForm = {
 }
 
  const form = ref<ArticleForm>({ ...initialFormState })
+  // 图片素材库
+  const showImagePicker = ref(false)
+  const handleImageSelect = (image: { url: string; id: number }) => {
+    form.value.articleCover = image.url
+    form.value.imageId = image.id
+  }
  type CategoryResult = {
     id: string,
     categoryName: string,

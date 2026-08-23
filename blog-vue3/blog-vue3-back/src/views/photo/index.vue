@@ -125,8 +125,10 @@
               <img v-else :src="form.albumCover" class="cover-image" />
             </el-upload>
             <div class="el-upload__tip">建议尺寸 16:9，jpg/png 格式</div>
+            <el-button class="el-top" type="primary" link @click="showImagePicker = true">从素材库选择</el-button>
           </div>
         </el-form-item>
+        <ImagePicker v-model="showImagePicker" @select="handleImageSelect" />
         <el-form-item label="发布形式">
           <el-radio-group v-model="form.status">
             <el-radio :value="1">公开</el-radio>
@@ -145,6 +147,7 @@
 </template>
 
 <script setup lang="ts">
+import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
   import PhotoAlbumService from '@/api/photo/photoAlbumApi'
   import { ref, reactive } from 'vue'
   import { ElMessage, ElMessageBox, UploadRequestOptions } from 'element-plus'
@@ -173,6 +176,12 @@
     photoCount: 0,
     status: 1
   }
+  // 图片素材库
+  const showImagePicker = ref(false)
+  const handleImageSelect = (image: { url: string; id: number }) => {
+    form.albumCover = image.url
+  }
+
   const form = reactive({ ...initialFormState })
   const queryParams = reactive({
     current: 1,

@@ -19,5 +19,6 @@ public class Comment {
     private LocalDateTime updatedAt; // 评论修改时间
     private String ipAddress; // IP地址
     private Long rootId; // 根评论ID（方便查询）
-    private String tag; // message类型独有
+    private String tag; // 说说图片JSON / message类型标签
+    private Boolean isTop; // 是否置顶
 } 

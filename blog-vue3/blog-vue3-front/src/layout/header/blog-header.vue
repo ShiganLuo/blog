@@ -25,7 +25,9 @@ const userStore = useUserStore();
 // 打开 RSS 订阅
 const openRss = () => {
   const baseUrl = window.location.origin;
-  window.open(`${baseUrl}/api/front/rss`, '_blank');
+  const userId = userStore.getUserInfo.id;
+  if (!userId) return;
+  window.open(`${baseUrl}/api/front/rss/${userId}`, '_blank');
 };
 const { getBlogAvatar, getUserInfo } = storeToRefs(userStore);
 

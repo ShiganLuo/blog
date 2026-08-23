@@ -41,12 +41,13 @@ public class RssService {
     /**
      * 生成 RSS 2.0 XML
      * @param baseUrl 网站基础URL
+     * @param userId 用户id
      * @return RSS XML 字符串
      */
-    public String generateRss(String baseUrl) {
+    public String generateRss(String baseUrl, Long userId) {
         try {
             // 获取博客设置
-            BlogSetting setting = blogSettingMapper.getSettingById(1L);
+            BlogSetting setting = blogSettingMapper.getSettingByUserId(userId);
             String title = setting != null ? setting.getWebsiteTitle() : "Blog";
             String description = setting != null ? setting.getWebsiteIntro() : "";
             String link = baseUrl;

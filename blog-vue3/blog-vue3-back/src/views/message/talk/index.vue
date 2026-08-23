@@ -41,7 +41,7 @@
               <i class="iconfont el-icon-mymima" /> 私密
             </span>
           </div>
-          <div class="talk-content" v-html="item.content" />
+          <MdPreview class="talk-content-preview" :modelValue="item.content" :theme="'light'" />
           <el-row :gutter="4" class="talk-images" v-if="item.imgs">
             <el-col :md="8" :cols="6" v-for="(img, index) of item.imgs" :key="index">
               <el-image class="images-items" :src="img" :preview-src-list="previews" />
@@ -64,7 +64,7 @@
 
     <el-dialog :title="title" v-model="open" width="80%" append-to-body>
       <div class="talk-container">
-        <Editor v-model="talk.content" style="max-height: 350px" />
+        <MdEditor v-model="talk.content" :theme="'light'" :preview="true" style="max-height: 500px" />
         <div class="operation-wrapper">
           <div class="left-wrapper">
             <el-upload
@@ -76,6 +76,7 @@
             >
               <i class="iconfont-sys" v-html="'&#xe634;'" style="font-size: 32px" />
             </el-upload>
+            <el-button type="primary" link @click="showImagePicker = true" style="margin-left: 8px">素材库</el-button>
           </div>
           <div class="right-wrapper">
             <el-switch
@@ -112,7 +113,7 @@
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <el-button type="primary" @click="submitForm" :disabled="talk.content == '<p><br></p>'">
+            <el-button type="primary" @click="submitForm" :disabled="!talk.content || talk.content.trim() === ''">
               发布
             </el-button>
           </div>
@@ -139,11 +140,13 @@
           </template>
         </el-upload>
       </div>
+    <ImagePicker v-model="showImagePicker" @select="handleImageSelect" />
     </el-dialog>
   </el-card>
 </template>
 
 <script setup lang="ts">
+import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
   import { ref, reactive } from 'vue'
   import TalkService from '@/api/message/talkApi'
   import { useUserStore } from '@/store/modules/user'
@@ -151,6 +154,8 @@
   import { parseTime, AvatarImga } from '@/utils/utils'
   import { UploadRequestOptions } from 'element-plus'
   import { PhotoService } from '@/api/photo/photoApi'
+  import { MdEditor, MdPreview } from 'md-editor-v3'
+  import 'md-editor-v3/lib/style.css'
 
   // 响应式数据
   const current = ref(0)
@@ -168,11 +173,21 @@
   ])
   const initialFormState = {
     id: null,
-    content: '<p><br></p>',
+    content: '',
     isTop: 0,
     status: 1,
     images: ''
   }
+  // 图片素材库
+  const showImagePicker = ref(false)
+  const handleImageSelect = (image: { url: string; id: number }) => {
+    uploads.value.push({
+      name: image.url.split("/").pop() || "image.jpg",
+      url: image.url,
+      status: "success"
+    })
+  }
+
   const talk = reactive({ ...initialFormState })
 
   const userStore = useUserStore()
@@ -323,7 +338,7 @@
   })
 
   const submitForm = async () => {
-    if (talk.content.trim() == '<p><br></p>') {
+    if (!talk.content || talk.content.trim() === '') {
       ElMessage.error('说说内容不能为空')
       return false
     }

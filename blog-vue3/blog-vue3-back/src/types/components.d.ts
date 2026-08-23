@@ -88,6 +88,7 @@ declare module 'vue' {
     Hour: typeof import('./../components/Crontab/hour.vue')['default']
     IconSelector: typeof import('./../components/Icons/IconSelector.vue')['default']
     ImageCard: typeof import('./../components/Widgets/Cards/ImageCard.vue')['default']
+    ImagePicker: typeof import('./../components/Widgets/ImagePicker/index.vue')['default']
     KLineChart: typeof import('./../components/Widgets/Charts/KLineChart.vue')['default']
     LeftView: typeof import('./../components/Pages/Login/LeftView.vue')['default']
     LineChart: typeof import('./../components/Widgets/Charts/LineChart.vue')['default']

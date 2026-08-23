@@ -20,6 +20,7 @@
         <result property="updatedAt" column="updated_at"/>
         <result property="ipAddress" column="ip_address"/>
         <result property="rootId" column="root_id"/>
+        <result property="isTop" column="is_top"/>
     </resultMap>
 
     <!--创建评论-->
@@ -293,4 +294,74 @@
             #{id}
         </foreach>
     </update>
+    <!-- ==================== 后台说说管理 ==================== -->
+
+    <!-- 后台说说分页列表 -->
+    <resultMap id="AdminTalkResultMap" type="com.baofeng.blog.dto.admin.AdminTalkDTO$AdminTalkResult">
+        <id property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="isTop" column="is_top"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="created_at"/>
+        <result property="images" column="tag"/>
+        <result property="avatar" column="avatar_url"/>
+        <result property="nickname" column="nick_name"/>
+    </resultMap>
+
+    <select id="selectAdminTalksByCondition" resultMap="AdminTalkResultMap" parameterType="map">
+        SELECT
+            c.id,
+            c.content,
+            c.is_top,
+            c.status,
+            c.created_at,
+            c.tag,
+            u.avatar_url,
+            u.nick_name
+        FROM comments c
+        LEFT JOIN users u ON c.user_id = u.id
+        WHERE c.type = 'talk'
+        AND c.is_deleted = 0
+        <if test="status != null and status != ''">
+            AND c.status = #{status}
+        </if>
+        ORDER BY c.is_top DESC, c.created_at DESC
+    </select>
+
+    <!-- 根据ID获取说说 -->
+    <select id="selectAdminTalkById" resultMap="AdminTalkResultMap">
+        SELECT
+            c.id,
+            c.content,
+            c.is_top,
+            c.status,
+            c.created_at,
+            c.tag,
+            u.avatar_url,
+            u.nick_name
+        FROM comments c
+        LEFT JOIN users u ON c.user_id = u.id
+        WHERE c.id = #{id}
+        AND c.type = 'talk'
+        AND c.is_deleted = 0
+    </select>
+
+    <!-- 新增说说 -->
+    <insert id="insertTalk" parameterType="com.baofeng.blog.entity.Comment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comments (user_id, content, type, status, tag, is_top, created_at, updated_at)
+        VALUES (#{userId}, #{content}, 'talk', #{status}, #{tag}, #{isTop}, NOW(), NOW())
+    </insert>
+
+    <!-- 修改说说 -->
+    <update id="updateTalk" parameterType="com.baofeng.blog.entity.Comment">
+        UPDATE comments
+        SET content = #{content},
+            status = #{status},
+            tag = #{tag},
+            is_top = #{isTop},
+            updated_at = NOW()
+        WHERE id = #{id}
+        AND type = 'talk'
+    </update>
+
 </mapper> 

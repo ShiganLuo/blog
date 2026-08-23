@@ -169,7 +169,7 @@ defineExpose({
 
   .parent-input-inputText {
     width: 100%;
-    min-height: 120px;
+    min-height: 80px;
   }
   .children-input-inputText {
     font-size: 1.2rem;

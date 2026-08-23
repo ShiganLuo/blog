@@ -1,9 +1,7 @@
 import request from '@/utils/http'
 import { ArticleResult, ArticleRecordResult } from '@/types/blog/article'
 
-// 文章
 export class ArticleService {
-  // 查询文章列表
   static listArticle(query: any) {
     return request.post<ArticleRecordResult>({
       url: '/admin/articles/getArticleList',
@@ -11,14 +9,12 @@ export class ArticleService {
     })
   }
 
-  // 查询文章详细
   static getArticleById(id: any) {
     return request.get<ArticleResult>({
       url: '/admin/articles/getArticleById/' + id
     })
   }
 
-  // 批量新增文章 修改文章
   static addOrUpdateArticle(data: any) {
     return request.post({
       url: '/admin/articles/createOrupdateArticles',
@@ -26,42 +22,32 @@ export class ArticleService {
     })
   }
 
-  // 删除文章
   static deleteArticle(ids: Array<number>) {
-    return request.del({
-      url: '/blog/article/admin/delete',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: ids
+    return request.post({
+      url: '/admin/articles/updateArticlesDeletedStatus',
+      headers: { 'Content-Type': 'application/json' },
+      data: { ids: ids, isDeleted: true }
     })
   }
 
-  // 置顶或推荐文章
   static updateTopOrFeatured(data: any) {
     return request.post({
       url: '/admin/articles/updateArticleRecommendStatus',
-        headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       data: data
-    }) 
+    })
   }
 
-  // 导出文章列表
   static exportExcel(data: any) {
     return request.post({
-      url: 'blog/article/export',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
+      url: '/admin/articles/getArticleList',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       responseType: 'blob',
       data: data
     })
   }
 
-  // 上传文章封面
-  static uploadCover(data:any) {
+  static uploadCover(data: any) {
     return request.post({
       url: '/admin/articles/uploadCover',
       data: data

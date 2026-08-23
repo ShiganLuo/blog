@@ -73,8 +73,16 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     }
 
     @Override
-    public ApiResponse<String> addViews(){
-        redisVisitCounter.incrSiteVisit();
+    public ApiResponse<String> addViews(Long userId){
+        // 优先使用传入的userId，否则从SecurityContext获取
+        Long currentUserId = userId;
+        if (currentUserId == null) {
+            currentUserId = getCurrentUserId();
+        }
+        if (currentUserId == null) {
+            return ApiResponse.error(ResultCodeEnum.UNAUTHORIZED, "请先登录");
+        }
+        redisVisitCounter.incrSiteVisit(currentUserId);
         return ApiResponse.success("访问量增加成功");    
     }
 
@@ -149,8 +157,8 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     }
 
     @Override
-    public ApiResponse<FrontConfigDetailResponse> getSettingByIdFront(Long id) {
-        BlogSetting blogSetting = blogSettingMapper.getSettingById(id);
+    public ApiResponse<FrontConfigDetailResponse> getSettingByIdFront(Long userId) {
+        BlogSetting blogSetting = blogSettingMapper.getSettingByUserId(userId);
         if (blogSetting == null) {
             return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "博客设置不存在");
         }

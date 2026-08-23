@@ -6,6 +6,7 @@
     <!-- 编辑器 -->
     <MdEditor
       v-if="mode !== 'preview'"
+      ref="editorRef"
       v-model="innerValue"
       :theme="isDark ? 'dark' : 'light'"
       :toolbars="toolbars"
@@ -22,16 +23,20 @@
       :theme="isDark ? 'dark' : 'light'"
       :code-theme="isDark ? 'atom' : 'github'"
     />
+
+    <!-- 素材库弹窗 -->
+    <ImagePicker v-model="showImagePicker" @select="handleImageSelect" />
   </div>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, nextTick, watch } from 'vue'
 import { MdEditor, MdPreview } from 'md-editor-v3'
 import type { ToolbarNames } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/store/modules/user'
 import EmojiText from '@/utils/emojo'
+import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
 
 /** v-model */
 const modelValue = defineModel<string>({
@@ -51,7 +56,7 @@ const props = withDefaults(
   }
 )
 
-/** 内部值（避免直接改 props） */
+/** 内部值 */
 const innerValue = computed({
   get: () => modelValue.value,
   set: v => (modelValue.value = v)
@@ -62,7 +67,7 @@ const isDark = computed(() =>
   document.documentElement.classList.contains('dark')
 )
 
-/** 工具栏（类型安全） */
+/** 工具栏 */
 const toolbars: ToolbarNames[] = [
   'bold',
   'italic',
@@ -81,6 +86,55 @@ const toolbars: ToolbarNames[] = [
   'fullscreen'
 ]
 
+/** 图片素材库 */
+const showImagePicker = ref(false)
+const editorRef = ref()
+
+const handleImageSelect = (image: { url: string; id: number }) => {
+  const text = `![](${image.url})`
+  modelValue.value += text
+}
+
+// 在图片下拉菜单中注入"从素材库选择"选项
+const injectLibraryOption = () => {
+  const editorEl = editorRef.value?.$el
+  if (!editorEl) return
+
+  // 找到图片下拉菜单中的所有 menu-item-image
+  const menuItems = editorEl.querySelectorAll('.md-editor-menu-item-image')
+  if (!menuItems.length) return
+
+  // 检查是否已注入
+  const parent = menuItems[0].parentElement
+  if (parent?.querySelector('.md-editor-menu-item-library')) return
+
+  // 创建新菜单项
+  const li = document.createElement('li')
+  li.className = 'md-editor-menu-item md-editor-menu-item-image md-editor-menu-item-library'
+  li.textContent = '从素材库选择'
+  li.setAttribute('role', 'menuitem')
+  li.setAttribute('tabindex', '0')
+  li.style.cursor = 'pointer'
+  li.addEventListener('click', () => {
+    showImagePicker.value = true
+  })
+
+  parent?.appendChild(li)
+}
+
+// 监听编辑器渲染完成后注入
+watch(() => editorRef.value, () => {
+  nextTick(() => {
+    injectLibraryOption()
+  })
+})
+
+onMounted(() => {
+  nextTick(() => {
+    setTimeout(injectLibraryOption, 500)
+  })
+})
+
 /** 图片上传 */
 const userStore = useUserStore()
 const { accessToken } = userStore
@@ -98,13 +152,13 @@ const onUploadImg = async (
     const res = await fetch(props.action, {
       method: 'POST',
       headers: {
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: formData
     }).then(r => r.json())
 
-    if (res.errno === 0) {
-      callback([res.data.url])
+    if (res.code === 200) {
+      callback([res.result.imageUrl])
       ElMessage.success(`图片上传成功 ${EmojiText[200]}`)
     } else {
       throw new Error(res.message)
@@ -129,7 +183,6 @@ const onUploadImg = async (
   border-right: 1px solid var(--art-border-color);
 }
 
-/* md-editor 内部必须 deep 才能撑满 */
 .editor :deep(.md-editor),
 .editor :deep(.md-editor-content) {
   height: 100%;

@@ -30,7 +30,10 @@ export default ({ mode }: ConfigEnv) => {
           rewrite: (path) => path.replace(/^\/api/, '/api')
         }
       },
-      host: true
+      host: true,
+      watch: {
+        ignored: ["**/node_modules/**", "**/.git/**"]
+      }
     },
     // 路径别名
     resolve: {

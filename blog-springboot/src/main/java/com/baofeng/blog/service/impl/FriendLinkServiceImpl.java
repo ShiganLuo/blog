@@ -21,7 +21,6 @@ import com.baofeng.blog.enums.FriendLinkStatusEnum;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.service.FriendLinkService;
 import com.baofeng.blog.mapper.FriendLinkMapper;
-import com.baofeng.blog.mapper.UserMapper;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -32,15 +31,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class FriendLinkServiceImpl implements FriendLinkService {
 
     private final FriendLinkMapper friendLinkMapper;
-    private final UserMapper userMapper;
     private static final Logger logger = LoggerFactory.getLogger(FriendLinkService.class);
     
     public FriendLinkServiceImpl (
-        FriendLinkMapper friendLinkMapper,
-        UserMapper userMapper
+        FriendLinkMapper friendLinkMapper
     ) {
         this.friendLinkMapper = friendLinkMapper;
-        this.userMapper = userMapper;
     }
 
     @Override

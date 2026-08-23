@@ -78,7 +78,8 @@ CREATE TABLE `comments` (
   `ip_address` VARCHAR(45) DEFAULT NULL COMMENT '用户评论时ip',
   `is_deleted` TINYINT(1) DEFAULT 0 COMMENT '是否逻辑删除：0=否，1=是',
   `status` TINYINT DEFAULT 0 COMMENT '审核状态：0=待审，1=通过，2=拒绝',
-  `tag` VARCHAR(32) DEFAULT NULL COMMENT 'message类型独有',
+  `tag` TEXT DEFAULT NULL COMMENT '说说图片JSON / message类型标签',
+  `is_top` TINYINT(1) DEFAULT 0 COMMENT '是否置顶：0=否，1=是',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   CONSTRAINT fk_comments_author_user FOREIGN KEY (author_id) REFERENCES users(id)

@@ -115,8 +115,10 @@
               <img v-else :src="form.siteLogo" class="cover-image" />
             </el-upload>
             <div class="el-upload__tip">建议尺寸 16:9，jpg/png 格式</div>
+            <el-button class="el-top" type="primary" link @click="showImagePicker = true">从素材库选择</el-button>
           </div>
         </el-form-item>
+        <ImagePicker v-model="showImagePicker" @select="handleImageSelect" />
         <el-form-item label="网站地址" prop="siteUrl">
           <el-input v-model="form.siteUrl" placeholder="请输入网站地址" />
         </el-form-item>
@@ -135,6 +137,7 @@
 </template>
 
 <script setup lang="ts">
+import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
   import { FriendLinkService } from '@/api/website/linkApi'
   import { ref, reactive } from 'vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
@@ -170,6 +173,12 @@
     siteUrl: null,
     siteDesc: null
   }
+  // 图片素材库
+  const showImagePicker = ref(false)
+  const handleImageSelect = (image: { url: string; id: number }) => {
+    form.siteLogo = image.url as any
+  }
+
   const form = reactive({ ...initialFormState })
   const queryParams = reactive({
     current: 1,

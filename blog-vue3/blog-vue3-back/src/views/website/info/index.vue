@@ -18,6 +18,7 @@
               </div>
               <img v-else :src="websiteConfigForm.authorAvatar" class="avatar" />
             </el-upload>
+            <el-button class="el-top" type="primary" link @click="openImagePicker('authorAvatar')">从素材库选择</el-button>
           </el-form-item>
           <el-form-item label="网站logo">
             <el-upload
@@ -34,6 +35,7 @@
               </div>
               <img v-else :src="websiteConfigForm.logo" class="avatar" />
             </el-upload>
+            <el-button class="el-top" type="primary" link @click="openImagePicker('logo')">从素材库选择</el-button>
           </el-form-item>
           <el-form-item label="favicon">
             <el-upload
@@ -50,6 +52,7 @@
               </div>
               <img v-else :src="websiteConfigForm.favicon" class="avatar" />
             </el-upload>
+            <el-button class="el-top" type="primary" link @click="openImagePicker('favicon')">从素材库选择</el-button>
           </el-form-item>
           <el-form-item label="前台通用背景">
             <el-upload
@@ -66,6 +69,7 @@
               </div>
               <img v-else :src="websiteConfigForm.frontHeadBackground" class="avatar" />
             </el-upload>
+            <el-button class="el-top" type="primary" link @click="openImagePicker('frontHeadBackground')">从素材库选择</el-button>
           </el-form-item>
           <form-input label="网站名称" prop="name" v-model="websiteConfigForm.websiteChineseName" />
           <form-input
@@ -167,6 +171,7 @@
                   </div>
                   <img v-else :src="websiteConfigForm.userAvatar" class="avatar" />
                 </el-upload>
+                <el-button class="el-top" type="primary" link @click="openImagePicker('userAvatar')">从素材库选择</el-button>
               </el-form-item>
             </el-col>
             <el-col :md="12">
@@ -185,6 +190,7 @@
                   </div>
                   <img v-else :src="websiteConfigForm.touristAvatar" class="avatar" />
                 </el-upload>
+                <el-button class="el-top" type="primary" link @click="openImagePicker('touristAvatar')">从素材库选择</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -223,6 +229,7 @@
                   </div>
                   <img v-else :src="websiteConfigForm.weiXinQRCode" class="avatar" />
                 </el-upload>
+                <el-button class="el-top" type="primary" link @click="openImagePicker('weiXinQRCode')">从素材库选择</el-button>
               </el-form-item>
             </el-col>
             <el-col :md="12">
@@ -242,6 +249,7 @@
                   </div>
                   <img v-else :src="websiteConfigForm.alipayQRCode" class="avatar" />
                 </el-upload>
+                <el-button class="el-top" type="primary" link @click="openImagePicker('alipayQRCode')">从素材库选择</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -259,10 +267,27 @@
         </div>
       </el-tab-pane>
     </el-tabs>
+  <ImagePicker v-model="showImagePicker" @select="handleImageSelect" />
   </el-card>
 </template>
 
 <script setup lang="ts">
+  // 图片素材库
+  const showImagePicker = ref(false)
+  const currentImageField = ref("")
+
+  const handleImageSelect = (image: { url: string; id: number }) => {
+    if (currentImageField.value) {
+      (websiteConfigForm.value as any)[currentImageField.value] = image.url
+    }
+  }
+
+  const openImagePicker = (field: string) => {
+    currentImageField.value = field
+    showImagePicker.value = true
+  }
+
+import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
   import { Plus } from '@element-plus/icons-vue'
   import WebsiteService from '@/api/website/websiteApi'
   import { useUserStore } from '@/store/modules/user'

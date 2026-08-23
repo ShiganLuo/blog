@@ -8,7 +8,7 @@ import type {
 import type { IResponse } from './types'
 import { ApiStatus,CodeMessage } from './types'
 import { useUserStore } from '@/stores/index'
-import { ElMessage,ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import EmojiText from '../emojo'
 import { tansParams } from '@/utils/tool'
 
@@ -94,7 +94,7 @@ axiosInstance.interceptors.response.use(
         } catch (err) {
           // 刷新失败，退出登录
           userStore.logOut()
-          ElMessageBox.alert('登录状态已过期，请重新登录', '系统提示', { type: 'warning' })
+          ElMessage.warning('登录状态已过期，请重新登录')
           return Promise.reject(err)
         } finally {
           isRefreshing = false

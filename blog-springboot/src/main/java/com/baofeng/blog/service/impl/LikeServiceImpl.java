@@ -51,7 +51,7 @@ public class LikeServiceImpl implements LikeService{
         // 判断目标是否存在
         boolean isTargetExist = switch (type) {
             case "post" -> articleMapper.selectCountById(forId);
-            case "comment","message" -> commentMapper.selectCountById(forId);
+            case "comment","message","talk" -> commentMapper.selectCountById(forId);
             default -> false;
         };
         if (!isTargetExist) {
@@ -64,9 +64,9 @@ public class LikeServiceImpl implements LikeService{
                 case "post":
                     rowUpdated = articleMapper.decreaseLikeById(forId);
                     break;
-                case "comment","message":
-                    rowUpdated = commentMapper.decreaseLikeById(forId);
-                    break;
+                case "comment","message","talk":
+                                rowUpdated = commentMapper.decreaseLikeById(forId);
+                                break;
                 default:
                     return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"type错误,必须为post、comment或message");
             }
@@ -76,7 +76,7 @@ public class LikeServiceImpl implements LikeService{
                 case "post":
                     rowUpdated = articleMapper.decreaseLikeById(forId);
                     break;
-                case "comment","message" :
+                case "comment","message","talk":
                     rowUpdated = commentMapper.decreaseLikeById(forId);
                     break;
                 default:
@@ -104,7 +104,7 @@ public class LikeServiceImpl implements LikeService{
     // 判断目标是否存在
     boolean isTargetExist = switch (type) {
         case "post" -> articleMapper.selectCountById(forId);
-        case "comment","message" -> commentMapper.selectCountById(forId);
+        case "comment","message","talk" -> commentMapper.selectCountById(forId);
         default -> false;
     };
     if (!isTargetExist) {
@@ -118,7 +118,7 @@ public class LikeServiceImpl implements LikeService{
             case "post":
                 rowUpdated = articleMapper.incrementLikeById(forId);
                 break;
-            case "comment","message":
+            case "comment","message","talk":
                 rowUpdated = commentMapper.incrementLikeById(forId);
                 break;
             default:
@@ -130,7 +130,7 @@ public class LikeServiceImpl implements LikeService{
             case "post":
                 rowUpdated = articleMapper.incrementLikeById(forId);
                 break;
-            case "comment","message":
+            case "comment","message","talk":
                 rowUpdated = commentMapper.incrementLikeById(forId);
                 break;
             default:

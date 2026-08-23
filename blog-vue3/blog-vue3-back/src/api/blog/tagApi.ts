@@ -1,49 +1,39 @@
 import request from '@/utils/http'
 import { TagRecordResult, TagListResult } from '@/types/blog/tag'
-import { CodeMsgResult } from '@/types/axios'
 
-// 标签
 export class TagService {
-  // 查询标签列表
   static listTag(query: any) {
-    return request.get<TagRecordResult>({
-      url: '/blog/tag/admin/tags',
-      params: query
+    return request.post<TagRecordResult>({
+      url: '/admin/tags/list',
+      data: query
     })
   }
 
-  // 新增标签
   static addTag(data: any) {
     return request.post({
-      url: '/blog/tag/admin/tags',
+      url: '/admin/tags/create',
       data: data
     })
   }
 
-  // 修改标签
   static updateTag(data: any) {
     return request.post({
-      url: '/blog/tag/admin/tags',
+      url: '/admin/tags/uploadTag',
       data: data
     })
   }
 
-  // 删除标签
   static deleteTag(id: any) {
     return request.del({
-      url: '/blog/tag/admin/tags/',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: id
+      url: '/admin/tags/' + id,
+      headers: { 'Content-Type': 'application/json' }
     })
   }
 
-  // 搜索标签
-  static searchTags(keywords: String) {
+  static searchTags(keywords: string) {
     return request.get<TagListResult>({
       url: '/admin/tags/getTagDictionary',
-      params: keywords
+      params: { keyword: keywords }
     })
   }
 }

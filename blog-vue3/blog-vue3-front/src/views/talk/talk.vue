@@ -7,7 +7,8 @@ import { LikeService } from "@/api/likeApi";
 import { TalkService } from "@/api/talkApi";
 import { type TalkItem } from "@/types/talk";
 import { ElNotification } from "element-plus";
-import TextOverflow from "@/components/TextOverflow/index.vue";
+import { MdPreview } from "md-editor-v3";
+import "md-editor-v3/lib/style.css";
 import Comment from "@/components/Comment/index.vue";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
@@ -92,7 +93,7 @@ const like = async (item: TalkItem, index: number) => {
   likePending.value = true;
 
   if (item.isLiked) {
-    const res = await LikeService.cancelLike({ for_id: item.id, type: 2, userId: userStore.getUserInfo.id });
+    const res = await LikeService.cancelLike({ for_id: item.id, type: "talk", user_id: userStore.getUserInfo.id });
     if (res.code === 200) {
       talkList.value[index].isLiked = false;
       talkList.value[index].likes--;
@@ -104,7 +105,7 @@ const like = async (item: TalkItem, index: number) => {
       });
     }
   } else {
-    const res = await LikeService.addLike({ for_id: item.id, type: 2, userId: userStore.getUserInfo.id });
+    const res = await LikeService.addLike({ for_id: item.id, type: "talk", user_id: userStore.getUserInfo.id });
     if (res.code === 200) {
       talkList.value[index].isLiked = true;
       talkList.value[index].likes++;
@@ -195,18 +196,12 @@ onBeforeUnmount(() => {
                   <div class="right-top relative">
                     <i v-if="talk.isToped == 1" class="iconfont icon-zhiding"></i>
                     <span class="nick-name">{{ talk.nickName }}</span>
-                    <TextOverflow
-                      class="content"
-                      :text="talk.content"
-                      :maxLines="3"
-                      :font-size="14"
-                    >
-                      <template v-slot:default="{ clickToggle, expanded }">
-                        <span @click="clickToggle" class="btn">
-                          {{ expanded ? "收起" : "展开" }}
-                        </span>
-                      </template>
-                    </TextOverflow>
+                    <MdPreview
+                      class="talk-md-preview"
+                      :modelValue="talk.content"
+                      :theme="'light'"
+                      preview-only
+                    />
                   </div>
                   <div
                     class="right-bottom"

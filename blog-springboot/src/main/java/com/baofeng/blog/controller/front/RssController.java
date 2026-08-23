@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/front")
@@ -19,12 +20,13 @@ public class RssController {
 
     /**
      * 生成 RSS 订阅源
+     * @param userId 用户id
      * @return RSS XML
      */
-    @GetMapping(value = "/rss", produces = MediaType.APPLICATION_XML_VALUE)
-    public String getRss(HttpServletRequest request) {
+    @GetMapping(value = "/rss/{userId}", produces = MediaType.APPLICATION_XML_VALUE)
+    public String getRss(@PathVariable Long userId, HttpServletRequest request) {
         String baseUrl = getBaseUrl(request);
-        return rssService.generateRss(baseUrl);
+        return rssService.generateRss(baseUrl, userId);
     }
 
     private String getBaseUrl(HttpServletRequest request) {

@@ -2,6 +2,7 @@
 import { ref, reactive, onMounted,onBeforeUnmount } from 'vue'
 import { RouterView, useRouter, useRoute } from 'vue-router'
 import { SiteService } from './api/siteApi';
+import { useUserStore } from "@/stores/index";
 import { isMobile } from './utils/tool';
 import WelcomeMessage from "@/components/WelcomeComps/WelcomeMessage.vue";
 import BackTop from "@/components/BackTop/index.vue";
@@ -10,6 +11,7 @@ import ContextMenu from "@/components/ContextMenu/index.vue";
 const isPc = ref(true);
 const router = useRouter();
 const route = useRoute();
+const userStore = useUserStore();
 const ContextMenuRef = ref<InstanceType<typeof ContextMenu> | null>(null); // ContextMenu 右键菜单组件
 
 const goBack = () => {
@@ -32,7 +34,7 @@ onMounted( async () => {
 
   backTopProps.right = 0;
   backTopProps.svgWidth = 6;
-  SiteService.addView();
+  SiteService.addView(userStore.getUserInfo.id ? { userId: userStore.getUserInfo.id } : undefined);
   document.addEventListener("contextmenu", handleContextMenu);
   document.addEventListener("click", handleClick);
 })

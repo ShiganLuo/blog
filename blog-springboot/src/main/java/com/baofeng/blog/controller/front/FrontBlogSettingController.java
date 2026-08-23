@@ -8,6 +8,8 @@ import com.baofeng.blog.service.BlogSettingService;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/front/settings")
 public class FrontBlogSettingController {
@@ -20,8 +22,9 @@ public class FrontBlogSettingController {
     }
 
     @PutMapping("/addView")
-    public ApiResponse<String> addView(){
-        return blogSettingService.addViews();
+    public ApiResponse<String> addView(@RequestBody(required = false) Map<String, Long> body){
+        Long userId = (body != null) ? body.get("userId") : null;
+        return blogSettingService.addViews(userId);
     }
 
     /**

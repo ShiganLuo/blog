@@ -83,8 +83,19 @@
 .el-popper.is-light {
   border: none !important;
   font-weight: 600 !important;
-  color: #4090c9 !important;
-  background: linear-gradient(120deg, #faeeff, #cfebf3) !important;
+  color: #333 !important;
+  background: #fff !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+  border-radius: 8px !important;
+  .el-menu-item,
+  .el-sub-menu__title {
+    color: #333 !important;
+  }
+  .el-menu-item:hover,
+  .el-sub-menu__title:hover {
+    color: var(--primary) !important;
+    background-color: rgba(93, 135, 255, 0.08) !important;
+  }
 }
 .el-popper.is-light .el-popper__arrow:before {
   display: none;
@@ -94,10 +105,10 @@
   font-weight: 600 !important;
   color: var(--font-color) !important;
   padding: 0 10px;
-  background: linear-gradient(120deg, #faeeff, #cfebf3) !important;
+  background: #fff !important;
 }
 .el-collapse-item__content {
-  background: linear-gradient(120deg, #faeeff, #cfebf3) !important;
+  background: #fff !important;
 }
 .md-editor-catalog-link span {
   color: var(--font-color) !important;

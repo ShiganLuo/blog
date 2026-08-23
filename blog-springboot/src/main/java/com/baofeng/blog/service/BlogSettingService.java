@@ -12,9 +12,10 @@ public interface BlogSettingService {
 
     /**
      * 增加网站访问量
+     * @param userId 用户id（可选，为null时使用SecurityContext）
      * @return
      */
-    public ApiResponse<String> addViews();
+    public ApiResponse<String> addViews(Long userId);
 
     /**
      * 初始化网站设置
@@ -31,11 +32,11 @@ public interface BlogSettingService {
     public ApiResponse<String> updateSetting(BlogSetting blogSetting);
 
     /**
-     * 获取网站设置前台展示（根据设置id）
-     * @param id 设置id
+     * 获取网站设置前台展示（根据用户id）
+     * @param userId 用户id
      * @return
      */
-    public ApiResponse<FrontConfigDetailResponse> getSettingByIdFront(Long id);
+    public ApiResponse<FrontConfigDetailResponse> getSettingByIdFront(Long userId);
 
     /**
      * 获取当前登录用户的博客设置（管理后台）

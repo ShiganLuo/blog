@@ -8,18 +8,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisVisitCounter {
 
-    Long blogSettingId = 1L;
-
     private final StringRedisTemplate redisTemplate;
 
     public RedisVisitCounter(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
-    // 站点访问量
-    public void incrSiteVisit() {
+    // 站点访问量（按用户隔离）
+    public void incrSiteVisit(Long userId) {
         SafeRedisExecutor.execute(() -> {
-            redisTemplate.opsForValue().increment(RedisKeysEnum.SITE_VISIT.getKey() + blogSettingId);
+            redisTemplate.opsForValue().increment(RedisKeysEnum.SITE_VISIT.getKey() + userId);
         }, "增加站点访问量");
     }
 

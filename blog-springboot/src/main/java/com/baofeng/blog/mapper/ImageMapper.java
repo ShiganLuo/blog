@@ -62,4 +62,11 @@ public interface ImageMapper {
      * @return
      */
     Long getImageIdByFilePath(String filePath);
+
+    /**
+     * 分页查询图片列表（支持按文件名模糊搜索）
+     * @param fileName 文件名关键词（可选）
+     * @return 图片列表
+     */
+    List<Image> selectImagesWithPage(@Param("fileName") String fileName);
 }
