@@ -21,6 +21,7 @@ public class ImageFileUtil {
         MAGIC_NUMBER_TO_EXTENSION.put("89504E47", ".png");
         MAGIC_NUMBER_TO_EXTENSION.put("47494638", ".gif");
         MAGIC_NUMBER_TO_EXTENSION.put("424D", ".bmp");
+        MAGIC_NUMBER_TO_EXTENSION.put("00000100", ".ico");
     }
 
     /**
@@ -58,9 +59,21 @@ public class ImageFileUtil {
                     return uuid + extension;
                 }
             }
+
+            // SVG 是文本格式，没有 magic number，通过内容检测
+            byte[] headerBytes = new byte[100];
+            // 重新读取（getMagicNumber 已消费了流）
+            try (InputStream is2 = file.getInputStream()) {
+                int len = is2.read(headerBytes);
+                if (len > 0) {
+                    String headStr = new String(headerBytes, 0, len).trim().toLowerCase();
+                    if (headStr.startsWith("<svg") || (headStr.contains("<svg") && headStr.contains("xmlns"))) {
+                        return UUID.randomUUID().toString() + ".svg";
+                    }
+                }
+            }
         } catch (IOException e) {
-            // 异常处理
-            logger.warn("生成图片文件唯一名称时文件读取失败：",e);
+            logger.warn("生成图片文件唯一名称时文件读取失败：", e);
         }
         logger.warn("如果没有找到匹配的幻数，返回null");
         return null;

@@ -163,7 +163,7 @@ import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
   // 上传路径
   const uploadImageUrl =  `${import.meta.env.VITE_API_BASE_URL}/admin/image/uploadImage`
   // 传递 token
-  const uploadHeaders = { Authorization: accessToken }
+  const uploadHeaders = { Authorization: `Bearer ${accessToken}` }
   // 定义初始表单状态
   const initialFormState = {
     userId: '',

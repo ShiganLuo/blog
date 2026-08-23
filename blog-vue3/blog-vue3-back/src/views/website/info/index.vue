@@ -334,7 +334,7 @@ import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
   const activeName = ref('info')
   const userStore = useUserStore()
   let { accessToken } = userStore
-  const headers = { Authorization: accessToken }
+  const headers = { Authorization: `Bearer ${accessToken}` }
 
   const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/admin/image/uploadImage`
 

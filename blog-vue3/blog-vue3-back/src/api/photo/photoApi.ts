@@ -31,10 +31,7 @@ export class PhotoService {
   static uploadPhoto(data: any) {
     return request.post<UploadPhotoResult>({
       url: '/admin/image/uploadImage',
-      data: data,
-      headers: {
-        'Content-Type': undefined // 覆盖默认的 Content-Type 设置，让浏览器根据文件类型自动设置
-      }
+      data: data
     })
   }
   // 移动照片相册

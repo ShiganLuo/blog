@@ -212,7 +212,7 @@
   // 上传路径
   const uploadImageUrl = `${import.meta.env.VITE_API_BASE_URL}/blog/photo/admin/photos/upload`
 
-  const uploadHeaders = { Authorization: accessToken }
+  const uploadHeaders = { Authorization: `Bearer ${accessToken}` }
 
   // 表单数据
   const albumInfo = reactive<{
