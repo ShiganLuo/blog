@@ -53,4 +53,12 @@ public class FrontBlogSettingController {
     public ApiResponse<FrontBackgroundResponse> getFrontBackground(@PathVariable Long userId) {
         return blogSettingService.getFrontBackgroudById(userId);
     }
+
+    /**
+     * 获取前台信息（无需登录，用于favicon等）
+     */
+    @GetMapping("/getFrontInfo")
+    public ApiResponse<SomeFrontInformation> getFrontInfo() {
+        return blogSettingService.getSomeFrontInformation();
+    }
 }

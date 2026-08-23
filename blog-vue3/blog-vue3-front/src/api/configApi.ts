@@ -45,4 +45,16 @@ export class ConfigService {
             return { code: 404, result: null } as any;
         })
     }
+
+    /**
+     * 获取前台信息（无需登录，用于favicon等）
+     */
+    static getFrontInfo() {
+        return request.get<FooterInfomation>({
+            url: `/front/settings/getFrontInfo`,
+            silent: true
+        }).catch(() => {
+            return { code: 404, result: null } as any;
+        })
+    }
 }
