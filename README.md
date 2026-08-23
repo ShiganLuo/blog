@@ -2,21 +2,13 @@
 
 个人博客系统，前后端分离，Docker 部署。
 
-## 在线访问
-
-| 服务 | 地址 |
-|------|------|
-| 前台博客 | https://blog.shiganluo.top |
-| 后台管理 | https://back.shiganluo.top |
-| MinIO 对象存储 | https://minio.shiganluo.top |
-
 ## 技术栈
 
 **前端**：Vue 3 + Pinia + Vue Router + Element Plus + axios + md-editor-v3（Markdown 编辑器）+ wangEditor（富文本编辑器）
 
 **后端**：Spring Boot 3.4 + Spring Security + MyBatis + MySQL 8.0 + Redis + MinIO
 
-**部署**：Docker Compose（nginx-proxy 反向代理 + SSL）
+**部署**：Docker Compose
 
 ## 项目结构
 
@@ -36,10 +28,7 @@ blog/
 │   ├── blog-vue3-front/      # 前台博客（端口 3000）
 │   └── blog-vue3-back/       # 后台管理（端口 8888）
 ├── docker-compose.yml        # 本地开发 Docker 配置
-├── publish/                  # 远程部署脚本
-│   ├── remote.sh             # 构建 + 导出镜像 + 上传
-│   └── remote_publish.sh     # 远程服务器加载镜像 + 重启
-└── nginx-proxy.conf          # Nginx 反向代理配置
+├── publish/                  # 部署脚本（已 gitignore）
 ```
 
 ## 本地开发
@@ -87,8 +76,6 @@ pnpm install && pnpm dev
 # 在本地执行：构建镜像 + 导出 + 上传到远程服务器
 bash publish/remote.sh
 
-# 在远程服务器执行：加载镜像 + 重启容器
-ssh -p 20225 luosg@39.97.180.240 "cd ~/blog && bash remote_publish.sh"
 ```
 
 ## 功能特性
