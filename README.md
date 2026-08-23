@@ -71,6 +71,37 @@ blog/
 
 ## 设计亮点
 
+### 前端设计
+
+#### Axios 统一封装
+
+前后台各有一套完整的 Axios 封装（~200 行），核心特性：
+
+- **双令牌无感刷新**：Access Token 过期时自动用 Refresh Token 刷新，挂起的请求队列批量重试，用户无感知
+- **请求拦截器**：自动注入 Authorization 头
+- **响应拦截器**：统一处理业务状态码（200/400/401/403/404/500），二进制数据直接放行
+- **silent 模式**：请求配置 `silent: true` 时不弹错误提示，适用于静默加载场景
+- **错误提示**：带 Emoji 表情的友好错误信息
+
+#### 类式 API 封装
+
+所有接口按模块封装为静态类方法，调用时无需实例化：
+
+```typescript
+// 按模块组织：HomeService、ArticleService、PhotoService...
+export class HomeService {
+  static getOneSentence() {
+    return request.get<string>({ url: '/front/utils/oneSentence' })
+  }
+}
+```
+
+#### 组件库
+
+前台包含 18 个通用组件：`SwitchTheme`（深色模式切换）、`Comment`（树形评论）、`Search`（搜索）、`TypeWriter`（打字机效果）、`GsapCount`（数字动画）、`TimeLine`（时间线）、`TextOverflow`（文本溢出）等。
+
+后台包含 `ImagePicker`（图片素材库选择器）、`CutterImg`（图片裁剪）、`Charts`（图表）、`Watermark`（水印）、`VideoPlayer`（视频播放）等。
+
 ### 图片素材库
 
 后台提供统一的图片素材库，上传的图片可以在文章封面、编辑器、网站设置等场景复用，避免重复上传。
