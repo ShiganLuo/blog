@@ -2,8 +2,6 @@ package com.baofeng.blog.dto.common;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.baofeng.blog.common.annotation.MinioFile;
-
 import jakarta.validation.constraints.*;
 import lombok.Data;
 // import lombok.Data;

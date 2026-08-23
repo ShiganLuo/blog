@@ -32,9 +32,9 @@ public final class UrlNormalizeUtil {
             "(" +
                 "([a-zA-Z0-9.-]+)" +            // 域名
                 "|" +
-                "(\d{1,3}(\.\d{1,3}){3})" +  // IPv4
+                "(\\d{1,3}(\\.\\d{1,3}){3})" +  // IPv4
             ")" +
-            "(?::\d{1,5})?"                   // 可选端口
+            "(?::\\d{1,5})?"                   // 可选端口
     );
 
     private UrlNormalizeUtil() {
