@@ -1,35 +1,95 @@
 # 拾感日记
 
-个人博客系统，前后端分离，Docker 部署。
+一个功能完整的个人博客系统，采用前后端分离架构，支持 Docker 一键部署。
 
 ## 技术栈
 
-**前端**：Vue 3 + Pinia + Vue Router + Element Plus + axios + md-editor-v3（Markdown 编辑器）+ wangEditor（富文本编辑器）
-
-**后端**：Spring Boot 3.4 + Spring Security + MyBatis + MySQL 8.0 + Redis + MinIO
-
-**部署**：Docker Compose
+| 层级 | 技术 |
+|------|------|
+| 前台 / 后台 | Vue 3 + Pinia + Vue Router + Element Plus |
+| 编辑器 | md-editor-v3（Markdown）+ wangEditor（富文本）|
+| 后端 | Spring Boot 3.4 + Spring Security + MyBatis |
+| 数据库 | MySQL 8.0 + Redis |
+| 对象存储 | MinIO |
+| 部署 | Docker Compose + Nginx 反向代理 |
 
 ## 项目结构
 
 ```
 blog/
-├── blog-springboot/          # 后端 Spring Boot
-│   └── src/main/java/com/baofeng/blog/
-│       ├── controller/       # 控制器（admin/、front/）
-│       ├── service/          # 业务逻辑
-│       ├── mapper/           # MyBatis Mapper
-│       ├── entity/           # 实体类
-│       ├── dto/              # 数据传输对象
-│       ├── config/           # 配置（Security、JWT、MinIO 等）
-│       ├── filter/           # JWT 认证过滤器
-│       └── common/           # 工具类、注解、定时任务
+├── blog-springboot/              # 后端
+│   └── src/main/java/.../blog/
+│       ├── controller/admin/     # 后台接口
+│       ├── controller/front/     # 前台接口
+│       ├── service/              # 业务逻辑
+│       ├── mapper/               # MyBatis Mapper
+│       ├── entity/               # 实体类（17 张表）
+│       ├── dto/                  # 数据传输对象
+│       ├── config/               # Security、JWT、MinIO 配置
+│       ├── filter/               # JWT 认证过滤器
+│       └── common/
+│           ├── annotation/       # @MinioFile、@MinioScan 自定义注解
+│           ├── advice/           # MinioResponseAdvice 响应拦截
+│           ├── scheduler/        # 定时任务（访问量同步）
+│           └── util/             # 工具类
 ├── blog-vue3/
-│   ├── blog-vue3-front/      # 前台博客（端口 3000）
-│   └── blog-vue3-back/       # 后台管理（端口 8888）
-├── docker-compose.yml        # 本地开发 Docker 配置
-├── publish/                  # 部署脚本（已 gitignore）
+│   ├── blog-vue3-front/          # 前台博客
+│   └── blog-vue3-back/           # 后台管理
+├── docker-compose.yml            # 本地 Docker 配置
+├── publish/                      # 部署脚本（已 gitignore）
+└── README.md
 ```
+
+## 功能特性
+
+### 前台（游客 / 注册用户）
+
+- 文章浏览、分类、标签、归档
+- 全文搜索
+- 评论系统（树形结构，支持嵌套回复）
+- 留言板 + 弹幕互动
+- 说说 / 动态
+- 相册展示
+- 友链展示
+- 点赞（文章 + 评论）
+- RSS 订阅
+- 深色模式切换
+
+### 后台（管理员）
+
+- 仪表盘（访问统计、趋势图表）
+- 文章管理（Markdown + 富文本双编辑器）
+- 评论审核
+- 分类 / 标签管理
+- 友链管理
+- 相册管理
+- 说说管理
+- 图片素材库（上传、浏览、选择复用）
+- 网站设置（logo、favicon、头像、背景、二维码等）
+- 用户管理
+- 路由管理（动态菜单）
+
+## 设计亮点
+
+### 图片素材库
+
+后台提供统一的图片素材库，上传的图片可以在文章封面、编辑器、网站设置等场景复用，避免重复上传。
+
+### URL 自动清洗
+
+数据库统一存储相对路径（如 `my-bucket/uuid.png`），通过 `UrlNormalizeUtil` 在写入时剥离域名前缀，通过 `@MinioFile` 注解 + `MinioResponseAdvice` 在响应时自动拼接完整 URL。更换存储地址只需改配置，无需批量更新数据库。
+
+### RBAC 权限控制
+
+采用用户 → 角色 → 权限（User → Role → Permission）三级模型，支持菜单级和按钮级权限控制。
+
+### JWT 认证
+
+Access Token + Refresh Token 双令牌机制，支持无感刷新。白名单控制哪些接口不需要认证。
+
+### 实体-图片通用关联
+
+通过 `entity_images` 关联表，将图片与文章、相册等实体解耦，支持多用途（封面、logo 等）和排序。
 
 ## 本地开发
 
@@ -39,10 +99,10 @@ blog/
 - Node.js 18+
 - Docker & Docker Compose
 
-### 启动步骤
+### 启动
 
 ```bash
-# 1. 启动基础设施（MySQL、Redis、MinIO）
+# 1. 启动基础设施
 docker compose up -d db redis minio
 
 # 2. 启动后端
@@ -70,48 +130,21 @@ pnpm install && pnpm dev
 | MinIO API | 9007 |
 | MinIO Console | 9008 |
 
-## 远程部署
+## 数据库设计
 
-```bash
-# 在本地执行：构建镜像 + 导出 + 上传到远程服务器
-bash publish/remote.sh
+共 17 张表，核心表包括：
 
-```
-
-## 功能特性
-
-### 前台（游客/用户）
-
-- 文章浏览、分类、标签、归档
-- 文章搜索
-- 评论、留言、弹幕
-- 点赞
-- 友链展示
-- 相册展示
-- 说说/动态
-- 深色模式
-
-### 后台（管理员）
-
-- 仪表盘（访问统计）
-- 文章管理（Markdown + 富文本编辑器）
-- 评论管理
-- 分类/标签管理
-- 友链管理
-- 相册管理
-- 说说管理
-- 图片素材库（上传、选择复用）
-- 网站设置（logo、favicon、头像、背景、二维码等）
-- 用户管理
-- 路由管理
-
-## 图片存储
-
-- **存储方式**：MinIO 对象存储
-- **数据库**：存储相对路径（如 `my-bucket/uuid.png`）
-- **前端展示**：通过 `MinioResponseAdvice` 自动拼接完整 URL
-- **URL 清洗**：存入数据库前通过 `UrlNormalizeUtil.stripUrlPrefix()` 剥离域名前缀
-- **支持格式**：jpg、png、gif、bmp、ico、svg
+- `users` — 用户表
+- `articles` — 文章表
+- `comments` — 评论表（树形结构）
+- `images` — 图片表
+- `blog_settings` — 站点配置（单记录）
+- `categories` / `tags` — 分类和标签
+- `friend_link` — 友链
+- `likes` — 点赞（通用）
+- `roles` / `permissions` — RBAC 权限
+- `routes` — 动态路由
+- `entity_images` — 实体-图片通用关联
 
 ## 参考项目
 
