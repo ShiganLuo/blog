@@ -178,7 +178,7 @@ const handleSelect = (image: ImageItem) => {
 const handleConfirm = () => {
   if (selectedImage.value) {
     emit('select', {
-      url: selectedImage.value.filePath,
+      url: getImageDisplayUrl(selectedImage.value.filePath),
       id: selectedImage.value.id
     })
     handleClose()
