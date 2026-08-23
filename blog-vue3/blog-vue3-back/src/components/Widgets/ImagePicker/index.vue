@@ -46,8 +46,6 @@
             :src="getImageDisplayUrl(image.filePath)"
             fit="cover"
             class="image-thumb"
-            :preview-src-list="[getImageDisplayUrl(image.filePath)]"
-            preview-teleported
           >
             <template #error>
               <div class="image-error">
