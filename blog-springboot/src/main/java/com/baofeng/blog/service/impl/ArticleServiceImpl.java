@@ -125,7 +125,7 @@ public class ArticleServiceImpl implements ArticleService {
             } else {
                 Article article = new Article();
                 article.setAuthorId(request.authorId());
-                article.setCoverImage(request.articleCover());
+                article.setCoverImage(UrlNormalizeUtil.stripUrlPrefix(request.articleCover()));
                 article.setTitle(request.articleTitle());
                 article.setContent(request.articleContent());
                 article.setSummary(request.articleAbstract());

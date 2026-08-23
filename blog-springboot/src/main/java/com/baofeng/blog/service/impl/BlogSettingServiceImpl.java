@@ -148,6 +148,12 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         blogSetting.setTouristAvatar(
                 UrlNormalizeUtil.stripUrlPrefix(blogSetting.getTouristAvatar())
         );
+        blogSetting.setWechatQrCode(
+                UrlNormalizeUtil.stripUrlPrefix(blogSetting.getWechatQrCode())
+        );
+        blogSetting.setAlipayQrCode(
+                UrlNormalizeUtil.stripUrlPrefix(blogSetting.getAlipayQrCode())
+        );
 
         // 使用全量更新，允许前端将字段置为空字符串来清空
         int success = blogSettingMapper.updateSettingFull(blogSetting);

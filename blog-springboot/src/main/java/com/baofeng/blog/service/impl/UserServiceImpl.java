@@ -416,7 +416,7 @@ public class UserServiceImpl implements UserService {
         user.setNickName(updateUserInfo.nickName());
         user.setEmail(updateUserInfo.email());
         user.setPhoneNumber(updateUserInfo.phoneNumber());
-        user.setAvatarUrl(updateUserInfo.avatarUrl());
+        user.setAvatarUrl(UrlNormalizeUtil.stripUrlPrefix(updateUserInfo.avatarUrl()));
         user.setPassword(updateUserInfo.password());
         user.setBio(updateUserInfo.bio());
         user.setStatus(updateUserInfo.status());
