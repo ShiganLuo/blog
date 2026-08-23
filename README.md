@@ -101,23 +101,25 @@ export class HomeService {
 
 后台包含 `ImagePicker`（图片素材库选择器）、`CutterImg`（图片裁剪）、`Charts`（图表）、`Watermark`（水印）、`VideoPlayer`（视频播放）等。
 
-### 图片素材库
+### 后端设计
+
+#### 图片素材库
 
 后台提供统一的图片素材库，上传的图片可以在文章封面、编辑器、网站设置等场景复用，避免重复上传。
 
-### URL 自动清洗
+#### URL 自动清洗
 
 数据库统一存储相对路径（如 `my-bucket/uuid.png`），通过 `UrlNormalizeUtil` 在写入时剥离域名前缀，通过 `@MinioFile` 注解 + `MinioResponseAdvice` 在响应时自动拼接完整 URL。更换存储地址只需改配置，无需批量更新数据库。
 
-### RBAC 权限控制
+#### RBAC 权限控制
 
 采用用户 → 角色 → 权限（User → Role → Permission）三级模型，支持菜单级和按钮级权限控制。
 
-### JWT 认证
+#### JWT 认证
 
 Access Token + Refresh Token 双令牌机制，支持无感刷新。白名单控制哪些接口不需要认证。
 
-### 实体-图片通用关联
+#### 实体-图片通用关联
 
 通过 `entity_images` 关联表，将图片与文章、相册等实体解耦，支持多用途（封面、logo 等）和排序。
 
