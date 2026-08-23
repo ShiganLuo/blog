@@ -36,7 +36,6 @@ blog/
 │   ├── blog-vue3-front/          # 前台博客
 │   └── blog-vue3-back/           # 后台管理
 ├── docker-compose.yml            # 本地 Docker 配置
-├── publish/                      # 部署脚本（已 gitignore）
 └── README.md
 ```
 
