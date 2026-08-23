@@ -59,6 +59,7 @@ public class FrontBlogSettingController {
      */
     @GetMapping("/getFrontInfo")
     public ApiResponse<SomeFrontInformation> getFrontInfo() {
-        return blogSettingService.getSomeFrontInformation();
+        // 无需登录，默认返回第一个用户的前台信息
+        return blogSettingService.getSomeFrontInformationById(1L);
     }
 }
