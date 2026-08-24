@@ -2,7 +2,7 @@
   <el-card class="main-card">
     <div class="title">{{ route.meta.title }}</div>
     <div class="album-info">
-      <el-image fit="cover" class="album-cover" :src="albumInfo.albumCover" />
+      <el-image fit="cover" class="album-cover" :src="getFullUrl(albumInfo.albumCover)" />
       <div class="album-detail">
         <div style="margin-bottom: 0.6rem">
           <span class="album-name">{{ albumInfo.albumName }}</span>
@@ -13,6 +13,7 @@
             {{ albumInfo.albumDesc }}
           </span>
           <el-button @click="uploadPhoto = true" v-ripple> 上传照片 </el-button>
+          <el-button @click="showImagePicker = true" v-ripple> 从素材库选择 </el-button>
         </div>
       </div>
       <div class="operation">
@@ -61,10 +62,10 @@
             <el-image
               fit="cover"
               class="photo-img"
-              :src="item.photoSrc"
-              :preview-photoSrc-list="photos"
+              :src="getFullUrl(item.filePath)"
+              :preview-src-list="photos.map((v: any) => getFullUrl(v.filePath))"
             />
-            <div class="photo-name">{{ item.photoName }}</div>
+            <div class="photo-name">{{ item.fileName }}</div>
           </div>
         </el-checkbox>
       </el-checkbox-group>
@@ -161,7 +162,7 @@
                 style="margin-bottom: 1rem"
               >
                 <div class="album-check">
-                  <el-image fit="cover" class="album-check-cover" :src="item.albumCover" />
+                  <el-image fit="cover" class="album-check-cover" :src="getFullUrl(item.albumCover)" />
                   <div style="margin-left: 0.5rem">{{ item.albumName }}</div>
                 </div>
               </el-radio>
@@ -177,6 +178,7 @@
       </template>
     </el-dialog>
   </el-card>
+    <ImagePicker v-model="showImagePicker" @select="handleImageSelect" />
 </template>
 
 <script setup lang="ts">
@@ -188,6 +190,24 @@
   import PhotoAlbumService from '@/api/photo/photoAlbumApi'
   import { PhotoService } from '@/api/photo/photoApi'
 
+// 获取图片完整 URL
+const handleImageSelect = async (image: { url: string; id: number }) => {
+  const res = await PhotoAlbumService.addImageToAlbum(albumId.value, image.id)
+  if (res.code === 200) {
+    ElMessage.success("图片已添加到相册")
+    listPhotos()
+  }
+  showImagePicker.value = false
+}
+
+const getFullUrl = (filePath: string): string => {
+  if (!filePath) return ''
+  if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath
+  const base = import.meta.env.VITE_MINIO_URL || 'http://localhost:9007'
+  const path = filePath.startsWith('/') ? filePath : '/' + filePath
+  return base + path
+}
+
   const route = useRoute()
 
   // 响应式状态
@@ -195,6 +215,7 @@
   const isIndeterminate = ref<boolean>(false)
   const checkAll = ref<boolean>(false)
   const uploadPhoto = ref<boolean>(false)
+  const showImagePicker = ref<boolean>(false)
   const editPhoto = ref<boolean>(false)
   const movePhoto = ref<boolean>(false)
   const uploads = ref<any[]>([])
