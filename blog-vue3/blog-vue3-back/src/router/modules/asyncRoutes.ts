@@ -166,6 +166,13 @@ export const asyncRoutes: MenuListType[] = [
         component: RoutesAlias.PhotoIndex,
         name: 'PhotoAlbumIndex',
         meta: { title: '相册管理', keepAlive: false }
+      },
+      {
+        id: uuid(),
+        path: 'photo/:albumId',
+        component: RoutesAlias.Photo,
+        name: 'PhotoDetail',
+        meta: { title: '照片管理', keepAlive: false, isHide: true }
       }
     ]
   }
