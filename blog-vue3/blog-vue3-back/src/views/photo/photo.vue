@@ -287,15 +287,11 @@
   }
 
   const listPhotos = async () => {
-    const res = await PhotoService.listPhoto({
-      current: current.value,
-      size: size.value,
-      albumId: Number(route.params.albumId),
-      isDelete: 0
-    })
+    const res = await PhotoAlbumService.getAlbumDetail(albumId.value)
     if (res.code === 200) {
-      photos.value = (res.result as any).list
-      count.value = (res.result as any).total
+      const detail = res.result as any
+      photos.value = detail.photos || []
+      count.value = photos.value.length
       loading.value = false
     }
   }
