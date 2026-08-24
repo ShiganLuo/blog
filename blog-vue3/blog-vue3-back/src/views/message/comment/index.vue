@@ -70,12 +70,11 @@
         </el-table-column>
         <el-table-column label="来源" align="center">
           <template #default="scope">
-            <el-tag v-if="scope.row.type == 1">文章</el-tag>
-            <el-tag v-if="scope.row.type == 2" type="danger">留言</el-tag>
-            <el-tag v-if="scope.row.type == 3" type="success">关于我</el-tag>
-            <el-tag v-if="scope.row.type == 4" type="warning">友链</el-tag>
-            <el-tag v-if="scope.row.type == 5" type="warning">说说</el-tag>
-            <el-tag v-if="scope.row.type == 6" type="warning">说说评论</el-tag>
+            <el-tag v-if="scope.row.type === 'post'">文章评论</el-tag>
+            <el-tag v-if="scope.row.type === 'comment'" type="info">子评论</el-tag>
+            <el-tag v-if="scope.row.type === 'message'" type="danger">留言</el-tag>
+            <el-tag v-if="scope.row.type === 'talk'" type="warning">说说</el-tag>
+            <el-tag v-if="scope.row.type === 'talk_comment'" type="warning">说说评论</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
