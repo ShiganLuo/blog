@@ -1,6 +1,6 @@
 <template>
   <el-card class="region art-custom-card">
-    <div class="title">留言管理</div>
+    <div class="title">说说管理</div>
     <div class="status-menu">
       <el-button @click="handleAdd" v-ripple>新增 </el-button>
       <el-radio-group v-model="status" @change="changeStatus" style="float: right">
@@ -10,7 +10,7 @@
       </el-radio-group>
     </div>
 
-    <el-empty v-if="talks == null" description="暂无留言" />
+    <el-empty v-if="talks == null" description="暂无说说" />
 
     <div class="talk-item" v-for="item of talks" :key="item.id">
       <div class="user-info-wrapper">
@@ -303,12 +303,12 @@ import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
   const handleAdd = () => {
     reset()
     open.value = true
-    title.value = '发布留言'
+    title.value = '发布说说'
   }
 
   /** 删除按钮操作 */
   const handleRemove = async (id: any) => {
-    const Tr = await ElMessageBox.confirm('是否确认删除留言数据编号为"' + id + '"的数据项？')
+    const Tr = await ElMessageBox.confirm('是否确认删除说说编号为"' + id + '"的数据项？')
     if (Tr == 'confirm') {
       const res = await TalkService.deleteTalks([id])
       if (res.code == 200) {
@@ -322,7 +322,7 @@ import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
   const handleUpdate = async (id: any) => {
     reset()
     open.value = true
-    title.value = '修改留言'
+    title.value = '修改说说'
     const res = await TalkService.getBackTalkById(id)
     if (res.code == 200) {
       Object.assign(talk, res.result)
