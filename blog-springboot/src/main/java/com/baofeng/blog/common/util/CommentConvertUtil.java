@@ -26,7 +26,7 @@ public class CommentConvertUtil {
         for (FrontArticleCommentResponse  a : articleComments) {
             FrontCommentResponse current = idToComment.get(a.getId());
 
-            if ("post".equalsIgnoreCase(a.getType()) || "talk".equalsIgnoreCase(a.getType())) {
+            if ("post".equalsIgnoreCase(a.getType()) || "talk".equalsIgnoreCase(a.getType()) || "talk_comment".equalsIgnoreCase(a.getType())) {
                 // 文章/说说一级评论，直接放到根
                 roots.add(current);
             } else if ("comment".equalsIgnoreCase(a.getType())) {
