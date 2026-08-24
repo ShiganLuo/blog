@@ -8,7 +8,7 @@ import TypeWriter from "@/components/TypeWriter/index.vue";
 import CardMessage from "./components/card-message.vue";
 import DanmuMessage from "./components/danmu-message.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
-import { ElNotification } from "element-plus";
+import { ElMessage } from "element-plus";
 
 import { MessageService } from "@/api/messageApi";
 import SvgIcon from "@/components/SvgIcon/index.vue";
@@ -71,16 +71,7 @@ const userAddMessage = (): void => {
     router.push({ path: "/message/publish", query: { type: "add" } });
   } else {
     if (!message.value) {
-      ElNotification({
-        offset: 60,
-        title: "温馨提示",
-        duration: 3000,
-        message: h(
-          "div",
-          { style: "color: #e6c081; font-weight: 600;" },
-          "请输入留言内容"
-        ),
-      });
+      ElMessage.warning("请输入留言内容");
       return;
     }
     const form: MessageForm = {
@@ -102,15 +93,7 @@ const userAddMessage = (): void => {
       if (res.code === 200) {
         messageRef.value?.addDanmu(form);
         message.value = "";
-        ElNotification({
-          offset: 60,
-          title: "提示",
-          message: h(
-            "div",
-            { style: "color: #7ec050; font-weight: 600;" },
-            form.id ? "修改成功" : "留言成功"
-          ),
-        });
+        ElMessage.success(form.id ? "修改成功" : "留言成功");
       }
     });
   }

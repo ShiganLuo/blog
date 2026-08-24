@@ -90,20 +90,12 @@ const updateInfo = async () => {
 
         const res = await UserService.updateUserInfo(infoForm);
         if (res && res.code === 200) {
-          ElNotification({
-            offset: 60,
-            title: "提示",
-            message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "修改成功"),
-          });
+          ElMessage.success("修改成功");
           Object.assign(infoForm, primaryinfoForm);
           await getCurrentUserInfo();
           infoPreview.value = true;
         } else {
-          ElNotification({
-            offset: 60,
-            title: "错误提示",
-            message: h("div", { style: "color: #e47470" }, res.message),
-          });
+          ElMessage.error(res.message);
         }
         loading.value = false;
       });

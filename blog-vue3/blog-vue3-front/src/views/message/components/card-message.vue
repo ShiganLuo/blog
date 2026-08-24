@@ -3,7 +3,7 @@ import { ref, reactive, onMounted, onBeforeUnmount, h, onActivated, nextTick } f
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Edit, Delete, Search } from "@element-plus/icons-vue";
-import { ElNotification, ElMessageBox } from "element-plus";
+import { ElMessageBox } from "element-plus";
 
 import { gsapTransXScale } from "@/utils/transform";
 import { MessageService } from "@/api/messageApi";
@@ -159,11 +159,7 @@ const like = async (item: MessageItem, index: number): Promise<void> => {
   likePending.value = true;
 
   if (!getUserInfo.value.id) {
-    ElNotification({
-      offset: 60,
-      title: "温馨提示",
-      message: h("div", { style: "color: #e6c081; font-weight: 600;" }, "请先登录"),
-    });
+    ElMessage.warning("请先登录");
     likePending.value = false;
     return;
   }
@@ -183,19 +179,11 @@ const like = async (item: MessageItem, index: number): Promise<void> => {
       if (item.isLiked) {
         messageList.value[index].likes--;
         messageList.value[index].isLiked = false;
-        ElNotification({
-          offset: 60,
-          title: "提示",
-          message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "已取消点赞"),
-        });
+        ElMessage.success("已取消点赞");
       } else {
         messageList.value[index].likes++;
         messageList.value[index].isLiked = true;
-        ElNotification({
-          offset: 60,
-          title: "提示",
-          message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "点赞成功"),
-        });
+        ElMessage.success("点赞成功");
       }
     }
   } finally {
@@ -225,11 +213,7 @@ const handleDeleteMessage = (item: MessageItem): void => {
     .then(async () => {
       const res = await MessageService.deleteMessage({ id: item.id });
       if (res && res.code === 200) {
-        ElNotification({
-          offset: 60,
-          title: "提示",
-          message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "删除成功"),
-        });
+        ElMessage.success("删除成功");
         if (observe && box) {
           observe.unobserve(box);
           observe = null;
@@ -240,11 +224,7 @@ const handleDeleteMessage = (item: MessageItem): void => {
           observeBox();
         });
       } else {
-        ElNotification({
-          offset: 60,
-          title: "错误提示",
-          message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message),
-        });
+        ElMessage.error(res.message);
       }
     })
     .catch(() => { });

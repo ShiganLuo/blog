@@ -6,7 +6,7 @@ import type { Ref } from "vue";
 import { NotifyService } from "@/api/notifyApi";
 import { containHTML } from "@/utils/tool";
 import { type MessageCompoentItem, type MessageCompoentItemListResponse } from "@/types/message";
-import { ElNotification } from "element-plus";
+import { ElMessage } from "element-plus";
 import { Delete, Compass } from "@element-plus/icons-vue";
 import Loading from "@/components/Loading/index.vue";
 
@@ -85,19 +85,11 @@ const jump = async (item: MessageCompoentItem): Promise<void> => {
 const deleteMessage = async (confirm: MessageCompoentItem): Promise<void> => {
   const res = await NotifyService.deleteNotify(confirm.id);
   if (res && res.code == 200) {
-    ElNotification({
-      offset: 60,
-      title: "提示",
-      message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "删除成功"),
-    });
+    ElMessage.success("删除成功");
     params.current = 1;
     await getMessageList();
   } else {
-    ElNotification({
-      offset: 60,
-      title: "错误提示",
-      message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message),
-    });
+    ElMessage.error(res.message);
   }
 };
 

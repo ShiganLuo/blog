@@ -10,7 +10,7 @@ import {
 import { useRoute, useRouter, type RouteLocationNormalizedLoaded } from "vue-router";
 import { useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
-import { ElNotification } from "element-plus";
+import { ElMessage } from "element-plus";
 import MessageBox from "@/components/MessageBox/message-box.vue";
 import SwitchTheme from "@/components/SwitchTheme/index.vue";
 import Login from "@/views/login/login.vue";
@@ -45,15 +45,7 @@ const getPath: ComputedRef<string> = computed(() => route.path);
 const handleSelect = async (val: string, type: "pc" | "mobile") => {
   if (val === "/logout") {
     await logOut();
-    ElNotification({
-      offset: 60,
-      title: "提示",
-      message: h(
-        "div",
-        { style: "color: #7ec050; fontWeight: 600;" },
-        "退出成功"
-      )
-    });
+    ElMessage.success("退出成功");
   } else if (val === "/login") {
     userStore.setShowLogin(true);
   } else if (val == "/admin") {

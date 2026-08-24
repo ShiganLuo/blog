@@ -5,7 +5,7 @@ import { CommentSerivce } from "@/api/blog/commentApi";
 import { LikeService } from "@/api/likeApi";
 import Loading from "@/components/Loading/index.vue";
 import { useUserStore } from "@/stores/index";
-import { ElMessageBox, ElNotification } from "element-plus";
+import { ElMessageBox } from "element-plus";
 import type { CommentType, CommentItem, CommentParams } from "@/types/comment";
 import ChildrenItem from "./ChildrenItem.vue";
 import CommentInput from "./CommentInput.vue"; // 引入你提供的评论输入组件
@@ -45,7 +45,7 @@ const getComment = async (type?: string) => {
     commentList.value = params.current === 1 ? list : commentList.value.concat(list);
     commentTotal.value = total;
   } else {
-    ElNotification({ offset: 60, title: "错误提示", message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message) });
+    ElMessage.error(res.message);
   }
   params.loading = false;
 };
@@ -64,14 +64,14 @@ const handleLike = async (comment: CommentItem) => {
     if (res?.code === 200) {
       comment.isLiked = false;
       comment.likes--;
-      ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "已取消点赞") });
+      ElMessage.success("已取消点赞");
     }
   } else {
     res = await LikeService.addLike(payload);
     if (res?.code === 200) {
       comment.isLiked = true;
       comment.likes++;
-      ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "点赞成功") });
+      ElMessage.success("点赞成功");
     }
   }
 };
@@ -84,11 +84,11 @@ const handleDelete = (commentId: number | string) => {
   }).then(async () => {
     const res = await CommentSerivce.deleteComment(commentId);
     if (res?.code === 200) {
-      ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "删除成功") });
+      ElMessage.success("删除成功");
       getComment("clear");
       emits("refresh");
     } else {
-      ElNotification({ offset: 60, title: "错误提示", message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message) });
+      ElMessage.error(res.message);
     }
   });
 };
@@ -107,14 +107,14 @@ const publish = async (data: { content: string, forId?: number | string, replyUs
   };
   const res = await CommentSerivce.addComment(commentData);
   if (res.code === 200) {
-    ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "评论成功") });
+    ElMessage.success("评论成功");
     getComment("clear");
     emits("refresh");
     if (!data.forId) {
       topCommentInputRef.value?.clear(); // 清空顶层评论输入框
     }
   } else {
-    ElNotification({ offset: 60, title: "错误提示", message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message) });
+    ElMessage.error(res.message);
   }
 };
 

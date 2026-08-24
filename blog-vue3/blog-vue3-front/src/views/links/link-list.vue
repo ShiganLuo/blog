@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, onBeforeUnmount, h } from "vue";
+import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 import { LinkService } from "@/api/linksApi";
 import { ConfigService } from "@/api/configApi";
 import { Edit } from "@element-plus/icons-vue";
-import { ElNotification } from "element-plus";
+import { ElMessage } from "element-plus";
 import { useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
@@ -11,7 +11,6 @@ import PageHeader from "@/components/PageHeader/index.vue";
 import linkApply from "./link-apply.vue";
 import { _removeLocalItem, _setLocalItem } from "@/utils/tool";
 import Loading from "@/components/Loading/index.vue"; // 确保此组件已导入
-import { ElMessage } from "element-plus";
 import { type FriendLink, type FriendLinkListResponse  } from "@/types/link";
 const userStore = useUserStore();
 const { getUserInfo } = storeToRefs(userStore);
@@ -99,11 +98,7 @@ const applyLinks = (): void => {
     dialogVisible.value = true;
     applyType.value = "add";
   } else {
-    ElNotification({
-      offset: 60,
-      title: "温馨提示",
-      message: h("div", { style: "color: #e6c081; font-weight: 600;" }, "请先登录"),
-    });
+    ElMessage.warning("请先登录");
   }
 };
 

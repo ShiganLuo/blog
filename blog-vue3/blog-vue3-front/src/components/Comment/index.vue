@@ -4,7 +4,7 @@ import { useUserStore } from "@/stores/index";
 import { CommentSerivce } from "@/api/blog/commentApi";
 import ParentItem from "./item/ParentItem.vue";
 import CommentInput from "./item/CommentInput.vue";
-import { ElNotification } from "element-plus";
+import { ElMessage } from "element-plus";
 import { numberFormate } from "@/utils/tool";
 
 // 定义 emits 类型
@@ -54,11 +54,7 @@ const toLogin = (): void => {
 // 评论文章，由ParentItem触发
 const publish = async (): Promise<void> => {
   if (!userStore.getUserInfo.id) {
-    ElNotification({
-      offset: 60,
-      title: "温馨提示",
-      message: h("div", { style: "color: #e6c081; fontWeight: 600" }, "请先登录"),
-    });
+    ElMessage.warning("请先登录");
     return;
   }
 
@@ -73,11 +69,7 @@ const publish = async (): Promise<void> => {
   const res: any = await CommentSerivce.addComment(data);
   if (res.code === 200) {
     commentText.value = "";
-    ElNotification({
-      offset: 60,
-      title: "提示",
-      message: h("div", { style: "color: #7ec050; fontWeight: 600" }, "评论成功"),
-    });
+    ElMessage.success("评论成功");
 
     parentItemRef.value?.getComment("clear");
     isExpand.value = true;
@@ -86,11 +78,7 @@ const publish = async (): Promise<void> => {
 
     refresh();
   } else {
-    ElNotification({
-      offset: 60,
-      title: "错误提示",
-      message: h("div", { style: "color: #f56c6c; fontWeight: 600" }, res.message),
-    });
+    ElMessage.error(res.message);
   }
 };
 
@@ -105,11 +93,7 @@ const getCommentTotal = async (): Promise<void> => {
   if (res && res.code === 200) {
     getTotal(Number(res.result));
   } else {
-    ElNotification({
-      offset: 60,
-      title: "错误提示",
-      message: h("div", { style: "color: #f56c6c; fontWeight: 600" }, res.message),
-    });
+    ElMessage.error(res.message);
   }
 };
 

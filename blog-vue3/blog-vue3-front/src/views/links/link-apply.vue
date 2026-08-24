@@ -2,7 +2,7 @@
 import { ref, reactive, h, watch, nextTick } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { LinkService } from "@/api/linksApi";
-import { ElNotification } from "element-plus";
+import { ElMessage } from "element-plus";
 
 import { UserService } from "@/api/userApi";
 
@@ -108,32 +108,16 @@ const applyLinks = async () => {
       }
 
       if (res && res.code === 200) {
-        ElNotification({
-          offset: 60,
-          title: "提示",
-          message: h(
-            "div",
-            { style: "color: #7ec050; font-weight: 600;" },
-            `${form.id ? "修改" : "申请"}成功，等待博主审核通过`
-          ),
-        });
+        ElMessage.success(`${form.id ? "修改" : "申请"}成功，等待博主审核通过`);
         Object.assign(form, primaryForm);
         handleClose();
       } else {
-        ElNotification({
-          offset: 60,
-          title: "错误提示",
-          message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res?.message || "未知错误"),
-        });
+        ElMessage.error(res?.message || "未知错误");
       }
     }
   } catch (err) {
     console.error(err);
-    ElNotification({
-      offset: 60,
-      title: "错误提示",
-      message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, "未知错误"),
-    });
+    ElMessage.error("未知错误");
   } finally {
     loading.value = false;
   }

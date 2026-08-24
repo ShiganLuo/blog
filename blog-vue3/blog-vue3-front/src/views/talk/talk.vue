@@ -5,7 +5,7 @@ import { ConfigService } from "@/api/configApi";
 import { LikeService } from "@/api/likeApi";
 import { TalkService } from "@/api/talkApi";
 import { type TalkItem } from "@/types/talk";
-import { ElNotification } from "element-plus";
+import { ElMessage } from "element-plus";
 import { MdPreview } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import Comment from "@/components/Comment/index.vue";
@@ -97,11 +97,7 @@ const like = async (item: TalkItem, index: number) => {
       talkList.value[index].isLiked = false;
       talkList.value[index].likes--;
       likePending.value = false;
-      ElNotification({
-        offset: 60,
-        title: "提示",
-        message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "已取消点赞"),
-      });
+      ElMessage.success("已取消点赞");
     }
   } else {
     const res = await LikeService.addLike({ for_id: item.id, type: "talk", user_id: userStore.getUserInfo.id });
@@ -109,11 +105,7 @@ const like = async (item: TalkItem, index: number) => {
       talkList.value[index].isLiked = true;
       talkList.value[index].likes++;
       likePending.value = false;
-      ElNotification({
-        offset: 60,
-        title: "提示",
-        message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "点赞成功"),
-      });
+      ElMessage.success("点赞成功");
     }
   }
 };

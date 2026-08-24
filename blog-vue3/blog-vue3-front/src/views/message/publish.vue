@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, h } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import type { LocationQueryValue } from "vue-router";
-import { ElNotification } from "element-plus";
+import { ElMessage } from "element-plus";
 import { useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
 
@@ -105,19 +105,11 @@ const focusCommentInput = () => {
 // -------------------- 提交留言 --------------------
 const leaveMessage = async () => {
   if (!form.content) {
-    ElNotification({
-      offset: 60,
-      title: "温馨提示",
-      message: h("div", { style: "color: #e6c081; font-weight: 600;" }, "留言内容不能为空"),
-    });
+    ElMessage.warning("留言内容不能为空");
     return;
   }
   if (form.content.length > 555) {
-    ElNotification({
-      offset: 60,
-      title: "温馨提示",
-      message: h("div", { style: "color: #e6c081; font-weight: 600;" }, "留言内容过长 请删减"),
-    });
+    ElMessage.warning("留言内容过长 请删减");
     return;
   }
   if (!form.id) {
@@ -134,11 +126,7 @@ const leaveMessage = async () => {
   }
 
   if (res && res.code === 200) {
-    ElNotification({
-      offset: 60,
-      title: "提示",
-      message: h("div", { style: "color: #7ec050; font-weight: 600;" }, form.id ? "修改成功" : "留言成功"),
-    });
+    ElMessage.success(form.id ? "修改成功" : "留言成功");
     Object.assign(form, primaryForm);
     loading.value = false;
     _removeLocalItem("blog-message-item");
@@ -146,11 +134,7 @@ const leaveMessage = async () => {
     _setLocalItem("message-need-scroll", true);
     router.go(-1);
   } else {
-    ElNotification({
-      offset: 60,
-      title: "错误提示",
-      message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message || "未知错误"),
-    });
+    ElMessage.error(res.message || "未知错误");
   }
 };
 

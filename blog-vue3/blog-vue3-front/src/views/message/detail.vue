@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, onMounted, h, ref } from "vue";
+import { reactive, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 
 import { returnTime, _getLocalItem, _setLocalItem, containHTML } from "@/utils/tool";
@@ -7,7 +7,7 @@ import { LikeService } from "@/api/likeApi";
 import { useUserStore } from "@/stores/index";
 import { ConfigService } from "@/api/configApi";
 
-import { ElNotification } from "element-plus";
+import { ElMessage } from "element-plus";
 import PageHeader from "@/components/PageHeader/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 
@@ -61,11 +61,7 @@ const like = async (item: MessageItem) => {
       item.isLiked = false;
       likePending.value = false;
 
-      ElNotification({
-        offset: 60,
-        title: "提示",
-        message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "已取消点赞"),
-      });
+      ElMessage.success("已取消点赞");
     }
   } else {
     // 点赞
@@ -75,11 +71,7 @@ const like = async (item: MessageItem) => {
       item.isLiked = true;
       likePending.value = false;
 
-      ElNotification({
-        offset: 60,
-        title: "提示",
-        message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "点赞成功"),
-      });
+      ElMessage.success("点赞成功");
     }
   }
 

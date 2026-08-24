@@ -2,7 +2,6 @@
 import { ref, reactive, watch, h, nextTick } from "vue";
 import type { FormInstance, FormRules, FormItemRule } from "element-plus";
 import { ElMessage } from "element-plus";
-import { ElNotification } from "element-plus";
 import { UserService } from "@/api/userApi";
 import { useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
@@ -79,11 +78,7 @@ const registerRules: FormRules = {
 const welcome = (id: number, nick_name: string) => {
   let msg = getWelcomeSay(nick_name);
   // if (id === 3) msg = "某某光临，真是三生有幸";
-  ElNotification({
-    offset: 60,
-    title: "欢迎～",
-    message: h("div", { style: "font-weight: 600;" }, msg),
-  });
+  ElMessage.success(msg);
 };
 
 const userRegister = async () => {
@@ -99,7 +94,7 @@ const userRegister = async () => {
       if (res?.code === 200) {
         await userLogin("register");
       } else {
-        ElNotification({ offset: 60, title: "错误提示", message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message) });
+        ElMessage.error(res.message);
       }
     }
   });
@@ -161,10 +156,10 @@ const onLogin = async (form: LoginForm, type: "login" | "register" = "login") =>
     Object.assign(registerForm, primaryRegisterForm);
     handleClose();
     welcome(res.result.id, res.result.nickname);
-    ElNotification({ offset: 60, title: "提示", message: h("div", { style: "color: #7ec050; font-weight: 600;" }, type === "login" ? "登录成功" : "自动登录成功") });
+    ElMessage.success(type === "login" ? "登录成功" : "自动登录成功");
 
   } else {
-    ElNotification({ offset: 60, title: "错误提示", message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message) });
+    ElMessage.error(res.message);
   }
 };
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, reactive, h, nextTick, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { ElNotification } from "element-plus";
+import { ElMessage } from "element-plus";
 import { useStaticData, useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
 import { MdPreview, MdCatalog } from "md-editor-v3";
@@ -113,13 +113,7 @@ const like = async (): Promise<void> => {
       articleForm.thumbsUpTimes--;
       isLike.value = false;
       likePending.value = false;
-      ElNotification({
-        offset: 60,
-        title: "提示",
-        message: h(
-          "div", { style: "color: #7ec050; font-weight: 600;" }, "有什么不足可以给我留下评论，感谢指正"
-          )
-        });
+      ElMessage.success("有什么不足可以给我留下评论，感谢指正");
     }
   } else { // 点赞
     const res = await LikeService.addLike({ for_id: articleForm.id,type: "post", user_id: userId });
@@ -127,13 +121,7 @@ const like = async (): Promise<void> => {
       articleForm.thumbsUpTimes++;
       isLike.value = true;
       likePending.value = false;
-      ElNotification({
-        offset: 60,
-        title: "提示",
-        message: h(
-          "div", { style: "color: #7ec050; font-weight: 600;" }, "点赞成功，谢谢支持"
-          )
-        });
+      ElMessage.success("点赞成功，谢谢支持");
     }
   }
 };
