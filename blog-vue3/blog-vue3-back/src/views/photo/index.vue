@@ -10,7 +10,7 @@
 
     <el-row class="album-container" :gutter="12" v-loading="loading">
       <el-col v-for="item of albumList" :key="item.id" :xs="12" :sm="8" :md="6">
-        <div class="album-item">
+        <div class="album-item" @click="goToPhotos(item)">
           <div class="album-opreation">
             <el-dropdown placement="bottom-end" @command="(cmd: string) => handleCommand(cmd, item)">
               <i class="iconfont-sys" v-html="'&#xe839;'" style="color: #ffffff" />
@@ -88,6 +88,7 @@ import type { FormInstance } from 'element-plus'
 import type { PhotoAlbumResult } from '@/types/photo/photo'
 import { PhotoService } from '@/api/photo/photoApi'
 import { Plus, Edit, Delete, Picture } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
 import EmojiText from '@/utils/emojo'
 
 const albumList = ref<PhotoAlbumResult[]>([])
@@ -95,6 +96,7 @@ const open = ref(false)
 const loading = ref(true)
 const title = ref('')
 const albumRef = ref<FormInstance>()
+const router = useRouter()
 const showImagePicker = ref(false)
 
 const initialFormState = {
@@ -177,6 +179,10 @@ const reset = () => {
   Object.assign(form, initialFormState)
 }
 
+const goToPhotos = (item: PhotoAlbumResult) => {
+  router.push({ path: '/photo/photo/' + item.id })
+}
+
 const handleAdd = () => {
   reset()
   open.value = true
@@ -251,7 +257,7 @@ onMounted(() => {
 }
 
 .album-container { margin: 20px 0; }
-.album-cover { position: relative; border-radius: 4px; width: 100%; height: 200px; }
+.album-cover { position: relative; border-radius: 4px; width: 100%; height: 10rem; }
 .album-photo-count {
   display: flex; align-items: center; justify-content: space-between;
   font-size: 1rem; z-index: 1000; position: absolute;

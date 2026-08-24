@@ -211,6 +211,17 @@
       }
     }
 
+    // 修复选中行指示线居中
+    :deep(.el-table) {
+      .el-table__body-wrapper {
+        .el-table__row {
+          td.el-table__cell {
+            border-bottom: none !important;
+          }
+        }
+      }
+    }
+
     // 解决el-image 和 el-table冲突层级冲突问题
     ::v-deep(.el-table__cell) {
       position: static !important;
