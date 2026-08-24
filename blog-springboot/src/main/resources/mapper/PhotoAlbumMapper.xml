@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baofeng.blog.mapper.PhotoAlbumMapper">
+
+    <resultMap id="AlbumListMap" type="com.baofeng.blog.dto.front.PhotoAlbumDTO$AlbumListResponse">
+        <id property="id" column="id"/>
+        <result property="albumName" column="album_name"/>
+        <result property="description" column="description"/>
+        <result property="albumCover" column="album_cover"/>
+        <result property="photoCount" column="photo_count"/>
+    </resultMap>
+
+    <resultMap id="AlbumDetailMap" type="com.baofeng.blog.dto.front.PhotoAlbumDTO$AlbumDetailResponse">
+        <id property="id" column="id"/>
+        <result property="albumName" column="album_name"/>
+        <result property="description" column="description"/>
+        <result property="albumCover" column="album_cover"/>
+        <collection property="photos" ofType="com.baofeng.blog.dto.front.PhotoAlbumDTO$AlbumPhoto"
+                    select="selectAlbumPhotos" column="id"/>
+    </resultMap>
+
+    <select id="selectAllAlbums" resultMap="AlbumListMap">
+        SELECT
+            a.id,
+            a.album_name,
+            a.description,
+            a.album_cover,
+            (SELECT COUNT(*) FROM photo_album_images pai WHERE pai.album_id = a.id) AS photo_count
+        FROM photo_album a
+        WHERE a.is_visible = 1
+        ORDER BY a.sort_order ASC, a.created_at DESC
+    </select>
+
+    <select id="selectAlbumById" resultMap="AlbumDetailMap">
+        SELECT id, album_name, description, album_cover
+        FROM photo_album
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAlbumPhotos" resultType="com.baofeng.blog.dto.front.PhotoAlbumDTO$AlbumPhoto">
+        SELECT
+            i.id AS imageId,
+            i.file_path AS filePath,
+            i.file_name AS fileName,
+            pai.sort_order AS sortOrder
+        FROM photo_album_images pai
+        JOIN images i ON i.id = pai.image_id
+        WHERE pai.album_id = #{albumId}
+        ORDER BY pai.sort_order ASC, pai.created_at ASC
+    </select>
+
+    <insert id="insertAlbum" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO photo_album (album_name, description, album_cover, sort_order, is_visible)
+        VALUES (#{albumName}, #{description}, #{albumCover}, #{sortOrder}, #{isVisible})
+    </insert>
+
+    <update id="updateAlbum">
+        UPDATE photo_album
+        <set>
+            <if test="albumName != null">album_name = #{albumName},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="albumCover != null">album_cover = #{albumCover},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="isVisible != null">is_visible = #{isVisible},</if>
+            updated_at = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteAlbum">
+        DELETE FROM photo_album WHERE id = #{id}
+    </delete>
+
+    <insert id="insertAlbumImage">
+        INSERT IGNORE INTO photo_album_images (album_id, image_id) VALUES (#{albumId}, #{imageId})
+    </insert>
+
+    <delete id="deleteAlbumImage">
+        DELETE FROM photo_album_images WHERE album_id = #{albumId} AND image_id = #{imageId}
+    </delete>
+
+    <select id="countAlbumImages" resultType="int">
+        SELECT COUNT(*) FROM photo_album_images WHERE album_id = #{albumId}
+    </select>
+
+</mapper>

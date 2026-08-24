@@ -1,15 +1,26 @@
 export interface Album {
-  id: number;
-  album_name: string;
-  album_cover: string;
-  description: string;
+  id: number
+  albumName: string
+  albumCover: string
+  description: string
+  photoCount?: number
 }
 
 export type AlbumList = Album[]
 
-export interface Photo {
-  id: number;
-  url: string;
+export interface AlbumPhoto {
+  imageId: number
+  filePath: string
+  fileName: string
+  sortOrder: number
 }
 
-export type PhotoList = Photo[]
+export interface AlbumDetail {
+  id: number
+  albumName: string
+  description: string
+  albumCover: string
+  photos: AlbumPhoto[]
+}
+
+export type PhotoList = AlbumPhoto[]

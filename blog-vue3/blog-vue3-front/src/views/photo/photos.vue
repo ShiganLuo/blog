@@ -1,34 +1,52 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "@/stores/index";
 import { PhotoService } from "@/api/photoApi";
 import { ConfigService } from "@/api/configApi";
 import PageHeader from "@/components/PageHeader/index.vue";
 import SkeletonItem from "@/components/SkeletonItem/skeleton-item.vue";
 import { isMobile } from "@/utils/tool";
-import { type Photo, type Album } from "@/types/photo";
+import { type Album, type AlbumPhoto, type AlbumDetail } from "@/types/photo";
 
-// 路由
 const route = useRoute();
-const userStore = useUserStore();
 const router = useRouter();
-const bgUrl = ref<string>("");
+const userStore = useUserStore();
+const bgUrl = ref("");
 
-// 状态
-const photoList = ref<Photo[]>([]);
+const photoList = ref<AlbumPhoto[]>([]);
+const albumName = ref("");
 const photoAlbumList = ref<Album[]>([]);
-const loading = ref<boolean>(false);
-const drawerShow = ref<boolean>(false);
+const loading = ref(false);
+const drawerShow = ref(false);
 
-// 获取照片列表
-const pageGetPhotos = async (id: number) => {
+// 获取图片完整 URL
+const getFullUrl = (filePath: string): string => {
+  if (!filePath) return "";
+  if (filePath.startsWith("http://") || filePath.startsWith("https://")) return filePath;
+  const base = import.meta.env.VITE_MINIO_URL || "http://localhost:9007";
+  const path = filePath.startsWith("/") ? filePath : `/${filePath}`;
+  return `${base}${path}`;
+};
+
+// 获取相册详情
+const getAlbumDetail = async (id: number) => {
   loading.value = true;
-  const res = await PhotoService.getAllPhotosByAlbumId({id});
+  const res = await PhotoService.getAlbumById(id);
   if (res.code === 200) {
-    photoList.value = res.result;
+    const detail = res.result as AlbumDetail;
+    photoList.value = detail.photos || [];
+    albumName.value = detail.albumName;
   }
   loading.value = false;
+};
+
+// 获取所有相册（用于侧边栏切换）
+const getAllAlbums = async () => {
+  const res = await PhotoService.getAllAlbum();
+  if (res.code === 200) {
+    photoAlbumList.value = res.result || [];
+  }
 };
 
 // 切换相册
@@ -36,54 +54,49 @@ const toggleAlbum = (item: Album) => {
   router.push({
     path: "/photos",
     query: {
-      id: item.id,
-      pageTitle: item.album_name,
-      bg: item.album_cover,
+      id: String(item.id),
+      pageTitle: item.albumName,
     },
   });
 };
 
-// 获取相册和照片
-const getAll = async (id: string | string[] | undefined) => {
-  const res = await PhotoService.getAllAlbum();
-  if (res.code === 200) {
-    photoAlbumList.value = res.result;
-    pageGetPhotos(Number(id));
-  }
-};
-
-// 控制抽屉
 const openDrawer = () => {
   drawerShow.value = true;
 };
-const handleClose = () => {
-  drawerShow.value = false;
-};
 
-const getFrontBackground = async (): Promise<void> => {
+const getFrontBackground = async () => {
   const res = await ConfigService.getFrontBackground(userStore.getUserInfo.id || 1);
   if (res.code === 200) {
     bgUrl.value = res.result.frontHeadBackground;
   }
 };
-// 监听路由变化
+
 watch(
-  () => route.query.id as string, // 断言为 string
+  () => route.query.id as string,
   (newV) => {
-    getAll(newV);
+    if (newV) {
+      getAlbumDetail(Number(newV));
+    }
   },
   { immediate: true }
 );
+
 onMounted(() => {
   getFrontBackground();
+  getAllAlbums();
 });
 </script>
+
 <template>
   <PageHeader :bgUrl="bgUrl" />
   <div class="photoList">
     <div class="center_box">
       <div class="photoList-card">
-        <el-row v-if="loading" class="row-space">
+        <div class="album-title" v-if="albumName">
+          <h3>{{ albumName }}</h3>
+        </div>
+        <el-empty v-if="!loading && photoList.length === 0" description="暂无照片" />
+        <el-row v-else-if="loading" class="row-space">
           <el-col class="col-space" :xs="12" :sm="6" v-for="index in 6" :key="index">
             <div class="image-box">
               <el-skeleton animated>
@@ -94,27 +107,27 @@ onMounted(() => {
             </div>
           </el-col>
         </el-row>
-        <el-row v-else-if="photoList.length" class="row-space">
+        <el-row v-else class="row-space">
           <el-col
             class="col-space"
             :xs="12"
             :sm="6"
             v-for="(item, index) in photoList"
-            :key="item.id"
+            :key="item.imageId"
           >
-            <div v-image="item.url" class="image-box flex_center animate__animated animate__fadeIn">
+            <div class="image-box flex_center animate__animated animate__fadeIn">
               <el-image
                 class="image"
-                :src="item.url"
+                :src="getFullUrl(item.filePath)"
                 fit="cover"
                 lazy
                 preview-teleported
                 :initial-index="index"
-                :preview-src-list="photoList.map((v: Photo) => v.url)"
+                :preview-src-list="photoList.map((v) => getFullUrl(v.filePath))"
               >
                 <template #error>
                   <div class="w-[100%] h-[100%] grid place-items-center">
-                    <svg-icon name="image404" :width="8" :height="6"></svg-icon>
+                    <el-icon :size="32" color="#c0c4cc"><Picture /></el-icon>
                   </div>
                 </template>
               </el-image>
@@ -130,7 +143,7 @@ onMounted(() => {
   <el-drawer
     v-model="drawerShow"
     direction="rtl"
-    :before-close="handleClose"
+    :before-close="() => (drawerShow = false)"
     :append-to-body="true"
     :size="isMobile() ? '30%' : '15%'"
   >
@@ -142,13 +155,15 @@ onMounted(() => {
       >
         <el-image
           class="album-box__image"
-          :src="item.album_cover"
+          :src="getFullUrl(item.albumCover)"
           fit="cover"
           lazy
           @click="toggleAlbum(item)"
         >
           <template #error>
-            <svg-icon name="image404" :width="4" :height="4"></svg-icon>
+            <div class="w-[100%] h-[100%] grid place-items-center text-xs text-gray-400">
+              {{ item.albumName }}
+            </div>
           </template>
         </el-image>
       </div>
@@ -156,12 +171,25 @@ onMounted(() => {
   </el-drawer>
 </template>
 
+<script lang="ts">
+import { Picture } from "@element-plus/icons-vue";
+export default { components: { Picture } };
+</script>
+
 <style lang="scss" scoped>
 .photoList {
   .photoList-card {
     min-height: 8rem;
     border-radius: 8px;
     background-color: var(--shadow-button-bg);
+  }
+
+  .album-title {
+    padding: 10px 15px;
+    h3 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
   }
 
   .image-box {
@@ -204,19 +232,9 @@ onMounted(() => {
   padding: 3px;
   &::-webkit-scrollbar {
     display: none;
-    /* Chrome Safari */
   }
 }
-.image-box {
-  transition: all 0.3s;
-  box-sizing: border-box;
-  border: 3px solid transparent;
-  border-radius: 3px;
 
-  &:hover {
-    box-shadow: 0 0 8px var(--global-white);
-  }
-}
 .album-current {
   filter: saturate(2);
   border-right: 2px solid #9face6;
@@ -231,7 +249,6 @@ onMounted(() => {
   }
 }
 
-// pc
 @media screen and (min-width: 769px) {
   .image {
     height: 10rem;

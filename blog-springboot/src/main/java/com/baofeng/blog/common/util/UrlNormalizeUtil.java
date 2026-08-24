@@ -56,6 +56,13 @@ public final class UrlNormalizeUtil {
             return url;
         }
 
-        return URL_PREFIX_PATTERN.matcher(url).replaceFirst("");
+        String result = URL_PREFIX_PATTERN.matcher(url).replaceFirst("");
+
+        // 确保结果以 / 开头
+        if (!result.startsWith("/")) {
+            result = "/" + result;
+        }
+
+        return result;
     }
 }
