@@ -1,21 +1,29 @@
-import { BaseArrayResult, BaseObjectResult, BasePageResult } from '../axios'
-
 // 相册对象类型定义
 export interface PhotoAlbumResult {
   id: number
   albumName: string
-  albumDesc: string
+  description: string
   albumCover: string
-  status: number
   photoCount?: number
-  createTime?: string
+  sortOrder?: number
+  isVisible?: boolean
 }
 
-export type PhotoAlbumListPageResult = BasePageResult<PhotoAlbumResult>
 export type PhotoAlbumListResult = PhotoAlbumResult[]
-export type PhotoAlbumRecordResult = {
-  list: PhotoAlbumResult[]
-  total: number
+
+export interface AlbumPhoto {
+  imageId: number
+  filePath: string
+  fileName: string
+  sortOrder: number
+}
+
+export interface AlbumDetailResult {
+  id: number
+  albumName: string
+  description: string
+  albumCover: string
+  photos: AlbumPhoto[]
 }
 
 export type UploadPhotoResult = {

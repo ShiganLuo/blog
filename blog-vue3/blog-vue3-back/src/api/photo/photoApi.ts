@@ -1,11 +1,11 @@
 import request from '@/utils/http'
-import { PhotoAlbumRecordResult, UploadPhotoResult } from '@/types/photo/photo'
+import { UploadPhotoResult } from '@/types/photo/photo'
 
 // 照片
 export class PhotoService {
   // 获取照片列表
   static listPhoto(params: any) {
-    return request.get<PhotoAlbumRecordResult>({
+    return request.get({
       url: '/blog/photo/admin/photos',
       params
     })

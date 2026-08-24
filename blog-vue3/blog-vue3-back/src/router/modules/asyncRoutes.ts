@@ -147,45 +147,26 @@ export const asyncRoutes: MenuListType[] = [
         meta: {title: "随言碎语", keepAlive: false}
       }
     ]
+  },
+  {
+    id: uuid(),
+    path: '/photo',
+    name: 'PhotoAlbum',
+    component: RoutesAlias.Home,
+    meta: {
+      title: '相册管理',
+      icon: '&#xe6ee',
+      keepAlive: false,
+      isHide: false
+    },
+    children: [
+      {
+        id: uuid(),
+        path: 'index',
+        component: RoutesAlias.PhotoIndex,
+        name: 'PhotoAlbumIndex',
+        meta: { title: '相册管理', keepAlive: false }
+      }
+    ]
   }
-  // {
-  //   id: uuid(),
-  //   path: '/photo',
-  //   name: 'PhotoList',
-  //   component: RoutesAlias.Home,
-  //   meta: {
-  //     title: '照片管理',
-  //     icon: '&#xe6ee',
-  //     keepAlive: false,
-  //     isHide: false
-  //   },
-  //   children: [
-  //     {
-  //       id: uuid(),
-  //       path: 'photo/:albumId(\\d+)?',
-  //       component: RoutesAlias.Photo,
-  //       name: 'PhotoManagement',
-  //       meta: { title: '照片管理', keepAlive: false }
-  //     },
-  //     {
-  //       id: uuid(),
-  //       path: 'index',
-  //       component: RoutesAlias.PhotoIndex,
-  //       name: 'PhotoIndex',
-  //       meta: { title: '照片统计', keepAlive: false}
-  //     }
-  //   ]
-  // },
-  // {
-  //   id: uuid(),
-  //   path: '/photo-delete',
-  //   name: 'PhotoDelete',
-  //   component: RoutesAlias.PhotoDelete,
-  //   meta: {
-  //     title: '照片回收站',
-  //     keepAlive: false,
-  //     isHide: false,
-  //     isInMainContainer: true
-  //   }
-  // }
 ]

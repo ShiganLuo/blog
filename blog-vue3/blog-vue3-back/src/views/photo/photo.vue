@@ -280,9 +280,9 @@
   // API调用
   const getAlbumInfo = async () => {
     albumId.value = Number(route.params.albumId)
-    const res = await PhotoAlbumService.detailPhotoAlbum(albumId.value)
+    const res = await PhotoAlbumService.getAlbumDetail(albumId.value)
     if (res.code === 200) {
-      Object.assign(albumInfo, res.result)
+      Object.assign(albumInfo, res.result as any)
     }
   }
 
@@ -294,8 +294,8 @@
       isDelete: 0
     })
     if (res.code === 200) {
-      photos.value = res.result.list
-      count.value = res.result.total
+      photos.value = (res.result as any).list
+      count.value = (res.result as any).total
       loading.value = false
     }
   }
@@ -390,9 +390,9 @@
   }
 
   const listAlbums = async () => {
-    const res = await PhotoAlbumService.photoAlbumList()
+    const res = await PhotoAlbumService.listPhotoAlbum()
     if (res.code === 200) {
-      albumList.value = res.result
+      albumList.value = res.result as any
     }
   }
 
