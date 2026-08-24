@@ -95,6 +95,15 @@ export class HomeService {
 }
 ```
 
+#### 树形评论系统
+
+评论采用 `root_id` + `for_id` 双字段设计：
+
+- `root_id`：归属哪条根评论，一次查询取出同根所有评论
+- `for_id`：回复的是哪条评论（可以是根评论或子评论）
+
+后端查出扁平列表后递归组装 `childComments` 树形结构返回，前端用 `ParentItem` → `ChildrenItem` 递套组件渲染，支持无限层级嵌套回复。
+
 #### 组件库
 
 前台包含 18 个通用组件：`SwitchTheme`（深色模式切换）、`Comment`（树形评论）、`Search`（搜索）、`TypeWriter`（打字机效果）、`GsapCount`（数字动画）、`TimeLine`（时间线）、`TextOverflow`（文本溢出）等。
