@@ -26,8 +26,8 @@ public class CommentConvertUtil {
         for (FrontArticleCommentResponse  a : articleComments) {
             FrontCommentResponse current = idToComment.get(a.getId());
 
-            if ("post".equalsIgnoreCase(a.getType())) {
-                // 一级评论，直接放到根
+            if ("post".equalsIgnoreCase(a.getType()) || "talk".equalsIgnoreCase(a.getType())) {
+                // 文章/说说一级评论，直接放到根
                 roots.add(current);
             } else if ("comment".equalsIgnoreCase(a.getType())) {
                 // 子评论，找到它的父节点

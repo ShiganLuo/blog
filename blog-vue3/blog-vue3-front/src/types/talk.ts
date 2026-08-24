@@ -2,7 +2,7 @@
 export interface TalkItem {
   id: number | string;
   userId: number | string;
-  nickName: string;
+  nickname: string;
   avatar: string;
   content: string;
   talkImgList: string[];

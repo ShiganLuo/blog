@@ -36,7 +36,6 @@
       row-key="id"
     >
       <template #default>
-        <el-table-column type="selection" />
         <el-table-column prop="userAvatar" label="头像" align="center">
           <template #default="scope">
             <img :src="AvatarImga(scope.row.userAvatar)" width="40" height="40" />
@@ -113,7 +112,7 @@
     size: 10,
     keywords: '',
     status: 0,
-    type: ['comment','post']
+    type: ['comment','post','talk']
   })
 
   /** 查询评论管理列表 */

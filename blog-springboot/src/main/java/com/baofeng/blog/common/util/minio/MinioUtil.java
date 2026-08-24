@@ -111,6 +111,17 @@ public class MinioUtil {
         return String.format("%s/%s/%s",prefix, bucket, objectName);
     }
 
+    /**
+     * 将相对路径（/bucket/object）转为完整 URL
+     */
+    public String getFullUrl(String relativePath) {
+        if (relativePath == null || relativePath.isBlank()) return relativePath;
+        if (relativePath.startsWith("http://") || relativePath.startsWith("https://")) {
+            return relativePath; // 已经是完整 URL，直接返回
+        }
+        return prefix + relativePath;
+    }
+
     // 下载文件
     public InputStream downloadFile(String objectName) throws Exception {
         return minioClient.getObject(

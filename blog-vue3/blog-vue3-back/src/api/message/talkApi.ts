@@ -26,7 +26,7 @@ class TalkService {
       headers: {
         'Content-Type': 'application/json'
       },
-      data: talkIds
+      data: { ids: talkIds }
     })
   }
 

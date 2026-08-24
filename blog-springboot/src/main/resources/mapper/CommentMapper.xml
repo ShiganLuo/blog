@@ -260,6 +260,7 @@
         <result property="content" column="content"/>
         <result property="createdAt" column="created_at"/>
         <result property="likes" column="likes"/>
+        <result property="tag" column="tag"/>
     </resultMap>
     <select id="selectAllMessageTalk" resultMap="AllMessageTalkResultMap" parameterType="map">
         SELECT 
@@ -269,7 +270,8 @@
             u.nick_name, 
             c.content,
             c.created_at,
-            c.likes
+            c.likes,
+            c.tag
         FROM comments c
         LEFT JOIN users u ON c.user_id = u.id
         <where>
@@ -281,6 +283,7 @@
             </if>
             AND c.is_deleted = 0
             AND c.status = 1
+            AND c.root_id IS NULL
         </where>
         ORDER BY c.created_at DESC
     </select>

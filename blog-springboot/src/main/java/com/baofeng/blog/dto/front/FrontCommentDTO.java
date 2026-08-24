@@ -166,5 +166,7 @@ public class FrontCommentDTO {
         private LocalDateTime createdAt;
         private Long likes;
         private Boolean isLiked;
+        private String tag;
+        private List<String> talkImgList;
     }
 }

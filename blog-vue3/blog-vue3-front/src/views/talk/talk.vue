@@ -2,7 +2,6 @@
 import { ref, h, reactive, onMounted, onBeforeUnmount } from "vue";
 import { useUserStore } from "@/stores/index";
 import { ConfigService } from "@/api/configApi";
-import { returnTime } from "@/utils/tool";
 import { LikeService } from "@/api/likeApi";
 import { TalkService } from "@/api/talkApi";
 import { type TalkItem } from "@/types/talk";
@@ -195,7 +194,8 @@ onBeforeUnmount(() => {
                 <div class="right">
                   <div class="right-top relative">
                     <i v-if="talk.isToped == 1" class="iconfont icon-zhiding"></i>
-                    <span class="nick-name">{{ talk.nickName }}</span>
+                    <span class="nick-name">{{ talk.nickname }}</span>
+                    <span class="talk-time" v-if="talk.createdAt">{{ talk.createdAt.replace('T', ' ') }}</span>
                     <MdPreview
                       class="talk-md-preview"
                       :modelValue="talk.content"
@@ -257,7 +257,6 @@ onBeforeUnmount(() => {
                     </div>
                   </div>
                   <div class="like flex justify-between items-center !mt-[15px]">
-                    <div class="time">{{ returnTime(talk.createdAt) }}前</div>
                     <div>
                       <i
                         class="comment-icon iconfont icon-pinglun"
@@ -287,6 +286,7 @@ onBeforeUnmount(() => {
                       :id="talk.id"
                       :author-id="talk.userId"
                       :is-show-toggle="false"
+                      :expand="true"
                     />
                   </div>
                 </div>
@@ -337,6 +337,11 @@ onBeforeUnmount(() => {
 
   .nick-name {
     color: var(--font-color);
+  }
+  .talk-time {
+    font-size: 12px;
+    color: #999;
+    margin-left: 8px;
   }
 
   .mt-10 {

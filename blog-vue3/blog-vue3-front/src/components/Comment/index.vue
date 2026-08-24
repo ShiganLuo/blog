@@ -66,7 +66,7 @@ const publish = async (): Promise<void> => {
     userId: userStore.getUserInfo.id,
     content: commentText.value,
     forId: props.id,
-    type: props.type, 
+    type: props.type,
     authorId: props.authorId, // 文章作者的id用于消息推送
     rootId: props.id
   };

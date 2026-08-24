@@ -158,7 +158,7 @@ import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
   import 'md-editor-v3/lib/style.css'
 
   // 响应式数据
-  const current = ref(0)
+  const current = ref(1)
   const size = ref(5)
   const count = ref(0)
   const status = ref('')

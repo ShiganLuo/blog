@@ -5,6 +5,8 @@ import com.baofeng.blog.mapper.CommentMapper;
 import com.baofeng.blog.mapper.LikeMapper;
 import com.baofeng.blog.service.CommentService;
 import com.baofeng.blog.common.util.CommentConvertUtil;
+import com.baofeng.blog.common.util.UrlNormalizeUtil;
+import com.baofeng.blog.common.util.minio.MinioUtil;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentPageRequest;
 import com.baofeng.blog.dto.admin.AdminCommentDTO.AdminCommentResult;
@@ -35,13 +37,16 @@ public class CommentServiceImpl implements CommentService {
   
   private final CommentMapper commentMapper;
   private final LikeMapper likeMapper;
+  private final MinioUtil minioUtil;
 
   public CommentServiceImpl (
     CommentMapper commentMapper,
-    LikeMapper likeMapper
+    LikeMapper likeMapper,
+    MinioUtil minioUtil
   ) {
     this.commentMapper = commentMapper;
     this.likeMapper = likeMapper;
+    this.minioUtil = minioUtil;
   }
 
   @Override
@@ -203,8 +208,21 @@ public class CommentServiceImpl implements CommentService {
 
     List<MessageResponse> list = commentMapper.selectAllMessageTalk(request);
 
+    ObjectMapper objectMapper = new ObjectMapper();
     if (Objects.nonNull(list) && !list.isEmpty()) {
         for (MessageResponse message : list) {
+          // 解析说说图片
+          if (message.getTag() != null && !message.getTag().isEmpty()) {
+            try {
+              List<String> imgList = objectMapper.readValue(message.getTag(), new TypeReference<List<String>>() {});
+              imgList.replaceAll(url -> minioUtil.getFullUrl(url));
+              message.setTalkImgList(imgList);
+            } catch (Exception e) {
+              message.setTalkImgList(List.of());
+            }
+          } else {
+            message.setTalkImgList(List.of());
+          }
           // 如果用户id为null，表明是游客
           if (request.userId() != null) {
             Long likeId = likeMapper.selectIdByLikeRequestAndStatus(
@@ -262,7 +280,9 @@ public class CommentServiceImpl implements CommentService {
     for (AdminTalkResult talk : list) {
       if (talk.getImages() != null && !talk.getImages().isEmpty()) {
         try {
-          talk.setImgs(mapper.readValue(talk.getImages(), new TypeReference<List<String>>() {}));
+          List<String> imgList = mapper.readValue(talk.getImages(), new TypeReference<List<String>>() {});
+          imgList.replaceAll(url -> minioUtil.getFullUrl(url));
+          talk.setImgs(imgList);
         } catch (Exception e) {
           talk.setImgs(List.of());
         }
@@ -288,7 +308,9 @@ public class CommentServiceImpl implements CommentService {
     ObjectMapper mapper = new ObjectMapper();
     if (talk.getImages() != null && !talk.getImages().isEmpty()) {
       try {
-        talk.setImgs(mapper.readValue(talk.getImages(), new TypeReference<List<String>>() {}));
+        List<String> imgList = mapper.readValue(talk.getImages(), new TypeReference<List<String>>() {});
+        imgList.replaceAll(url -> minioUtil.getFullUrl(url));
+        talk.setImgs(imgList);
       } catch (Exception e) {
         talk.setImgs(List.of());
       }
@@ -308,7 +330,17 @@ public class CommentServiceImpl implements CommentService {
     comment.setContent(request.getContent());
     comment.setStatus(request.getStatus() != null ? request.getStatus() == 1 : true);
     comment.setIsTop(request.getIsTop() != null && request.getIsTop() == 1);
-    comment.setTag(request.getImages());
+    // 图片 URL 存为相对路径
+    String images = request.getImages();
+    if (images != null && !images.isEmpty()) {
+      try {
+        ObjectMapper mapper = new ObjectMapper();
+        List<String> urlList = mapper.readValue(images, new TypeReference<List<String>>() {});
+        urlList.replaceAll(UrlNormalizeUtil::stripUrlPrefix);
+        images = mapper.writeValueAsString(urlList);
+      } catch (Exception ignored) {}
+    }
+    comment.setTag(images);
 
     if (request.getId() != null) {
       // 修改
