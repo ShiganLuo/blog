@@ -1,4 +1,4 @@
-export type CommentType = "post" | "comment" | "talk";
+export type CommentType = "post" | "comment" | "talk" | "talk_comment";
 
 export interface CommentItem {
   id: number | string;

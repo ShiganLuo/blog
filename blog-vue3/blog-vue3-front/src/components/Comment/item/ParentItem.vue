@@ -100,7 +100,8 @@ const publish = async (data: { content: string, forId?: number | string, replyUs
     content: data.content,
     forId: data.forId,
     replyUserId: data.replyUserId,
-    type: "comment",
+    // 根评论用 props.type（如 talk_comment），子评论用 "comment"
+    type: data.forId ? "comment" : props.type,
     authorId: props.authorId,
     rootId: props.id
   };

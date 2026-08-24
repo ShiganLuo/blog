@@ -75,6 +75,7 @@
             <el-tag v-if="scope.row.type == 3" type="success">关于我</el-tag>
             <el-tag v-if="scope.row.type == 4" type="warning">友链</el-tag>
             <el-tag v-if="scope.row.type == 5" type="warning">说说</el-tag>
+            <el-tag v-if="scope.row.type == 6" type="warning">说说评论</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -112,7 +113,7 @@
     size: 10,
     keywords: '',
     status: 0,
-    type: ['comment','post','talk']
+    type: ['comment','post','talk','talk_comment']
   })
 
   /** 查询评论管理列表 */

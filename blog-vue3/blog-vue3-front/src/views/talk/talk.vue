@@ -35,7 +35,7 @@ let box: Element | null = null;
 const param = reactive({
   current: 1,
   size: 5,
-  type: "talk",
+  type: "talk_comment",
   userId: userStore.getUserInfo.id,
 });
 
@@ -282,7 +282,7 @@ onBeforeUnmount(() => {
                     <Comment
                       ref="talkCommentRef"
                       class="w-[100%]"
-                      type="talk"
+                      type="talk_comment"
                       :id="talk.id"
                       :author-id="talk.userId"
                       :is-show-toggle="false"
