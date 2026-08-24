@@ -204,7 +204,7 @@
             <if test="forId != null">
                 AND c.for_id = #{forId}
             </if>
-            <if test="status != null">
+            <if test="status != null and status >= 0">
                 AND c.status = #{status}
             </if>
             AND c.is_deleted = 0

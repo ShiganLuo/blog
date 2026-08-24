@@ -35,7 +35,7 @@ let box: Element | null = null;
 const param = reactive({
   current: 1,
   size: 5,
-  type: "talk_comment",
+  type: "talk",
   userId: userStore.getUserInfo.id,
 });
 

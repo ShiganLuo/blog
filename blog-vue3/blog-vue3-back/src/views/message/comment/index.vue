@@ -17,6 +17,7 @@
       </el-col>
       <el-col :xs="24" :sm="24" :lg="12">
         <el-radio-group v-model="queryParams.status" @change="getList()" style="float: right">
+          <el-radio-button :value="-1">全部</el-radio-button>
           <el-radio-button :value="0">待审</el-radio-button>
           <el-radio-button :value="1">通过</el-radio-button>
           <el-radio-button :value="2">拒绝</el-radio-button>
@@ -111,7 +112,7 @@
     current: 1,
     size: 10,
     keywords: '',
-    status: 0,
+    status: -1,
     type: ['comment','post','talk','talk_comment']
   })
 
