@@ -3,10 +3,10 @@ import { UploadPhotoResult } from '@/types/photo/photo'
 
 // 照片
 export class PhotoService {
-  // 获取照片列表
+  // 获取相册照片列表
   static listPhoto(params: any) {
     return request.get({
-      url: '/blog/photo/admin/photos',
+      url: '/admin/photoAlbum/' + (params.albumId || ''),
       params
     })
   }
