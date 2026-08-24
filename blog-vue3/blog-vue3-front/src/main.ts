@@ -5,6 +5,9 @@ import router from './router'
 import { initApp } from './app-init'
 // Element Plus暗黑主题CSS（按需引入插件会自动处理组件样式）
 import 'element-plus/theme-chalk/dark/css-vars.css'
+// ElMessageBox 编程式调用需要手动引入 CSS
+import 'element-plus/theme-chalk/el-message-box.css'
+import 'element-plus/theme-chalk/el-message.css'
 // 自定义css
 import '@/assets/css/iconFont/iconfont.css'
 
