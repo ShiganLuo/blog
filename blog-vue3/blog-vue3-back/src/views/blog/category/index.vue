@@ -5,7 +5,7 @@
         <el-form :model="queryParams" ref="queryRef">
           <el-input
             placeholder="请输入分类名称"
-            v-model="queryParams.keywords"
+            v-model="queryParams.keyword"
             @keyup.enter="handleQuery"
           />
         </el-form>
@@ -29,8 +29,8 @@
       :data="categoryList"
       selection
       :total="total"
-      :current-page="queryParams.current"
-      :page-size="queryParams.size"
+      :current-page="queryParams.pageNum"
+      :page-size="queryParams.pageSize"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       @selection-change="handleSelectionChange"
@@ -101,9 +101,9 @@
   }
   const form = reactive({ ...initialFormState })
   const queryParams = reactive({
-    current: 1,
-    size: 10,
-    keywords: ''
+    pageNum: 1,
+    pageSize: 10,
+    keyword: ''
   })
   const rules = reactive({
     categoryName: [
@@ -140,19 +140,19 @@
 
   /** 搜索按钮操作 */
   const handleQuery = () => {
-    queryParams.current = 1
+    queryParams.pageNum = 1
     getList()
   }
 
   /** 每页条数改变 */
   const handleSizeChange = (size: number) => {
-    queryParams.size = size
+    queryParams.pageSize = size
     getList()
   }
 
   /** 当前页改变 */
   const handleCurrentChange = (page: number) => {
-    queryParams.current = page
+    queryParams.pageNum = page
     getList()
   }
 

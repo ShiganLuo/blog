@@ -13,7 +13,7 @@
             <form-input
               label="文章标题"
               prop="articleTitle"
-              v-model="queryParams.keywords"
+              v-model="queryParams.keyword"
               @keyup.enter="handleQuery"
             />
             <form-select
@@ -234,7 +234,7 @@
   const queryParams = reactive({
     current: 1,
     size: 10,
-    keywords: '',
+    keyword: '',
     categoryId: 0,
     tagId: 0,
     type: '',

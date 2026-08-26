@@ -30,11 +30,8 @@
         </div>
         <transition :name="pageTransition" mode="out-in" appear>
           <keep-alive :max="10" :exclude="keepAliveExclude">
-            <component :is="Component" :key="route.path" v-if="route.meta.keepAlive" />
+            <component :is="Component" :key="route.path" />
           </keep-alive>
-        </transition>
-        <transition :name="pageTransition" mode="out-in" appear>
-          <component :is="Component" :key="route.path" v-if="!route.meta.keepAlive" />
         </transition>
       </router-view>
 

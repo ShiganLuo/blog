@@ -3,7 +3,7 @@
     <el-row>
       <el-col :xs="24" :sm="12" :lg="6">
         <el-form :model="queryParams" ref="queryRef">
-          <el-input placeholder="请输入标签名称" v-model="queryParams.keywords" @keyup.enter="handleQuery" />
+          <el-input placeholder="请输入标签名称" v-model="queryParams.keyword" @keyup.enter="handleQuery" />
         </el-form>
       </el-col>
       <div style="width: 12px"></div>
@@ -25,8 +25,8 @@
       :data="tagList"
       selection
       :total="total"
-      :current-page="queryParams.current"
-      :page-size="queryParams.size"
+      :current-page="queryParams.pageNum"
+      :page-size="queryParams.pageSize"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       @selection-change="handleSelectionChange"
@@ -93,9 +93,9 @@
   }
   const form = reactive({ ...initialFormState })
   const queryParams = reactive({
-    current: 1,
-    size: 10,
-    keywords: ''
+    pageNum: 1,
+    pageSize: 10,
+    keyword: ''
   })
   const rules = reactive({
     tagName: [
@@ -132,19 +132,19 @@
 
   /** 搜索按钮操作 */
   const handleQuery = () => {
-    queryParams.current = 1
+    queryParams.pageNum = 1
     getList()
   }
 
   /** 每页条数改变 */
   const handleSizeChange = (size: number) => {
-    queryParams.size = size
+    queryParams.pageSize = size
     getList()
   }
 
   /** 当前页改变 */
   const handleCurrentChange = (page: number) => {
-    queryParams.size = page
+    queryParams.pageNum = page
     getList()
   }
 
