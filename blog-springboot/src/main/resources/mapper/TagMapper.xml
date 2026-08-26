@@ -150,8 +150,7 @@
         SELECT * FROM tags
         <where>
             <if test="keyword != null and keyword != ''">
-                AND (c.name LIKE CONCAT('%', #{keyword}, '%') 
-                OR c.description LIKE CONCAT('%', #{keyword}, '%'))
+                AND name LIKE CONCAT('%', #{keyword}, '%')
             </if>
         </where>
     </select>
