@@ -118,8 +118,9 @@ export function validateStorageData() {
     // data.user.language = 2024
 
     if (Object.keys(data).length === 0) {
-      logOut()
-      return false
+      // 首次访问（如从前台跳转后台）时localStorage为空是正常情况
+      // 不应调用logOut()清空已从前台读取的token，而是返回true让initState()正常初始化
+      return true
     }
 
     if (!validate(data, schema)) {

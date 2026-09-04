@@ -202,20 +202,23 @@ async function getMenuData(): Promise<void> {
   // 获取菜单列表
   const { menuList, closeLoading } = await menuService.getMenuList()
 
-  // 如果菜单列表为空，执行登出操作并跳转到登录页
-  if (!Array.isArray(menuList) || menuList.length === 0) {
-    closeLoading()
-    useUserStore().logOut()
-  }
-  // 设置菜单列表
-  useMenuStore().setMenuList(menuList as [])
+  try {
+    // 如果菜单列表为空，执行登出操作并跳转到登录页
+    if (!Array.isArray(menuList) || menuList.length === 0) {
+      useUserStore().logOut()
+      return
+    }
+    // 设置菜单列表
+    useMenuStore().setMenuList(menuList as [])
 
-  // 注册异步路由
-  registerAsyncRoutes(router, menuList)
-  // 标记路由已注册
-  isRouteRegistered.value = true
-  // 关闭加载动画
-  closeLoading()
+    // 注册异步路由
+    registerAsyncRoutes(router, menuList)
+    // 标记路由已注册
+    isRouteRegistered.value = true
+  } finally {
+    // 关闭加载动画（确保即使异常也能关闭）
+    closeLoading()
+  }
 }
 
 /* ============================

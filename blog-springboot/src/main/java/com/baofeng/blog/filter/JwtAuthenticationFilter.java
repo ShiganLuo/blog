@@ -47,62 +47,67 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            // System.out.println("携带Bearer");
-            // System.out.println("Received Authorization Header: " + authHeader);
-            String token = authHeader.substring(7); // 去除 "Bearer " 前缀获取真正的 token
-            
-            // 验证 token 是否有效（包括签名和过期时间）
-            Claims claims;
-            try {
-                claims = jwtTokenProvider.parseToken(token);
-            } catch (Exception e) {
-                ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "token解析失败");
-                return;
-            }
-
-            if (!jwtTokenProvider.isTokenExpired(claims)) {
+        try {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
                 
-                // 只允许 Access Token 访问受保护资源
-                String tokenType = claims.get("type", String.class);
-                if ("access".equals(tokenType)) {
-                    String username = claims.get("username",String.class);
-                    
-                    if (username != null) {
-                        // 根据用户名加载用户详细信息
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                        // 可选：进一步验证 token 与 userDetails 是否匹配
-                        if (userDetails != null && jwtTokenProvider.validateToken(token, userDetails)) {
-                            // 构建认证对象，并存入 SecurityContext 中
-                            UsernamePasswordAuthenticationToken authentication =
-                                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                // 验证 token 是否有效（包括签名和过期时间）
+                Claims claims;
+                try {
+                    claims = jwtTokenProvider.parseToken(token);
+                } catch (Exception e) {
+                    ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "token解析失败");
+                    return;
+                }
+
+                if (!jwtTokenProvider.isTokenExpired(claims)) {
+                    // 只允许 Access Token 访问受保护资源
+                    String tokenType = claims.get("type", String.class);
+                    if ("access".equals(tokenType)) {
+                        String username = claims.get("username", String.class);
+                        
+                        if (username != null) {
+                            // 根据用户名加载用户详细信息
+                            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                            // 可选：进一步验证 token 与 userDetails 是否匹配
+                            if (userDetails != null && jwtTokenProvider.validateToken(token, userDetails)) {
+                                // 构建认证对象，并存入 SecurityContext 中
+                                UsernamePasswordAuthenticationToken authentication =
+                                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                                SecurityContextHolder.getContext().setAuthentication(authentication);
+                            } else {
+                                ResponseUtil.sendErrorResponse(response, ResultCodeEnum.BAD_REQUEST, "请求参数错误");
+                                logger.warn("accessToken解析的用户不存在");
+                                return;
+                            }
                         } else {
-                            ResponseUtil.sendErrorResponse(response, ResultCodeEnum.BAD_REQUEST, "请求参数错误");
-                            logger.warn("accessToken解析的用户不存在");
+                            ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "token中缺少用户信息");
+                            logger.warn("token中缺少username");
                             return;
                         }
+                    } else {
+                        ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "Refresh Token 不能访问受保护资源");
+                        logger.warn("Refresh Token 不能访问受保护资源");
+                        return;
                     }
                 } else {
-                    ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "Refresh Token 不能访问受保护资源");
-                    logger.warn("Refresh Token 不能访问受保护资源");
+                    ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "Token 失效");
+                    logger.warn("Token 失效");
                     return;
                 }
             } else {
-                ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "Token 失效");
-                logger.warn("Token 失效");
+                ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "请求未携带accessToken");
                 return;
-
             }
-        } else {
-            ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "请求未携带accessToken");
-            logger.warn("请求未携带accessToken");
+        } catch (Exception e) {
+            // 兜底：任何未预期的异常都返回标准格式，而非穿透到 Spring Security 默认处理
+            logger.error("JWT过滤器异常: {}", e.getMessage(), e);
+            ResponseUtil.sendErrorResponse(response, ResultCodeEnum.UNAUTHORIZED, "认证令牌无效或已过期，请重新登录");
             return;
         }
-
         
         // 继续执行后续过滤器
         filterChain.doFilter(request, response);
     }
-} 
+}

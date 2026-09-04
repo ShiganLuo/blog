@@ -12,6 +12,7 @@ import java.util.List;
 import com.baofeng.blog.common.util.JwtTokenProviderUtil;
 import com.baofeng.blog.filter.JwtAuthenticationFilter;
 import com.baofeng.blog.service.CustomUserDetailsService;
+import com.baofeng.blog.exception.CustomAuthenticationEntryPoint;
 
 
 
@@ -26,7 +27,8 @@ public class SecurityConfig {
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   JwtAuthenticationFilter jwtAuthenticationFilter
+                                                   JwtAuthenticationFilter jwtAuthenticationFilter,
+                                                   CustomAuthenticationEntryPoint customAuthenticationEntryPoint
                                                 ) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
@@ -37,11 +39,10 @@ public class SecurityConfig {
                 .anyRequest().authenticated() // 需要身份验证的请求
             )
             // 在请求被用户名密码的过滤器处理之前，就先执行你的 jwtAuthenticationFilter()，从而实现对请求中 JWT Token 的提取、验证和认证
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);// 添加 JWT 过滤器
-            // .exceptionHandling(exceptionHandling -> 
-            //      exceptionHandling.accessDeniedHandler(customAccessDeniedHandler)
-            // );
-                // .authenticationEntryPoint(customAuthenticationEntryPoint) // 处理401
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)// 添加 JWT 过滤器
+            .exceptionHandling(exceptionHandling ->
+                exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint)
+            );
         return http.build();
     }
 

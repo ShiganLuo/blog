@@ -156,6 +156,51 @@ axiosInstance.interceptors.response.use(
     if (axios.isCancel(error)) {
       console.log('repeated request: ' + error.message)
     } else {
+      // HTTP 401 也尝试无感刷新（防止后端/网关直接返回HTTP 401绕过成功拦截器的情况）
+      const status = error.response?.status
+      const code = error.response?.data?.code
+      if (status === 401 || code === 401) {
+        const userStore = useUserStore()
+        if (!refreshFailed && userStore.refreshToken) {
+          // 走和成功拦截器相同的刷新逻辑
+          if (!isRefreshing) {
+            isRefreshing = true
+            const originalRequest = error.config
+            return axiosInstance.post('/admin/users/refreshToken', {
+              refreshToken: userStore.refreshToken
+            }).then((refreshRes) => {
+              const newAccessToken = refreshRes.data.result
+              if (!newAccessToken) throw new Error('refreshToken 返回空')
+              userStore.setToken(newAccessToken)
+              requests.forEach((cb) => cb(newAccessToken))
+              requests = []
+              originalRequest.headers.set('Authorization', `Bearer ${newAccessToken}`)
+              return axiosInstance(originalRequest)
+            }).catch((err) => {
+              refreshFailed = true
+              isRefreshing = false
+              requests.forEach(cb => cb(null))
+              requests = []
+              userStore.logOut()
+              ElMessage.warning('登录状态已过期，请重新登录')
+              return Promise.reject(err)
+            }).finally(() => {
+              isRefreshing = false
+            })
+          } else {
+            return new Promise((resolve, reject) => {
+              requests.push((newAccessToken: string | null) => {
+                if (!newAccessToken) {
+                  reject(new Error('刷新 token 失败'))
+                  return
+                }
+                error.config.headers.set('Authorization', `Bearer ${newAccessToken}`)
+                resolve(axiosInstance(error.config))
+              })
+            })
+          }
+        }
+      }
       const errorMessage = error.response?.data?.message
       ElMessage.error(
         errorMessage
