@@ -36,4 +36,10 @@ COPY --from=builder /build/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", \
+  "-Xmx256m", "-Xms128m", \
+  "-XX:MaxMetaspaceSize=96m", \
+  "-XX:CompressedClassSpaceSize=32m", \
+  "-XX:+UseSerialGC", \
+  "-XX:-TieredCompilation", \
+  "-jar", "app.jar"]

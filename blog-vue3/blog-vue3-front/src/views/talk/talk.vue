@@ -277,8 +277,8 @@ onBeforeUnmount(() => {
                       type="talk_comment"
                       :id="talk.id"
                       :author-id="talk.userId"
-                      :is-show-toggle="false"
-                      :expand="true"
+                      :is-show-toggle="true"
+                      :expand="false"
                     />
                   </div>
                 </div>
