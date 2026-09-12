@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, reactive, h, nextTick, onBeforeUnmount } from "vue";
+import { ref, watch, reactive, h, nextTick, onBeforeUnmount, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { useStaticData, useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
 import { MdPreview, MdCatalog } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
+import { useHead } from "@vueuse/head";
 
 import { ArticleService } from "@/api/blog/articleApi";
 import { LikeService } from "@/api/likeApi";
@@ -86,6 +87,70 @@ const previousArticleForm = reactive({ ... previousArticleFormState});//上一�
 const nextArticleForm = reactive({...nextArticleFormState});//下一篇文章
 const recommendArticleListForm = ref<RecommendArticle[]>([]); // 推荐文章
 const loading = ref(false);
+
+// SEO: 动态 meta 标签
+const articleDescription = computed(() => {
+  // 优先用 articleDescription，否则从 content 截取前 160 字符
+  const desc = (articleForm as any).articleDescription;
+  if (desc) return desc;
+  const content = articleForm.articleContent || '';
+  // 去掉 markdown 标记，取纯文本前 160 字符
+  const plainText = content.replace(/[#*`>\[\]!\-_]/g, '').replace(/\n+/g, ' ').trim();
+  return plainText.length > 160 ? plainText.substring(0, 160) + '...' : plainText;
+});
+
+useHead({
+  title: computed(() => articleForm.articleTitle
+    ? `${articleForm.articleTitle} - 拾感日记`
+    : '拾感日记'),
+  meta: computed(() => {
+    const tags: any[] = [
+      { name: 'description', content: articleDescription.value },
+      { property: 'og:title', content: articleForm.articleTitle || '拾感日记' },
+      { property: 'og:description', content: articleDescription.value },
+      { property: 'og:type', content: 'article' },
+      { property: 'og:url', content: window.location.href },
+      { property: 'og:site_name', content: '拾感日记' },
+      { name: 'twitter:card', content: articleForm.articleCover ? 'summary_large_image' : 'summary' },
+      { name: 'twitter:title', content: articleForm.articleTitle || '拾感日记' },
+      { name: 'twitter:description', content: articleDescription.value },
+    ];
+    if (articleForm.articleCover) {
+      tags.push({ property: 'og:image', content: articleForm.articleCover });
+      tags.push({ name: 'twitter:image', content: articleForm.articleCover });
+    }
+    if ((articleForm as any).tagNameList?.length) {
+      tags.push({ name: 'keywords', content: (articleForm as any).tagNameList.join(', ') });
+    }
+    return tags;
+  }),
+  link: computed(() => [
+    { rel: 'canonical', href: window.location.origin + '/article?id=' + articleForm.id }
+  ]),
+  script: computed(() => {
+    if (!articleForm.articleTitle) return [];
+    return [{
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": articleForm.articleTitle,
+        "description": articleDescription.value,
+        "image": articleForm.articleCover || undefined,
+        "author": {
+          "@type": "Person",
+          "name": articleForm.authorName || "Sg Luo"
+        },
+        "datePublished": articleForm.createdAt || undefined,
+        "dateModified": articleForm.updatedAt || articleForm.createdAt || undefined,
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": window.location.origin + '/article?id=' + articleForm.id
+        }
+      })
+    }];
+  })
+});
 
 const scrollElement = document.documentElement;
 const currentUrl = window.location.href;

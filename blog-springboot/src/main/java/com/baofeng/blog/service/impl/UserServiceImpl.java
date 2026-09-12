@@ -17,6 +17,11 @@ import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
 import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
 import com.baofeng.blog.dto.front.FrontUserDTO.FrontUpdateUserInfoRequest;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUpdatePasswordRequest;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUserStatsResponse;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUserActivityResponse;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUserActivityResponse.RecentComment;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUserActivityResponse.RecentTalk;
 import com.baofeng.blog.entity.User;
 import com.baofeng.blog.entity.Image;
 import com.baofeng.blog.entity.Role;
@@ -40,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.Collections;
 
@@ -223,6 +229,13 @@ public class UserServiceImpl implements UserService {
         user.setNickName(updateUserInfoRequest.nickname());
         String avatar = UrlNormalizeUtil.stripUrlPrefix(updateUserInfoRequest.avatar());
         user.setAvatarUrl(avatar);
+        // 新增：性别和简介
+        if (updateUserInfoRequest.gender() != null && GenderEnum.isCodeExit(updateUserInfoRequest.gender())) {
+            user.setGender(updateUserInfoRequest.gender());
+        }
+        if (updateUserInfoRequest.bio() != null) {
+            user.setBio(updateUserInfoRequest.bio());
+        }
         int rowUpdated = userMapper.updateUserSelective(user);
         return rowUpdated > 0
             ? ApiResponse.success("用户信息更新成功")
@@ -504,4 +517,66 @@ public class UserServiceImpl implements UserService {
             ? ApiResponse.success("密码重置成功")
             : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"密码重置失败");   
         }
+
+    @Override
+    public ApiResponse<FrontUserStatsResponse> getUserStats(Long userId) {
+        if (userId == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "用户id不能为空");
+        }
+        Long articleCount = userMapper.countArticlesByUserId(userId);
+        Long commentCount = userMapper.countCommentsByUserId(userId);
+        Long talkCount = userMapper.countTalksByUserId(userId);
+        Long likeCount = userMapper.countLikesByUserId(userId);
+        FrontUserStatsResponse stats = new FrontUserStatsResponse(articleCount, commentCount, talkCount, likeCount);
+        return ApiResponse.success(stats);
+    }
+
+    @Override
+    public ApiResponse<FrontUserActivityResponse> getUserActivity(Long userId) {
+        if (userId == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "用户id不能为空");
+        }
+        // 最近评论
+        List<Map<String, Object>> commentMaps = userMapper.getRecentCommentsByUserId(userId, 10);
+        List<RecentComment> recentComments = commentMaps.stream().map(m -> {
+            Long commentId = m.get("commentId") != null ? ((Number) m.get("commentId")).longValue() : null;
+            String content = (String) m.get("content");
+            String articleTitle = (String) m.get("articleTitle");
+            Long articleId = m.get("articleId") != null ? ((Number) m.get("articleId")).longValue() : null;
+            LocalDateTime createdAt = m.get("createdAt") instanceof LocalDateTime ? (LocalDateTime) m.get("createdAt") : null;
+            return new RecentComment(commentId, content, articleTitle, articleId, createdAt);
+        }).collect(Collectors.toList());
+
+        // 最近说说
+        List<Map<String, Object>> talkMaps = userMapper.getRecentTalksByUserId(userId, 10);
+        List<RecentTalk> recentTalks = talkMaps.stream().map(m -> {
+            Long talkId = m.get("talkId") != null ? ((Number) m.get("talkId")).longValue() : null;
+            String content = (String) m.get("content");
+            LocalDateTime createdAt = m.get("createdAt") instanceof LocalDateTime ? (LocalDateTime) m.get("createdAt") : null;
+            Integer likes = m.get("likes") != null ? ((Number) m.get("likes")).intValue() : 0;
+            return new RecentTalk(talkId, content, createdAt, likes);
+        }).collect(Collectors.toList());
+
+        FrontUserActivityResponse activity = new FrontUserActivityResponse(recentComments, recentTalks);
+        return ApiResponse.success(activity);
+    }
+
+    @Override
+    public ApiResponse<String> updatePasswordFront(FrontUpdatePasswordRequest request) {
+        if (request.userId() == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "用户id不能为空");
+        }
+        User user = userMapper.selectUserById(request.userId());
+        if (user == null) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "用户不存在");
+        }
+        // 验证旧密码
+        if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "旧密码错误");
+        }
+        int rowUpdated = userMapper.updatePassword(user.getUsername(), passwordEncoder.encode(request.newPassword()));
+        return rowUpdated > 0
+            ? ApiResponse.success("密码修改成功")
+            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "密码修改失败");
+    }
 } 

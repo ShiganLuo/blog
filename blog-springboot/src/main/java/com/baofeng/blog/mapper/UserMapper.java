@@ -3,6 +3,7 @@ package com.baofeng.blog.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
+import java.util.Map;
 import java.time.LocalDateTime;
 
 import com.baofeng.blog.entity.User;
@@ -129,4 +130,22 @@ public interface UserMapper {
      * @return
      */
     int updateAvatarUrl(@Param("id") Long id, @Param("avatarUrl") String avatarUrl);
+
+    /** 统计用户文章数 */
+    Long countArticlesByUserId(@Param("userId") Long userId);
+
+    /** 统计用户评论数（不含说说） */
+    Long countCommentsByUserId(@Param("userId") Long userId);
+
+    /** 统计用户说说数 */
+    Long countTalksByUserId(@Param("userId") Long userId);
+
+    /** 统计用户点赞数 */
+    Long countLikesByUserId(@Param("userId") Long userId);
+
+    /** 获取用户最近评论 */
+    List<Map<String, Object>> getRecentCommentsByUserId(@Param("userId") Long userId, @Param("limit") int limit);
+
+    /** 获取用户最近说说 */
+    List<Map<String, Object>> getRecentTalksByUserId(@Param("userId") Long userId, @Param("limit") int limit);
 } 

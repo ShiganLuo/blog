@@ -66,6 +66,8 @@ security:
       - /api/admin/util/get-captcha
       - /api/admin/mock/get-async-routes
       - /api/front/**
+      - /robots.txt
+      - /sitemap.xml
       - /swagger-ui.html
       - /v3/api-docs
       - /doc.html

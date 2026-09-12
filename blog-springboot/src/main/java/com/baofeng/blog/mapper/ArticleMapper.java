@@ -205,4 +205,10 @@ public interface ArticleMapper {
      */
     List<Map<String, Object>> getRecentArticlesForRss(@Param("limit") int limit);
 
+    /**
+     * 获取所有已发布文章用于 sitemap 生成
+     * @return 文章列表（id, updated_at）
+     */
+    List<Map<String, Object>> getAllPublishedArticlesForSitemap();
+
 }

@@ -10,6 +10,9 @@ import com.baofeng.blog.dto.common.UserDTO.LoginRequest;
 import com.baofeng.blog.dto.common.UserDTO.UserInfoResponse;
 import com.baofeng.blog.dto.front.FrontUserDTO.FrontLoginResponseVO;
 import com.baofeng.blog.dto.front.FrontUserDTO.FrontUpdateUserInfoRequest;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUpdatePasswordRequest;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUserStatsResponse;
+import com.baofeng.blog.dto.front.FrontUserDTO.FrontUserActivityResponse;
 import com.baofeng.blog.entity.User;
 
 
@@ -114,4 +117,25 @@ public interface UserService {
      * @return
      */
     public ApiResponse<String> forgetPassword(ForgetPasswordRequest forgetPasswordRequest);
+
+    /**
+     * 获取用户统计数据
+     * @param userId
+     * @return
+     */
+    public ApiResponse<FrontUserStatsResponse> getUserStats(Long userId);
+
+    /**
+     * 获取用户活动记录
+     * @param userId
+     * @return
+     */
+    public ApiResponse<FrontUserActivityResponse> getUserActivity(Long userId);
+
+    /**
+     * 前台修改密码
+     * @param request
+     * @return
+     */
+    public ApiResponse<String> updatePasswordFront(FrontUpdatePasswordRequest request);
 } 

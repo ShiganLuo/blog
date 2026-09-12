@@ -1,6 +1,5 @@
 import request from "@/utils/http/index";
 import { type UserResult, type RefreshTokenResult } from "@/types/user"
-
 interface image {
   imageId: string,
   imageUrl: string
@@ -49,7 +48,7 @@ export class UserService {
   static reqRegister(data?: object) {
     return request.post({
       url: "/admin/users/emailRegister",
-      data: data      
+      data: data     
     })
   }
 
@@ -70,10 +69,22 @@ export class UserService {
     })
   }
 
-  static updateUserPassword(data?: object) {
+  static updatePassword(data?: object) {
     return request.post({
-      url: "",
-      data: data      
+      url: "/front/users/updatePassword",
+      data: data     
+    })
+  }
+
+  static getUserStats(userId: string | number) {
+    return request.get({
+      url: `/front/users/getUserStats/${userId}`
+    })
+  }
+
+  static getUserActivity(userId: string | number) {
+    return request.get({
+      url: `/front/users/getUserActivity/${userId}`
     })
   }
 }

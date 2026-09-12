@@ -152,4 +152,56 @@
         </set>
         WHERE id = #{id}
     </update>
+
+    <!-- 统计用户文章数 -->
+    <select id="countArticlesByUserId" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM articles WHERE author_id = #{userId} AND is_deleted = 0
+    </select>
+
+    <!-- 统计用户评论数（不含说说本身） -->
+    <select id="countCommentsByUserId" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM comments WHERE user_id = #{userId} AND type != 'talk' AND is_deleted = 0
+    </select>
+
+    <!-- 统计用户说说数 -->
+    <select id="countTalksByUserId" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM comments WHERE user_id = #{userId} AND type = 'talk' AND is_deleted = 0
+    </select>
+
+    <!-- 统计用户点赞数 -->
+    <select id="countLikesByUserId" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM likes WHERE user_id = #{userId} AND status = 1
+    </select>
+
+    <!-- 获取用户最近评论（关联文章标题） -->
+    <select id="getRecentCommentsByUserId" resultType="java.util.Map">
+        SELECT 
+            c.id AS commentId,
+            c.content,
+            c.created_at AS createdAt,
+            a.id AS articleId,
+            a.title AS articleTitle
+        FROM comments c
+        LEFT JOIN articles a ON c.root_id = a.id AND c.type IN ('post', 'comment')
+        WHERE c.user_id = #{userId} 
+            AND c.type IN ('post', 'comment', 'talk_comment')
+            AND c.is_deleted = 0
+        ORDER BY c.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 获取用户最近说说 -->
+    <select id="getRecentTalksByUserId" resultType="java.util.Map">
+        SELECT 
+            id AS talkId,
+            content,
+            created_at AS createdAt,
+            likes
+        FROM comments
+        WHERE user_id = #{userId} 
+            AND type = 'talk'
+            AND is_deleted = 0
+        ORDER BY created_at DESC
+        LIMIT #{limit}
+    </select>
 </mapper> 
