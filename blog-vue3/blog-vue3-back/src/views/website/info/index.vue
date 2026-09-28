@@ -147,6 +147,40 @@
             prop="stackoverflow"
             v-model="websiteConfigForm.stackoverflow"
           />
+          <el-form-item label="QQ群二维码">
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadImageUrl"
+              :headers="headers"
+              :show-file-list="false"
+              :before-upload="beforeUpload"
+              :on-success="handleQQGroupSuccess"
+            >
+              <div v-if="!websiteConfigForm.qqGroup" class="upload-placeholder">
+                <el-icon class="upload-icon"><Plus /></el-icon>
+                <div class="upload-text">点击上传</div>
+              </div>
+              <img v-else :src="websiteConfigForm.qqGroup" class="avatar" />
+            </el-upload>
+            <el-button class="el-top" type="primary" link @click="openImagePicker('qqGroup')">从素材库选择</el-button>
+          </el-form-item>
+          <el-form-item label="微信群二维码">
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadImageUrl"
+              :headers="headers"
+              :show-file-list="false"
+              :before-upload="beforeUpload"
+              :on-success="handleWechatGroupSuccess"
+            >
+              <div v-if="!websiteConfigForm.wechatGroup" class="upload-placeholder">
+                <el-icon class="upload-icon"><Plus /></el-icon>
+                <div class="upload-text">点击上传</div>
+              </div>
+              <img v-else :src="websiteConfigForm.wechatGroup" class="avatar" />
+            </el-upload>
+            <el-button class="el-top" type="primary" link @click="openImagePicker('wechatGroup')">从素材库选择</el-button>
+          </el-form-item>
           <el-button type="primary" style="margin-left: 4.375rem" @click="updateWebsiteConfig">
             修改
           </el-button>
@@ -383,6 +417,16 @@ import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
 
   const handleAlipaySuccess = (response: any) => {
     websiteConfigForm.value.alipayQRCode = response.result.imageUrl
+    ElMessage.success(`${response.message} ${EmojiText[200]}`)
+  }
+
+  const handleQQGroupSuccess = (response: any) => {
+    websiteConfigForm.value.qqGroup = response.result.imageUrl
+    ElMessage.success(`${response.message} ${EmojiText[200]}`)
+  }
+
+  const handleWechatGroupSuccess = (response: any) => {
+    websiteConfigForm.value.wechatGroup = response.result.imageUrl
     ElMessage.success(`${response.message} ${EmojiText[200]}`)
   }
 

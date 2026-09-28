@@ -391,6 +391,8 @@ onBeforeUnmount(() => {
     height: 220px;
     display: grid;
     place-items: center;
+    overflow: hidden;
+    border-radius: 8px;
   }
 }
 // pc
@@ -433,6 +435,8 @@ onBeforeUnmount(() => {
       grid-template-columns: 120px 120px 120px;
       grid-auto-rows: 120px;
       gap: 1px;
+      overflow: hidden;
+      border-radius: 8px;
     }
   }
 }
@@ -477,6 +481,8 @@ onBeforeUnmount(() => {
       grid-template-columns: 100px 100px 100px;
       grid-auto-rows: 100px;
       gap: 1px;
+      overflow: hidden;
+      border-radius: 8px;
     }
   }
 }

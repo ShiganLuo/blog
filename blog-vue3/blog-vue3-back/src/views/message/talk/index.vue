@@ -64,7 +64,7 @@
 
     <el-dialog :title="title" v-model="open" width="80%" append-to-body>
       <div class="talk-container">
-        <MdEditor v-model="talk.content" :theme="'light'" :preview="true" style="max-height: 500px" />
+        <MdEditor v-model="talk.content" :theme="'light'" :preview="true" :onUploadImg="onUploadImg" style="max-height: 500px" />
         <div class="operation-wrapper">
           <div class="left-wrapper">
             <el-upload
@@ -233,6 +233,29 @@ import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
       ElMessage.error('图片上传失败，网络或服务器异常')
       options.onError?.(makeError(err))
     }
+  }
+
+  // MdEditor图片上传处理
+  const onUploadImg = async (
+    files: File[],
+    callback: (urls: string[]) => void
+  ) => {
+    const urls: string[] = []
+    for (const file of files) {
+      const formData = new FormData()
+      formData.append('file', file)
+      try {
+        const res = await PhotoService.uploadPhoto(formData)
+        if (res.code === 200) {
+          urls.push(res.result.imageUrl)
+        } else {
+          ElMessage.error(`图片上传失败: ${res.message}`)
+        }
+      } catch (err) {
+        ElMessage.error('图片上传失败，网络或服务器异常')
+      }
+    }
+    callback(urls)
   }
   
   const listTalks = async () => {

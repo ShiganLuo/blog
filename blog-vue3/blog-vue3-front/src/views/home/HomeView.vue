@@ -93,12 +93,12 @@ const getConfigDetail = async (): Promise<void> => {
   }
 };
 
-// 获取所有标签
+// 获取所有标签（右侧栏最多展示20个）
 const getAllTags = async (): Promise<void> => {
   const res = await TagService.getAllTag();
 
   if (res.code === 200 && Array.isArray(res.result)) {
-    tags.value = res.result.map((tag: Tag): ColoredTag => ({
+    tags.value = res.result.slice(0, 20).map((tag: Tag): ColoredTag => ({
       ...tag,
       color: randomFontColor()
     }));
