@@ -110,6 +110,22 @@ const routes: RouteRecordRaw[] = [
         component: () => import("@/views/photo/photos.vue"),
       },
       {
+        path: "/book",
+        name: "Book",
+        meta: {
+          name: "书架",
+        },
+        component: () => import("@/views/book/book.vue"),
+      },
+      {
+        path: "/book/read",
+        name: "BookRead",
+        meta: {
+          name: "书籍阅读",
+        },
+        component: () => import("@/views/book/read.vue"),
+      },
+      {
         path: "/talk",
         name: "Talk",
         meta: {

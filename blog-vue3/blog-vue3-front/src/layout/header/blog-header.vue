@@ -148,6 +148,7 @@ onBeforeUnmount(() => {
           </el-sub-menu>
           <el-menu-item index="/category"><i class="iconfont icon-sort"></i> 分类</el-menu-item>
           <el-menu-item index="/photoAlbum"><i class="iconfont icon-paper"></i> 相册</el-menu-item>
+          <el-menu-item index="/book"><i class="iconfont icon-muludaohang"></i> 书架</el-menu-item>
           <el-menu-item index="/talk"><i class="iconfont icon-speechbubble"></i> 说说</el-menu-item>
           <el-menu-item index="/link/list"
             ><i class="iconfont icon-pengyouquan"></i> 友链</el-menu-item
@@ -235,6 +236,9 @@ onBeforeUnmount(() => {
             <el-menu-item index="/photoAlbum">
               <i class="iconfont icon-paper"></i> 相册
             </el-menu-item>
+            <el-menu-item index="/book">
+              <i class="iconfont icon-muludaohang"></i> 书架
+            </el-menu-item>
             <el-menu-item index="/talk">
               <i class="iconfont icon-speechbubble"></i> 说说
             </el-menu-item>
@@ -316,6 +320,12 @@ onBeforeUnmount(() => {
 
 :deep(.el-menu--horizontal > .el-sub-menu .el-sub-menu__title:hover) {
   background-color: transparent;
+}
+
+/* 浮动导航为白色文字：菜单项悬浮时给深色底，避免白底白字看不清 */
+:deep(.el-menu--horizontal > .el-menu-item:hover) {
+  background-color: rgba(0, 0, 0, 0.35) !important;
+  color: #fff !important;
 }
 
 .iconfont {

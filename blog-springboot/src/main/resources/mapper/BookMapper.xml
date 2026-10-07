@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baofeng.blog.mapper.BookMapper">
+
+    <resultMap id="BookListMap" type="com.baofeng.blog.dto.front.BookDTO$BookListResponse">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="subtitle" column="subtitle"/>
+        <result property="description" column="description"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="status" column="status"/>
+        <result property="chapterCount" column="chapter_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <resultMap id="BookDetailMap" type="com.baofeng.blog.dto.front.BookDTO$BookDetailResponse">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="subtitle" column="subtitle"/>
+        <result property="description" column="description"/>
+        <result property="coverImage" column="cover_image"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <!-- 书列表：chapter_count 统计口径与 selectChapters 保持一致（未删除；仅上架口径再过滤未公开） -->
+    <select id="selectBooks" resultMap="BookListMap">
+        SELECT
+            b.id,
+            b.title,
+            b.subtitle,
+            b.description,
+            b.cover_image,
+            b.status,
+            b.created_at,
+            b.updated_at,
+            (SELECT COUNT(*)
+             FROM book_article ba
+             JOIN articles a2 ON a2.id = ba.article_id AND a2.is_deleted = 0
+             <if test="onlyPublished">AND a2.status = 1</if>
+             WHERE ba.book_id = b.id) AS chapter_count
+        FROM book b
+        WHERE b.is_deleted = 0
+        <if test="onlyPublished">AND b.status = 1</if>
+        ORDER BY b.status DESC, b.updated_at DESC
+    </select>
+
+    <select id="selectBookById" resultMap="BookDetailMap">
+        SELECT id, title, subtitle, description, cover_image, status
+        FROM book
+        WHERE id = #{id} AND is_deleted = 0
+        <if test="onlyPublished">AND status = 1</if>
+    </select>
+
+    <select id="selectChapters" resultType="com.baofeng.blog.dto.front.BookDTO$ChapterItem">
+        SELECT
+            ba.article_id AS articleId,
+            COALESCE(NULLIF(ba.chapter_title, ''), a.title) AS chapterTitle,
+            a.title AS articleTitle,
+            ba.sort_order AS sortOrder
+        FROM book_article ba
+        JOIN articles a ON a.id = ba.article_id AND a.is_deleted = 0
+        <if test="onlyPublished">AND a.status = 1</if>
+        WHERE ba.book_id = #{bookId}
+        ORDER BY ba.sort_order ASC
+    </select>
+
+    <insert id="insertBook" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO book (title, subtitle, description, cover_image, author_id, status, is_deleted)
+        VALUES (#{title}, #{subtitle}, #{description}, #{coverImage}, #{authorId}, #{status}, 0)
+    </insert>
+
+    <update id="updateBook">
+        UPDATE book
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="subtitle != null">subtitle = #{subtitle},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="coverImage != null">cover_image = #{coverImage},</if>
+            <if test="status != null">status = #{status},</if>
+            updated_at = NOW()
+        </set>
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <update id="softDeleteBook">
+        UPDATE book SET is_deleted = 1, updated_at = NOW() WHERE id = #{id}
+    </update>
+
+    <insert id="insertBookArticle">
+        INSERT INTO book_article (book_id, article_id, chapter_title, sort_order)
+        VALUES (#{bookId}, #{articleId}, NULL, #{sortOrder})
+    </insert>
+
+    <delete id="deleteBookArticle">
+        DELETE FROM book_article WHERE book_id = #{bookId} AND article_id = #{articleId}
+    </delete>
+
+    <update id="updateChapterOrder">
+        UPDATE book_article SET sort_order = #{sortOrder}
+        WHERE book_id = #{bookId} AND article_id = #{articleId}
+    </update>
+
+    <update id="updateChapterTitle">
+        UPDATE book_article SET chapter_title = #{chapterTitle}
+        WHERE book_id = #{bookId} AND article_id = #{articleId}
+    </update>
+
+    <select id="selectChapterArticleIds" resultType="java.lang.Long">
+        SELECT article_id FROM book_article WHERE book_id = #{bookId} ORDER BY sort_order ASC
+    </select>
+
+    <select id="selectMaxSortOrder" resultType="java.lang.Long">
+        SELECT COALESCE(MAX(sort_order), 0) FROM book_article WHERE book_id = #{bookId}
+    </select>
+
+    <select id="countBookArticles" resultType="int">
+        SELECT COUNT(*) FROM book_article WHERE book_id = #{bookId} AND article_id = #{articleId}
+    </select>
+
+</mapper>

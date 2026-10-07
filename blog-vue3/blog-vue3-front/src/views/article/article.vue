@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { useStaticData, useUserStore } from "@/stores/index";
 import { storeToRefs } from "pinia";
-import { MdPreview, MdCatalog } from "md-editor-v3";
+import { MdPreview } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import { useHead } from "@vueuse/head";
 
@@ -14,6 +14,7 @@ import { LikeService } from "@/api/likeApi";
 import Comment from "@/components/Comment/index.vue";
 import Tooltip from "@/components/ToolTip/index.vue";
 import PageHeader from "@/components/PageHeader/index.vue";
+import TocTree from "@/components/TocTree/index.vue";
 import GsapCount from "@/components/GsapCount/index.vue";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 
@@ -152,11 +153,36 @@ useHead({
   })
 });
 
+// 层级小节目录（MdPreview 解析后回调）
+const catalogItems = ref<{ text: string; level: number; line: number }[]>([]);
+const onCatalog = (list: { text: string; level: number; line: number }[]) => {
+  catalogItems.value = list;
+};
+
 const scrollElement = document.documentElement;
 const currentUrl = window.location.href;
 const isLike = ref(false);
 const likePending = ref(false);
 const drawerShow = ref(false); // 移动端目录是否可见
+
+// 目录改为右侧滑出面板（桌面 hover 右边界点把手，手机点右侧箭头，同一个面板）
+const tocSize = window.innerWidth <= 768 ? "60%" : "420px";
+const edgeHover = ref(false);
+const edgeTop = ref(80);
+
+// 把手跟随鼠标在边界上的位置出现
+const placeHandle = (e: MouseEvent) => {
+  const zone = e.currentTarget as HTMLElement;
+  const rect = zone.getBoundingClientRect();
+  let top = e.clientY - rect.top - 28; // 把手半高居中对准光标
+  top = Math.max(0, Math.min(top, rect.height - 56));
+  edgeTop.value = top;
+};
+const onEdgeIn = (e: MouseEvent) => {
+  edgeHover.value = true;
+  placeHandle(e);
+};
+const onEdgeMove = (e: MouseEvent) => placeHandle(e);
 
 const toggleDrawer = (): void => {
   drawerShow.value = !drawerShow.value;
@@ -291,8 +317,7 @@ watch(
   <PageHeader :article="articleForm" :loading="loading" />
   <div class="article article-center">
     <el-row class="article_box">
-      <el-col :xs="0" :sm="0" :md="4"></el-col>
-      <el-col :xs="24" :sm="18" :md="16">
+      <el-col :xs="24" :sm="24" :md="24" class="content-col">
         <el-skeleton v-if="loading" :loading="loading" :rows="8" animated />
         <el-card v-else class="md-preview">
           <MdPreview
@@ -302,6 +327,7 @@ watch(
             :preview-theme="previewTheme"
             :code-theme="codeTheme"
             :theme="mainTheme ? 'dark' : 'light'"
+            @onGetCatalog="onCatalog"
           ></MdPreview>
           <div class="article-info">
             <div class="article-info-inner">
@@ -428,55 +454,55 @@ watch(
             />
           </div>
         </el-card>
-      </el-col>
-      <el-col :xs="0" :sm="6" :md="4">
-        <el-skeleton v-if="loading" :loading="loading" :rows="3" animated />
-        <el-card v-else class="command card-hover" header="推荐文章">
-          <div class="command-box">
-            <div
-              class="command-box-item"
-              v-for="(item, index) in recommendArticleListForm"
-              :key="index"
-              @click="goToArticle(item.id)"
-            >
-              <el-image
-                class="command-box-item__img animate__animated animate__fadeInDown"
-                fit="cover"
-                width="50"
-                :src="item.article_cover"
-              >
-                <template #error>
-                  <svg-icon name="image404" :width="5" :height="5"></svg-icon>
-                </template>
-              </el-image>
-              <Tooltip width="35%" weight="600" size="1rem" :name="item.article_title" />
-              <Tooltip width="35%" size="0.8rem" :name="item.createdAt" />
-            </div>
-          </div>
-        </el-card>
-        <el-affix :offset="53" style="width: inherit">
-          <el-skeleton v-if="loading" :loading="loading" :rows="5" animated />
-          <el-card v-else class="catalogue-card card-hover" header="目录">
-            <div class="catalogue-card__box">
-              <MdCatalog :editorId="mdState.id" :scroll-element="scrollElement" />
-            </div>
-          </el-card>
-        </el-affix>
+
+        <!-- 文章右边界：悬浮出现折叠/展开把手 -->
+        <div class="edge-zone no-print" @mouseenter="onEdgeIn" @mousemove="onEdgeMove" @mouseleave="edgeHover = false">
+          <button
+            :class="['edge-handle', { show: edgeHover }]"
+            :style="{ top: edgeTop + 'px' }"
+            title="目录"
+            @click="toggleDrawer"
+          >
+            »
+          </button>
+        </div>
       </el-col>
     </el-row>
-    <div class="mobile-affix">
-      <i class="iconfont icon-arrowright" @click="toggleDrawer"></i>
-    </div>
-    <!-- 移动端目录 -->
+    <!-- 目录面板：统一从右侧滑出（桌面把手 / 手机箭头 均打开此面板） -->
     <el-drawer
       title="目录"
       v-model="drawerShow"
-      direction="ltr"
+      direction="rtl"
       :before-close="toggleDrawer"
       :append-to-body="true"
-      size="60%"
+      :size="tocSize"
+      class="no-print"
     >
-      <MdCatalog v-if="!loading" :editorId="mdState.id" :scroll-element="scrollElement" />
+      <el-card class="command card-hover" header="推荐文章" shadow="never">
+        <div class="command-box">
+          <div
+            class="command-box-item"
+            v-for="(item, index) in recommendArticleListForm"
+            :key="index"
+            @click="goToArticle(item.id)"
+          >
+            <el-image
+              class="command-box-item__img animate__animated animate__fadeInDown"
+              fit="cover"
+              width="50"
+              :src="item.article_cover"
+            >
+              <template #error>
+                <svg-icon name="image404" :width="5" :height="5"></svg-icon>
+              </template>
+            </el-image>
+            <Tooltip width="35%" weight="600" size="1rem" :name="item.article_title" />
+            <Tooltip width="35%" size="0.8rem" :name="item.createdAt" />
+          </div>
+        </div>
+      </el-card>
+      <div class="drawer-sub drawer-sub-gap">目录</div>
+      <TocTree v-if="drawerShow && !loading" :items="catalogItems" />
     </el-drawer>
   </div>
 </template>
@@ -485,6 +511,59 @@ watch(
 
 .md-preview {
   padding: 20px;  /* 内边距，内容离边框有点距离 */
+}
+
+/* 抽屉内分区标题 */
+.drawer-sub {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--el-text-color-primary);
+}
+.drawer-sub-gap {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--el-border-color);
+}
+
+/* 文章右边界：悬浮打开目录面板的把手 */
+.content-col {
+  position: relative;
+}
+.edge-zone {
+  position: absolute;
+  right: -14px;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  z-index: 30;
+}
+.edge-handle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 80px;
+  display: block;
+  margin: 0 auto;
+  width: 20px;
+  height: 56px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: rgba(29, 30, 31, 0.75);
+  color: #fff;
+  font-size: 16px;
+  line-height: 56px;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  &:hover {
+    background: rgba(29, 30, 31, 0.95);
+  }
+  &.show {
+    opacity: 1;
+  }
 }
 .mr-5px {
   margin-right: 5px !important;

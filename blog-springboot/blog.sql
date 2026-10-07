@@ -299,3 +299,32 @@ CREATE TABLE `role_permissions` (
     FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色-权限关系表';
 
+DROP TABLE IF EXISTS `book_article`;
+DROP TABLE IF EXISTS `book`;
+CREATE TABLE `book` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '唯一标识符',
+    `title` VARCHAR(100) NOT NULL COMMENT '书名',
+    `subtitle` VARCHAR(200) DEFAULT NULL COMMENT '副标题',
+    `description` TEXT COMMENT '简介',
+    `cover_image` VARCHAR(255) DEFAULT NULL COMMENT '封面相对路径',
+    `author_id` BIGINT NOT NULL COMMENT '作者 ID（关联 users.id）',
+    `status` TINYINT NOT NULL DEFAULT 0 COMMENT '状态 0草稿 1上架',
+    `is_deleted` TINYINT NOT NULL DEFAULT 0 COMMENT '逻辑删除 0否 1是',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    KEY idx_book_status (status, is_deleted)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='书架-书表';
+
+CREATE TABLE `book_article` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '唯一标识符',
+    `book_id` BIGINT NOT NULL COMMENT '书 ID（关联 book.id）',
+    `article_id` BIGINT NOT NULL COMMENT '文章 ID（关联 articles.id）',
+    `chapter_title` VARCHAR(200) DEFAULT NULL COMMENT '章节名（空则用文章标题）',
+    `sort_order` INT NOT NULL DEFAULT 0 COMMENT '章序，从1递增',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    UNIQUE KEY `uk_book_article` (`book_id`, `article_id`),
+    KEY `idx_book_order` (`book_id`, `sort_order`),
+    CONSTRAINT `fk_book_article_book` FOREIGN KEY (`book_id`) REFERENCES `book`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_book_article_article` FOREIGN KEY (`article_id`) REFERENCES `articles`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='书架-章节关系表（文章多对多）';
+

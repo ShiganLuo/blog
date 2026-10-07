@@ -175,5 +175,33 @@ export const asyncRoutes: MenuListType[] = [
         meta: { title: '照片管理', keepAlive: false, isHide: true }
       }
     ]
+  },
+  {
+    id: uuid(),
+    path: '/blog/book',
+    name: 'book',
+    component: RoutesAlias.Home,
+    meta: {
+      title: '书架管理',
+      icon: '&#xe828;',
+      keepAlive: false,
+      isHide: false
+    },
+    children: [
+      {
+        id: uuid(),
+        path: 'list',
+        component: RoutesAlias.BookIndex,
+        name: 'BookIndex',
+        meta: { title: '书架管理', keepAlive: false }
+      },
+      {
+        id: uuid(),
+        path: 'edit/:bookId(\\d+)',
+        component: RoutesAlias.BookEdit,
+        name: 'BookEditIndex',
+        meta: { title: '章节编排', keepAlive: false, isHide: true }
+      }
+    ]
   }
 ]

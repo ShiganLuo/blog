@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>拾感日记博客系统架构图</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'JetBrains Mono', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', monospace;
+      background: #020617;
+      min-height: 100vh;
+      padding: 2rem;
+      color: white;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    .header { margin-bottom: 2rem; }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .pulse-dot {
+      width: 12px;
+      height: 12px;
+      background: #22d3ee;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; }
+
+    .subtitle { color: #94a3b8; font-size: 0.875rem; margin-left: 1.75rem; }
+
+    .diagram-container {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 1rem;
+      border: 1px solid #1e293b;
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+
+    svg { width: 100%; min-width: 900px; display: block; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 0.75rem;
+      border: 1px solid #1e293b;
+      padding: 1.25rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .card-dot.cyan { background: #22d3ee; }
+    .card-dot.emerald { background: #34d399; }
+    .card-dot.violet { background: #a78bfa; }
+    .card-dot.amber { background: #fbbf24; }
+    .card-dot.rose { background: #fb7185; }
+
+    .card h3 { font-size: 0.875rem; font-weight: 600; }
+
+    .card ul { list-style: none; color: #94a3b8; font-size: 0.75rem; }
+    .card li { margin-bottom: 0.375rem; }
+
+    .footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: #475569;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-row">
+        <div class="pulse-dot"></div>
+        <h1>拾感日记 · 博客系统架构</h1>
+      </div>
+      <p class="subtitle">Spring Boot 3.4 + Vue3 + MySQL/Redis/MinIO — 单机 Docker Compose 部署</p>
+    </div>
+
+    <!-- Main Diagram -->
+    <div class="diagram-container">
+      <svg viewBox="0 0 1000 760">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+          </marker>
+          <marker id="arrowhead-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee" />
+          </marker>
+          <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#34d399" />
+          </marker>
+          <marker id="arrowhead-violet" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa" />
+          </marker>
+          <marker id="arrowhead-slate" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8" />
+          </marker>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+
+        <!-- Background Grid -->
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        <!-- ============ ARROWS (drawn first, render behind boxes) ============ -->
+
+        <!-- Users -> nginx-proxy -->
+        <line x1="140" y1="325" x2="193" y2="325" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrowhead-cyan)"/>
+        <text x="166" y="317" fill="#94a3b8" font-size="9" text-anchor="middle">HTTPS</text>
+
+        <!-- nginx-proxy -> web (front site) -->
+        <path d="M 335 300 L 375 300 L 375 195 L 407 195" fill="none" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrowhead-cyan)"/>
+        <text x="382" y="252" fill="#94a3b8" font-size="9">主域名</text>
+
+        <!-- nginx-proxy -> admin -->
+        <path d="M 335 345 L 375 345 L 375 445 L 407 445" fill="none" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrowhead-cyan)"/>
+        <text x="382" y="398" fill="#94a3b8" font-size="9">back.</text>
+
+        <!-- web -> backend (/api reverse proxy, JWT) -->
+        <path d="M 570 195 L 610 195 L 610 300 L 647 300" fill="none" stroke="#34d399" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrowhead-green)"/>
+        <text x="616" y="255" fill="#34d399" font-size="9">/api 反代</text>
+
+        <!-- admin -> backend -->
+        <path d="M 570 445 L 610 445 L 610 345 L 647 345" fill="none" stroke="#34d399" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrowhead-green)"/>
+        <text x="616" y="402" fill="#34d399" font-size="9">/api 反代</text>
+
+        <!-- backend -> mysql -->
+        <path d="M 810 290 L 828 290 L 828 150 L 842 150" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrowhead-violet)"/>
+        <text x="822" y="225" fill="#a78bfa" font-size="9" text-anchor="end">MyBatis</text>
+
+        <!-- backend -> redis -->
+        <path d="M 810 320 L 834 320 L 834 255 L 842 255" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrowhead-violet)"/>
+        <text x="828" y="345" fill="#a78bfa" font-size="9" text-anchor="end">缓存</text>
+
+        <!-- backend -> minio -->
+        <path d="M 810 365 L 838 365 L 838 372 L 842 372" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrowhead-violet)"/>
+        <text x="806" y="405" fill="#a78bfa" font-size="9" text-anchor="end">MinIO SDK</text>
+
+        <!-- dev machine -> stack (deploy flow) -->
+        <path d="M 140 480 L 168 480" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrowhead-slate)"/>
+        <text x="146" y="472" fill="#94a3b8" font-size="7">镜像构建→上传</text>
+
+        <!-- ============ BOUNDARY ============ -->
+        <rect x="170" y="40" width="800" height="620" rx="12" fill="rgba(251, 191, 36, 0.05)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="182" y="58" fill="#fbbf24" font-size="10" font-weight="600">Docker Compose · blog_net（本地开发 / 阿里云 ECS 远程）</text>
+
+        <!-- ============ COMPONENTS ============ -->
+
+        <!-- Users (external) -->
+        <rect x="30" y="295" width="110" height="60" rx="6" fill="#0f172a"/>
+        <rect x="30" y="295" width="110" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="85" y="320" fill="white" font-size="11" font-weight="600" text-anchor="middle">访客 / 博主</text>
+        <text x="85" y="336" fill="#94a3b8" font-size="9" text-anchor="middle">浏览器 PC / 移动</text>
+        <text x="85" y="349" fill="#94a3b8" font-size="7" text-anchor="middle">搜索引擎爬虫</text>
+
+        <!-- Dev machine (external) -->
+        <rect x="30" y="450" width="110" height="60" rx="6" fill="#0f172a"/>
+        <rect x="30" y="450" width="110" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="85" y="475" fill="white" font-size="11" font-weight="600" text-anchor="middle">开发机</text>
+        <text x="85" y="491" fill="#94a3b8" font-size="9" text-anchor="middle">publish/remote.sh</text>
+        <text x="85" y="504" fill="#94a3b8" font-size="7" text-anchor="middle">docker save → scp</text>
+
+        <!-- nginx-proxy (security/edge) -->
+        <rect x="195" y="275" width="140" height="90" rx="6" fill="#0f172a"/>
+        <rect x="195" y="275" width="140" height="90" rx="6" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="265" y="299" fill="white" font-size="11" font-weight="600" text-anchor="middle">nginx-proxy</text>
+        <text x="265" y="316" fill="#94a3b8" font-size="9" text-anchor="middle">Nginx :443 TLS 终止</text>
+        <text x="265" y="330" fill="#94a3b8" font-size="9" text-anchor="middle">按域名路由三站</text>
+        <text x="265" y="344" fill="#94a3b8" font-size="9" text-anchor="middle">透传 Authorization</text>
+        <text x="265" y="358" fill="#fb7185" font-size="7" text-anchor="middle">外部网络入口</text>
+
+        <!-- Front site -->
+        <rect x="410" y="150" width="160" height="90" rx="6" fill="#0f172a"/>
+        <rect x="410" y="150" width="160" height="90" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="490" y="174" fill="white" font-size="11" font-weight="600" text-anchor="middle">博客前台</text>
+        <text x="490" y="191" fill="#94a3b8" font-size="9" text-anchor="middle">Vue3 + Vite + Pinia</text>
+        <text x="490" y="205" fill="#94a3b8" font-size="9" text-anchor="middle">md-editor-v3 · Nginx :80</text>
+        <text x="490" y="219" fill="#94a3b8" font-size="9" text-anchor="middle">文章/分类/说说/相册</text>
+        <text x="490" y="233" fill="#22d3ee" font-size="7" text-anchor="middle">主域名 · blog_web</text>
+
+        <!-- Admin site -->
+        <rect x="410" y="400" width="160" height="90" rx="6" fill="#0f172a"/>
+        <rect x="410" y="400" width="160" height="90" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="490" y="424" fill="white" font-size="11" font-weight="600" text-anchor="middle">管理后台</text>
+        <text x="490" y="441" fill="#94a3b8" font-size="9" text-anchor="middle">Vue3 + Element Plus</text>
+        <text x="490" y="455" fill="#94a3b8" font-size="9" text-anchor="middle">art-table · Nginx :80</text>
+        <text x="490" y="469" fill="#94a3b8" font-size="9" text-anchor="middle">文章/评论/素材/设置</text>
+        <text x="490" y="483" fill="#22d3ee" font-size="7" text-anchor="middle">back.子域名 · blog_admin</text>
+
+        <!-- Backend -->
+        <rect x="650" y="265" width="160" height="110" rx="6" fill="#0f172a"/>
+        <rect x="650" y="265" width="160" height="110" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="730" y="289" fill="white" font-size="11" font-weight="600" text-anchor="middle">API 服务</text>
+        <text x="730" y="306" fill="#94a3b8" font-size="9" text-anchor="middle">Spring Boot 3.4 :8080</text>
+        <text x="730" y="320" fill="#94a3b8" font-size="9" text-anchor="middle">JWT 双令牌 1h/14d</text>
+        <text x="730" y="334" fill="#94a3b8" font-size="9" text-anchor="middle">Spring Security 过滤链</text>
+        <text x="730" y="348" fill="#94a3b8" font-size="9" text-anchor="middle">@MinioFile URL 自动补全</text>
+        <text x="730" y="362" fill="#94a3b8" font-size="9" text-anchor="middle">Knife4j / RSS / Sitemap</text>
+        <text x="730" y="373" fill="#34d399" font-size="7" text-anchor="middle">blog_backend</text>
+
+        <!-- MySQL -->
+        <rect x="845" y="120" width="110" height="60" rx="6" fill="#0f172a"/>
+        <rect x="845" y="120" width="110" height="60" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="900" y="144" fill="white" font-size="11" font-weight="600" text-anchor="middle">MySQL 8.0</text>
+        <text x="900" y="160" fill="#94a3b8" font-size="9" text-anchor="middle">blog 库 · :3308</text>
+        <text x="900" y="173" fill="#a78bfa" font-size="7" text-anchor="middle">blog.sql 初始化</text>
+
+        <!-- Redis -->
+        <rect x="845" y="225" width="110" height="60" rx="6" fill="#0f172a"/>
+        <rect x="845" y="225" width="110" height="60" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="900" y="249" fill="white" font-size="11" font-weight="600" text-anchor="middle">Redis 7</text>
+        <text x="900" y="265" fill="#94a3b8" font-size="9" text-anchor="middle">缓存 · 计数 :6380</text>
+        <text x="900" y="278" fill="#a78bfa" font-size="7" text-anchor="middle">refresh token / 浏览量</text>
+
+        <!-- MinIO -->
+        <rect x="845" y="330" width="110" height="80" rx="6" fill="#0f172a"/>
+        <rect x="845" y="330" width="110" height="80" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="900" y="354" fill="white" font-size="11" font-weight="600" text-anchor="middle">MinIO</text>
+        <text x="900" y="370" fill="#94a3b8" font-size="9" text-anchor="middle">对象存储</text>
+        <text x="900" y="384" fill="#94a3b8" font-size="9" text-anchor="middle">API :9007 管理 :9008</text>
+        <text x="900" y="397" fill="#94a3b8" font-size="9" text-anchor="middle">my-bucket 公开读</text>
+        <text x="900" y="407" fill="#a78bfa" font-size="7" text-anchor="middle">图片/封面/二维码</text>
+
+        <!-- minio-init job -->
+        <rect x="845" y="440" width="110" height="44" rx="6" fill="#0f172a"/>
+        <rect x="845" y="440" width="110" height="44" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="900" y="460" fill="white" font-size="10" font-weight="600" text-anchor="middle">minio-init</text>
+        <text x="900" y="475" fill="#94a3b8" font-size="8" text-anchor="middle">建桶 + 匿名读（一次性）</text>
+
+        <!-- ============ LEGEND (outside all boundaries) ============ -->
+        <text x="30" y="700" fill="white" font-size="10" font-weight="600">图例</text>
+
+        <rect x="30" y="712" width="16" height="10" rx="2" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1"/>
+        <text x="52" y="721" fill="#94a3b8" font-size="8">前端应用</text>
+
+        <rect x="140" y="712" width="16" height="10" rx="2" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1"/>
+        <text x="162" y="721" fill="#94a3b8" font-size="8">后端服务</text>
+
+        <rect x="250" y="712" width="16" height="10" rx="2" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1"/>
+        <text x="272" y="721" fill="#94a3b8" font-size="8">数据 / 存储</text>
+
+        <rect x="370" y="712" width="16" height="10" rx="2" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1"/>
+        <text x="392" y="721" fill="#94a3b8" font-size="8">安全 / 边界入口</text>
+
+        <rect x="510" y="712" width="16" height="10" rx="2" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1"/>
+        <text x="532" y="721" fill="#94a3b8" font-size="8">外部系统</text>
+
+        <rect x="630" y="712" width="16" height="10" rx="2" fill="transparent" stroke="#fbbf24" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="652" y="721" fill="#94a3b8" font-size="8">部署边界</text>
+
+        <line x1="750" y1="717" x2="774" y2="717" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="780" y="721" fill="#94a3b8" font-size="8">带鉴权的 API 请求（JWT）</text>
+
+        <line x1="30" y1="740" x2="54" y2="740" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="60" y="744" fill="#94a3b8" font-size="8">部署/数据流</text>
+      </svg>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="cards">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot cyan"></div>
+          <h3>前端层</h3>
+        </div>
+        <ul>
+          <li>• 前台 / 后台两个独立 Vue3 SPA，构建产物打成 Nginx 镜像</li>
+          <li>• Nginx 双层反代，两层都透传 Authorization 头，JWT 才能穿透</li>
+          <li>• 前台首屏拉 getFrontInfo 初始化站点信息（favicon 等）</li>
+          <li>• 后台菜单 = 前端静态 asyncRoutes，按权限过滤</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot emerald"></div>
+          <h3>后端与安全</h3>
+        </div>
+        <ul>
+          <li>• 单体 Spring Boot：controller / service / mapper 三层 + DTO</li>
+          <li>• JWT 双令牌：accessToken 1h + refreshToken 14d，Redis 存刷新票</li>
+          <li>• /api/admin/** 白名单排除，防止全后台跳过鉴权</li>
+          <li>• 图片库内只存相对路径，@MinioFile 读时拼 public-base-url</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot violet"></div>
+          <h3>数据与存储</h3>
+        </div>
+        <ul>
+          <li>• MySQL 主库（文章/评论/用户/相册），首次启动 blog.sql 建表</li>
+          <li>• Redis：浏览量计数、缓存、refresh token 黑名单</li>
+          <li>• MinIO my-bucket 匿名公开读，卷持久化到 ./database</li>
+          <li>• 部署：本地 build → tar → scp → 远程 docker-compose 重建</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <p class="footer">
+      拾感日记 · ShiganLuo/blog · 生成于 2026-10-07
+    </p>
+  </div>
+</body>
+</html>

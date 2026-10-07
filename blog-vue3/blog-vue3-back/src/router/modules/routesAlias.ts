@@ -25,5 +25,7 @@ export enum RoutesAlias {
   WebsiteLink = '/website/link/index', // 友链
   Photo = '/photo/photo', // 照片管理
   PhotoDelete = '/photo/delete', // 照片回收站
-  PhotoIndex = '/photo/index' // 照片统计
+  PhotoIndex = '/photo/index', // 照片统计
+  BookIndex = '/blog/book/index', // 书架管理
+  BookEdit = '/blog/book/edit' // 章节编排
 }
