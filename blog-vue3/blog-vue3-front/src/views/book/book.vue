@@ -282,16 +282,16 @@ onMounted(() => {
     top: 0;
     right: 14px;
     z-index: 4;
-    padding: 7px 4px 12px;
+    padding: 5px 8px 11px;
     background: linear-gradient(180deg, #e08b5a, #c65a36);
     clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
     color: #fff;
     font-size: 0.72rem;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     line-height: 1;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-    writing-mode: vertical-rl;
+    white-space: nowrap; // 横向文字，从左到右，不折行
   }
 
   // 封面底部信息：书名 + 简介
@@ -310,14 +310,15 @@ onMounted(() => {
     );
 
     .name {
-      display: block;
+      display: -webkit-box;
       overflow: hidden;
       color: #fff;
       font-size: 1rem;
       font-weight: 600;
-      text-overflow: ellipsis;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-      white-space: nowrap;
+      overflow-wrap: anywhere;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2; // 长书名最多两行，超出显示省略号
     }
 
     .desc {
