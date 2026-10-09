@@ -57,5 +57,27 @@ public interface PermissionMapper {
      * @return
      */
     List<Long> getPermissionIdsByRoleId(Long roleId);
-    
-}
+
+    /**
+     * 查询全部权限（构建权限树用）
+     * @return
+     */
+    List<Permission> selectAllPermissions();
+
+    /**
+     * 删除角色的全部权限关联
+     * @param roleId
+     * @return
+     */
+    int deleteRolePermissions(Long roleId);
+
+    /**
+     * 批量新增角色权限关联
+     * @param roleId
+     * @param permissionIds
+     * @return
+     */
+    int insertRolePermissionsBatch(@org.apache.ibatis.annotations.Param("roleId") Long roleId,
+                                   @org.apache.ibatis.annotations.Param("permissionIds") List<Long> permissionIds);
+
+} 

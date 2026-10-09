@@ -6,6 +6,7 @@ import com.baofeng.blog.service.PermissionService;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/admin/permission")
@@ -23,16 +24,19 @@ public class AdminPermissionController {
      * @return
      */
     @PostMapping("/AssignPermission")
+    @PreAuthorize("@perm.has('system:role:edit')")
     public ApiResponse<String> AssignPermissionForRole(@RequestBody @Validated AssignPermissionRequest assignPermissionRequest) {
         return permissionService.assignPermissionForRole(assignPermissionRequest);
     }
 
     @PostMapping("/addNewPermission")
+    @PreAuthorize("@perm.has('system:role:edit')")
     public ApiResponse<String> AddNewPermission(@RequestBody @Validated AddNewPermissionRequest addNewPermissionRequest) {
         return permissionService.addNewPermission(addNewPermissionRequest);
     }
 
     @GetMapping("/getAuthRole/{userId}")
+    @PreAuthorize("@perm.has('system:user:edit')")
     public ApiResponse<AuthRoleResponse> getAuthRole(@PathVariable("userId") Long userId) {
         return permissionService.getAuthRole(userId);
     }

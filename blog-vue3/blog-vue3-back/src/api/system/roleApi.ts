@@ -1,140 +1,49 @@
-import {
-  RoleListResult,
-  RoleResult,
-  RoleListPageResult,
-  roleDeptTreeselectResult,
-  UserPageListResult
-} from '@/types/system/role'
 import request from '@/utils/http'
 
-// 角色
+// 角色管理（与后端 SystemRoleController /api/system/role 一一对应）
 export class RoleService {
-  // 查询角色列表
-  static listRole(query: object) {
-    return request.get<RoleListPageResult>({
+  // 角色列表（含权限数/用户数）
+  static listRole(query: { roleName?: string; pageNum?: number; pageSize?: number }) {
+    return request.get<any>({
       url: '/system/role/list',
       params: query
     })
   }
 
-  // 查询角色详细
+  // 角色详情（含已勾选权限id）
   static getRole(roleId: number) {
-    return request.get<RoleResult>({
+    return request.get<any>({
       url: '/system/role/' + roleId
     })
   }
 
-  // 新增角色
-  static addRole(data: object) {
-    return request.post<RoleResult>({
+  // 全量权限树
+  static permissionTree() {
+    return request.get<any>({
+      url: '/system/role/permissionTree'
+    })
+  }
+
+  // 新增角色（可同时勾选权限）
+  static addRole(data: { roleName: string; roleDesc?: string; permissionIds?: number[] }) {
+    return request.post<any>({
       url: '/system/role',
-      data: data
+      data
     })
   }
 
-  // 修改角色
-  static updateRole(data: object) {
-    return request.put<RoleResult>({
+  // 编辑角色（权限整体替换）
+  static updateRole(data: { id?: number; roleName: string; roleDesc?: string; permissionIds?: number[] }) {
+    return request.put<any>({
       url: '/system/role',
-      data: data
-    })
-  }
-
-  // 角色数据权限
-  static dataScope(data: object) {
-    return request.put<RoleResult>({
-      url: '/system/role/dataScope',
-      data: data
-    })
-  }
-
-  // 角色状态修改
-  static changeRoleStatus(data: object) {
-    return request.put<RoleResult>({
-      url: '/system/role/changeStatus',
-      data: data
+      data
     })
   }
 
   // 删除角色
   static delRole(roleId: number) {
-    return request.del<RoleResult>({
+    return request.del<any>({
       url: '/system/role/' + roleId
-    })
-  }
-
-  // 查询角色已授权用户列表
-  static allocatedUserList(query: object) {
-    return request.get<UserPageListResult>({
-      url: '/system/role/authUser/allocatedList',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      params: query
-    })
-  }
-
-  // 查询角色未授权用户列表
-  static unallocatedUserList(query: object) {
-    return request.get<UserPageListResult>({
-      url: '/system/role/authUser/unallocatedList',
-      params: query
-    })
-  }
-
-  // 取消用户授权角色
-  static authUserCancel(data: object) {
-    return request.put<RoleResult>({
-      url: '/system/role/authUser/cancel',
-      data: data
-    })
-  }
-
-  // 批量取消用户授权角色
-  static authUserCancelAll(roleId: any, userIds: string) {
-    return request.put<RoleResult>({
-      url: '/system/role/authUser/cancelAll',
-      params: {
-        roleId,
-        userIds
-      }
-    })
-  }
-
-  // 批量授权用户选择
-  static authUserSelectAll(roleId: any, userIds: string) {
-    return request.put<RoleResult>({
-      url: '/system/role/authUser/selectAll',
-      params: {
-        roleId,
-        userIds
-      }
-    })
-  }
-
-  // 获取角色选择框列表
-  static optionselect() {
-    return request.get<RoleListResult>({
-      url: '/system/role/optionselect'
-    })
-  }
-
-  // 获取角色部门树列表
-  static deptTree(roleId: number) {
-    return request.get<roleDeptTreeselectResult>({
-      url: '/system/role/deptTree/' + roleId
-    })
-  }
-
-  // 导出角色
-  static exportExcel(data: object) {
-    return request.post<RoleResult>({
-      url: '/system/role/export',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      responseType: 'blob',
-      data: data
     })
   }
 }

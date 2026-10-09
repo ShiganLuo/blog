@@ -58,10 +58,18 @@ export const asyncRoutes: MenuListType[] = [
       },
       {
         id: uuid(),
+        path: 'role/manage',
+        component: RoutesAlias.RoleIndex,
+        name: 'RoleManageIndex',
+        meta: { title: '角色管理', keepAlive: false }
+      },
+      {
+        id: uuid(),
         path: 'role/authRole/:userId(\\d+)?',
         component: RoutesAlias.AuthRole,
         name: 'AuthRole',
-        meta: { title: '角色编辑', keepAlive: false }
+        // 只能从用户列表进入（直连无 userId 会空白），菜单隐藏
+        meta: { title: '角色编辑', keepAlive: false, isHide: true }
       }
     ]
   },

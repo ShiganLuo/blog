@@ -67,4 +67,22 @@
         WHERE role_id = #{roleId} and permission_id = #{permissionId}
     </select>
 
-</mapper>
+    <!--全部权限（构建权限树）-->
+    <select id="selectAllPermissions" resultMap="PermissionMapper">
+        SELECT * FROM permissions ORDER BY id
+    </select>
+
+    <!--删除角色的全部权限关联-->
+    <delete id="deleteRolePermissions">
+        DELETE FROM role_permissions WHERE role_id = #{roleId}
+    </delete>
+
+    <!--批量新增角色权限关联-->
+    <insert id="insertRolePermissionsBatch">
+        INSERT INTO role_permissions (role_id, permission_id) VALUES
+        <foreach collection="permissionIds" item="pid" separator=",">
+            (#{roleId}, #{pid})
+        </foreach>
+    </insert>
+
+</mapper> 

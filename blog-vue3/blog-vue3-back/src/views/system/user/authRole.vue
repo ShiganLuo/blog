@@ -34,19 +34,38 @@
       <art-table
         v-loading="loading"
         :data="roles.slice((pageNum - 1) * pageSize, pageNum * pageSize)"
-        selection
         :total="total"
         :current-page="pageNum"
         :page-size="pageSize"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        @selection-change="handleSelectionChange"
         row-key="roleId"
         class="role-table"
       >
+        <el-table-column label="选择" width="70" align="center">
+          <template #default="scope">
+            <el-checkbox v-model="scope.row.flag" />
+          </template>
+        </el-table-column>
         <el-table-column label="角色名称" prop="roleName" align="center" />
         <el-table-column label="角色描述" prop="roleDesc" align="center" />
-        <el-table-column label="权限" prop="permissions" align="center" />
+        <el-table-column label="权限" align="center">
+          <template #default="scope">
+            <template v-if="(scope.row.permissions || []).length">
+              <el-tag
+                v-for="(p, i) in scope.row.permissions.slice(0, 4)"
+                :key="i"
+                size="small"
+                style="margin: 2px"
+                >{{ p }}</el-tag
+              >
+              <el-tag v-if="scope.row.permissions.length > 4" size="small" type="info" style="margin: 2px">
+                +{{ scope.row.permissions.length - 4 }}
+              </el-tag>
+            </template>
+            <span v-else>—</span>
+          </template>
+        </el-table-column>
         <el-table-column label="创建时间" prop="createdAt" align="center" />
       </art-table>
     </div>
@@ -61,7 +80,7 @@
   import { UserService } from '@/api/system/userApi'
   import { ElMessage } from 'element-plus'
   import { useRouter } from 'vue-router'
-  import { ref, nextTick } from 'vue'
+  import { ref } from 'vue'
   import { RoleType } from '@/types/system/user'
 
   const router = useRouter()
@@ -71,9 +90,7 @@
   const total = ref(0)
   const pageNum = ref(1)
   const pageSize = ref(10)
-  const roleNames = ref<string[]>([])
   const roles = ref<RoleType[]>([])
-  const roleRef = ref()
   const form = ref({
     nickName: '',
     userName: '',
@@ -96,41 +113,56 @@
     pageNum.value = page
   }
 
-  // 多选框选中数据
-  const handleSelectionChange = (selection: any) => {
-     roleNames.value = selection.map((item: any) => item.roleName)
-  }
-
   /** 提交按钮 */
   const submitForm = async () => {
     const userId = form.value.userId
-    const res = await UserService.updateAuthRole({ userId: userId, roleNames: roleNames.value })
+    // 勾选状态直接读行上的 flag（不再依赖表格内部 selection）
+    const checked = roles.value.filter((row: any) => row.flag).map((row: any) => row.roleName)
+    const res = await UserService.updateAuthRole({ userId: userId, roleNames: checked })
     if (res.code === 200) {
-      ElMessage.success(res.message)
+      ElMessage.success((res as any).result || res.message)
       close()
     }
   }
 
-  ;(async () => {
+  /** 页面初始化：每次激活都执行（组件被 keep-alive 缓存时 setup 只跑一次） */
+  const initPage = async () => {
     const userId = route.params && route.params.userId
-    if (userId) {
-      loading.value = true
+    if (!userId) {
+      // 不带 userId 直接访问（如从菜单点进）：回列表，避免空白页
+      loading.value = false
+      ElMessage.warning('请从用户列表选择用户进行角色分配')
+      router.replace({ path: '/system/user-auth/role/index' })
+      return
+    }
+    loading.value = true
+    try {
       const res = await UserService.getAuthRole(userId)
       if (res.code === 200) {
         form.value = res.result.user
-        roles.value = res.result.roles
+        roles.value = res.result.roles || []
         total.value = roles.value.length
-        nextTick(() => {
-          roles.value.forEach((row) => {
-            if (row.flag) {
-              roleRef.value.toggleRowSelection(row)
-            }
-          })
+        pageNum.value = 1
+        // 预勾选当前用户已拥有的角色
+        roles.value.forEach((row: any) => {
+          row.flag = ((form.value.roles as string[]) || []).includes(row.roleName)
         })
-        loading.value = false
       }
+    } finally {
+      loading.value = false
     }
-  })()
+  }
+
+  // 首次挂载 setup 直接跑；keep-alive 缓存后靠 onActivated 复跑
+  let booted = false
+  initPage()
+  onActivated(() => {
+    if (!booted) {
+      booted = true
+      return
+    }
+    initPage()
+  })
 </script>
 
 <style scoped>

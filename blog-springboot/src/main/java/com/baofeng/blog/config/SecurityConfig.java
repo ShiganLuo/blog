@@ -3,6 +3,7 @@ package com.baofeng.blog.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,6 +21,7 @@ import com.baofeng.blog.exception.CustomAuthenticationEntryPoint;
 //博客前台访问不需要token
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // 启用 @PreAuthorize 方法级权限校验（配合 @perm 表达式）
 public class SecurityConfig {
     private final List<String> whiteListUris;
     public SecurityConfig(JwtPropertiesConfig jwtProperties) {

@@ -270,42 +270,66 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ApiResponse<String> updateUserRole(UpdateUserRoleRequest updateUserRoleRequest) {
         Long userId = updateUserRoleRequest.userId();
-        List<String> roleNames = updateUserRoleRequest.roleNames();
-        List<String> validRoles = List.of(RoleTypeEnum.USER.getRole(), RoleTypeEnum.ADMIN.getRole());
+        List<String> roleNames = updateUserRoleRequest.roleNames() == null
+            ? List.of()
+            : updateUserRoleRequest.roleNames().stream().distinct().collect(Collectors.toList());
+        // 有效角色改为查库（原写死 USER/ADMIN 枚举，新建的角色会选不到）
+        List<String> validRoles = roleMapper.getAllRoles().stream()
+            .map(Role::getRoleName)
+            .collect(Collectors.toList());
         // 检查用户是否存在
         User user = userMapper.selectUserById(userId);
         if (user == null) {
             return ApiResponse.error(ResultCodeEnum.NOT_FOUND, "用户不存在");
         }
 
+        // 先解析全部角色再动关联，避免删了关联才发现角色无效（半完成状态）
+        List<Role> roleEntities = new ArrayList<>();
         for (String roleName : roleNames) {
             if (!validRoles.contains(roleName)) {
                 return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "无效的角色: " + roleName);
             }
+            Role role = roleMapper.selectRoleByRoleName(roleName);
+            if (role == null) {
+                return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "角色不存在: " + roleName);
+            }
+            roleEntities.add(role);
+        }
+        // 只有拥有管理员角色的账号才能授予管理员角色
+        if (roleNames.contains(RoleTypeEnum.ADMIN.getRole()) && !currentHasAdminRole()) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "只有管理员可以授予管理员角色");
         }
         // 删除用户现有角色
         roleMapper.deleteUserRolesByUserId(userId);
         // 为用户分配新角色
-        for (String roleName : roleNames) {
-            Role role = roleMapper.selectRoleByRoleName(roleName);
-            if (role == null) {
-                // 如果角色不存在，创建新角色
-                role = new Role();
-                role.setRoleName(RoleTypeEnum.valueOf(roleName).getRole());
-                role.setRoleDesc(RoleTypeEnum.valueOf(roleName).getDescription());
-                int rowUpdated = roleMapper.insertRole(role);
-                if (rowUpdated > 0) {
-                    logger.error("角色创建失败: " + roleName);
-                }
-            }
+        for (Role role : roleEntities) {
             int rowUpdated = roleMapper.insertUserRole(userId, role.getId());
             if (rowUpdated == 0) {
-                logger.error("为用户分配角色失败: " + roleName);
+                logger.error("为用户分配角色失败: " + role.getRoleName());
             }
         }
         return ApiResponse.success("角色更新成功");
+    }
+
+    /** 当前登录用户是否拥有管理员角色 */
+    private boolean currentHasAdminRole() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+        String username = authentication.getName();
+        if (username == null || "anonymousUser".equals(username)) {
+            return false;
+        }
+        Long currentId = userMapper.getIdByUsername(username);
+        if (currentId == null) {
+            return false;
+        }
+        return roleMapper.selectRolesByUserId(currentId).stream()
+            .anyMatch(r -> RoleTypeEnum.ADMIN.getRole().equals(r.getRoleName()));
     }
 
     @Override

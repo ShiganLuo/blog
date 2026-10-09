@@ -7,14 +7,7 @@ import java.util.*;
 @RestController
 public class AuthStubController {
 
-    @GetMapping("/api/getInfo")
-    public ApiResponse<Map<String, Object>> getInfo() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("user", new HashMap<>());
-        result.put("roles", List.of("admin"));
-        result.put("permissions", List.of("*:*:*"));
-        return ApiResponse.success(result);
-    }
+    // getInfo 硬编码返回 *:*:* 的地雷端点已删除（登录响应本身携带真实 permissions，无调用方依赖此接口）
 
     @PostMapping("/api/logout")
     public ApiResponse<String> logout() {

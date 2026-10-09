@@ -105,6 +105,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(500).body(ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "数据库操作失败"));
     }
 
+    // 权限不足（@PreAuthorize 拦截）
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<?>> handleAccessDenied(org.springframework.security.access.AccessDeniedException ex) {
+        logger.warn("权限不足: {}", ex.getMessage());
+        return ResponseEntity.status(403).body(ApiResponse.error(403, "没有权限执行此操作"));
+    }
+
     // 所有未处理的异常（兜底）
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleGenericException(Exception ex) {

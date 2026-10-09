@@ -129,28 +129,18 @@
         <el-table-column label="备注" align="center" prop="bio" v-if="columns[12].show" />
         <el-table-column label="操作" align="center" width="220px">
           <template #default="scope">
-            <button-table
-              type="edit"
-              v-auth="['system:user:edit']"
-              @click="handleUpdate(scope.row)"
-            />
-            <button-table
-              type="delete"
-              v-auth="['system:user:remove']"
-              @click="handleDelete(scope.row)"
-            />
-            <button-table
-              icon="&#xe889;"
-              type="add"
-              v-auth="['system:user:resetPwd']"
-              @click="handleResetPwd(scope.row)"
-            />
-            <button-table
-              icon="&#xe715;"
-              type="add"
-              v-auth="['system:user:edit']"
-              @click="handleAuthRole(scope.row)"
-            />
+            <el-tooltip content="编辑用户" placement="top" aria-label="编辑用户" v-auth="['system:user:edit']">
+              <button-table type="edit" @click="handleUpdate(scope.row)" />
+            </el-tooltip>
+            <el-tooltip content="删除用户" placement="top" aria-label="删除用户" v-auth="['system:user:remove']">
+              <button-table type="delete" @click="handleDelete(scope.row)" />
+            </el-tooltip>
+            <el-tooltip content="重置密码" placement="top" aria-label="重置密码" v-auth="['system:user:resetPwd']">
+              <button-table icon="&#xe889;" type="more" @click="handleResetPwd(scope.row)" />
+            </el-tooltip>
+            <el-tooltip content="分配角色" placement="top" aria-label="分配角色" v-auth="['system:user:edit']">
+              <button-table icon="&#xe715;" type="more" @click="handleAuthRole(scope.row)" />
+            </el-tooltip>
           </template>
         </el-table-column>
       </template>

@@ -51,8 +51,35 @@ public interface RoleMapper {
     Role selectRoleByRoleName(String roleName);
 
     /**
-     * 查询所有角色
+    * 查询所有角色
+    * @return
+    */
+    List<Role> getAllRoles();
+
+    /**
+     * 角色列表（含权限数/用户数）
      * @return
      */
-    List<Role> getAllRoles();
-}
+    List<com.baofeng.blog.dto.admin.AdminRoleDTO.RoleListRow> selectRoleList();
+
+    /**
+     * 根据ID查询角色
+     * @param roleId
+     * @return
+     */
+    Role selectRoleById(Long roleId);
+
+    /**
+     * 更新角色
+     * @param role
+     * @return
+     */
+    int updateRole(Role role);
+
+    /**
+     * 删除角色的用户关联（user_roles.role_id 外键为 NO ACTION）
+     * @param roleId
+     * @return
+     */
+    int deleteUserRolesByRoleId(Long roleId);
+} 

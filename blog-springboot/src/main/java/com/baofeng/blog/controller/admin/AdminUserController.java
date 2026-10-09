@@ -12,6 +12,7 @@ import com.baofeng.blog.service.UtilService;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.validation.annotation.Validated;
@@ -48,17 +49,20 @@ public class AdminUserController {
     }
 
     @GetMapping("/getUserInfoById/{id}")
+    @PreAuthorize("@perm.has('system:user:edit')")
     public ApiResponse<UserInfoResponse> getUserInfoById(@PathVariable Long id){
         return userService.getUserInfoById(id);
     }
 
 
     @PostMapping("/updateUserRoles")
+    @PreAuthorize("@perm.has('system:user:edit')")
     public ApiResponse<String> updateUserRole(@RequestBody @Validated UpdateUserRoleRequest updaUserRoleRequest) {
         return userService.updateUserRole(updaUserRoleRequest);
     }
 
     @PostMapping("/getUsersList")
+    @PreAuthorize("@perm.has('system:user:list')")
     public ApiResponse<UserPageResponse> getUserList(@RequestBody UserPageRequest userPageRequest) {
         return userService.getUserList(userPageRequest);
     }
@@ -69,16 +73,19 @@ public class AdminUserController {
     }
 
     @PostMapping("/passwordUpdate")
+    @PreAuthorize("@perm.has('system:user:resetPwd')")
     public ApiResponse<String> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest){
         return userService.updatePassword(updatePasswordRequest);
     }
 
     @PostMapping("/updateUserInfo")
+    @PreAuthorize("@perm.has('system:user:edit')")
     public ApiResponse<String> updateUserInfo(@RequestBody UpdateUserInfo updateUserInfo) {
         return userService.updateUserInfo(updateUserInfo);
     }
 
     @DeleteMapping("/deleteUser/{userId}")
+    @PreAuthorize("@perm.has('system:user:remove')")
     public ApiResponse<String> deleteUser(@PathVariable("userId") Long userId) {
         return userService.deleteUser(userId);
     }

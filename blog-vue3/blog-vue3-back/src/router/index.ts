@@ -10,6 +10,7 @@ import Home from '@views/index/index.vue'
 import AppConfig from '@/config'
 import { useUserStore } from '@/store/modules/user'
 import { menuService } from '@/api/menuApi'
+import { ElMessage } from 'element-plus'
 import { useMenuStore } from '@/store/modules/menu'
 import { useSettingStore } from '@/store/modules/setting'
 import NProgress from 'nprogress'
@@ -165,6 +166,12 @@ router.beforeEach(async (to, from, next) => {
   if (!userStore.accessToken && to.path !== '/login' && !to.meta.noLogin) {
     userStore.logOut()
     return next('/login')
+  }
+
+  // 角色编辑必须从用户列表携带 userId 进入；直连回列表（组件会被 keep-alive 缓存，不能只靠组件内重定向）
+  if (to.path.includes('/role/authRole') && !to.params.userId) {
+    ElMessage.warning('请从用户列表选择用户进行角色分配')
+    return next({ path: '/system/user-auth/role/index', replace: true })
   }
 
   // 如果用户已登录且动态路由未注册，则注册动态路由
