@@ -542,7 +542,8 @@
       const res = await UserService.deleteUser(_userIds)
       if (res.code === 200) {
         getList()
-        ElMessage.success(res.message)
+        // success(String) 的字符串放在 result 里，message 恒为"请求成功"
+        ElMessage.success(typeof res.result === 'string' && res.result ? res.result : res.message)
       }
     }
   }

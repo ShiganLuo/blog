@@ -367,4 +367,14 @@
         AND type = 'talk'
     </update>
 
+    <!-- 删除用户：清空以其为通知对象的评论 author_id -->
+    <update id="clearCommentAuthorRef">
+        UPDATE comments SET author_id = NULL WHERE author_id = #{authorId}
+    </update>
+
+    <!-- 删除用户：逻辑删除其发表的评论/说说 -->
+    <update id="deleteCommentsByUserId">
+        UPDATE comments SET is_deleted = 1 WHERE user_id = #{userId} AND is_deleted = 0
+    </update>
+
 </mapper> 

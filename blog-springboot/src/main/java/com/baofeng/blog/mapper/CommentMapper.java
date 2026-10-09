@@ -135,4 +135,18 @@ public interface CommentMapper {
      * @return
      */
     int updateCommentsStatusByIds(AdminCommentStatusUpateRequest request);
+
+    /**
+     * 删除用户：清空以其为通知对象的评论引用（comments.author_id 外键为 NO ACTION）
+     * @param authorId
+     * @return
+     */
+    int clearCommentAuthorRef(Long authorId);
+
+    /**
+     * 删除用户：逻辑删除其发表的评论/说说
+     * @param userId
+     * @return
+     */
+    int deleteCommentsByUserId(Long userId);
 } 

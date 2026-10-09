@@ -166,4 +166,9 @@
         </foreach>
     </delete>
 
+    <!-- 删除用户：删除其提交的友链 -->
+    <delete id="deleteFriendLinksByUserId">
+        DELETE FROM friend_link WHERE user_id = #{userId}
+    </delete>
+
 </mapper>

@@ -51,4 +51,11 @@ public interface FriendLinkMapper {
      * @return
      */
     List<AdminFriendLinkItem> getAllFriendLinksForAdmin(String kyeword);
+
+    /**
+     * 删除用户：删除其提交的友链（friend_link.user_id 外键为 NO ACTION）
+     * @param userId
+     * @return
+     */
+    int deleteFriendLinksByUserId(Long userId);
 }

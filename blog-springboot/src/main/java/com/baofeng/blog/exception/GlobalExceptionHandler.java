@@ -85,6 +85,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(500).body(ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "服务器内部错误"));
     }
 
+    // SQL 异常：完整性约束（外键/唯一键）给出可读提示，其余 SQL 错误也明确报"数据库操作失败"
+    @ExceptionHandler({
+        org.apache.ibatis.exceptions.PersistenceException.class,
+        org.mybatis.spring.MyBatisSystemException.class,
+        org.springframework.dao.DataIntegrityViolationException.class
+    })
+    public ResponseEntity<ApiResponse<?>> handleSqlException(Exception ex) {
+        Throwable cur = ex;
+        int depth = 0;
+        while (cur != null && depth++ < 10 && !(cur instanceof java.sql.SQLIntegrityConstraintViolationException)) {
+            cur = cur.getCause();
+        }
+        if (cur != null) {
+            logger.warn("数据完整性约束冲突: {}", cur.getMessage());
+            return ResponseEntity.badRequest().body(ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "操作失败：数据存在关联或约束冲突"));
+        }
+        logger.warn("SQL执行失败: {}", ex.getMessage());
+        return ResponseEntity.status(500).body(ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR, "数据库操作失败"));
+    }
+
     // 所有未处理的异常（兜底）
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleGenericException(Exception ex) {

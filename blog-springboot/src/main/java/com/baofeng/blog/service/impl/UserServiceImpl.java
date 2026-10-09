@@ -4,6 +4,8 @@ import com.baofeng.blog.exception.DuplicateUserException;
 import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.mapper.RoleMapper;
 import com.baofeng.blog.mapper.PermissionMapper;
+import com.baofeng.blog.mapper.CommentMapper;
+import com.baofeng.blog.mapper.FriendLinkMapper;
 import com.baofeng.blog.service.UserService;
 import com.baofeng.blog.common.util.JwtTokenProviderUtil;
 import com.baofeng.blog.common.util.UrlNormalizeUtil;
@@ -43,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +58,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
     private final PermissionMapper permissionMapper;
+    private final CommentMapper commentMapper;
+    private final FriendLinkMapper friendLinkMapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProviderUtil jwtTokenProvider;
     private final long accessTokenExpiration;
@@ -67,6 +72,8 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserMapper userMapper,
                             RoleMapper roleMapper,
                             PermissionMapper permissionMapper,
+                            CommentMapper commentMapper,
+                            FriendLinkMapper friendLinkMapper,
                             BCryptPasswordEncoder passwordEncoder,
                             JwtTokenProviderUtil jwtTokenProvider, 
                             JwtPropertiesConfig jwtProperties,
@@ -77,6 +84,8 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
         this.permissionMapper = permissionMapper;
+        this.commentMapper = commentMapper;
+        this.friendLinkMapper = friendLinkMapper;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.accessTokenExpiration = jwtProperties.getAccessTokenExpiration();
@@ -440,12 +449,61 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * 获取当前登录用户的ID（与 BlogSettingServiceImpl 同一取法）
+     * @return 用户ID，未登录返回null
+     */
+    private Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        String username = authentication.getName();
+        if (username == null || "anonymousUser".equals(username)) {
+            return null;
+        }
+        return userMapper.getIdByUsername(username);
+    }
+
+    /** 沿异常链查找指定类型的原因（MyBatis/Spring 会把 SQL 异常层层包装） */
+    private static boolean rootCauseIs(Throwable e, Class<? extends Throwable> type) {
+        Throwable cur = e;
+        int depth = 0;
+        while (cur != null && depth++ < 10) {
+            if (type.isInstance(cur)) {
+                return true;
+            }
+            cur = cur.getCause();
+        }
+        return false;
+    }
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ApiResponse<String> deleteUser(Long userId) {
-        int rowsDeleted = userMapper.deleteUserById(userId);
-        return rowsDeleted > 0 
-            ?  ApiResponse.success("用户删除成功")
-            : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"用户删除失败");
+        // 不能删除当前登录用户
+        Long currentUserId = getCurrentUserId();
+        if (currentUserId != null && currentUserId.equals(userId)) {
+            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "不能删除当前登录用户");
+        }
+        try {
+            // 先清理 NO ACTION 外键指向该用户的关联数据，否则 DELETE users 会被约束挡住
+            roleMapper.deleteUserRolesByUserId(userId);         // user_roles.user_id
+            friendLinkMapper.deleteFriendLinksByUserId(userId); // friend_link.user_id（其提交的友链）
+            commentMapper.clearCommentAuthorRef(userId);        // comments.author_id（通知对象置空）
+            commentMapper.deleteCommentsByUserId(userId);       // 其发表的评论/说说 → 逻辑删除
+            // articles.author_id、blog_settings.user_id 为 ON DELETE CASCADE，由数据库级联处理
+            int rowsDeleted = userMapper.deleteUserById(userId);
+            return rowsDeleted > 0
+                ? ApiResponse.success("用户删除成功")
+                : ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "用户不存在或已被删除");
+        } catch (RuntimeException e) {
+            if (rootCauseIs(e, SQLIntegrityConstraintViolationException.class)) {
+                logger.warn("删除用户失败，存在未清理的外键关联: {}", e.getMessage());
+                return ApiResponse.error(ResultCodeEnum.BAD_REQUEST, "删除失败：该用户仍存在关联数据，无法删除");
+            }
+            throw e;
+        }
     }
 
     @Override
