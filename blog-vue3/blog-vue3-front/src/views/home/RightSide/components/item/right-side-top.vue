@@ -116,14 +116,14 @@ const operate = (op: OperationType, val?: string): void => {
     </span>
   </div>
 
-  <!-- GitHub链接（主展示） -->
+  <!-- Gitee链接（主展示；GitHub 在下方社交图标行已有，避免重复） -->
   <div class="git-ee flex_r_around">
     <span
       class="git-ee__item button-animated"
-      @click="operate('openLink', configDetail.github ?? '#')"
+      @click="operate('openLink', configDetail.gitee ?? '#')"
     >
-      <i class="iconfont icon-github-fill"></i>
-      <span class="git-ee__item-text"> My GitHub</span>
+      <i class="iconfont icon-gitee2"></i>
+      <span class="git-ee__item-text"> My Gitee</span>
     </span>
   </div>
 

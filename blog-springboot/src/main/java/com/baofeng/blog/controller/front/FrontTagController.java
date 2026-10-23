@@ -20,12 +20,12 @@ public class FrontTagController {
     }
 
     /**
-     * 获取侧栏标签（按文章数排序，后端固定最多20个）
+     * 获取侧栏标签（按文章数排序，后端固定前5个）
      * @return 标签列表
      */
     @GetMapping("/getAllTags")
     public ApiResponse<List<TagDictionaryResponse>> getAllTags() {
-        return tagService.getHotTags(20);
+        return tagService.getHotTags(5);
     }
 
     /**
