@@ -22,19 +22,10 @@ public class AdminArticleDTO {
         Integer pageSize,    // 每页显示条数
         
         String keyword,      // 可选，搜索关键词
-        Long categoryId,     // 可选，分类ID
         String sortBy,       // 可选，排序字段
         String sortOrder     // 可选，排序方向
     ) {}
 
-    /**
-     * 文章分类请求
-     */
-    @Data
-    public static class CategoryRequest {
-        private String categoryName;
-        private Long articleId;
-    }
     /**
      * 文章标签请求 
      */
@@ -48,7 +39,6 @@ public class AdminArticleDTO {
         Integer current,
         Integer size,
         String keyword,
-        Long categoryId,
         Long tagId,
         String type,
         Integer status,
@@ -63,7 +53,6 @@ public class AdminArticleDTO {
         @MinioFile
         private String articleCover;
         private String articleTitle;
-        private List<String> categoryNameList;
         private String articleAbstract;
         private String articleContent;
         private Integer isTop;
@@ -94,7 +83,6 @@ public class AdminArticleDTO {
         String articleContent,
         String articleAbstract,
         String articleCover,
-        List<String> categoryNameList,
         List<String> tagNameList,
         Boolean isTop,
         Boolean isFeatured,

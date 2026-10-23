@@ -10,7 +10,6 @@ export interface ConfigDetail {
   frontHeadBackground?: string;
   authorAvatar?: string;
   personal_say?: string;
-  categoryCount?: number;
   tagCount?: number;
   userCount?: number;
   gitee?: string;

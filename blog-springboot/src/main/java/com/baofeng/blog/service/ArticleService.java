@@ -108,13 +108,6 @@ public interface ArticleService {
     public ApiResponse<String> storeImage(UploadImage uploadImage);
 
     /**
-     * 设置文章分类
-     * @param CategoryRequest
-     * @return boolean
-     */
-    public ApiResponse<String> addCategory(CategoryRequest request);
-
-    /**
      * 设置文章标签
      * @param TagRequest
      * @return boolean
@@ -147,13 +140,6 @@ public interface ArticleService {
      * @return
      */
     public ApiResponse<ArticleAbstractsResponse> getArticlesByTagId(CategoryOrTagRequest request);
-
-    /**
-     * 根据分类ID查询文章
-     * @param categoryId
-     * @return
-     */
-    public ApiResponse<ArticleAbstractsResponse> getArticlesByCategoryId(CategoryOrTagRequest request);
 
     /**
      * 更新文章推荐状态

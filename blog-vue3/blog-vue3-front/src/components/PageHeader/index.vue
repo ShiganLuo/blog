@@ -21,7 +21,6 @@ interface Article {
   articleTitle?: string;
   createdAt?: string;
   updatedAt?: string;
-  categoryNameList?: string[];
   tagNameList?: string[];
   thumbsUpTimes?: number;
   viewTimes?: number;
@@ -131,15 +130,6 @@ watch(
           <i class="iconfont icon-schedule"></i>
           <span class="meta-label">更新于</span>
           <span class="meta-value">{{ article.updatedAt }}</span>
-        </span>
-        <span class="meta-separator"></span>
-        <span class="to_pointer">
-          <span
-            class="meta-value"
-            v-for="(categoryName, index) in (article.categoryNameList ?? []).slice(0, 3)"
-            :key="index"
-            >{{ index == (article.categoryNameList ?? []).length - 1 ? categoryName : categoryName + "、" }}
-          </span>
         </span>
         <span class="meta-separator"></span>
         <span class="to_pointer">

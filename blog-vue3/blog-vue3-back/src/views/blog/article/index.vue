@@ -17,12 +17,6 @@
               @keyup.enter="handleQuery"
             />
             <form-select
-              label="文章分类"
-              prop="categoryId"
-              v-model="queryParams.categoryId"
-              :options="categoryOption"
-            />
-            <form-select
               label="文章标签"
               prop="status"
               v-model="queryParams.tagId"
@@ -80,28 +74,7 @@
     >
       <template #default>
         <el-table-column label="文章作者" align="center" prop="authorName" v-if="columns[0].show" />
-        <el-table-column label="文章分类" align="center" v-if="columns[1].show">
-          <template #default="{ row }">
-            <div
-              style="display: flex; flex-wrap: wrap; justify-content: center;"
-            >
-              <el-tooltip
-                v-for="(name, idx) in row.categoryNameList"
-                :key="idx"
-                :content="name"
-                placement="top"
-              >
-                <el-tag
-                  type="info"
-                  style="margin: 2px; max-width: 100px; overflow: hidden; text-overflow: ellipsis;"
-                >
-                  {{ name }}
-                </el-tag>
-              </el-tooltip>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="缩略图" align="center" prop="articleCover" v-if="columns[2].show">
+        <el-table-column label="缩略图" align="center" prop="articleCover" v-if="columns[1].show">
           <template #default="scope">
             <el-image
               class="article-cover"
@@ -113,22 +86,22 @@
           label="文章标题"
           align="center"
           prop="articleTitle"
-          v-if="columns[3].show"
+          v-if="columns[2].show"
         />
 
         <el-table-column
           label="摘要"
           align="center"
           prop="articleAbstract"
-          v-if="columns[4].show"
+          v-if="columns[3].show"
         />
         <el-table-column
           label="文章内容"
           align="center"
           prop="articleContent"
-          v-if="columns[5].show"
+          v-if="columns[4].show"
         />
-        <el-table-column label="置顶" align="center" prop="isTop" v-if="columns[6].show">
+        <el-table-column label="置顶" align="center" prop="isTop" v-if="columns[5].show">
           <template #default="{ row }">
             <el-switch
               :disabled="row.isDeleted == 1"
@@ -143,7 +116,7 @@
             label="推荐"
             align="center"
             prop="isFeatured"
-            v-if="columns[7].show"
+            v-if="columns[6].show"
         >
             <template #default="{ row }">
                 <el-switch
@@ -155,9 +128,9 @@
                 />
         </template>
         </el-table-column>
-        <el-table-column label="删除" align="center" prop="isDeleted" v-if="columns[8].show" />
-        <el-table-column label="状态" align="center" prop="status" v-if="columns[9].show" />
-        <el-table-column label="类型" align="center" prop="type" v-if="columns[10].show">
+        <el-table-column label="删除" align="center" prop="isDeleted" v-if="columns[7].show" />
+        <el-table-column label="状态" align="center" prop="status" v-if="columns[8].show" />
+        <el-table-column label="类型" align="center" prop="type" v-if="columns[9].show">
           <template #default="scope">
             <dict-tag :options="article_type" :value="scope.row.type" />
           </template>
@@ -166,15 +139,15 @@
           label="原文链接"
           align="center"
           prop="originalUrl"
-          v-if="columns[11].show"
+          v-if="columns[10].show"
         />
-        <el-table-column label="浏览量" align="center" prop="viewsCount" v-if="columns[12].show" />
-        <el-table-column label="创建时间" align="center" prop="createdAt" v-if="columns[13].show">
+        <el-table-column label="浏览量" align="center" prop="viewsCount" v-if="columns[11].show" />
+        <el-table-column label="创建时间" align="center" prop="createdAt" v-if="columns[12].show">
           <template #default="scope">
             {{ parseTime(scope.row.createdAt) }}
           </template>
         </el-table-column>
-        <el-table-column label="文章标签" align="center" v-if="columns[14].show">
+        <el-table-column label="文章标签" align="center" v-if="columns[13].show">
           <template #default="{ row }">
             <div
               style="display: flex; flex-wrap: wrap; justify-content: center;"
@@ -220,7 +193,6 @@
   import { ref, reactive } from 'vue'
   import { resetForm } from '@/utils/utils'
   import { ElMessage, ElMessageBox } from 'element-plus'
-  import { CategoryService } from '@/api/blog/categoryApi'
   import { TagService } from '@/api/blog/tagApi'
   import { parseTime } from '@/utils/utils'
   import defaultAvatar from '@/assets/img/avatar/default-avatar.png'
@@ -235,7 +207,6 @@
     current: 1,
     size: 10,
     keyword: '',
-    categoryId: 0,
     tagId: 0,
     type: '',
     status: '',
@@ -246,7 +217,6 @@
     authorName: string,
     articleCover: string,
     articleTitle: string,
-    categoryNameList: string[],
     articleAbstract: string,
     articleContent: string,
     isTop: number,
@@ -278,7 +248,6 @@
 
   const columns = reactive([
     { name: '文章作者', show: true },
-    { name: '文章分类', show: true },
     { name: '缩略图', show: true },
     { name: '文章标题', show: true },
     { name: '摘要', show: false },
@@ -371,20 +340,6 @@
     }
   }
 
-  // 文章分类
-  const categoryOption = ref<any>([])
-  const searchCategories = async () => {
-    const res = await CategoryService.searchCategories('')
-    if (res.code === 200) {
-      categoryOption.value = res.result.map((item: any) => {
-        return {
-          label: item.categoryName,
-          value: item.id
-        }
-      })
-    }
-  }
-
   // 文章标签
   const tagOption = ref<any>([])
   const searchTags = async () => {
@@ -473,7 +428,6 @@
 
   // 初始化
   onMounted(() => {
-    searchCategories()
     searchTags()
     getuseDict()
     getList()

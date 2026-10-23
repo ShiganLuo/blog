@@ -55,7 +55,6 @@ const articleFormState = {
   originUrl: '',  
   createdAt: '',
   updatedAt: '',
-  categoryNameList: [],
   tagNameList: [],
   thumbsUpTimes: 0,
   viewTimes: 0,

@@ -5,7 +5,6 @@ export interface ArticleResult {
   authorName: string
   articleCover: string
   articleTitle: string
-  categoryNameList: string[]
   articleAbstract: string
   articleContent: string
   isTop: number

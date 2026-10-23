@@ -5,7 +5,6 @@ import com.baofeng.blog.mapper.BlogSettingMapper;
 import com.baofeng.blog.mapper.ArticleMapper;
 import com.baofeng.blog.mapper.TagMapper;
 import com.baofeng.blog.mapper.UserMapper;
-import com.baofeng.blog.mapper.CategoryMapper;
 import com.baofeng.blog.common.util.UrlNormalizeUtil;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.admin.AdminBlogSettingDTO.AdminConfigDetailResponse;
@@ -35,7 +34,6 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     private final BlogSettingMapper blogSettingMapper;
     private final ArticleMapper articleMapper;
     private final TagMapper tagMapper;
-    private final CategoryMapper categoryMapper;
     private final UserMapper userMapper;
     private final RedisVisitCounter redisVisitCounter;
     private static final Logger logger = LoggerFactory.getLogger(BlogSettingService.class);
@@ -44,14 +42,12 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         BlogSettingMapper blogSettingMapper,
         ArticleMapper articleMapper,
         TagMapper tagMapper,
-        CategoryMapper categoryMapper,
         UserMapper userMapper,
         RedisVisitCounter redisVisitCounter
     ) {
         this.blogSettingMapper = blogSettingMapper;
         this.articleMapper = articleMapper;
         this.tagMapper = tagMapper;
-        this.categoryMapper = categoryMapper;
         this.userMapper = userMapper;
         this.redisVisitCounter = redisVisitCounter;
     }
@@ -171,7 +167,6 @@ public class BlogSettingServiceImpl implements BlogSettingService {
 
         Long articleCount = articleMapper.countAllArticles();
         Long tagCount = tagMapper.countAllTags();
-        Long categoryCount = categoryMapper.countAllCategories();
         Long userCount = userMapper.countAllUsers();
         FrontConfigDetailResponse detail = new FrontConfigDetailResponse();
         detail.setWebsiteTitle(blogSetting.getWebsiteTitle());
@@ -194,7 +189,6 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         detail.setView_time(blogSetting.getVisitCount());
         detail.setCreatedAt(blogSetting.getCreatedAt());
         detail.setTagCount(tagCount);
-        detail.setCategoryCount(categoryCount);
         detail.setUserCount(userCount);
         return ApiResponse.success(detail);
     }

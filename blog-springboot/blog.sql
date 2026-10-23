@@ -87,15 +87,6 @@ CREATE TABLE `comments` (
 
 
 
-DROP TABLE IF EXISTS `categories`;
-CREATE TABLE `categories` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '分类ID',
-    `name` VARCHAR(100) NOT NULL UNIQUE COMMENT '分类名称',
-    `description` VARCHAR(250) DEFAULT NULL COMMENT '分类描述',
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='目录表';
-
 DROP TABLE IF EXISTS `tags`;
 CREATE TABLE tags (
 	`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '标签ID',
@@ -276,18 +267,6 @@ CREATE TABLE entity_images (
     CONSTRAINT fk_entity_image_image FOREIGN KEY (image_id) REFERENCES images(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='实体-图片关系表';
 
-DROP TABLE IF EXISTS `article_categories`;
-CREATE TABLE `article_categories` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '唯一标识符',
-    `article_id` BIGINT NOT NULL COMMENT '文章 ID（关联 articles.id）',
-    `category_id` BIGINT NOT NULL COMMENT '标签 ID（关联 categories.id）',
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    CONSTRAINT fk_article2 FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
-    CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
-    UNIQUE KEY uk_article_tag (article_id, category_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文章-目录关系表';
-
 DROP TABLE IF EXISTS `role_permissions`;
 CREATE TABLE `role_permissions` (
 	`id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '唯一标识符',
@@ -335,9 +314,6 @@ INSERT IGNORE INTO permissions (name, permission, type, parent_id, path) SELECT 
 INSERT IGNORE INTO permissions (name, permission, type, parent_id, path) SELECT '编辑','blog:article:edit','button',id,NULL FROM permissions WHERE permission='blog:article';
 INSERT IGNORE INTO permissions (name, permission, type, parent_id, path) SELECT '删除','blog:article:remove','button',id,NULL FROM permissions WHERE permission='blog:article';
 INSERT IGNORE INTO permissions (name, permission, type, parent_id, path) SELECT '导出','blog:article:export','button',id,NULL FROM permissions WHERE permission='blog:article';
-INSERT IGNORE INTO permissions (name, permission, type, parent_id, path) VALUES ('分类管理','blog:category','menu',NULL,NULL);
-INSERT IGNORE INTO permissions (name, permission, type, parent_id, path) SELECT '编辑','blog:category:edit','button',id,NULL FROM permissions WHERE permission='blog:category';
-INSERT IGNORE INTO permissions (name, permission, type, parent_id, path) SELECT '删除','blog:category:remove','button',id,NULL FROM permissions WHERE permission='blog:category';
 INSERT IGNORE INTO permissions (name, permission, type, parent_id, path) VALUES ('标签管理','blog:tag','menu',NULL,NULL);
 INSERT IGNORE INTO permissions (name, permission, type, parent_id, path) SELECT '编辑','blog:tag:edit','button',id,NULL FROM permissions WHERE permission='blog:tag';
 INSERT IGNORE INTO permissions (name, permission, type, parent_id, path) SELECT '删除','blog:tag:remove','button',id,NULL FROM permissions WHERE permission='blog:tag';

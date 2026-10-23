@@ -43,7 +43,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleMapper articleMapper;
     private final ImageMapper imageMapper;
-    private final CategoryMapper categoryMapper;
     private final TagMapper tagMapper;
     private final EntityImageMapper entityImageMapper;
     private final MinioUtil minioService;
@@ -60,14 +59,12 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleServiceImpl(MinioUtil minioService,
                               ArticleMapper articleMapper,
                               ImageMapper imageMapper,
-                              CategoryMapper categoryMapper,
                               TagMapper tagMapper,
                               EntityImageMapper entityImageMapper,
                               RedisVisitCounter redisVisitCounter) {
         this.minioService = minioService;
         this.articleMapper = articleMapper;
         this.imageMapper = imageMapper;
-        this.categoryMapper = categoryMapper;
         this.tagMapper = tagMapper;
         this.entityImageMapper = entityImageMapper;
         this.redisVisitCounter = redisVisitCounter;
@@ -146,9 +143,6 @@ public class ArticleServiceImpl implements ArticleService {
                 ids = List.of(article.getId());
             }
         }
-        // 目录名列表
-        List<String> categoryNameList = request.categoryNameList();
-
         // 标签名列表
         List<String> tagNameList = request.tagNameList();
 
@@ -160,32 +154,6 @@ public class ArticleServiceImpl implements ArticleService {
                 logger.warn("检测到空的 articleId，跳过该项");
                 continue; 
             }
-            // ---- 分类 ----
-            List<String> existCategoryNameList = categoryMapper.getCategoryNamesByArticleId(articleId);
-            Map<String, List<String>> categoryDiff = ListDiffUtil.diffList(existCategoryNameList, categoryNameList);
-            List<String> categoriesToAdd = categoryDiff.get("toAdd");
-            List<String> categoriesToRemove = categoryDiff.get("toRemove");
-
-            for (String categoryName : categoriesToAdd) {
-                Long categoryId = categoryMapper.JudgeIsCategoryExistByCategoryName(categoryName);
-                if (categoryId == null) {
-                    Category category = new Category();
-                    category.setName(categoryName);
-                    categoryMapper.createCategory(category);
-                    categoryId = category.getId();
-                }
-
-                ArticleCategory articleCategory = new ArticleCategory();
-                articleCategory.setArticleId(articleId);
-                articleCategory.setCategoryId(categoryId);
-                categoryMapper.insertArticleCategory(articleCategory);
-            }
-
-            for (String categoryName : categoriesToRemove) {
-                categoryMapper.deleteCategoryByCategoryName(categoryName);
-                // 级联删除不需要删除articleCategory
-            }
-
             // ---- 标签 ----
             List<String> existTagNameList = tagMapper.getTagNamesByArticleId(articleId);
             Map<String, List<String>> tagDiff = ListDiffUtil.diffList(existTagNameList, tagNameList);
@@ -399,33 +367,6 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    public ApiResponse<String> addCategory(CategoryRequest request) {
-        String categoryName = request.getCategoryName();
-        Long articleId = request.getArticleId();
-        Category newCategory = new Category();
-        newCategory.setName(categoryName);
-        Article article = articleMapper.getArticleById(articleId);
-        if ( article == null ) {
-            return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"文章不存在");
-        }
-        boolean flag = categoryMapper.checkExactName(categoryName);
-        if ( !flag ) {
-            Category category = new Category();
-            category.setName(categoryName);
-            categoryMapper.createCategory(category);
-            Long categoryId = category.getId();
-            ArticleCategory articleCategory = new ArticleCategory();
-            articleCategory.setArticleId(articleId);
-            articleCategory.setCategoryId(categoryId);
-            int rowsInserted1 = categoryMapper.insertArticleCategory(articleCategory);
-            return rowsInserted1 > 0  && category != null
-                ? ApiResponse.success()
-                : ApiResponse.error(ResultCodeEnum.INTERNAL_SERVER_ERROR,"文章分类设置失败");
-        }
-        return ApiResponse.error(ResultCodeEnum.BAD_REQUEST,"文章分类已存在");
-    }
-
-    @Override
     public ApiResponse<String> addTag(TagRequest request) {
         List<String> tagNames = request.getTagNames();
         Long articleId = request.getArticleId();
@@ -543,24 +484,6 @@ public class ArticleServiceImpl implements ArticleService {
         response.setList(pageInfo.getList());      // 当前页数据
         return ApiResponse.success(response);
         
-    }
-
-    @Override
-    public ApiResponse<ArticleAbstractsResponse> getArticlesByCategoryId(CategoryOrTagRequest request) {
-        // 参数校验
-        int pageNum = request.current() != null ? request.current() : 1;
-        int pageSize = request.size() != null ? request.size() : 10; 
-        // 开启分页
-        PageHelper.startPage(pageNum, pageSize);
-        // 执行查询
-        List<ArticleAbstractResponse> list = articleMapper.selectArticlesByCategoryId(request.id());
-        // 获取分页信息
-        PageInfo<ArticleAbstractResponse> pageInfo = new PageInfo<>(list); 
-        // 封装返回结果
-        ArticleAbstractsResponse response = new ArticleAbstractsResponse();
-        response.setTotal(pageInfo.getTotal());    // 总记录数
-        response.setList(pageInfo.getList());      // 当前页数据
-        return ApiResponse.success(response);
     }
 
     @Override

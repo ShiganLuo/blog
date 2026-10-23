@@ -17,7 +17,6 @@ interface BlogConfig {
   websiteTitle?: string;
   personal_say?: string;
   articleCount?: number;
-  categoryCount?: number;
   tagCount?: number;
   gitee?: string;
   bilibili?: string;
@@ -37,25 +36,17 @@ const props = defineProps({
       websiteTitle: "",
       personal_say: "",
       articleCount: 0,
-      categoryCount: 0,
       tagCount: 0
     })
   }
 });
 
 // 操作类型联合类型
-type OperationType =
-  | "goToCategory"
-  | "goToTag"
-  | "goToArchives"
-  | "openLink";
+type OperationType = "goToTag" | "goToArchives" | "openLink";
 
 // 严格类型控制的操作函数
 const operate = (op: OperationType, val?: string): void => {
   switch (op) {
-    case "goToCategory":
-      router.push("/category");
-      break;
     case "goToTag":
       router.push("/tag");
       break;
@@ -104,12 +95,6 @@ const operate = (op: OperationType, val?: string): void => {
       <span class="common-menu__label to_pointer">文章</span>
       <span class="common-menu__value to_pointer">
         <GsapCount :value="configDetail.articleCount" />
-      </span>
-    </span>
-    <span class="flex_c_center" @click="operate('goToCategory')">
-      <span class="common-menu__label to_pointer">分类</span>
-      <span class="common-menu__value to_pointer">
-        <GsapCount :value="configDetail.categoryCount" />
       </span>
     </span>
     <span class="flex_c_center" @click="operate('goToTag')">

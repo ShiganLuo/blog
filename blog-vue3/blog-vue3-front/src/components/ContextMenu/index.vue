@@ -161,10 +161,6 @@ onMounted(fetchArticles);
       <img src="@/assets/context-menu/suiji.png" alt="随便逛逛" />
       随便逛逛
     </div>
-    <div class="menu-item" @click="() => router.push('/category')">
-      <img src="@/assets/context-menu/fenlei.png" alt="" srcset="" />
-      全部分类
-    </div>
   </div>
 </template>
 

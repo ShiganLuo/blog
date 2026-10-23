@@ -51,53 +51,6 @@
               </div>
             </el-form-item>
             <ImagePicker v-model="showImagePicker" @select="handleImageSelect" />
-            <el-form-item label="文章分类">
-              <el-tag
-                type="success"
-                v-for="(categoryName, index) of form.categoryNameList"
-                :key="index"
-                style="margin: 0 1rem 0 0"
-                :closable="true"
-                @close="removeCategory(categoryName)"
-              >
-                {{ categoryName }}
-              </el-tag>
-              <el-popover
-                placement="bottom-start"
-                width="460"
-                trigger="click"
-                v-if="form.categoryNameList.length < 3"
-              >
-                <div class="popover-title">分类</div>
-                <el-autocomplete
-                  style="width: 100%"
-                  v-model="categoryName"
-                  :fetch-suggestions="searchCategories"
-                  placeholder="请输入分类名搜索，enter可添加自定义分类"
-                  :trigger-on-focus="false"
-                  @keyup.enter.native="saveCategory"
-                  @select="handleSelectCategories"
-                >
-                  <template #default="{ item }">
-                    <div>{{ item.categoryName }}</div>
-                  </template>
-                </el-autocomplete>
-                <div class="popover-container">
-                  <div style="margin-bottom: 1rem">添加分类</div>
-                  <el-tag
-                    v-for="(item, index) of categoryList"
-                    :key="index"
-                    :class="categoryClass(item)"
-                    @click="addCategory(item)"
-                  >
-                    {{ item.categoryName }}
-                  </el-tag>
-                </div>
-                <template #reference>
-                  <el-button type="success" plain> 添加分类 </el-button>
-                </template>
-              </el-popover>
-            </el-form-item>
             <el-form-item label="文章标签">
               <el-tag
                 v-for="(tagName, index) of form.tagNameList"
@@ -201,7 +154,6 @@
   import { useUserStore } from '@/store/modules/user'
   import EmojiText from '@/utils/emojo'
   import { ArticleService } from '@/api/blog/articleApi'
-  import { CategoryService } from '@/api/blog/categoryApi'
   import { TagService } from '@/api/blog/tagApi'
   import { PhotoService } from '@/api/photo/photoApi'
   import ImagePicker from '@/components/Widgets/ImagePicker/index.vue'
@@ -213,7 +165,6 @@ interface ArticleForm {
   articleContent: string
   articleAbstract: string
   articleCover: string
-  categoryNameList: string[]
   tagNameList: string[]
   isTop: number
   isDeleted: number
@@ -231,7 +182,6 @@ const initialFormState: ArticleForm = {
   articleContent: '',
   articleAbstract: '',
   articleCover: '',
-  categoryNameList: [],
   tagNameList: [],
   isTop: 0,
   isDeleted: 0,
@@ -250,24 +200,15 @@ const initialFormState: ArticleForm = {
     form.value.articleCover = image.url
     form.value.imageId = image.id
   }
- type CategoryResult = {
-    id: string,
-    categoryName: string,
-    createdAt: string,
-    updatedAt: string,
-  }
-  const categoryList = ref<CategoryResult[]>([])
+ type TagResult = {
+   id: string,
+   tagName: string,
+   createdAt: string,
+   updatedAt: string,
+ }
+ const tagList = ref<TagResult[]>([])
 
-  type TagResult = {
-    id: string,
-    tagName: string,
-    createdAt: string,
-    updatedAt: string,
-  }
-  const tagList = ref<TagResult[]>([])
-
-  const categoryName = ref('')
-  const tagName = ref('')
+ const tagName = ref('')
 
   const userStore = useUserStore()
   let { info } = userStore
@@ -330,47 +271,10 @@ const initialFormState: ArticleForm = {
     return true
   }
 
-  // 移除分类
-  const removeCategory = (item:string) => {
-    const index = form.value.categoryNameList.indexOf(item)
-    form.value.categoryNameList.splice(index, 1)
-  }
-
-  // 搜索分类
-  const searchCategories = (keywords: any, cb: any) => {
-    CategoryService.searchCategories(keywords).then((res: any) => {
-      cb(res.data)
-    })
-  }
-
   // 搜索标签
   const searchTags = (keywords: any, cb: any) => {
     TagService.searchTags(keywords).then((res: any) => {
       cb(res.data)
-    })
-  }
-
-  // 保存分类
-  const saveCategory = () => {
-    if (categoryName.value.trim() != '') {
-      addCategory({
-        categoryName: categoryName.value
-      })
-      categoryName.value = ''
-    }
-  }
-
-  // 添加分类
-  const addCategory = (item: any) => {
-    if (form.value.categoryNameList.indexOf(item.categoryName) == -1) {
-      form.value.categoryNameList.push(item.categoryName)
-    }
-  }
-
-  // 处理选择的分类
-  const handleSelectCategories = (item: any) => {
-    addCategory({
-      categoryName: item.categoryName
     })
   }
 
@@ -408,19 +312,7 @@ const initialFormState: ArticleForm = {
   const tagClass = (item: any) => {
     return form.value.tagNameList.indexOf(item.tagName) == -1 ? 'tag-item' : 'tag-item active'
   }
-  
-  // 分类样式
-  const categoryClass = (item: any) => {
-    return form.value.categoryNameList.indexOf(item.categoryName) == -1 ? 'category-item' : 'category-item active'
-  }
 
-  // 列出分类
-  const listCategories = async () => {
-    const res = await CategoryService.searchCategories('')
-    if (res.code === 200) {
-      categoryList.value = res.result
-    }
-  }
   const listTags = async () => {
     const res = await TagService.searchTags('')
     if (res.code === 200) {
@@ -437,11 +329,6 @@ const initialFormState: ArticleForm = {
 
     if (form.value.articleContent.trim() == '<p><br></p>') {
       ElMessage.error(`文章内容不能为空`)
-      return false
-    }
-
-    if (form.value.categoryNameList == null) {
-      ElMessage.error(`文章分类不能为空`)
       return false
     }
 
@@ -524,7 +411,6 @@ const initialFormState: ArticleForm = {
 
   onMounted(() => {
     getuseDict()
-    listCategories()
     listTags()
     getArticleDetail()
   })
@@ -650,21 +536,6 @@ const initialFormState: ArticleForm = {
     margin-bottom: 1rem;
     cursor: not-allowed;
     color: #ef1616 !important;
-  }
-  .category-item {
-    cursor: pointer;
-    margin-right: 1rem;
-    margin-bottom: 1rem;
-  }
-  .category-item.active {
-    margin-right: 1rem;
-    margin-bottom: 1rem;
-    cursor: not-allowed;
-    color: #ef1616 !important;
-  }
-  .category-item:hover {
-    background-color: #f0f9eb;
-    color: #67c23a;
   }
   .popover-title {
     margin-bottom: 1rem;

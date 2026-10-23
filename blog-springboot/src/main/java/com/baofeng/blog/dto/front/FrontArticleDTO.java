@@ -29,7 +29,6 @@ public class FrontArticleDTO {
         private String articleCover;
         private String articleTitle;
         private Integer viewTimes;
-        private List<String> categoryNameList;
         private List<String> tagNameList;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -113,7 +112,6 @@ public class FrontArticleDTO {
         private Boolean isTop;
         private Boolean isFeatured;
         private AuthorVO author;
-        private List<String> categoryNameList;
         private List<String> tagNameList;
     }
 

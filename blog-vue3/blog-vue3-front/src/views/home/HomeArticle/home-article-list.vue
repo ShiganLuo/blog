@@ -31,7 +31,6 @@ interface ArticleItem {
   is_top: number
   createdAt: string
   updatedAt: string
-  categoryNameList: string[]
   tagNameList: string[]
   thumbsUpTimes: number
   viewTimes: number
@@ -62,12 +61,11 @@ const props = defineProps({
 const router = useRouter();
 
 /* 文章操作 start */
-type OperateType = "detail" | "tag" | "category";
+type OperateType = "detail" | "tag";
 const operate = (type: OperateType, item: ArticleItem): void => {
   const routes: Record<OperateType, RouteLocationRaw> = {
     detail: { path: "/article", query: { id: item.id } },
     tag: { path: "/tag" },
-    category: { path: "/category" },
   };
   router.push(routes[type]);
 };
@@ -172,15 +170,6 @@ watch(
                     <i class="iconfont icon-schedule"></i>
                     <span class="meta-label">更新于</span>
                     <span class="meta-value">{{ item.updatedAt }}</span>
-                  </span>
-                  <span class="article-meta__separator"></span>
-                  <span class="to_pointer" @click="operate('category', item)">
-                    <i class="iconfont icon-folder"></i>
-                    <span
-                    class="meta-value"
-                    v-for="(categoryName, index) in (item.categoryNameList ?? []).slice(0, 3)"
-                    :key="index"
-                    >{{ index == (item.categoryNameList ?? []).length - 1 ? categoryName : categoryName + "、" }}</span>
                   </span>
                   <span class="article-meta__separator"></span>
                   <span class="to_pointer" @click="operate('tag', item)">

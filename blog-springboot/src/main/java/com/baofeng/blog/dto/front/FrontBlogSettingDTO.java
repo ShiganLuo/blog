@@ -43,7 +43,6 @@ public class FrontBlogSettingDTO {
         private String we_chat_pay;
         private Long view_time;
         private Long articleCount;
-        private Long categoryCount;
         private Long tagCount;
         private Long userCount;
         private String gitee;

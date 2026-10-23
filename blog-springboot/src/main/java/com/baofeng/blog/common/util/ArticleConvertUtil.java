@@ -33,9 +33,6 @@ public class ArticleConvertUtil {
         articleDetailResponse.setCreatedAt(frontArticle.getCreatedAt());
         articleDetailResponse.setUpdatedAt(frontArticle.getUpdatedAt());
 
-        List<String> categoryList = frontArticle.getCategoryNameList();
-        articleDetailResponse.setCategoryNameList(categoryList != null ? categoryList : List.of());
-
         List<String> tagList = frontArticle.getTagNameList();
         articleDetailResponse.setTagNameList(tagList != null ? tagList : List.of());
 

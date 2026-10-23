@@ -146,7 +146,6 @@ onBeforeUnmount(() => {
               <i class="iconfont icon-houduankaifa"></i> 后端推荐
             </el-menu-item>
           </el-sub-menu>
-          <el-menu-item index="/category"><i class="iconfont icon-sort"></i> 分类</el-menu-item>
           <el-menu-item index="/photoAlbum"><i class="iconfont icon-paper"></i> 相册</el-menu-item>
           <el-menu-item index="/book"><i class="iconfont icon-muludaohang"></i> 书架</el-menu-item>
           <el-menu-item index="/talk"><i class="iconfont icon-speechbubble"></i> 说说</el-menu-item>
@@ -231,7 +230,6 @@ onBeforeUnmount(() => {
                 <i class="iconfont icon-houduankaifa"></i> 后端推荐
               </el-menu-item>
             </el-sub-menu>
-            <el-menu-item index="/category"><i class="iconfont icon-sort"></i> 分类</el-menu-item>
             <el-menu-item index="/tag"><i class="iconfont icon-label_fill"></i> 标签</el-menu-item>
             <el-menu-item index="/photoAlbum">
               <i class="iconfont icon-paper"></i> 相册

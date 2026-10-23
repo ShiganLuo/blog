@@ -83,16 +83,6 @@ public class FrontArticleController {
     }
 
     /**
-     * 根据分类ID获取文章列表
-     * @param request
-     * @return
-     */
-    @PostMapping("/getArticlesByCategoryId")
-    public ApiResponse<ArticleAbstractsResponse> getArticlesByCategoryId(@RequestBody @Validated CategoryOrTagRequest request) {
-        return articleService.getArticlesByCategoryId(request);
-    }
-
-    /**
      * 根据标签ID获取文章列表
      * @param request
      * @return

@@ -22,7 +22,6 @@ export interface ArticleInfo {
   articleDescription?: string;
   createdAt?: string;
   updatedAt?: string;
-  categoryNameList?: string[];
   tagNameList?: string[];
   viewTimes?: number;
   is_top: boolean;

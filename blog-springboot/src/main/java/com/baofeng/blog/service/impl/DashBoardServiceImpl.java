@@ -9,7 +9,6 @@ import com.baofeng.blog.dto.admin.AdminDashBoradDTO.DictTemplateResponse;
 import com.baofeng.blog.dto.admin.AdminDashBoradDTO.UserAddInLastWeekResponse;
 import com.baofeng.blog.enums.ResultCodeEnum;
 import com.baofeng.blog.mapper.ArticleMapper;
-import com.baofeng.blog.mapper.CategoryMapper;
 import com.baofeng.blog.mapper.TagMapper;
 import com.baofeng.blog.mapper.CommentMapper;
 import com.baofeng.blog.mapper.ImageMapper;
@@ -41,7 +40,6 @@ public class DashBoardServiceImpl implements DashBoardService{
 
     private final UserMapper userMapper;
     private final ArticleMapper articleMapper;
-    private final CategoryMapper categoryMapper;
     private final TagMapper tagMapper;
     private final ImageMapper imageMapper;
     private final LikeMapper likeMapper;
@@ -50,7 +48,6 @@ public class DashBoardServiceImpl implements DashBoardService{
 
     public DashBoardServiceImpl(UserMapper userMapper,
                                 ArticleMapper articleMapper,
-                                CategoryMapper categoryMapper,
                                 TagMapper tagMapper,
                                 ImageMapper imageMapper,
                                 LikeMapper likeMapper,
@@ -58,7 +55,6 @@ public class DashBoardServiceImpl implements DashBoardService{
                                 BlogSettingMapper blogSettingMapper) {
         this.userMapper = userMapper;
         this.articleMapper = articleMapper;
-        this.categoryMapper = categoryMapper;
         this.tagMapper = tagMapper;
         this.imageMapper = imageMapper;
         this.likeMapper = likeMapper;
@@ -109,10 +105,6 @@ public class DashBoardServiceImpl implements DashBoardService{
             new StatConfig("文章数", "&#xe7ae", (oneWeekAgo, currentTime) -> new Long[] {
                 articleMapper.selectArticleCountWhenSpecifiedTime(oneWeekAgo),
                 articleMapper.selectArticleCountWhenSpecifiedTime(currentTime)
-            }),
-            new StatConfig("分类数", "&#xe723", (oneWeekAgo, currentTime) -> new Long[] {
-                categoryMapper.selectCategoryCountWhenSpecifiedTime(oneWeekAgo),
-                categoryMapper.selectCategoryCountWhenSpecifiedTime(currentTime)
             }),
             new StatConfig("标签数", "&#xe70b", (oneWeekAgo, currentTime) -> new Long[] {
                 tagMapper.selectTagCountWhenSpecifiedTime(oneWeekAgo),

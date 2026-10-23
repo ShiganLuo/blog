@@ -40,7 +40,6 @@ interface ArticleItem {
   is_top: number
   createdAt: string
   updatedAt: string
-  categoryNameList: string[]
   tagNameList: string[]
   thumbsUpTimes: number
   viewTimes: number

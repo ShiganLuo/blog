@@ -170,13 +170,6 @@ public interface ArticleMapper {
     List<ArticleAbstractResponse> selectArticlesByTagId(Long tagId);
 
     /**
-     * 根据分类ID查询文章
-     * @param categoryId
-     * @return
-     */
-    List<ArticleAbstractResponse> selectArticlesByCategoryId(Long categoryId);
-
-    /**
      * 查看指定时间已经存在的文章
      * @param createdAt
      * @return

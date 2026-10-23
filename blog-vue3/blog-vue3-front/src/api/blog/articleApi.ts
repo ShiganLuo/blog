@@ -55,13 +55,6 @@ export class ArticleService {
     })
   }
 
-  static getArticleListByCategoryId(data?: object) {
-    return request.post<ArticleListResponse>({
-      url: '/front/articles/getArticlesByCategoryId',
-      data
-    })
-  }
-
   static getRecommendArticleById(id?: string | number) {
     return request.get<recommendArticles>({
       url: `/front/articles/getRecommendArticleById/${id}`,

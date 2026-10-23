@@ -57,11 +57,7 @@ const getArticleListById = async () => {
   let res;
   loading.value = true;
 
-  if (currentType.value === "tag") {
-    res = await ArticleService.getArticleListByTagId(param);
-  } else {
-    res = await ArticleService.getArticleListByCategoryId(param);
-  }
+  res = await ArticleService.getArticleListByTagId(param);
 
   if (res.code === 200) {
     articleListForm.value = res.result.list;
@@ -110,7 +106,7 @@ onMounted(() => {
       <template v-else>
         <div class="article-list__head flex_r_between flex-wrap">
           <div class="article-list__head-type">
-            {{ currentType == "tag" ? "标签 - " + currentName : "分类 - " + currentName }}
+            {{ "标签 - " + currentName }}
           </div>
           <div class="article-list__head-total">文章总数：{{ total }}</div>
         </div>

@@ -167,10 +167,6 @@
             <result property="authorAvatar" column="author_avatar"/>
         </association>
 
-        <!-- 分类名称子查询 -->
-        <collection property="categoryNameList" ofType="string"
-                    column="id" select="getCategoryNameListByArticleId"/>
-        
         <!-- 标签名称子查询 -->
         <collection property="tagNameList" ofType="string"
                     column="id" select="getTagNameListByArticleId"/>
@@ -279,14 +275,6 @@
         LIMIT #{limit}
     </select>
 
-    <!--获取文章目录名-->
-    <select id="getCategoryNameListByArticleId" resultType="string">
-        SELECT c.name
-        FROM categories c
-        INNER JOIN article_categories ac ON c.id = ac.category_id
-        WHERE ac.article_id = #{id}
-    </select>
-
     <!--获取文章标签名-->
     <select id="getTagNameListByArticleId" resultType="string">
         SELECT t.name
@@ -312,9 +300,6 @@
         <result property="originUrl" column="origin_url"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
-        <!-- 分类名称子查询 -->
-        <collection property="categoryNameList" ofType="string"
-            column="id" select="getCategoryNameListByArticleId"/>
         <!-- 标签名称子查询 -->
         <collection property="tagNameList" ofType="string"
             column="id" select="getTagNameListByArticleId"/>
@@ -330,13 +315,6 @@
             <if test="keyword != null and keyword != ''">
                 AND (a.title LIKE CONCAT('%', #{keyword}, '%') 
                 OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
-            </if>
-            <if test="categoryId != null and categoryId != 0">
-                AND a.id IN (
-                    SELECT ac.article_id
-                    FROM article_categories ac
-                    WHERE ac.category_id = #{categoryId}
-                )
             </if>
             <if test="tagId != null and tagId != 0">
                 AND a.id IN (
@@ -394,19 +372,6 @@
         FROM articles a
         LEFT JOIN article_tags at ON a.id = at.article_id
         WHERE at.tag_id = #{tagId}
-        ORDER BY a.created_at DESC
-    </select>
-
-    <!--根据目录id查询文章列表-->
-    <select id="selectArticlesByCategoryId" resultMap="ArticleAbstractMap">
-        SELECT 
-            a.id, 
-            a.cover_image,
-            a.title,
-            a.created_at
-        FROM articles a
-        LEFT JOIN article_categories ac ON a.id = ac.article_id
-        WHERE ac.category_id = #{categoryId}
         ORDER BY a.created_at DESC
     </select>
 
