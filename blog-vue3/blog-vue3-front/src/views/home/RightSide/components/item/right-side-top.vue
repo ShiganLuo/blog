@@ -116,26 +116,26 @@ const operate = (op: OperationType, val?: string): void => {
     </span>
   </div>
 
-  <!-- Gitee链接（主展示；GitHub 在下方社交图标行已有，避免重复） -->
+  <!-- GitHub链接（主展示） -->
   <div class="git-ee flex_r_around">
     <span
       class="git-ee__item button-animated"
-      @click="operate('openLink', configDetail.gitee ?? '#')"
+      @click="operate('openLink', configDetail.github ?? '#')"
     >
-      <i class="iconfont icon-gitee2"></i>
-      <span class="git-ee__item-text"> My Gitee</span>
+      <i class="iconfont icon-github-fill"></i>
+      <span class="git-ee__item-text"> My GitHub</span>
     </span>
   </div>
 
-  <!-- 社交链接 -->
+  <!-- 社交链接（四个：B站 / Gitee / 微信二维码 / QQ二维码） -->
   <div class="personal-link flex_r_around">
     <i
       class="iconfont icon-bilibili-line to_pointer"
       @click="operate('openLink', configDetail.bilibili ?? '#')"
     ></i>
     <i
-      class="iconfont icon-github-fill to_pointer"
-      @click="operate('openLink', configDetail.github ?? '#')"
+      class="iconfont icon-gitee2 to_pointer"
+      @click="operate('openLink', configDetail.gitee ?? '#')"
     ></i>
 
     <ElPopover placement="top" trigger="hover">
@@ -144,7 +144,7 @@ const operate = (op: OperationType, val?: string): void => {
         :src="configDetail.weChat ?? ''"
       />
       <template #reference>
-        <i class="iconfont icon-weixin1 to_pointer"></i>
+        <i class="iconfont icon-weixin to_pointer"></i>
       </template>
     </ElPopover>
 
@@ -154,7 +154,7 @@ const operate = (op: OperationType, val?: string): void => {
         :src="configDetail.qq ?? ''"
       />
       <template #reference>
-        <i class="iconfont icon-QQ1 to_pointer"></i>
+        <i class="iconfont icon-QQ to_pointer"></i>
       </template>
     </ElPopover>
   </div>
@@ -280,7 +280,7 @@ const operate = (op: OperationType, val?: string): void => {
     font-size: 1.8rem;
   }
 
-  .icon-QQ1 {
+  .icon-QQ {
     font-size: 1.6rem;
   }
 }
