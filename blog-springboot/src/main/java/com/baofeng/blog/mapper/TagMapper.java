@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -97,7 +98,7 @@ public interface TagMapper {
      * @param limit 限制数量
      * @return 标签列表
      */
-    List<String> getHotTags(int limit);
+    List<HashMap<String, Object>> getHotTags(int limit);
 
     /**
      * 查看指定时间已经存在的各种标签数

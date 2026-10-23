@@ -118,4 +118,9 @@
         SELECT COUNT(*) FROM book_article WHERE book_id = #{bookId} AND article_id = #{articleId}
     </select>
 
+    <!--书籍总数（上架的，不含草稿和已删除）-->
+    <select id="countAllBooks" resultType="Long">
+        SELECT COUNT(*) FROM book WHERE is_deleted = 0 AND status = 1
+    </select>
+
 </mapper>

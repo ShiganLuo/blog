@@ -13,6 +13,8 @@ import com.baofeng.blog.service.TagService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,11 +110,19 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public ApiResponse<List<String>> getHotTags(int limit) {
+    public ApiResponse<List<TagDictionaryResponse>> getHotTags(int limit) {
         // 限制最大返回数量为20
         int maxLimit = Math.min(limit, 20);
-        List<String> hotTags = tagMapper.getHotTags(maxLimit);
-        return ApiResponse.success(hotTags);
+        List<HashMap<String, Object>> hotTags = tagMapper.getHotTags(maxLimit);
+        // SQL 已按别名返回 id/tagName，转成字典结构供前台侧栏跳转使用
+        List<TagDictionaryResponse> result = new ArrayList<>();
+        for (HashMap<String, Object> row : hotTags) {
+            TagDictionaryResponse resp = new TagDictionaryResponse();
+            resp.setId(Long.valueOf(String.valueOf(row.get("id"))));
+            resp.setTagName(String.valueOf(row.get("tagName")));
+            result.add(resp);
+        }
+        return ApiResponse.success(result);
     }
 
     @Override

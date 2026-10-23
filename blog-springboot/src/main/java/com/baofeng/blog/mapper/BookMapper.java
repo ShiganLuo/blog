@@ -41,4 +41,6 @@ public interface BookMapper {
     Long selectMaxSortOrder(@Param("bookId") Long bookId);
 
     int countBookArticles(@Param("bookId") Long bookId, @Param("articleId") Long articleId);
+
+    Long countAllBooks();
 }

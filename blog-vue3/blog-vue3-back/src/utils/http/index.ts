@@ -50,7 +50,6 @@ axiosInstance.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
     const { accessToken } = useUserStore()
     if (accessToken) {
-      if (refreshFailed) refreshFailed = false
       request.headers.set({
         Authorization: `Bearer ${accessToken}`
       })
@@ -121,12 +120,14 @@ axiosInstance.interceptors.response.use(
         } catch (err) {
           // 刷新失败，退出登录
           refreshFailed = true
-          isRefreshing = false
           requests.forEach(cb => cb(null))
           requests = []
           userStore.logOut()
           ElMessage.warning('登录状态已过期，请重新登录')
           return Promise.reject(err)
+        } finally {
+          // 无论成功失败都必须复位，否则后续 401 会永久挂起（不刷新、不退出、不报错）
+          isRefreshing = false
         }
       } else {
         // 已经在刷新 token，把请求挂起

@@ -17,6 +17,7 @@ interface BlogConfig {
   websiteTitle?: string;
   personal_say?: string;
   articleCount?: number;
+  bookCount?: number;
   tagCount?: number;
   gitee?: string;
   bilibili?: string;
@@ -36,17 +37,21 @@ const props = defineProps({
       websiteTitle: "",
       personal_say: "",
       articleCount: 0,
+      bookCount: 0,
       tagCount: 0
     })
   }
 });
 
 // 操作类型联合类型
-type OperationType = "goToTag" | "goToArchives" | "openLink";
+type OperationType = "goToBook" | "goToTag" | "goToArchives" | "openLink";
 
 // 严格类型控制的操作函数
 const operate = (op: OperationType, val?: string): void => {
   switch (op) {
+    case "goToBook":
+      router.push("/book");
+      break;
     case "goToTag":
       router.push("/tag");
       break;
@@ -97,6 +102,12 @@ const operate = (op: OperationType, val?: string): void => {
         <GsapCount :value="configDetail.articleCount" />
       </span>
     </span>
+    <span class="flex_c_center" @click="operate('goToBook')">
+      <span class="common-menu__label to_pointer">书籍</span>
+      <span class="common-menu__value to_pointer">
+        <GsapCount :value="configDetail.bookCount" />
+      </span>
+    </span>
     <span class="flex_c_center" @click="operate('goToTag')">
       <span class="common-menu__label to_pointer">标签</span>
       <span class="common-menu__value to_pointer">
@@ -105,14 +116,14 @@ const operate = (op: OperationType, val?: string): void => {
     </span>
   </div>
 
-  <!-- Gitee链接 -->
+  <!-- GitHub链接（主展示） -->
   <div class="git-ee flex_r_around">
     <span
       class="git-ee__item button-animated"
-      @click="operate('openLink', configDetail.gitee ?? '#')"
+      @click="operate('openLink', configDetail.github ?? '#')"
     >
-      <i class="iconfont icon-gitee2"></i>
-      <span class="git-ee__item-text"> My Gitee</span>
+      <i class="iconfont icon-github-fill"></i>
+      <span class="git-ee__item-text"> My GitHub</span>
     </span>
   </div>
 

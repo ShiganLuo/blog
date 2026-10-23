@@ -39,17 +39,17 @@ public interface TagService {
     public ApiResponse<List<TagDictionaryResponse>> getTagDictionary(String keyword);
 
     /**
+     * 获取热门标签（按文章数排序，最多20个）
+     * @param limit 数量上限
+     * @return 标签字典列表
+     */
+    public ApiResponse<List<TagDictionaryResponse>> getHotTags(int limit);
+
+    /**
      * 计算标签总数
      * @return 标签总数
      */
     Long countAllTags();
-
-    /**
-     * 获取热门标签
-     * @param limit 限制数量
-     * @return 标签列表
-     */
-    public ApiResponse<List<String>> getHotTags(int limit);
 
     /**
      * 获取标签详情

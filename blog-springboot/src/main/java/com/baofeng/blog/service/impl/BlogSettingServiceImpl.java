@@ -3,6 +3,7 @@ package com.baofeng.blog.service.impl;
 
 import com.baofeng.blog.mapper.BlogSettingMapper;
 import com.baofeng.blog.mapper.ArticleMapper;
+import com.baofeng.blog.mapper.BookMapper;
 import com.baofeng.blog.mapper.TagMapper;
 import com.baofeng.blog.mapper.UserMapper;
 import com.baofeng.blog.common.util.UrlNormalizeUtil;
@@ -33,6 +34,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
 
     private final BlogSettingMapper blogSettingMapper;
     private final ArticleMapper articleMapper;
+    private final BookMapper bookMapper;
     private final TagMapper tagMapper;
     private final UserMapper userMapper;
     private final RedisVisitCounter redisVisitCounter;
@@ -41,12 +43,14 @@ public class BlogSettingServiceImpl implements BlogSettingService {
     public BlogSettingServiceImpl (
         BlogSettingMapper blogSettingMapper,
         ArticleMapper articleMapper,
+        BookMapper bookMapper,
         TagMapper tagMapper,
         UserMapper userMapper,
         RedisVisitCounter redisVisitCounter
     ) {
         this.blogSettingMapper = blogSettingMapper;
         this.articleMapper = articleMapper;
+        this.bookMapper = bookMapper;
         this.tagMapper = tagMapper;
         this.userMapper = userMapper;
         this.redisVisitCounter = redisVisitCounter;
@@ -167,6 +171,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
 
         Long articleCount = articleMapper.countAllArticles();
         Long tagCount = tagMapper.countAllTags();
+        Long bookCount = bookMapper.countAllBooks();
         Long userCount = userMapper.countAllUsers();
         FrontConfigDetailResponse detail = new FrontConfigDetailResponse();
         detail.setWebsiteTitle(blogSetting.getWebsiteTitle());
@@ -189,6 +194,7 @@ public class BlogSettingServiceImpl implements BlogSettingService {
         detail.setView_time(blogSetting.getVisitCount());
         detail.setCreatedAt(blogSetting.getCreatedAt());
         detail.setTagCount(tagCount);
+        detail.setBookCount(bookCount);
         detail.setUserCount(userCount);
         return ApiResponse.success(detail);
     }

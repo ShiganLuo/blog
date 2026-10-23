@@ -4,7 +4,6 @@ import com.baofeng.blog.service.TagService;
 import com.baofeng.blog.dto.ApiResponse;
 import com.baofeng.blog.dto.common.TagDTO.TagDictionaryResponse;
 import com.baofeng.blog.entity.Tag;
-
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -21,12 +20,12 @@ public class FrontTagController {
     }
 
     /**
-     * 获取所有标签
+     * 获取侧栏标签（按文章数排序，后端固定最多20个）
      * @return 标签列表
      */
     @GetMapping("/getAllTags")
     public ApiResponse<List<TagDictionaryResponse>> getAllTags() {
-        return tagService.getTagDictionary(null);
+        return tagService.getHotTags(20);
     }
 
     /**
@@ -35,7 +34,7 @@ public class FrontTagController {
      * @return 标签列表
      */
     @GetMapping("/hot")
-    public ApiResponse<List<String>> getHotTags(@RequestParam(defaultValue = "10") int limit) {
+    public ApiResponse<List<TagDictionaryResponse>> getHotTags(@RequestParam(defaultValue = "10") int limit) {
         return tagService.getHotTags(limit);
     }
 

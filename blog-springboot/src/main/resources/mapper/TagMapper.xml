@@ -59,16 +59,17 @@
         SELECT COUNT(*) FROM tags WHERE created_at &lt;= #{createdAt}
     </select>
     
-    <!--获取热门标签-->
-    <select id="getHotTags">
+    <!--获取热门标签（含id，供前台侧栏跳转使用）-->
+    <select id="getHotTags" resultType="java.util.HashMap">
         SELECT
-            t.name
+            t.id AS "id",
+            t.name AS "tagName"
         FROM
             article_tags at
         JOIN
             tags t ON at.tag_id = t.id
         GROUP BY
-            t.name
+            t.id, t.name
         ORDER BY
             COUNT(at.tag_id) DESC
         LIMIT #{limit}

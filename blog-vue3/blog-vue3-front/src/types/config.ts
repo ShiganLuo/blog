@@ -10,6 +10,7 @@ export interface ConfigDetail {
   frontHeadBackground?: string;
   authorAvatar?: string;
   personal_say?: string;
+  bookCount?: number;
   tagCount?: number;
   userCount?: number;
   gitee?: string;
