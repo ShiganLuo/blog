@@ -34,7 +34,11 @@ onMounted( async () => {
 
   backTopProps.right = 0;
   backTopProps.svgWidth = 6;
-  SiteService.addView(userStore.getUserInfo.id ? { userId: userStore.getUserInfo.id } : undefined);
+  // 只有登录用户才上报访问:匿名时后端addViews会回401"请先登录",
+  // 白白点燃401刷新链路(空refreshToken续期失败→误logOut+弹条)
+  if (userStore.getUserInfo.id) {
+    SiteService.addView({ userId: userStore.getUserInfo.id });
+  }
   document.addEventListener("contextmenu", handleContextMenu);
   document.addEventListener("click", handleClick);
 })

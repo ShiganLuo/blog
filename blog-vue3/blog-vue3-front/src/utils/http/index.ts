@@ -74,6 +74,14 @@ axiosInstance.interceptors.response.use(
         userStore.logOut()
         return Promise.reject(new Error('Refresh Token 失效'))
       }
+      // 没有refreshToken(未登录或登录态已清)就不进刷新链路:
+      // 否则拿空token去续期必然失败,还会误触发logOut和报错弹条
+      if (!userStore.refreshToken) {
+        if (!response.config.silent) {
+          ElMessage({ message: msg, type: 'warning' })
+        }
+        return Promise.reject(new Error(msg))
+      }
       if (!isRefreshing) {
         isRefreshing = true
         try {
@@ -82,6 +90,9 @@ axiosInstance.interceptors.response.use(
             refreshToken: userStore.refreshToken
           })
           const newAccessToken = refreshRes.data.result
+          if (!newAccessToken) {
+            throw new Error('refreshToken 返回空')
+          }
           userStore.setToken(newAccessToken)
 
           // 让所有挂起请求重新执行
@@ -93,10 +104,14 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest)
         } catch (err) {
           // 刷新失败，退出登录
+          // 必须冲刷挂起队列,否则刷新期间并发进来的请求会永久pending(按钮失灵)
+          requests.forEach(cb => cb(null))
+          requests = []
           userStore.logOut()
           ElMessage.warning('登录状态已过期，请重新登录')
           return Promise.reject(err)
         } finally {
+          // 无论成功失败都必须复位,否则后续401永久挂起
           isRefreshing = false
         }
       } else {

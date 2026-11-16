@@ -122,8 +122,11 @@ export const useUserStore = defineStore('user', () => {
   // State，在 store 启动时从本地存储加载初始值
   const blogAvatar = ref<string>('');
   const userInfo = ref<UserInfo>(_getLocalItem("userInfo") || {}); 
-  const accessToken = ref<string>('');
-  const refreshToken = ref<string>('');
+  // 启动时从localStorage恢复token,否则刷新页面后内存token为空:
+  // 表面还显示已登录(userInfo有恢复),但所有请求不带Authorization,
+  // 一旦碰到401,刷新链路拿空refreshToken去续期必然失败并把登录态清掉
+  const accessToken = ref<string>(_getLocalItem("accessToken") || '');
+  const refreshToken = ref<string>(_getLocalItem("refreshToken") || '');
   const infoFlag = ref<boolean>(false);
   const tokenFlag = ref<boolean>(false);
   const showLogin = ref<boolean>(false);

@@ -97,6 +97,13 @@ axiosInstance.interceptors.response.use(
         userStore.logOut()
         return Promise.reject(new Error('Refresh Token 失效'))
       }
+      // 没有refreshToken(未登录或登录态已清)就不进刷新链路:
+      // 否则拿空token去续期必然失败,还会误触发logOut、弹条,
+      // 甚至把refreshFailed熔断锁死(永不复位),之后空闲过期的401全部静默拒绝=按钮失灵
+      if (!userStore.refreshToken) {
+        ElMessage({ message: msg, type: 'warning' })
+        return Promise.reject(new Error(msg))
+      }
       if (!isRefreshing) {
         isRefreshing = true
         try {
