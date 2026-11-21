@@ -21,7 +21,8 @@ RUN mvn -B clean package -DskipTests
 # =========================
 # Stage 2: Runtime
 # =========================
-FROM eclipse-temurin:17-jre
+# 17.0.21.1_2 = CVE-2026-114938 (Java4Shell) 修复版,勿退回浮动 tag 17-jre
+FROM eclipse-temurin:17.0.21.1_2-jre
 
 # 图形验证码字体库
 RUN apt-get update \
